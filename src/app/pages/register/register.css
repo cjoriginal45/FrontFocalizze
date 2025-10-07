@@ -1,0 +1,168 @@
+/* ---------- Desktop design ---------- */
+
+.container {
+  display: flex;
+  width: 100dvw;
+  height: 100dvh;
+}
+
+.box-1,
+.box-2 {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  text-align: center;
+  width: 50%;
+}
+
+.box-1 {
+  background-color: #01344a;
+  flex-direction: column;
+}
+
+.box-2 {
+  background-color: #fff;
+}
+
+.focalizze-logo {
+  width: 400px;
+  max-width: 100%;
+  min-width: 150px;
+}
+
+.title-logo {
+  color: #fff;
+  font-size: 2em;
+  position: absolute;
+  margin-top: 200px;
+  font-weight: bold;
+  max-width: 90%;
+}
+
+.panel {
+  background-color: #e0f1f3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 90%;
+  width: 500px;
+  padding: 40px 80px;
+  border-radius: 20px;
+  box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.2);
+}
+
+.panel-title {
+  color: #01344a;
+  font-size: 3em;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+}
+
+.input-form {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(51, 51, 51, 0.3);
+  color: #01344a;
+  box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.4);
+  width: 400px;
+  max-width: 100%;
+  margin-top: 1.2rem;
+}
+
+.input-form::placeholder {
+  color: #01344a;
+}
+
+.input-form:focus {
+  outline: none;
+}
+
+.enter-btn {
+  background-color: #01344a;
+  color: #fff;
+  font-size: 1em;
+  margin-top: 2rem;
+  width: 140px;
+  padding: 5px;
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.enter-btn:hover {
+  background-color: #01344cb8;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+.link-text {
+  margin-top: 1rem;
+  color: #01344a;
+}
+
+.copyright-text {
+  margin-top: 4rem;
+  color: #01344a;
+}
+
+/* ---------- Mobile design ---------- */
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  .box-1,
+  .box-2 {
+    width: 100dvw;
+  }
+
+  .box-1 {
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 10dvh;
+  }
+
+  .panel {
+    width: 100dvw;
+    height: 90dvh;
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .input-form {
+    width: 100%;
+  }
+
+  .focalizze-logo {
+    width: 100px;
+    min-width: 80px;
+  }
+
+  .panel-title {
+    margin-top: 10rem;
+    font-size: 2.5em;
+  }
+
+  .title-logo {
+    font-size: 1em;
+    position: static;
+    margin-top: 0;
+    margin-left: 0.5rem;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .copyright-text {
+    margin-top: auto;
+  }
+}
