@@ -1,13 +1,13 @@
 /* ---------- Desktop design ---------- */
 
-.container {
+.register-page {
   display: flex;
   width: 100dvw;
   height: 100dvh;
 }
 
-.box-1,
-.box-2 {
+.register-page__logo-box,
+.register-page__panel-box {
   flex-grow: 1;
   display: flex;
   justify-content: center;
@@ -17,22 +17,22 @@
   width: 50%;
 }
 
-.box-1 {
+.register-page__logo-box {
   background-color: #01344a;
   flex-direction: column;
 }
 
-.box-2 {
+.register-page__panel-box {
   background-color: #fff;
 }
 
-.focalizze-logo {
+.register-page__logo-img {
   width: 400px;
   max-width: 100%;
   min-width: 150px;
 }
 
-.title-logo {
+.register-page__logo-title {
   color: #fff;
   font-size: 2em;
   position: absolute;
@@ -41,7 +41,7 @@
   max-width: 90%;
 }
 
-.panel {
+.register-panel {
   background-color: #e0f1f3;
   display: flex;
   flex-direction: column;
@@ -53,19 +53,19 @@
   box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.2);
 }
 
-.panel-title {
+.register-panel__title {
   color: #01344a;
   font-size: 3em;
 }
 
-.register-form {
+.register-panel__form {
   display: flex;
   flex-direction: column;
   align-items: center;
   max-width: 100%;
 }
 
-.input-form {
+.register-panel__input {
   padding: 10px;
   border-radius: 10px;
   border: 1px solid rgba(51, 51, 51, 0.3);
@@ -76,15 +76,15 @@
   margin-top: 1.2rem;
 }
 
-.input-form::placeholder {
+.register-panel__input::placeholder {
   color: #01344a;
 }
 
-.input-form:focus {
+.register-panel__input:focus {
   outline: none;
 }
 
-.enter-btn {
+.register-panel__button {
   background-color: #01344a;
   color: #fff;
   font-size: 1em;
@@ -97,19 +97,19 @@
   cursor: pointer;
 }
 
-.enter-btn:hover {
+.register-panel__button:hover {
   background-color: #01344cb8;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
   transform: translateY(-2px);
   transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
-.link-text {
+.register-panel__link {
   margin-top: 1rem;
   color: #01344a;
 }
 
-.copyright-text {
+.register-panel__copyright-text {
   margin-top: 4rem;
   color: #01344a;
 }
@@ -117,21 +117,21 @@
 /* ---------- Mobile design ---------- */
 
 @media (max-width: 768px) {
-  .container {
+  .register-page {
     flex-direction: column;
   }
-  .box-1,
-  .box-2 {
+  .register-page__logo-box,
+  .register-page__panel-box {
     width: 100dvw;
   }
 
-  .box-1 {
+  .register-page__logo-box {
     flex-direction: row;
     justify-content: flex-start;
     height: 10dvh;
   }
 
-  .panel {
+  .register-panel {
     width: 100dvw;
     height: 90dvh;
     max-width: 100%;
@@ -139,21 +139,21 @@
     box-shadow: none;
   }
 
-  .input-form {
+  .register-panel__form {
     width: 100%;
   }
 
-  .focalizze-logo {
+  .register-page__logo-img {
     width: 100px;
     min-width: 80px;
   }
 
-  .panel-title {
+  .register-panel__title {
     margin-top: 10rem;
     font-size: 2.5em;
   }
 
-  .title-logo {
+  .register-page__logo-title {
     font-size: 1em;
     position: static;
     margin-top: 0;
@@ -162,7 +162,7 @@
     color: #fff;
   }
 
-  .copyright-text {
+  .register-panel__copyright-text {
     margin-top: auto;
   }
 }
