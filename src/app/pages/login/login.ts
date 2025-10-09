@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-login',
-  imports: [MatIconModule],
+  imports: [MatIconModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

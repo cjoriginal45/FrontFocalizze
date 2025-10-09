@@ -1,13 +1,13 @@
 /* ---------- Desktop design ---------- */
 
-.login-page {
+.register-page {
   display: flex;
   width: 100dvw;
   height: 100dvh;
 }
 
-.login-page__logo-box,
-.login-page__panel-box {
+.register-page__logo-box,
+.register-page__panel-box {
   flex-grow: 1;
   display: flex;
   justify-content: center;
@@ -17,23 +17,22 @@
   width: 50%;
 }
 
-.login-page__logo-box {
+.register-page__logo-box {
   background-color: #01344a;
   flex-direction: column;
-  align-items: center;
 }
 
-.login-page__panel-box {
+.register-page__panel-box {
   background-color: #fff;
 }
 
-.login-page__logo-img {
+.register-page__logo-img {
   width: 400px;
   max-width: 100%;
   min-width: 150px;
 }
 
-.login-page__logo-title {
+.register-page__logo-title {
   color: #fff;
   font-size: 2em;
   position: absolute;
@@ -42,7 +41,7 @@
   max-width: 90%;
 }
 
-.login-panel {
+.register-panel {
   background-color: #e0f1f3;
   display: flex;
   flex-direction: column;
@@ -54,19 +53,20 @@
   box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.2);
 }
 
-.login-panel__title {
+.register-panel__title {
   color: #01344a;
   font-size: 3em;
 }
 
-.login-panel__form {
+.register-panel__form {
   display: flex;
   flex-direction: column;
   align-items: center;
   max-width: 100%;
+  margin-top: 1rem;
 }
 
-.login-panel__input {
+.register-panel__input {
   padding: 10px;
   border-radius: 10px;
   border: 1px solid rgba(51, 51, 51, 0.3);
@@ -74,41 +74,23 @@
   box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.4);
   width: 400px;
   max-width: 100%;
-  margin-top: 3rem;
+  margin-top: 1.2rem;
 }
 
-.login-panel__input::placeholder {
-  color: rgba(1, 52, 74, 0.7);
-}
-
-.login-panel__input:focus {
-  outline: none;
-}
-
-.login-panel__password-field-wrapper {
+.register-panel__password-field-wrapper {
   position: relative;
   width: 400px;
   max-width: 100%;
-  margin-top: 3rem;
+  margin-top: 1.2rem;
 }
 
-.login-panel__password-field-wrapper .login-panel__input {
+.register-panel__password-field-wrapper .register-panel__input {
   margin-top: 0;
   padding-right: 45px;
   width: 100%;
 }
 
-.login-panel__password-field-wrapper .login-panel__input[type='password']::-ms-reveal,
-.login-panel__password-field-wrapper .login-panel__input[type='text']::-ms-reveal {
-  display: none !important;
-}
-
-.login-panel__password-field-wrapper .login-panel__input::-webkit-contacts-auto-fill-button {
-  visibility: hidden;
-  display: none;
-}
-
-.login-panel__toggle-btn {
+.register-panel__toggle-btn {
   position: absolute;
   top: 50%;
   right: 10px;
@@ -116,16 +98,30 @@
   cursor: pointer;
   z-index: 10;
   color: #01344a;
-  font-size: 1.2em;
   opacity: 0.7;
   transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
 }
 
-.login-panel__toggle-btn:hover {
+.register-panel__toggle-btn:hover {
   opacity: 1;
 }
 
-.login-panel__button {
+.register-panel__password-field-wrapper input[type='password']::-ms-reveal,
+.register-panel__password-field-wrapper input[type='text']::-ms-reveal {
+  display: none !important;
+}
+
+.register-panel__input::placeholder {
+  color: rgba(1, 52, 74, 0.7);
+}
+
+.register-panel__input:focus {
+  outline: none;
+}
+
+.register-panel__button {
   background-color: #01344a;
   color: #fff;
   font-size: 1em;
@@ -138,19 +134,19 @@
   cursor: pointer;
 }
 
-.login-panel__button:hover {
+.register-panel__button:hover {
   background-color: #01344cb8;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
   transform: translateY(-2px);
   transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
-.login-panel__link {
+.register-panel__link {
   margin-top: 1rem;
   color: #01344a;
 }
 
-.login-panel__copyright-text {
+.register-panel__copyright-text {
   margin-top: 4rem;
   color: #01344a;
 }
@@ -158,21 +154,21 @@
 /* ---------- Mobile design ---------- */
 
 @media (max-width: 768px) {
-  .login-page {
+  .register-page {
     flex-direction: column;
   }
-  .login-page__logo-box,
-  .login-page__panel-box {
+  .register-page__logo-box,
+  .register-page__panel-box {
     width: 100dvw;
   }
 
-  .login-page__logo-box {
+  .register-page__logo-box {
     flex-direction: row;
     justify-content: flex-start;
     height: 10dvh;
   }
 
-  .login-panel {
+  .register-panel {
     width: 100dvw;
     height: 90dvh;
     max-width: 100%;
@@ -180,37 +176,30 @@
     box-shadow: none;
   }
 
-  .login-panel__form {
+  .register-panel__form {
     width: 100%;
     align-items: center;
   }
 
-  .login-panel__input {
+  .register-panel__input {
     width: 100%;
   }
 
-  .login-panel__password-field-wrapper {
+  .register-panel__password-field-wrapper {
     width: 100%;
-    max-width: 100%;
-    margin-top: 1.5rem;
   }
 
-  .login-panel__password-field-wrapper .login-panel__input {
-    width: 100%;
-    margin-top: 0;
-  }
-
-  .login-page__logo-img {
+  .register-page__logo-img {
     width: 100px;
     min-width: 80px;
   }
 
-  .login-panel__title {
+  .register-panel__title {
     margin-top: 10rem;
     font-size: 2.5em;
   }
 
-  .login-page__logo-title {
+  .register-page__logo-title {
     font-size: 1em;
     position: static;
     margin-top: 0;
@@ -219,7 +208,7 @@
     color: #fff;
   }
 
-  .login-panel__copyright-text {
+  .register-panel__copyright-text {
     margin-top: auto;
   }
 }
