@@ -1,0 +1,28 @@
+<section class="login-page">
+  <div class="login-page__logo-box">
+    <img
+      class="login-page__logo-img"
+      src="assets/images/focalizze-logo.webp"
+      alt="Logo de Focalizze"
+    />
+    <p class="login-page__logo-title">Donde menos es más</p>
+  </div>
+  <div class="login-page__panel-box">
+    <div class="login-panel">
+      <h1 class="login-panel__title">Iniciar Sesión</h1>
+      <form class="login-panel__form">
+        <input class="login-panel__input" type="email" placeholder="Correo Electrónico" />
+        <div class="login-panel__password-field-wrapper">
+          <input class="login-panel__input" [type]="passwordInputType" placeholder="Contraseña" />
+
+          <span class="login-panel__toggle-btn" (click)="togglePasswordVisibility()">
+            <mat-icon>{{ showPasswordIcon }}</mat-icon>
+          </span>
+        </div>
+        <button class="login-panel__button" type="submit">Ingresar</button>
+      </form>
+      <a class="login-panel__link" href="#">¿No tienes cuenta? Registrate</a>
+      <p class="login-panel__copyright-text">Copyright 2025</p>
+    </div>
+  </div>
+</section>
