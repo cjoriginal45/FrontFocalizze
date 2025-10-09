@@ -95,15 +95,12 @@
 .login-panel__password-field-wrapper .login-panel__input {
   margin-top: 0;
   padding-right: 45px;
+  width: 100%;
 }
 
 .login-panel__password-field-wrapper .login-panel__input[type='password']::-ms-reveal,
 .login-panel__password-field-wrapper .login-panel__input[type='text']::-ms-reveal {
   display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  background: none !important;
-  opacity: 0 !important;
 }
 
 .login-panel__password-field-wrapper .login-panel__input::-webkit-contacts-auto-fill-button {

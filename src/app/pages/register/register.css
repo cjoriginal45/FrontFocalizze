@@ -63,6 +63,7 @@
   flex-direction: column;
   align-items: center;
   max-width: 100%;
+  margin-top: 1rem;
 }
 
 .register-panel__input {
@@ -76,8 +77,44 @@
   margin-top: 1.2rem;
 }
 
-.register-panel__input::placeholder {
+.register-panel__password-field-wrapper {
+  position: relative;
+  width: 400px;
+  max-width: 100%;
+  margin-top: 1.2rem;
+}
+
+.register-panel__password-field-wrapper .register-panel__input {
+  margin-top: 0;
+  padding-right: 45px;
+  width: 100%;
+}
+
+.register-panel__toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 10;
   color: #01344a;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.register-panel__toggle-btn:hover {
+  opacity: 1;
+}
+
+.register-panel__password-field-wrapper input[type='password']::-ms-reveal,
+.register-panel__password-field-wrapper input[type='text']::-ms-reveal {
+  display: none !important;
+}
+
+.register-panel__input::placeholder {
+  color: rgba(1, 52, 74, 0.7);
 }
 
 .register-panel__input:focus {
@@ -140,6 +177,15 @@
   }
 
   .register-panel__form {
+    width: 100%;
+    align-items: center;
+  }
+
+  .register-panel__input {
+    width: 100%;
+  }
+
+  .register-panel__password-field-wrapper {
     width: 100%;
   }
 
