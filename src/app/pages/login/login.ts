@@ -41,7 +41,7 @@ export class Login implements OnDestroy{
       this.authService.login(this.loginData).subscribe({
         next: (response) => {
           console.log('Login exitoso!', response);
-          this.router.navigate(['/home']);
+          this.router.navigate(['/feed']);
         },
         error: (err) => {
           console.error('Error en el login', err);
