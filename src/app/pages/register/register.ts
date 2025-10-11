@@ -102,7 +102,7 @@ export class Register implements OnDestroy {
         console.log('Registro exitoso:', response);
 
         // Redirect to login after successful registration / Redirigir al login después del registro exitoso
-        this.router.navigate(['/login'], {
+        this.router.navigate(['/'], {
           queryParams: { message: 'Registro exitoso. Ya puedes iniciar sesión.' },
         });
       },
