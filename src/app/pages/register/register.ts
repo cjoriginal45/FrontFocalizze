@@ -2,12 +2,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
-import {
-  RegisterRequest,
-  RegisterResponse,
-  RegisterService,
-} from '../../services/registerService/register';
+import {RegisterService} from '../../services/registerService/register';
 import { CommonModule } from '@angular/common';
+import { RegisterRequest } from '../../interfaces/RegisterRequest';
+import { RegisterResponse } from '../../interfaces/RegisterResponse';
 
 @Component({
   selector: 'app-register',
