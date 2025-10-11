@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
@@ -15,14 +15,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
-export class Register {
+export class Register implements OnDestroy {
   passwordInputType: string = 'password';
   passwordIcon: string = 'visibility';
 
   confirmPasswordInputType: string = 'password';
   confirmPasswordIcon: string = 'visibility';
 
-  // Template for the form / Modelo para el formulario
   registerData: RegisterRequest = {
     username: '',
     email: '',
@@ -30,9 +29,10 @@ export class Register {
     confirmPassword: '',
   };
 
-  // Loading and error states / Estados para loading y errores
   isLoading: boolean = false;
   errorMessage: string = '';
+
+  private errorTimeout: any;
 
   constructor(private registerService: RegisterService, private router: Router) {}
 
@@ -56,6 +56,18 @@ export class Register {
     }
   }
 
+  setErrorMessage(message: string) {
+    // Cancel the previous timer if it exists / Cancelar el temporizador anterior si existe
+    if (this.errorTimeout) {
+      clearTimeout(this.errorTimeout);
+    }
+    this.errorMessage = message;
+    // Set a new timer to clear the message after 7 seconds / Establecer un nuevo temporizador para limpiar el mensaje después de 7 segundos
+    this.errorTimeout = setTimeout(() => {
+      this.errorMessage = '';
+    }, 7000);
+  }
+
   onSubmit(): void {
     // Reset error message / Resetear mensaje de error
     this.errorMessage = '';
@@ -67,17 +79,17 @@ export class Register {
       !this.registerData.password ||
       !this.registerData.confirmPassword
     ) {
-      this.errorMessage = 'Todos los campos son obligatorios';
+      this.setErrorMessage('Todos los campos son obligatorios');
       return;
     }
 
     if (this.registerData.password !== this.registerData.confirmPassword) {
-      this.errorMessage = 'Las contraseñas no coinciden';
+      this.setErrorMessage('Las contraseñas no coinciden');
       return;
     }
 
     if (this.registerData.password.length < 6) {
-      this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
+      this.setErrorMessage('La contraseña debe tener al menos 6 caracteres');
       return;
     }
 
@@ -89,8 +101,8 @@ export class Register {
         this.isLoading = false;
         console.log('Registro exitoso:', response);
 
-        //Redirect to login after successful registration / Redirigir al login después del registro exitoso
-        this.router.navigate(['/'], {
+        // Redirect to login after successful registration / Redirigir al login después del registro exitoso
+        this.router.navigate(['/login'], {
           queryParams: { message: 'Registro exitoso. Ya puedes iniciar sesión.' },
         });
       },
@@ -100,13 +112,19 @@ export class Register {
 
         // Handling different types of errors / Manejar diferentes tipos de errores
         if (error.error && error.error.error) {
-          this.errorMessage = error.error.error;
+          this.setErrorMessage(error.error.error);
         } else if (error.status === 0) {
-          this.errorMessage = 'Error de conexión. Verifica que el servidor esté funcionando.';
+          this.setErrorMessage('Error de conexión. Verifica que el servidor esté funcionando.');
         } else {
-          this.errorMessage = 'Error en el registro. Inténtalo de nuevo.';
+          this.setErrorMessage('Error en el registro. Inténtalo de nuevo.');
         }
       },
     });
+  }
+
+  ngOnDestroy() {
+    if (this.errorTimeout) {
+      clearTimeout(this.errorTimeout);
+    }
   }
 }
