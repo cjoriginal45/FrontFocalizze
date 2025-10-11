@@ -121,6 +121,13 @@
   outline: none;
 }
 
+.register-panel__error {
+  color: #01344a;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
 .register-panel__button {
   background-color: #01344a;
   color: #fff;

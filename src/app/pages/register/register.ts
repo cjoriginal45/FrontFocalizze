@@ -7,10 +7,11 @@ import {
   RegisterResponse,
   RegisterService,
 } from '../../services/registerService/register';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
-  imports: [MatIconModule, RouterLink, FormsModule],
+  imports: [MatIconModule, RouterLink, FormsModule, CommonModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -89,7 +90,7 @@ export class Register {
         console.log('Registro exitoso:', response);
 
         //Redirect to login after successful registration / Redirigir al login después del registro exitoso
-        this.router.navigate(['/login'], {
+        this.router.navigate(['/'], {
           queryParams: { message: 'Registro exitoso. Ya puedes iniciar sesión.' },
         });
       },
