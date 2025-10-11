@@ -10,15 +10,31 @@
   <div class="register-page__panel-box">
     <div class="register-panel">
       <h1 class="register-panel__title">Registro</h1>
-      <form class="register-panel__form">
-        <input class="register-panel__input" type="text" placeholder="Nombre de usuario" />
-        <input class="register-panel__input" type="email" placeholder="Correo Electrónico" />
+      <form class="register-panel__form" (ngSubmit)="onSubmit()">
+        <input
+          class="register-panel__input"
+          type="text"
+          placeholder="Nombre de usuario"
+          [(ngModel)]="registerData.username"
+          name="username"
+          required
+        />
+        <input
+          class="register-panel__input"
+          type="email"
+          placeholder="Correo Electrónico"
+          [(ngModel)]="registerData.email"
+          name="email"
+          required
+        />
         <div class="register-panel__password-field-wrapper">
           <input
             class="register-panel__input"
             [type]="passwordInputType"
             placeholder="Contraseña"
             name="password"
+            [(ngModel)]="registerData.password"
+            required
           />
           <span class="register-panel__toggle-btn" (click)="togglePasswordVisibility()">
             <mat-icon>{{ passwordIcon }}</mat-icon>
@@ -31,11 +47,21 @@
             [type]="confirmPasswordInputType"
             placeholder="Repetir Contraseña"
             name="confirmPassword"
+            [(ngModel)]="registerData.confirmPassword"
+            required
           />
           <span class="register-panel__toggle-btn" (click)="toggleConfirmPasswordVisibility()">
             <mat-icon>{{ confirmPasswordIcon }}</mat-icon>
           </span>
         </div>
+
+        <!-- Display error message / Mostrar mensaje de error -->
+        @if (errorMessage) {
+        <div class="register-panel__error">
+          {{ errorMessage }}
+        </div>
+        }
+
         <button class="register-panel__button" type="submit">Registrarse</button>
       </form>
       <a class="register-panel__link" routerLink="/">Iniciar Sesión</a>
