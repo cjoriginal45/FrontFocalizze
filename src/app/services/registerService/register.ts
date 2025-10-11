@@ -21,7 +21,7 @@ export interface RegisterResponse {
 @Injectable({
   providedIn: 'root',
 })
-export class Register {
+export class RegisterService {
   private apiUrl = `${environment.apiBaseUrl}/register`;
 
   constructor(private http: HttpClient) {}
