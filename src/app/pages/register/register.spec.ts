@@ -262,4 +262,33 @@ describe('Register', () => {
     // Verify that the message was cleared
     expect(component.errorMessage).toBe('');
   }));
+
+  /**
+   * Prueba: Limpieza de temporizadores al destruir componente
+   * Verifica que se limpian los temporizadores cuando el componente se destruye
+   * para evitar memory leaks
+   *
+   * Test: Cleanup timers when destroying a component
+   * Verifies that timers are cleared when the component is destroyed
+   * to prevent memory leaks
+   */
+  it('should clear timeout on destroy', () => {
+    // Espiar la función clearTimeout
+    // Spy on the clearTimeout function
+    spyOn(window, 'clearTimeout');
+
+    // Arrange: Crear un escenario donde un timeout exista.
+    // Llamamos a showError para que cree el setTimeout y asigne el ID a `component.errorTimeout`
+    // Create a scenario where a timeout exists.
+    // Call showError to create the setTimeout and assign the ID to `component.errorTimeout`
+    component.showError('Error de prueba para el destroy');
+
+    // Act: Ejecutar ngOnDestroy
+    // Run ngOnDestroy
+    component.ngOnDestroy();
+
+    // Assert: Verificar que se llamó a clearTimeout, porque ahora sí había algo que limpiar
+    // Verify that clearTimeout was called, because now there was something to clean up.
+    expect(window.clearTimeout).toHaveBeenCalled();
+  });
 });
