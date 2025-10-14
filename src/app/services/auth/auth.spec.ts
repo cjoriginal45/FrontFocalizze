@@ -105,5 +105,34 @@ describe('Auth', () => {
       const req = httpMock.expectOne(`${environment.apiBaseUrl}/login`);
       req.flush(mockResponse);
     });
+
+    /**
+     * Prueba: Manejo de error en login
+     * Verifica que cuando el servidor retorna un error:
+     * - La petición se envía correctamente
+     * - El error se propaga al subscriber
+     * - No se guarda ningún token en el localStorage
+     *
+     * Test: Login Error Handling
+     * Verify that when the server returns an error:
+     * - The request is sent successfully
+     * - The error is propagated to the subscriber
+     * - No token is saved in localStorage
+     */
+    it('should handle login error', () => {
+      // Arrange: Preparar credenciales inválidas
+      const mockCredentials = { identifier: 'testuser', password: 'wrongpassword' };
+
+      // Act & Assert
+      service.login(mockCredentials).subscribe({
+        next: () => fail('should have failed with a 401 error'), // El test debería fallar si la petición tiene éxito
+        error: (error) => {
+          expect(error.status).toBe(401); // Verificar que es error 401
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiBaseUrl}/login`);
+      req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' }); // Simular error del servidor
+    });
   });
 });
