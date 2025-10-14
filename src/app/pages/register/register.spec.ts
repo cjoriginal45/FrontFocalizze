@@ -48,4 +48,32 @@ describe('Register', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  /**
+   * Prueba: Alternar visibilidad de contraseña principal
+   * Verifica que el tipo de input cambia entre 'password' y 'text'
+   * y que el icono se actualiza correctamente
+   *
+   * Test: Toggle primary password visibility
+   * Verify that the input type changes between 'password' and 'text'
+   * and that the icon updates correctly
+   */
+  it('should toggle password visibility', () => {
+    // Estado inicial
+    // Initial state
+    expect(component.passwordInputType).toBe('password');
+    expect(component.passwordIcon).toBe('visibility');
+
+    // Primera alternancia: mostrar contraseña
+    // First toggle: show password
+    component.togglePasswordVisibility();
+    expect(component.passwordInputType).toBe('text');
+    expect(component.passwordIcon).toBe('visibility_off');
+
+    // Segunda alternancia: ocultar contraseña
+    // Second toggle: hide password
+    component.togglePasswordVisibility();
+    expect(component.passwordInputType).toBe('password');
+    expect(component.passwordIcon).toBe('visibility');
+  });
 });
