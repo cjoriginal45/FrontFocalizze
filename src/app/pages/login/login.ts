@@ -7,19 +7,14 @@ import { Auth } from '../../services/auth/auth';
 
 @Component({
   selector: 'app-login',
-  imports: [  
-    CommonModule, 
-    FormsModule,  
-    MatIconModule,
-    RouterLink],
+  imports: [CommonModule, FormsModule, MatIconModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login implements OnDestroy{
-
+export class Login implements OnDestroy {
   loginData = {
     identifier: '',
-    password: ''
+    password: '',
   };
 
   errorMessage: string | null = null;
@@ -30,30 +25,37 @@ export class Login implements OnDestroy{
 
   constructor(private authService: Auth, private router: Router) {}
 
-    // Método que se ejecuta al enviar el formulario.
-    onSubmit(): void {
-      this.errorMessage = null; 
-  
-      if (this.errorTimer) {
-        clearTimeout(this.errorTimer);
-      }
-  
-      this.authService.login(this.loginData).subscribe({
-        next: (response) => {
-          console.log('Login exitoso!', response);
-          this.router.navigate(['/feed']);
-        },
-        error: (err) => {
-          console.error('Error en el login', err);
-          this.errorMessage = 'Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.';
-  
-          this.errorTimer = setTimeout(() => {
-            this.errorMessage = null;
-          }, 7000); // 7 segundos
-        }
-      });
+  // Método que se ejecuta al enviar el formulario.
+  onSubmit(): void {
+    this.errorMessage = null;
+
+    if (this.errorTimer) {
+      clearTimeout(this.errorTimer);
     }
 
+    // VALIDACIÓN: Si el identificador o la contraseña están vacíos, no continuar.
+    if (!this.loginData.identifier || !this.loginData.password) {
+      // Opcional: Puedes mostrar un mensaje de error si quieres.
+      // this.errorMessage = 'El usuario y la contraseña son obligatorios.';
+      return;
+    }
+
+    // Este código solo se ejecutará si la validación anterior pasa
+    this.authService.login(this.loginData).subscribe({
+      next: (response) => {
+        console.log('Login exitoso!', response);
+        this.router.navigate(['/feed']);
+      },
+      error: (err) => {
+        console.error('Error en el login', err);
+        this.errorMessage = 'Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.';
+
+        this.errorTimer = setTimeout(() => {
+          this.errorMessage = null;
+        }, 7000); // 7 segundos
+      },
+    });
+  }
 
   togglePasswordVisibility(): void {
     if (this.passwordInputType === 'password') {
@@ -64,7 +66,6 @@ export class Login implements OnDestroy{
       this.showPasswordIcon = 'visibility';
     }
   }
-
 
   ngOnDestroy(): void {
     // Nos aseguramos de limpiar el temporizador para prevenir fugas de memoria
