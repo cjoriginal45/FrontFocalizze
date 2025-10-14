@@ -242,4 +242,24 @@ describe('Register', () => {
     expect(component.isLoading).toBeFalse();
     expect(component.errorMessage).toBe('Username is already taken');
   }));
+
+  /**
+   * Prueba: Limpieza automática de mensajes de error
+   * Verifica que el mensaje de error se limpia automáticamente después de 7 segundos
+   *
+   * Test: Automatically clearing error messages
+   * Verify that the error message is automatically cleared after 7 seconds
+   */
+  it('should clear error message after 7 seconds', fakeAsync(() => {
+    // Act: Mostrar error y avanzar 7 segundos
+    // Show error and advance 7 seconds
+    component.showError('Test error');
+    expect(component.errorMessage).toBe('Test error');
+
+    tick(7000); // Avanzar 7 segundos / Move forward 7 seconds
+
+    // Assert: Verificar que el mensaje se limpió
+    // Verify that the message was cleared
+    expect(component.errorMessage).toBe('');
+  }));
 });
