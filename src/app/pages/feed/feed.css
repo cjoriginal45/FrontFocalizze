@@ -1,0 +1,51 @@
+/* --- ESTILOS PARA MÓVIL (POR DEFECTO) --- */
+.feed-layout {
+    display: block;
+    padding: 15px;
+    padding-bottom: 80px;
+  }
+  
+  
+  .feed-layout__content {
+    width: 100%;
+  }
+  
+  .feed-layout__title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--primary-color); 
+  }
+  
+  .feed-layout__placeholder {
+    color: #555;
+    font-style: italic;
+  }
+  
+/* --- MEDIA QUERY PARA ESCRITORIO --- */
+@media (min-width: 992px) {
+  
+  .feed-layout {
+    display: grid; 
+
+    
+    grid-template-columns: 1fr 600px 350px;
+    
+    gap: 30px; 
+
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  .feed-layout__content {
+    grid-column: 2 / 3;
+  }
+  
+  .feed-layout__sidebar {
+    display: block;
+    grid-column: 3 / 4;
+  }
+}

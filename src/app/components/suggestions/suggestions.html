@@ -1,0 +1,75 @@
+<!-- === LÓGICA Y ESTRUCTURA SOLO PARA MÓVIL === -->
+<div class="suggestions-mobile">
+  
+    <!-- Disparador que siempre está visible en móvil -->
+    <button class="suggestions-mobile__trigger" (click)="toggleMobilePanel()" aria-label="Abrir/Cerrar sugerencias">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    
+    <!-- Overlay que solo existe cuando el panel está abierto -->
+    @if (isMobilePanelOpen) {
+      <div class="suggestions-mobile__overlay" (click)="toggleMobilePanel()"></div>
+    }
+    
+    <!-- El panel deslizable -->
+    <aside class="suggestions-mobile__panel" [class.suggestions-mobile__panel--is-open]="isMobilePanelOpen">
+      <!-- Contenido del panel -->
+      <div class="suggestions-content">
+        <div class="suggestions">
+          <h2 class="suggestions__title">Tal vez te guste</h2>
+          <ul class="suggestions__list">
+            @for (category of suggestedCategories; track category.name) {
+              <li class="suggestions__item">
+                <mat-icon class="suggestions__icon">{{ category.icon }}</mat-icon>
+                <span class="suggestions__name">{{ category.name }}</span>
+                <button class="suggestions__button">Seguir</button>
+              </li>
+            }
+          </ul>
+          <a routerLink="/categories" class="suggestions__see-more">Otras categorías...</a>
+        </div>
+        <footer class="footer-links">
+          <ul class="footer-links__list">
+            <li class="footer-links__item"><a routerLink="/terms">Condiciones de Servicio</a></li>
+            <li class="footer-links__item"><a routerLink="/privacy">Política de Privacidad</a></li>
+            <li class="footer-links__item"><a routerLink="/cookies">Política de cookies</a></li>
+            <li class="footer-links__item"><a routerLink="/accessibility">Accesibilidad</a></li>
+            <li class="footer-links__item"><a routerLink="/more-options">Más opciones</a></li>
+          </ul>
+          <p class="footer-links__copyright">© 2025 Focalizze.</p>
+        </footer>
+      </div>
+    </aside>
+  
+  </div>
+  
+  
+  <!-- === ESTRUCTURA SOLO PARA ESCRITORIO === -->
+  <aside class="suggestions-desktop">
+    <!-- Contenido de la barra lateral -->
+    <div class="suggestions-content">
+      <div class="suggestions">
+        <h2 class="suggestions__title">Tal vez te guste</h2>
+        <ul class="suggestions__list">
+          @for (category of suggestedCategories; track category.name) {
+            <li class="suggestions__item">
+              <mat-icon class="suggestions__icon">{{ category.icon }}</mat-icon>
+              <span class="suggestions__name">{{ category.name }}</span>
+              <button class="suggestions__button">Seguir</button>
+            </li>
+          }
+        </ul>
+        <a routerLink="/categories" class="suggestions__see-more">Otras categorías...</a>
+      </div>
+      <footer class="footer-links">
+        <ul class="footer-links__list">
+          <li class="footer-links__item"><a routerLink="/terms">Condiciones de Servicio</a></li>
+          <li class="footer-links__item"><a routerLink="/privacy">Política de Privacidad</a></li>
+          <li class="footer-links__item"><a routerLink="/cookies">Política de cookies</a></li>
+          <li class="footer-links__item"><a routerLink="/accessibility">Accesibilidad</a></li>
+          <li class="footer-links__item"><a routerLink="/more-options">Más opciones</a></li>
+        </ul>
+        <p class="footer-links__copyright">© 2025 Focalizze.</p>
+      </footer>
+    </div>
+  </aside>
