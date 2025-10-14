@@ -180,5 +180,21 @@ describe('Auth', () => {
       // Act & Assert
       expect(service.isLoggedIn()).toBeTrue();
     });
+
+    /**
+     * Test: Usuario no autenticado
+     * Verifica que isLoggedIn retorna false cuando no hay token en el localStorage
+     *
+     * Test: Unauthenticated User
+     * Verify that isLoggedIn returns false when there is no token in localStorage
+     */
+    it('should return false if token does not exist', () => {
+      // Arrange: Asegurar que no hay token
+      // Ensure there is no token
+      localStorage.removeItem('jwt_token');
+
+      // Act & Assert
+      expect(service.isLoggedIn()).toBeFalse();
+    });
   });
 });
