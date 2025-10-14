@@ -102,4 +102,24 @@ describe('Register', () => {
     expect(component.confirmPasswordInputType).toBe('password');
     expect(component.confirmPasswordIcon).toBe('visibility');
   });
+
+  /**
+   * Prueba: Validación de formulario vacío
+   * Verifica que se muestra error cuando algún campo está vacío
+   *
+   * Test: Empty form validation
+   * Verify that an error is displayed when a field is empty
+   */
+  it('should show error when form is empty', () => {
+    component.registerData = {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    };
+
+    component.onSubmit();
+
+    expect(component.errorMessage).toBe('Todos los campos son obligatorios');
+  });
 });
