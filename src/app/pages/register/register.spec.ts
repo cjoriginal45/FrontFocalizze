@@ -142,4 +142,24 @@ describe('Register', () => {
 
     expect(component.errorMessage).toBe('Las contraseñas no coinciden');
   });
+
+  /**
+   * Prueba: Validación de contraseña muy corta
+   * Verifica que se muestra error cuando la contraseña tiene menos de 6 caracteres
+   *
+   * Test: Very short password validation
+   * Verifies that an error is displayed when the password is less than 6 characters long.
+   */
+  it('should show error when password is too short', () => {
+    component.registerData = {
+      username: 'testuser',
+      email: 'test@example.com',
+      password: '123',
+      confirmPassword: '123',
+    };
+
+    component.onSubmit();
+
+    expect(component.errorMessage).toBe('La contraseña debe tener al menos 6 caracteres');
+  });
 });
