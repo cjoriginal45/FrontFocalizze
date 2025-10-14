@@ -74,5 +74,36 @@ describe('Auth', () => {
       expect(req.request.body).toEqual(mockCredentials);
       req.flush(mockResponse);
     });
+
+    /**
+     * Prueba: Login exitoso sin token en la respuesta
+     * Verifica que cuando el login es exitoso pero no incluye token:
+     * - No se guarda nada en el localStorage
+     * - La respuesta se procesa correctamente
+     *
+     * Test: Login successful without token in response
+     * Verify that when the login is successful but does not include a token:
+     * - Nothing is saved in localStorage
+     * - The response is processed correctly
+     */
+    it('should not store token if response does not have token', () => {
+      // Arrange: Preparar respuesta sin token
+      // Prepare response without token
+      const mockCredentials = { identifier: 'testuser', password: 'password123' };
+      const mockResponse: LoginResponse = {
+        userId: 1,
+        token: '',
+        displayName: 'Test User',
+      };
+
+      // Act & Assert
+      service.login(mockCredentials).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+        expect(localStorage.getItem('jwt_token')).toBeNull(); // No debería guardar token vacío / Should not save empty token
+      });
+
+      const req = httpMock.expectOne(`${environment.apiBaseUrl}/login`);
+      req.flush(mockResponse);
+    });
   });
 });
