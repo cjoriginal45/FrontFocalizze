@@ -162,4 +162,48 @@ describe('Register', () => {
 
     expect(component.errorMessage).toBe('La contraseña debe tener al menos 6 caracteres');
   });
+
+  /**
+   * Prueba: Registro exitoso
+   * Verifica que cuando el registro es exitoso:
+   * - Se desactiva el loading
+   * - Se navega a la página de login con parámetros de éxito
+   *
+   * Test: Registration successful
+   * Verify that when registration is successful:
+   * - Loading is disabled
+   * - Navigate to the login page with success parameters
+   */
+  it('should register successfully and navigate to login', fakeAsync(() => {
+    // Arrange: Configurar respuesta exitosa del servicio
+    // Configure successful service response
+    const mockResponse: RegisterResponse = {
+      userId: 1,
+      username: 'testuser',
+      displayName: 'testuser',
+      email: 'test@example.com',
+      message: 'User registered successfully',
+    };
+
+    registerService.register.and.returnValue(of(mockResponse));
+
+    component.registerData = {
+      username: 'testuser',
+      email: 'test@example.com',
+      password: 'password123',
+      confirmPassword: 'password123',
+    };
+
+    // Act: Ejecutar el registro
+    // Run the registry
+    component.onSubmit();
+    tick();
+
+    // Assert: Verificar resultados
+    // Check results
+    expect(component.isLoading).toBeFalse();
+    expect(router.navigate).toHaveBeenCalledWith(['/'], {
+      queryParams: { message: 'Registro exitoso. Ya puedes iniciar sesión.' },
+    });
+  }));
 });
