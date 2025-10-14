@@ -1,0 +1,125 @@
+/* ---------- Desktop design ---------- */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  height: var(--header-height);
+  min-height: 60px;
+  box-shadow: 0 0px 4px rgba(0, 0, 0);
+}
+
+.header__section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.header__section--center {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+.header__section--right {
+  justify-content: flex-end;
+}
+
+.header__logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.header__logo {
+  width: 60px;
+  height: auto;
+  display: block;
+}
+
+.header__button {
+  color: #fff;
+
+  transition: background-color 0.2s ease-in-out;
+}
+
+.header__button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header__button:active {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.header__search {
+  width: 100%;
+  max-width: 450px;
+  margin-top: 20px;
+}
+
+:host ::ng-deep .header__search .mat-mdc-form-field-flex {
+  height: 35px;
+  background-color: #fff;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+}
+
+:host ::ng-deep .header__search .mdc-notched-outline > * {
+  border: none !important;
+}
+
+:host ::ng-deep .header__search input,
+:host ::ng-deep .header__search mat-icon {
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .header__search input::placeholder {
+  color: var(--text-color) !important;
+}
+
+.show-on-mobile {
+  display: none !important;
+}
+
+/* ---------- Mobile design ---------- */
+
+@media (max-width: 768px) {
+  .header {
+    height: 100px;
+  }
+
+  .header__logo {
+    width: 100px;
+    height: auto;
+    display: block;
+  }
+
+  .header__section--center {
+    height: 100px;
+  }
+
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .show-on-mobile {
+    display: flex !important;
+  }
+  .header__section--left,
+  .header__section--right {
+    flex: 1;
+  }
+  .header__section--center {
+    flex: 2;
+  }
+
+  .header__button {
+    width: 48px;
+    height: 48px;
+  }
+
+  .header__button mat-icon {
+    font-size: 32px;
+    height: 32px;
+    width: 32px;
+  }
+}
