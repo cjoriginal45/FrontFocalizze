@@ -1,0 +1,25 @@
+<!-- El contenedor principal del layout del feed -->
+<!-- The main container for the feed layout -->
+<div class="feed-layout">
+
+    <!-- Columna principal donde irán los posts y el contenido dinámico -->
+    <!-- Main column where posts and dynamic content will go -->
+    <main class="feed-layout__content">
+      <h1 class="feed-layout__title">Inicio</h1>
+      
+      <!-- (Aquí es donde en el futuro pondrías un @for para mostrar una lista de posts) -->
+      <p class="feed-layout__placeholder">El contenido del feed (posts, etc.) aparecerá aquí...</p>
+      
+    </main>
+  
+    <!-- Barra lateral que contiene nuestro componente de sugerencias -->
+    <!-- Sidebar that contains our suggestions component -->
+    <aside class="feed-layout__sidebar">
+      <app-suggestions></app-suggestions>
+    </aside>
+  
+  </div>
+  
+  <!-- La barra de navegación móvil se coloca fuera del layout principal -->
+  <!-- The mobile navigation bar is placed outside the main layout -->
+  <app-botton-nav></app-botton-nav>

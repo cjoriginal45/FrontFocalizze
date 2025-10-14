@@ -7,3 +7,12 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+:root{
+  --primary-color: #01344a; /* Azul oscuro */
+  --secondary-color: #80d8ff; /* Azul claro */
+  --background-color: #f4f6f8; /* Gris muy claro */
+  --text-color: #333; /* Gris oscuro para texto */
+  --header-height: 60px;
+  --footer-height: 40px;
+}
