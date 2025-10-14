@@ -206,4 +206,40 @@ describe('Register', () => {
       queryParams: { message: 'Registro exitoso. Ya puedes iniciar sesión.' },
     });
   }));
+
+  /**
+   * Prueba: Manejo de error en registro
+   * Verifica que cuando el servicio retorna error:
+   * - Se desactiva el loading
+   * - Se muestra el mensaje de error correcto
+   *
+   * Test: Error handling in logs
+   * Verify that when the service returns an error:
+   * - Loading is disabled
+   * - The correct error message is displayed
+   */
+  it('should handle registration error', fakeAsync(() => {
+    // Arrange: Configurar error del servicio
+    // Configure service error
+    const errorResponse = { error: { error: 'Username is already taken' } };
+    registerService.register.and.returnValue(throwError(() => errorResponse));
+
+    component.registerData = {
+      username: 'testuser',
+      email: 'test@example.com',
+      password: 'password123',
+      confirmPassword: 'password123',
+    };
+
+    // Act: Ejecutar el registro
+    // Run the registry
+    component.onSubmit();
+    tick();
+
+    // Assert: Verificar manejo de error
+    // Check error handling
+
+    expect(component.isLoading).toBeFalse();
+    expect(component.errorMessage).toBe('Username is already taken');
+  }));
 });
