@@ -76,4 +76,30 @@ describe('Register', () => {
     expect(component.passwordInputType).toBe('password');
     expect(component.passwordIcon).toBe('visibility');
   });
+
+  /**
+   * Prueba: Alternar visibilidad de confirmación de contraseña
+   * Verifica el mismo comportamiento para el campo de confirmación
+   *
+   * Test: Toggle Password Confirmation Visibility
+   * Verify the same behavior for the confirmation field
+   */
+  it('should toggle confirm password visibility', () => {
+    // Estado inicial
+    // Initial state
+    expect(component.confirmPasswordInputType).toBe('password');
+    expect(component.confirmPasswordIcon).toBe('visibility');
+
+    // Primera alternancia: mostrar contraseña
+    // First toggle: show password
+    component.toggleConfirmPasswordVisibility();
+    expect(component.confirmPasswordInputType).toBe('text');
+    expect(component.confirmPasswordIcon).toBe('visibility_off');
+
+    // Segunda alternancia: ocultar contraseña
+    // Second toggle: hide password
+    component.toggleConfirmPasswordVisibility();
+    expect(component.confirmPasswordInputType).toBe('password');
+    expect(component.confirmPasswordIcon).toBe('visibility');
+  });
 });
