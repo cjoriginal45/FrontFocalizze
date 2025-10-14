@@ -122,4 +122,24 @@ describe('Register', () => {
 
     expect(component.errorMessage).toBe('Todos los campos son obligatorios');
   });
+
+  /**
+   * Prueba: Validación de contraseñas no coincidentes
+   * Verifica que se muestra error cuando las contraseñas no coinciden
+   *
+   * Test: Validation of mismatched passwords
+   * Verifies that an error is displayed when passwords do not match
+   */
+  it('should show error when passwords do not match', () => {
+    component.registerData = {
+      username: 'testuser',
+      email: 'test@example.com',
+      password: 'password123',
+      confirmPassword: 'different',
+    };
+
+    component.onSubmit();
+
+    expect(component.errorMessage).toBe('Las contraseñas no coinciden');
+  });
 });
