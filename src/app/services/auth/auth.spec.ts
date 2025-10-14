@@ -121,18 +121,46 @@ describe('Auth', () => {
      */
     it('should handle login error', () => {
       // Arrange: Preparar credenciales inválidas
+      // Prepare invalid credentials
       const mockCredentials = { identifier: 'testuser', password: 'wrongpassword' };
 
       // Act & Assert
       service.login(mockCredentials).subscribe({
-        next: () => fail('should have failed with a 401 error'), // El test debería fallar si la petición tiene éxito
+        next: () => fail('should have failed with a 401 error'), // El test debería fallar si la petición tiene éxito / The test should fail if the request is successful.
         error: (error) => {
-          expect(error.status).toBe(401); // Verificar que es error 401
+          expect(error.status).toBe(401); // Verificar que es error 401 / Verify that it is error 401
         },
       });
 
       const req = httpMock.expectOne(`${environment.apiBaseUrl}/login`);
-      req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' }); // Simular error del servidor
+      req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' }); // Simular error del servidor / Simulate server error
+    });
+  });
+
+  describe('logout', () => {
+    /**
+     * Prueba: Logout elimina el token
+     * Verifica que el método logout:
+     * - Remueve el token JWT del localStorage
+     * - Limpia correctamente la sesión
+     *
+     * Test: Logout deletes the token
+     * Verify that the logout method:
+     * - Removes the JWT token from localStorage
+     * - Correctly clears the session
+     */
+    it('should remove token from localStorage', () => {
+      // Arrange: Simular que hay un token en el localStorage
+      // Simulate that there is a token in the localStorage
+      localStorage.setItem('jwt_token', 'fake-token');
+
+      // Act: Ejecutar logout
+      // Execute logout
+      service.logout();
+
+      // Assert: Verificar que el token fue removido
+      // Verify that the token was removed
+      expect(localStorage.getItem('jwt_token')).toBeNull();
     });
   });
 });
