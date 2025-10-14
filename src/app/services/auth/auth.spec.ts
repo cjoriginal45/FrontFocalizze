@@ -163,4 +163,22 @@ describe('Auth', () => {
       expect(localStorage.getItem('jwt_token')).toBeNull();
     });
   });
+
+  describe('isLoggedIn', () => {
+    /**
+     * Preuba: Usuario autenticado
+     * Verifica que isLoggedIn retorna true cuando existe un token en el localStorage
+     *
+     * Test: Authenticated User
+     * Verify that isLoggedIn returns true when a token exists in localStorage
+     */
+    it('should return true if token exists', () => {
+      // Arrange: Simular usuario logueado
+      // Simulate logged in user
+      localStorage.setItem('jwt_token', 'fake-token');
+
+      // Act & Assert
+      expect(service.isLoggedIn()).toBeTrue();
+    });
+  });
 });
