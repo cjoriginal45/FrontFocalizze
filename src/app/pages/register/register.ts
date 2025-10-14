@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
-import {RegisterService} from '../../services/registerService/register';
+import { RegisterService } from '../../services/registerService/register';
 import { CommonModule } from '@angular/common';
 import { RegisterRequest } from '../../interfaces/RegisterRequest';
 import { RegisterResponse } from '../../interfaces/RegisterResponse';
@@ -52,6 +52,20 @@ export class Register implements OnDestroy {
       this.confirmPasswordInputType = 'password';
       this.confirmPasswordIcon = 'visibility';
     }
+  }
+
+  showError(message: string): void {
+    this.errorMessage = message;
+
+    // Si ya existía un temporizador, límpialo para reiniciar la cuenta
+    if (this.errorTimeout) {
+      clearTimeout(this.errorTimeout);
+    }
+
+    // Crea un nuevo temporizador y guarda su ID
+    this.errorTimeout = setTimeout(() => {
+      this.errorMessage = '';
+    }, 7000); // 7 segundos
   }
 
   setErrorMessage(message: string) {
