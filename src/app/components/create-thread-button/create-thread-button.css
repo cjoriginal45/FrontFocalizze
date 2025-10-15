@@ -1,0 +1,42 @@
+/* --- ESTILOS DE POSICIONAMIENTO (TU CÓDIGO, QUE ES CORRECTO) --- */
+
+.create-thread-btn {
+    position: fixed;
+    bottom: 85px; 
+    right: 20px;
+    z-index: 1000;
+  }
+  
+  /* --- MEDIA QUERIES PARA ESCRITORIO --- */
+  @media (min-width: 992px) {
+    .create-thread-btn {
+      position: fixed;
+      bottom: 20px;
+      right: calc(350px + 30px + 20px);
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .create-thread-btn {
+      right: calc(380px + 30px + 20px);
+    }
+  }
+  
+
+  .create-thread-btn__button {
+    background-color: var(--primary-color);
+    color: var(--background-color); 
+  }
+
+  .create-thread-btn__button:hover {
+    background-color: var(--hover-color);
+    color: var(--text-color);
+  }
+
+  .create-thread-btn__icon {
+    color: var(--background-color);
+  }
+
+  .create-thread-btn__icon:hover {
+    color: white;
+  }
