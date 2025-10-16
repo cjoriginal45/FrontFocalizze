@@ -38,3 +38,47 @@
   right: 20px;
   font-size: 0.9rem;
 }
+
+/* ---------- Mobile design ---------- */
+
+@media (max-width: 768px) {
+  .f-d-container {
+    justify-content: space-between;
+    padding: 0 15px;
+  }
+
+  .f-d-container__options,
+  .f-d-container__interactions {
+    position: static;
+    transform: none;
+    left: auto;
+    right: auto;
+  }
+
+  .f-d-container__option {
+    font-size: 1rem;
+  }
+  .f-d-container__interactions {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .f-d-container {
+    flex-direction: column;
+
+    height: auto;
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    gap: 8px;
+  }
+
+  .f-d-container__interactions {
+    font-size: 0.9rem;
+  }
+
+  .f-d-container__interactions {
+    display: flex;
+  }
+}
