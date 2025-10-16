@@ -1,0 +1,122 @@
+/* --- Mini Header (Actualizado) --- */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: white;
+  }
+  /* Contenedores para el layout de 3 columnas del header */
+  .modal-header__left,
+  .modal-header__right {
+    display: flex;
+    align-items: center;
+    flex: 0 0 80px; /* Ancho fijo (no crece, no se encoge, base de 80px) */
+  }
+  .modal-header__right {
+    justify-content: flex-end; /* Alinea los iconos a la derecha */
+  }
+  .modal-header__title {
+    flex-grow: 1; /* El título ocupa todo el espacio central */
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  .modal-header__button {
+    color: white;
+  }
+  /* Por defecto, el botón de atrás está visible (si el @if lo permite) */
+  .modal-header__back-btn {
+    display: inline-flex;
+  }
+  
+  /* --- Contenido Principal (Sin cambios) --- */
+  .modal-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .thread-input {
+    width: 100%;
+  }
+  
+  /* --- Footer (Sin cambios en el layout principal) --- */
+  .modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    border-top: 1px solid #e0e0e0;
+  }
+  .category-selector {
+    width: 150px;
+  }
+  .modal-footer__actions {
+    display: flex;
+  }
+  .modal-footer__next-btn {
+    display: block;
+  }
+  .modal-footer__publish-btn {
+    display: none;
+  }
+  
+  /* --- LÓGICA DE VISIBILIDAD (MÓVIL vs ESCRITORIO) --- */
+  
+  /* Por defecto (Móvil), mostramos la vista por pasos y ocultamos la de escritorio */
+  .modal-content__desktop-view {
+    display: none;
+  }
+  .modal-content__mobile-view {
+    display: block;
+  }
+
+  .modal-footer__actions.step-3 .modal-footer__next-btn {
+    display: none;
+  }
+  .modal-footer__actions.step-3 .modal-footer__publish-btn {
+    display: block;
+  }
+
+  /* --- ESTILOS PARA EL CONTADOR DE CARACTERES --- */
+
+/* Estilo por defecto para el contador */
+.mat-mdc-form-field-hint {
+    color: #6c757d; /* Un color gris suave */
+  }
+  
+  /* Estilo que se aplica cuando el textarea está enfocado */
+  .mat-form-field-appearance-fill.mat-focused .mat-mdc-form-field-hint {
+    color: var(--primary-color); /* Cambia al color primario cuando se escribe */
+  }
+  
+  
+  /* --- MEDIA QUERY PARA ESCRITORIO (A PARTIR DE 768px) --- */
+  @media (min-width: 768px) {
+    /* Invertimos la visibilidad de las vistas de contenido */
+    .modal-content__desktop-view {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .modal-content__mobile-view {
+      display: none;
+    }
+  
+    /* En escritorio, ocultamos el botón de 'Atrás' del header */
+    .modal-header__back-btn {
+      display: none;
+    }
+    /* Y también el de 'Avanzar' del footer */
+     .modal-footer__next-btn {
+      display: none !important;
+     }
+
+  /* Mostramos SIEMPRE el botón 'Publicar' */
+  .modal-footer__publish-btn {
+    display: block !important;
+  }
+  }

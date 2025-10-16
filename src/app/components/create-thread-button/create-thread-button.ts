@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { ThreadModal } from '../../services/threadModal/thread-modal';
 
 @Component({
   selector: 'app-create-thread-button',
@@ -11,11 +12,11 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './create-thread-button.css'
 })
 export class CreateThreadButton {
-  constructor() { }
+   
+  constructor(private modalService: ThreadModal) { }
 
   createThread(): void {
-    // Aquí es donde, en el futuro, llamarías a un servicio para abrir la modal de creación de hilo.
-    // This is where, in the future, you would call a service to open the thread creation modal.
-    console.log('Abrir modal para crear hilo...');
+    // Llamamos al servicio para abrir la modal
+    this.modalService.openCreateThreadModal();
   }
 }
