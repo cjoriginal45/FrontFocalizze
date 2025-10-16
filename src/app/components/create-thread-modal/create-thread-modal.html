@@ -1,0 +1,128 @@
+<!-- Mini Header de la Modal, ahora con estructura de 3 columnas (izquierda, centro, derecha) -->
+<header class="modal-header">
+    <!-- Contenedor izquierdo para el botón 'Atrás' -->
+    <div class="modal-header__left">
+      <!-- El botón 'Atrás' solo se muestra en móvil (controlado por CSS) y si no estamos en el primer paso -->
+      @if (currentStep > 1) {
+        <button mat-icon-button class="modal-header__button modal-header__back-btn" (click)="previousStep()" aria-label="Volver al paso anterior">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+      }
+    </div>
+  
+    <!-- Título central -->
+    <h2 class="modal-header__title">Crear Hilo</h2>
+  
+    <!-- Contenedor derecho para las acciones principales -->
+    <div class="modal-header__right">
+      <button mat-icon-button class="modal-header__button" aria-label="Programar publicación">
+        <mat-icon>schedule</mat-icon>
+      </button>
+      <button mat-icon-button class="modal-header__button" (click)="closeModal()" aria-label="Cerrar modal">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </header>
+  
+  <!-- Contenido Principal de la Modal (sin cambios) -->
+  <div class="modal-content" mat-dialog-content>
+  
+    <!-- === VERSIÓN DESKTOP: TODOS LOS HILOS VISIBLES === -->
+    <div class="modal-content__desktop-view">
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>Hilo 1</mat-label>
+          <textarea matInput 
+                    [(ngModel)]="threads[0]" 
+                    [maxlength]="charLimits.step1" 
+                    cdkTextareaAutosize 
+                    cdkAutosizeMinRows="3"></textarea>
+          <!-- Contador de caracteres para escritorio -->
+          <mat-hint align="end">{{ threads[0].length }} / {{ charLimits.step1 }}</mat-hint>
+        </mat-form-field>
+      
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>Hilo 2</mat-label>
+          <textarea matInput 
+                    [(ngModel)]="threads[1]" 
+                    [maxlength]="charLimits.step2" 
+                    cdkTextareaAutosize 
+                    cdkAutosizeMinRows="3"></textarea>
+          <mat-hint align="end">{{ threads[1].length }} / {{ charLimits.step2 }}</mat-hint>
+        </mat-form-field>
+      
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>Hilo 3</mat-label>
+          <textarea matInput 
+                    [(ngModel)]="threads[2]" 
+                    [maxlength]="charLimits.step3" 
+                    cdkTextareaAutosize 
+                    cdkAutosizeMinRows="3"></textarea>
+          <mat-hint align="end">{{ threads[2].length }} / {{ charLimits.step3 }}</mat-hint>
+        </mat-form-field>
+      </div>
+  
+    <!-- === VERSIÓN MÓVIL: HILOS POR PASOS === -->
+    <div class="modal-content__mobile-view">
+        @switch (currentStep) {
+          @case (1) {
+            <mat-form-field appearance="fill" class="thread-input">
+              <mat-label>Hilo 1 de 3</mat-label>
+              <textarea matInput 
+                        [(ngModel)]="threads[0]" 
+                        [maxlength]="charLimits.step1" 
+                        cdkTextareaAutosize 
+                        cdkAutosizeMinRows="5"></textarea>
+              <!-- Contador de caracteres para móvil -->
+              <mat-hint align="end">{{ threads[0].length }} / {{ charLimits.step1 }}</mat-hint>
+            </mat-form-field>
+          }
+          @case (2) {
+            <mat-form-field appearance="fill" class="thread-input">
+              <mat-label>Hilo 2 de 3</mat-label>
+              <textarea matInput 
+                        [(ngModel)]="threads[1]" 
+                        [maxlength]="charLimits.step2" 
+                        cdkTextareaAutosize 
+                        cdkAutosizeMinRows="5"></textarea>
+              <mat-hint align="end">{{ threads[1].length }} / {{ charLimits.step2 }}</mat-hint>
+            </mat-form-field>
+          }
+          @case (3) {
+            <mat-form-field appearance="fill" class="thread-input">
+              <mat-label>Hilo 3 de 3</mat-label>
+              <textarea matInput 
+                        [(ngModel)]="threads[2]" 
+                        [maxlength]="charLimits.step3" 
+                        cdkTextareaAutosize 
+                        cdkAutosizeMinRows="5"></textarea>
+              <mat-hint align="end">{{ threads[2].length }} / {{ charLimits.step3 }}</mat-hint>
+            </mat-form-field>
+          }
+        }
+      </div>
+    
+  
+  </div>
+  
+  <!-- Footer de la Modal (sin cambios) -->
+  <footer class="modal-footer" mat-dialog-actions>
+    <!-- Selector de Categoría -->
+    <mat-form-field appearance="outline" class="category-selector">
+      <mat-label>Categoría</mat-label>
+      <mat-select [(ngModel)]="selectedCategory">
+        @for (category of categories; track category.value) {
+          <mat-option [value]="category.value">{{ category.viewValue }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  
+    <!-- Botones de Acción -->
+    <div class="modal-footer__actions">
+      @if (currentStep < 3) {
+        <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">Avanzar</button>
+      }
+      @if (currentStep === 3) {
+        <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="publish()">Publicar</button>
+      }
+    </div>
+  </footer>
