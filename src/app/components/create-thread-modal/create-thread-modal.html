@@ -106,7 +106,7 @@
   
   <!-- Footer de la Modal (sin cambios) -->
   <footer class="modal-footer" mat-dialog-actions>
-    <!-- Selector de Categoría -->
+    <!-- Selector de Categoría (sin cambios) -->
     <mat-form-field appearance="outline" class="category-selector">
       <mat-label>Categoría</mat-label>
       <mat-select [(ngModel)]="selectedCategory">
@@ -115,14 +115,16 @@
         }
       </mat-select>
     </mat-form-field>
-  
+    
     <!-- Botones de Acción -->
-    <div class="modal-footer__actions">
-      @if (currentStep < 3) {
-        <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">Avanzar</button>
-      }
-      @if (currentStep === 3) {
-        <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="publish()">Publicar</button>
-      }
+    <!-- Añadimos una clase dinámica al footer para saber en qué paso estamos en móvil -->
+    <div class="modal-footer__actions" [class.step-1]="currentStep === 1" [class.step-2]="currentStep === 2" [class.step-3]="currentStep === 3">
+      
+      <!-- Botón 'Avanzar' (se muestra solo en móvil, pasos 1 y 2) -->
+      <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">Avanzar</button>
+      
+      <!-- Botón 'Publicar' (se muestra en móvil paso 3, y siempre en escritorio) -->
+      <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="publish()">Publicar</button>
+      
     </div>
   </footer>

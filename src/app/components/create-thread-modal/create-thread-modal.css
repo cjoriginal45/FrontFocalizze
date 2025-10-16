@@ -57,6 +57,12 @@
   .modal-footer__actions {
     display: flex;
   }
+  .modal-footer__next-btn {
+    display: block;
+  }
+  .modal-footer__publish-btn {
+    display: none;
+  }
   
   /* --- LÓGICA DE VISIBILIDAD (MÓVIL vs ESCRITORIO) --- */
   
@@ -67,11 +73,12 @@
   .modal-content__mobile-view {
     display: block;
   }
-  /* En móvil, los botones del footer se muestran/ocultan por el @if en el HTML,
-     así que no necesitamos reglas CSS complejas aquí para ellos. */
-  .modal-footer__publish-btn,
-  .modal-footer__next-btn {
-    display: block; /* Simplemente los hacemos visibles */
+
+  .modal-footer__actions.step-3 .modal-footer__next-btn {
+    display: none;
+  }
+  .modal-footer__actions.step-3 .modal-footer__publish-btn {
+    display: block;
   }
 
   /* --- ESTILOS PARA EL CONTADOR DE CARACTERES --- */
@@ -104,12 +111,12 @@
       display: none;
     }
     /* Y también el de 'Avanzar' del footer */
-    .modal-footer__next-btn {
-      display: none;
-    }
-  
-    /* Y forzamos la visibilidad del botón 'Publicar' */
-    .modal-footer__publish-btn {
-      display: block;
-    }
+     .modal-footer__next-btn {
+      display: none !important;
+     }
+
+  /* Mostramos SIEMPRE el botón 'Publicar' */
+  .modal-footer__publish-btn {
+    display: block !important;
+  }
   }
