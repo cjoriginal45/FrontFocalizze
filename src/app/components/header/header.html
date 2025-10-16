@@ -1,6 +1,11 @@
-<mat-toolbar class="header">
+<!-- <mat-toolbar class="header">
   <div class="header__section header__section--left">
-    <button mat-icon-button class="header__button" aria-label="Abrir menú de navegación">
+    <button
+      mat-icon-button
+      class="header__button"
+      aria-label="Abrir menú de navegación"
+      (click)="onMenuClick()"
+    >
       <mat-icon>menu</mat-icon>
     </button>
 
@@ -38,6 +43,51 @@
       <mat-icon>account_circle</mat-icon>
     </button>
 
+    <button mat-icon-button class="header__button show-on-mobile" aria-label="Ver configuración">
+      <mat-icon>settings</mat-icon>
+    </button>
+  </div>
+</mat-toolbar> -->
+
+<!-- CAMBIO: La etiqueta ahora es <app-menu> -->
+<app-menu [isMobile$]="isMobile$"></app-menu>
+
+<mat-toolbar class="header">
+  <div class="header__section header__section--left">
+    <button
+      mat-icon-button
+      class="header__button"
+      (click)="onMenuClick()"
+      aria-label="Abrir menú de navegación"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a href="/" class="header__logo-container hide-on-mobile"
+      ><img class="header__logo" src="/assets/images/focalizze-logo.webp" alt="Focalizze logo"
+    /></a>
+  </div>
+  <div class="header__section header__section--center">
+    <mat-form-field class="header__search hide-on-mobile" appearance="outline">
+      <input matInput type="search" placeholder="Buscar..." />
+      <button mat-icon-button matSuffix aria-label="Realizar búsqueda">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+    <a href="/" class="header__logo-container show-on-mobile"
+      ><img class="header__logo" src="/assets/images/focalizze-logo.webp" alt="Focalizze logo"
+    /></a>
+  </div>
+  <div class="header__section header__section--right">
+    <button mat-icon-button class="header__button hide-on-mobile" aria-label="Ver notificaciones">
+      <mat-icon>notifications</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="header__button hide-on-mobile"
+      aria-label="Ver perfil de usuario"
+    >
+      <mat-icon>account_circle</mat-icon>
+    </button>
     <button mat-icon-button class="header__button show-on-mobile" aria-label="Ver configuración">
       <mat-icon>settings</mat-icon>
     </button>

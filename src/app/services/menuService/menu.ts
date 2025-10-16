@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class Menu {
+export class MenuService {
   private toggleSubject = new Subject<void>();
 
   public toggle$ = this.toggleSubject.asObservable();
