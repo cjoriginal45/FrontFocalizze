@@ -63,12 +63,19 @@
   .thread__content {
     margin-right: 16px;
   }
+
+  .thread__post{
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    margin-bottom: 5px;
+    border-bottom: 0.4px solid #ddd;
+  }
   
   .thread__post-title {
-    margin: 0 0 8px 0;
     font-size: 0.9rem;
-    color: #666;
-    font-weight: normal;
+    color: var(--primary-color);
+    font-weight:650;
   }
   
   .thread__post-text {

@@ -31,7 +31,8 @@ export class Feed {
       publicationDate: new Date(),
       posts: [
         'Este es el primer post de un hilo muy interesante sobre el desarrollo con Angular y Spring Boot. La idea es mostrar solo este primer post en la vista de feed para no saturar la pantalla con demasiada información y mantener un diseño limpio y minimalista.',
-        'En el segundo post, podríamos hablar de...'
+        'En el segundo post, podríamos hablar de cómo estructurar los componentes de manera eficiente. La separación de responsabilidades es clave para un proyecto mantenible a largo plazo. ¿Usan componentes "smart" y "dumb"?',
+        'Y finalmente, en el tercer post, podemos tocar el tema de la autenticación con JWT, conectando nuestro frontend de Angular con el backend de Spring Security. Es un flujo crucial en casi cualquier aplicación moderna.'
       ],
       stats: { likes: 125, comments: 14, views: 2400 },
       isLiked: false,
@@ -42,7 +43,9 @@ export class Feed {
       user: { name: 'Ana García', username: 'anagarcia', avatarUrl: 'public\assets\images\woman.png' },
       publicationDate: new Date(Date.now() - 86400000), // Ayer
       posts: [
-        '¡Acabo de descubrir una nueva librería de CSS que es increíble! Se llama "Open Props" y facilita mucho el diseño responsive sin necesidad de escribir media queries complejas para todo. Totalmente recomendada.'
+        'Este es el primer post de un hilo muy interesante sobre el desarrollo con Angular y Spring Boot. La idea es mostrar solo este primer post en la vista de feed para no saturar la pantalla con demasiada información y mantener un diseño limpio y minimalista.',
+        'En el segundo post, podríamos hablar de cómo estructurar los componentes de manera eficiente. La separación de responsabilidades es clave para un proyecto mantenible a largo plazo. ¿Usan componentes "smart" y "dumb"?',
+        'Y finalmente, en el tercer post, podemos tocar el tema de la autenticación con JWT, conectando nuestro frontend de Angular con el backend de Spring Security. Es un flujo crucial en casi cualquier aplicación moderna.'
       ],
       stats: { likes: 342, comments: 28, views: 5600 },
       isLiked: true,
@@ -53,7 +56,9 @@ export class Feed {
       user: { name: 'Pedro Diaz', username: 'pedroDiaz', avatarUrl: 'public\assets\images\woman.png' },
       publicationDate: new Date(Date.now()),
       posts: [
-        '¡Acabo de descubrir una nueva librería de CSS que es increíble! Se llama "Open Props" y facilita mucho el diseño responsive sin necesidad de escribir media queries complejas para todo. Totalmente recomendada.'
+        'Este es el primer post de un hilo muy interesante sobre el desarrollo con Angular y Spring Boot. La idea es mostrar solo este primer post en la vista de feed para no saturar la pantalla con demasiada información y mantener un diseño limpio y minimalista.',
+        'En el segundo post, podríamos hablar de cómo estructurar los componentes de manera eficiente. La separación de responsabilidades es clave para un proyecto mantenible a largo plazo. ¿Usan componentes "smart" y "dumb"?',
+        'Y finalmente, en el tercer post, podemos tocar el tema de la autenticación con JWT, conectando nuestro frontend de Angular con el backend de Spring Security. Es un flujo crucial en casi cualquier aplicación moderna.'
       ],
       stats: { likes: 223, comments: 12, views: 1000 },
       isLiked: true,

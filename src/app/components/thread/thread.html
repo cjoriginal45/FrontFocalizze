@@ -15,13 +15,49 @@
         </header>
       
         <!-- Cuerpo del Hilo (solo el primer post) -->
-        <div class="thread__body">
-          <div class="thread__content">
-            <h3 class="thread__post-title">Hilo 1</h3>
-            <p class="thread__post-text">{{ thread.posts[0] }}</p>
-          </div>
-          <a routerLink="/thread/{{ thread.id }}" class="thread__expand-btn">Ampliar +</a>
-        </div>
+        <div class="thread__body" [class.thread__body--expanded]="isExpanded">
+  
+            <!-- Contenido del Hilo -->
+            <div class="thread__content">
+          
+              <!-- Post 1 (siempre visible) -->
+              <div class="thread__post">
+                <h3 class="thread__post-title">1° post</h3>
+                <p class="thread__post-text">{{ thread.posts[0] }}</p>
+              </div>
+          
+              <!-- Posts Adicionales (solo visibles si está expandido) -->
+              @if (isExpanded) {
+                <!-- Iteramos sobre el resto de los posts (del segundo en adelante) -->
+                @for (post of thread.posts.slice(1); track $index) {
+                  <div class="thread__post">
+                    <h3 class="thread__post-title">{{ $index + 2 }}° post</h3>
+                    <p class="thread__post-text">{{ post }}</p>
+                  </div>
+                }
+              }
+          
+            </div>
+            <!-- Botón "Ampliar" / "Ocultar" -->
+            <!-- Usamos @if para mostrar el botón solo si hay más de 1 post -->
+            @if (thread.posts.length > 1) {
+                <a (click)="toggleExpansion()" class="thread__expand-btn">
+                @if (isExpanded) {
+                    Ocultar -
+                } @else {
+                    Ampliar +
+                }
+                </a>
+            }
+
+            </div>
+
+            <!-- Opcional: Mostrar la categoría si está expandido -->
+            <!--@if (isExpanded && thread.category) {
+                <div class="thread__category-badge">
+                Categoría: <a routerLink="/category/{{ thread.category.slug }}">{{ thread.category.name }}</a>
+                </div>
+            } -->
       
         <!-- Footer con Acciones -->
         <footer class="thread__footer">

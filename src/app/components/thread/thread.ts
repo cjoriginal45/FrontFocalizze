@@ -39,6 +39,8 @@ export class Thread {
   isLiked = this.thread?.isLiked;
   isSaved = this.thread?.isSaved;
 
+  isExpanded = false;
+
   constructor() {}
 
   // Lógica de placeholder para las acciones.
@@ -52,5 +54,10 @@ export class Thread {
   toggleSave(): void {
     this.thread.isSaved = !this.thread.isSaved;
     console.log('Save toggled for thread:', this.thread.id);
+  }
+
+   // Cambia el estado de expansión.
+   toggleExpansion(): void {
+    this.isExpanded = !this.isExpanded;
   }
 }
