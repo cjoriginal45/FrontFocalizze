@@ -1,0 +1,152 @@
+:host {
+    display: block; /* Asegura que el componente se comporte como un bloque */
+  }
+  
+  .thread {
+    background-color: white;
+    border: 1px solid #e0e0e0; /* Un borde sutil alrededor */
+    border-radius: 8px;
+    overflow: hidden; /* Asegura que los bordes redondeados se apliquen al contenido */
+  }
+  
+  /* --- Header --- */
+  .thread__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eeeeee; /* Borde gris suave */
+  }
+  
+  .thread__user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .thread__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover; /* Evita que la imagen se deforme */
+  }
+  
+  .thread__user-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .thread__display-name {
+    font-weight: bold;
+  }
+  
+  .thread__username {
+    color: #555;
+    font-size: 0.9rem;
+  }
+  
+  .thread__date {
+    font-size: 0.8rem;
+    color: #777;
+  }
+  
+  /* --- Body --- */
+  .thread__body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alinea los elementos al inicio */
+    padding: 16px;
+  }
+  
+  .thread__content {
+    margin-right: 16px;
+  }
+
+  .thread__post{
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    margin-bottom: 5px;
+    border-bottom: 0.4px solid #ddd;
+  }
+  
+  .thread__post-title {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-weight:650;
+  }
+  
+  .thread__post-text {
+    margin: 0;
+    line-height: 1.5;
+    /* Truncar texto si es muy largo (opcional) */
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Muestra hasta 4 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .thread__expand-btn {
+    white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    align-self: center;
+  }
+  
+  .thread__expand-btn:hover {
+    text-decoration: underline;
+  }
+  
+  /* --- Footer --- */
+  .thread__footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid #eeeeee; /* Borde gris suave */
+  }
+  
+  .thread__action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .thread__action:hover {
+    color: var(--primary-color);
+  }
+  
+  .thread__icon {
+    font-size: 20px;
+  }
+  
+  .thread__counter,
+  .thread__action-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  /* Estilo específico para la acción de "like" cuando está activada */
+  .thread__action--liked {
+    color: #e0245e; /* Color rojo/rosa para el "me gusta" */
+  }
+  .thread__action--liked:hover {
+    color: #c2185b;
+  }
+  
+  /* Deshabilitamos el cursor de puntero para la acción de visualizaciones */
+  .thread__action--views {
+    cursor: default;
+  }
+  .thread__action--views:hover {
+    color: #555;
+  }

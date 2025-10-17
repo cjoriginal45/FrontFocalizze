@@ -3,9 +3,14 @@
 
 <div class="feed-layout">
   <main class="feed-layout__content">
-    <h1 class="feed-layout__title">Inicio</h1>
 
-    <p class="feed-layout__placeholder">El contenido del feed (posts, etc.) aparecerá aquí...</p>
+    <!-- Usamos @for para iterar sobre el array de hilos y renderizar un componente por cada uno -->
+    <!-- We use @for to iterate over the threads array and render a component for each one -->
+    <div class="feed-layout__threads-list">
+      @for (thread of threads; track thread.id) {
+        <app-thread [thread]="thread"></app-thread>
+      }
+    </div>
   </main>
 
   <aside class="feed-layout__sidebar">
