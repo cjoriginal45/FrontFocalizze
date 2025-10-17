@@ -1,0 +1,62 @@
+<!-- El bloque principal del componente de hilo. Usamos <article> por semántica. -->
+<!-- The main block of the thread component. We use <article> for semantics. -->
+    <article class="thread">
+  
+        <!-- Mini Header del Hilo -->
+        <header class="thread__header">
+          <a routerLink="/profile/{{ thread.user.username }}" class="thread__user">
+            <img [src]="thread.user.avatarUrl" alt="Avatar de {{ thread.user.name }}" class="thread__avatar">
+            <div class="thread__user-info">
+              <span class="thread__display-name">{{ thread.user.name }}</span>
+              <span class="thread__username">@{{ thread.user.username }}</span>
+            </div>
+          </a>
+          <span class="thread__date">{{ thread.publicationDate | date: 'd MMM' }}</span>
+        </header>
+      
+        <!-- Cuerpo del Hilo (solo el primer post) -->
+        <div class="thread__body">
+          <div class="thread__content">
+            <h3 class="thread__post-title">Hilo 1</h3>
+            <p class="thread__post-text">{{ thread.posts[0] }}</p>
+          </div>
+          <a routerLink="/thread/{{ thread.id }}" class="thread__expand-btn">Ampliar +</a>
+        </div>
+      
+        <!-- Footer con Acciones -->
+        <footer class="thread__footer">
+          <!-- Acción: Me Gusta -->
+          <div class="thread__action thread__action--like" (click)="toggleLike()" [class.thread__action--liked]="thread.isLiked">
+            @if (thread.isLiked) {
+              <mat-icon class="thread__icon">favorite</mat-icon>
+            } @else {
+              <mat-icon class="thread__icon">favorite_border</mat-icon>
+            }
+            <span class="thread__counter">{{ thread.stats.likes | number }}</span>
+          </div>
+      
+          <!-- Acción: Comentarios -->
+          <a routerLink="/thread/{{ thread.id }}#comments" class="thread__action">
+            <mat-icon class="thread__icon">chat_bubble_outline</mat-icon>
+            <span class="thread__counter">{{ thread.stats.comments | number }}</span>
+          </a>
+      
+          <!-- Acción: Visualizaciones -->
+          <div class="thread__action thread__action--views">
+            <mat-icon class="thread__icon">bar_chart</mat-icon>
+            <span class="thread__counter">{{ thread.stats.views | number }}</span>
+          </div>
+          
+          <!-- Acción: Guardar -->
+          <div class="thread__action" (click)="toggleSave()">
+            @if (thread.isSaved) {
+              <mat-icon class="thread__icon">bookmark</mat-icon>
+              <span class="thread__action-text">Guardado</span>
+            } @else {
+              <mat-icon class="thread__icon">bookmark_border</mat-icon>
+              <span class="thread__action-text">Guardar</span>
+            }
+          </div>
+        </footer>
+      
+      </article>

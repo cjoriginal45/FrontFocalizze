@@ -6,6 +6,7 @@ import { BottonNav } from './components/botton-nav/botton-nav';
 import { Suggestions } from './components/suggestions/suggestions';
 import { Feed } from './pages/feed/feed';
 import { Header } from './components/header/header';
+import { PasswordRecovery } from './pages/password-recovery/password-recovery';
 
 export const routes: Routes = [
   { path: '', component: Login },
