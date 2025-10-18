@@ -1,1 +1,32 @@
-<p>comments works!</p>
+<header class="comments-header" mat-dialog-title>
+  <h2>Comentarios</h2>
+  <button mat-icon-button (click)="onClose()" aria-label="Cerrar ventana de comentarios">
+    <mat-icon>close</mat-icon>
+  </button>
+</header>
+
+<mat-dialog-content class="comments-content">
+  <div class="add-comment-section">
+    <img class="avatar" src="assets/images/gamer.png" alt="Tu avatar" />
+    <mat-form-field appearance="outline" class="comment-input">
+      <textarea matInput placeholder="Escribe un comentario..." cdkTextareaAutosize></textarea>
+    </mat-form-field>
+    <button mat-flat-button color="primary">Comentar</button>
+  </div>
+
+  <div class="comments-list">
+    @for (comment of comments; track comment.author) {
+    <div class="comment-item">
+      <img class="avatar" src="assets/images/woman.png" alt="Avatar del usuario" />
+      <div class="comment-body">
+        <div class="comment-author">
+          <strong>{{ comment.author }}</strong>
+          <span class="handle">{{ comment.handle }}</span>
+          <span class="date">· {{ comment.date }}</span>
+        </div>
+        <p class="comment-text">{{ comment.content }}</p>
+      </div>
+    </div>
+    }
+  </div>
+</mat-dialog-content>

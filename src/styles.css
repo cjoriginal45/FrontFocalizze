@@ -29,3 +29,8 @@ body {
   border-radius: 15px;
   overflow: hidden;
 }
+
+.comments-dialog-container .mdc-dialog__container .mdc-dialog__surface {
+  padding: 0;
+  border-radius: 16px;
+}
