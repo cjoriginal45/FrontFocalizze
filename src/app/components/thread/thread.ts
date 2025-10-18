@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 
@@ -25,7 +25,7 @@ export interface ThreadDto {
   selector: 'app-thread',
   imports: [CommonModule, MatIconModule, RouterLink],
   templateUrl: './thread.html',
-  styleUrl: './thread.css'
+  styleUrl: './thread.css',
 })
 export class Thread {
   // @Input() permite que el componente padre (Feed) pase datos a este componente.
@@ -56,8 +56,16 @@ export class Thread {
     console.log('Save toggled for thread:', this.thread.id);
   }
 
-   // Cambia el estado de expansión.
-   toggleExpansion(): void {
+  // Cambia el estado de expansión.
+  toggleExpansion(): void {
     this.isExpanded = !this.isExpanded;
+  }
+
+  @Output() openComments = new EventEmitter<number>();
+
+  onCommentClick(): void {
+    // Emitimos el ID del post para que el padre sepa de qué post se trata
+    // We emit the post ID so that the parent knows what post it is
+    this.openComments.emit(this.thread.id);
   }
 }
