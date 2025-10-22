@@ -93,6 +93,13 @@
     color: var(--primary-color); /* Cambia al color primario cuando se escribe */
   }
   
+
+  .modal-error-message {
+    color: #f44336; /* Color de 'warn' de Material */
+    padding: 0 16px 8px; /* Espaciado */
+    font-size: 0.9rem;
+    text-align: right;
+  }
   
   /* --- MEDIA QUERY PARA ESCRITORIO (A PARTIR DE 768px) --- */
   @media (min-width: 768px) {

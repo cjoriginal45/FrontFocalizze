@@ -7,6 +7,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { Thread } from '../../services/thread/thread';
+import { ThreadRequest } from '../../interfaces/ThreadRequest';
+
 
 @Component({
   selector: 'app-create-thread-modal',
@@ -27,6 +30,7 @@ export class CreateThreadModal {
 // Datos del formulario
 threads: string[] = ['', '', ''];
 selectedCategory: string = '-'; // Valor por defecto
+errorMessage: string | null = null;
 
 readonly charLimits = {
   step1: 280,
@@ -46,7 +50,8 @@ categories = [
 ];
 
 constructor(
-  public dialogRef: MatDialogRef<CreateThreadModal>
+  public dialogRef: MatDialogRef<CreateThreadModal>,
+  private threadService: Thread
 ) {}
 
 closeModal(): void {
@@ -66,22 +71,48 @@ previousStep(): void {
 }
 
 publish(): void {
-  // Aquí iría la lógica para enviar los datos al backend
-  const threadData = {
-    threads: this.threads.filter(t => t.trim() !== ''), // Filtra hilos vacíos
-    category: this.selectedCategory
-  };
-  console.log('Publicando hilo:', threadData);
-  this.closeModal(); // Cierra la modal después de publicar
-}
+   // 1. Reiniciar cualquier mensaje de error anterior
+   this.errorMessage = null;
 
-getCurrentCharLimit(): number {
-  switch(this.currentStep) {
-    case 1: return this.charLimits.step1;
-    case 2: return this.charLimits.step2;
-    case 3: return this.charLimits.step3;
-    default: return 0;
-  }
+   // 2. Crear el objeto de datos
+   const threadData: ThreadRequest = {
+     post1: this.threads[0],
+     post2: this.threads[1],
+     post3: this.threads[2],
+     category: this.selectedCategory
+   };
+
+   // 3. VALIDACIÓN DE CARACTERES (AÑADIDO)
+   if (threadData.post1.length > this.charLimits.step1) {
+     this.errorMessage = `El primer hilo excede el límite de ${this.charLimits.step1} caracteres.`;
+     return; // Detiene la ejecución del método
+   }
+   if (threadData.post2.length > this.charLimits.step2) {
+     this.errorMessage = `El segundo hilo excede el límite de ${this.charLimits.step2} caracteres.`;
+     return;
+   }
+   if (threadData.post3.length > this.charLimits.step3) {
+     this.errorMessage = `El tercer hilo excede el límite de ${this.charLimits.step3} caracteres.`;
+     return;
+   }
+   // Opcional: Validar que al menos el primer post no esté vacío
+   if (threadData.post1.trim() === '') {
+     this.errorMessage = 'El primer hilo no puede estar vacío.';
+     return;
+   }
+
+   // 4. Si todas las validaciones pasan, se llama al servicio
+   this.threadService.createThread(threadData).subscribe({
+     next: (response) => {
+       console.log('Hilo creado con éxito!', response);
+       this.closeModal();
+     },
+     error: (err) => {
+       console.error('Error al crear el hilo:', err);
+       this.errorMessage = 'Ocurrió un error al publicar el hilo. Inténtalo de nuevo.';
+     }
+   });
+
 }
 
 }
