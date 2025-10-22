@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable, tap } from 'rxjs';
 import { LoginResponse } from '../../interfaces/LoginResponse';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,14 @@ export class Auth {
   
   private apiUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) { }
+  // SIGNAL: This is the "source of truth" for the session state.
+  isLoggedIn = signal<boolean>(this.hasToken());
+
+  constructor(private http: HttpClient,private router: Router) { }
+
+  private hasToken(): boolean {
+    return !!localStorage.getItem('jwt_token');
+  }
 
 
   login(credentials: any): Observable<LoginResponse> {
@@ -28,12 +36,10 @@ export class Auth {
   // Elimina el token del localStorage al cerrar sesión.
   logout(): void {
     localStorage.removeItem('jwt_token');
+    this.isLoggedIn.set(false); // Actualiza la señal a 'false'
+    this.router.navigate(['/login']); // Redirige al login
   }
-  
-  // Verifica si el usuario está autenticado (si existe un token).
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('jwt_token');
-  }
+
 
 
 }
