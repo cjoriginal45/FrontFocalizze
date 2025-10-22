@@ -1,42 +1,51 @@
 /* --- ESTILOS DE POSICIONAMIENTO (TU CÓDIGO, QUE ES CORRECTO) --- */
 
 .create-thread-btn {
+  position: fixed;
+  bottom: 85px;
+  right: 20px;
+  z-index: 999;
+}
+
+/* --- MEDIA QUERIES PARA ESCRITORIO --- */
+@media (min-width: 992px) {
+  .create-thread-btn {
     position: fixed;
-    bottom: 85px; 
-    right: 20px;
-    z-index: 1000;
+    bottom: 20px;
+    right: calc(350px + 30px + 20px);
   }
-  
-  /* --- MEDIA QUERIES PARA ESCRITORIO --- */
-  @media (min-width: 992px) {
-    .create-thread-btn {
-      position: fixed;
-      bottom: 20px;
-      right: calc(350px + 30px + 20px);
-    }
-  }
-  
-  @media (min-width: 1200px) {
-    .create-thread-btn {
-      right: calc(380px + 30px + 20px);
-    }
-  }
-  
+}
 
-  .create-thread-btn__button {
-    background-color: var(--primary-color);
-    color: var(--background-color); 
+@media (min-width: 1200px) {
+  .create-thread-btn {
+    right: calc(380px + 30px + 20px);
   }
+}
 
-  .create-thread-btn__button:hover {
-    background-color: var(--hover-color);
-    color: var(--text-color);
-  }
+.create-thread-btn__button {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+}
 
-  .create-thread-btn__icon {
-    color: var(--background-color);
-  }
+.create-thread-btn__button:hover {
+  background-color: var(--hover-color);
+  color: var(--text-color);
+}
 
-  .create-thread-btn__icon:hover {
-    color: white;
+.create-thread-btn__icon {
+  color: var(--background-color);
+}
+
+.create-thread-btn__icon:hover {
+  color: white;
+}
+
+@media (min-width: 1024px) {
+  .create-thread-btn {
+    bottom: 40px;
+    left: calc(50% + 300px);
+    right: auto;
+    transform: translateX(-50%);
+    z-index: 999;
   }
+}
