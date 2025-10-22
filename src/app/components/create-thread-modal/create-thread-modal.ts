@@ -76,10 +76,8 @@ loadCategories(): void {
         viewValue: cat.name
       }));
 
-      // 2. Añadimos la opción "Ninguna" al principio de la lista
-      // 2. We add the "Ninguna" option at the beginning of the list
+      
       this.categories = [
-        { value: 'Ninguna', viewValue: 'Ninguna' },
         ...mappedCategories 
       ];
     },
