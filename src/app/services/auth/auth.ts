@@ -23,7 +23,7 @@ export class Auth {
 
 
   login(credentials: any): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
       // Aquí guardamos el token en el localStorage si el login es exitoso.
       tap(response => {
         if (response.token) {

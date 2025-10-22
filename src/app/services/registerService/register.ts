@@ -10,7 +10,7 @@ import { RegisterResponse } from '../../interfaces/RegisterResponse';
   providedIn: 'root',
 })
 export class RegisterService {
-  private apiUrl = `${environment.apiBaseUrl}/register`;
+  private apiUrl = `${environment.apiBaseUrl}/auth/register`;
 
   constructor(private http: HttpClient) {}
 
