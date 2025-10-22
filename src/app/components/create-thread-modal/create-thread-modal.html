@@ -128,3 +128,10 @@
       
     </div>
   </footer>
+
+  <!-- Mensaje de Error -->
+@if (errorMessage) {
+  <div class="modal-error-message">
+    {{ errorMessage }}
+  </div>
+}

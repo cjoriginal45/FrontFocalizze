@@ -1,3 +1,4 @@
+@if (authService.isLoggedIn()) {
 <div class="create-thread-btn">
 
     <button mat-fab class="create-thread-btn__button" (click)="createThread()" aria-label="Crear un nuevo hilo">
@@ -5,3 +6,4 @@
       </button>
   
 </div>
+}
