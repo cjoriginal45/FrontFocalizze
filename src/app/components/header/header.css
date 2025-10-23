@@ -60,11 +60,13 @@
   align-items: center;
   gap: 10px;
   }
+
   .user-option__avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
   }
+
   .user-option__info {
   display: flex;
   flex-direction: column;
