@@ -55,6 +55,28 @@
   margin-top: 20px;
 }
 
+.user-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  }
+  .user-option__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  }
+  .user-option__info {
+  display: flex;
+  flex-direction: column;
+  }
+  .user-option__display-name {
+  font-weight: 500;
+  }
+  .user-option__username {
+  font-size: 0.8rem;
+  color: #555;
+  }
+
 :host ::ng-deep .header__search .mat-mdc-form-field-flex {
   height: 35px;
   background-color: #fff;
