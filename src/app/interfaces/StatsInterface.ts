@@ -1,4 +1,4 @@
-export interface StatsDto {
+export interface StastsInterface {
   likes: number;
   comments: number;
   saves: number;
