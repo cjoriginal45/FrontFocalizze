@@ -7,6 +7,8 @@ import { FollowingDiscovering } from '../../components/following-discovering/fol
 import { Thread, ThreadDto } from '../../components/thread/thread';
 import { MatDialog } from '@angular/material/dialog';
 import { Comments } from '../../components/comments/comments';
+import { FeedThreadDto } from '../../interfaces/FeedThread';
+import { FeedService } from '../../services/feedService/feed';
 
 @Component({
   selector: 'app-feed',
@@ -15,58 +17,54 @@ import { Comments } from '../../components/comments/comments';
   styleUrl: './feed.css',
 })
 export class Feed {
-  constructor() {}
-
+  private feedService = inject(FeedService);
   public dialog = inject(MatDialog);
 
-  // Datos de ejemplo que eventualmente vendrán de una API
-  // Mock data that will eventually come from an API
-  threads: ThreadDto[] = [
-    {
-      id: 1,
-      user: {
-        name: 'Joaquín C.',
-        username: 'cjoriginal',
-        avatarUrl: 'publicassetsimagesgamer.png',
-      },
-      publicationDate: new Date(),
-      posts: [
-        'Este es el primer post de un hilo muy interesante sobre el desarrollo con Angular y Spring Boot. La idea es mostrar solo este primer post en la vista de feed para no saturar la pantalla con demasiada información y mantener un diseño limpio y minimalista.',
-        'En el segundo post, podríamos hablar de cómo estructurar los componentes de manera eficiente. La separación de responsabilidades es clave para un proyecto mantenible a largo plazo. ¿Usan componentes "smart" y "dumb"?',
-        'Y finalmente, en el tercer post, podemos tocar el tema de la autenticación con JWT, conectando nuestro frontend de Angular con el backend de Spring Security. Es un flujo crucial en casi cualquier aplicación moderna.',
-      ],
-      stats: { likes: 125, comments: 14, views: 2400 },
-      isLiked: false,
-      isSaved: false,
-    },
-    {
-      id: 2,
-      user: { name: 'Ana García', username: 'anagarcia', avatarUrl: 'publicassetsimageswoman.png' },
-      publicationDate: new Date(Date.now() - 86400000), // Ayer
-      posts: [
-        'Este es el primer post de un hilo muy interesante sobre el desarrollo con Angular y Spring Boot. La idea es mostrar solo este primer post en la vista de feed para no saturar la pantalla con demasiada información y mantener un diseño limpio y minimalista.',
-        'En el segundo post, podríamos hablar de cómo estructurar los componentes de manera eficiente. La separación de responsabilidades es clave para un proyecto mantenible a largo plazo. ¿Usan componentes "smart" y "dumb"?',
-        'Y finalmente, en el tercer post, podemos tocar el tema de la autenticación con JWT, conectando nuestro frontend de Angular con el backend de Spring Security. Es un flujo crucial en casi cualquier aplicación moderna.',
-      ],
-      stats: { likes: 342, comments: 28, views: 5600 },
-      isLiked: true,
-      isSaved: false,
-    },
-    {
-      id: 3,
-      user: { name: 'Pedro Diaz', username: 'pedroDiaz', avatarUrl: 'publicassetsimageswoman.png' },
-      publicationDate: new Date(Date.now()),
-      posts: [
-        'Este es el primer post de un hilo muy interesante sobre el desarrollo con Angular y Spring Boot. La idea es mostrar solo este primer post en la vista de feed para no saturar la pantalla con demasiada información y mantener un diseño limpio y minimalista.',
-        'En el segundo post, podríamos hablar de cómo estructurar los componentes de manera eficiente. La separación de responsabilidades es clave para un proyecto mantenible a largo plazo. ¿Usan componentes "smart" y "dumb"?',
-        'Y finalmente, en el tercer post, podemos tocar el tema de la autenticación con JWT, conectando nuestro frontend de Angular con el backend de Spring Security. Es un flujo crucial en casi cualquier aplicación moderna.',
-      ],
-      stats: { likes: 223, comments: 12, views: 1000 },
-      isLiked: true,
-      isSaved: false,
-    },
-  ];
+  // --- Propiedades para manejar el estado de la carga y los datos ---
+  threads: FeedThreadDto[] = []; // Array vacío para almacenar los hilos de la API
+  isLoading = false; // Booleano para saber si estamos esperando una respuesta
+  currentPage = 0; // Contador para la paginación
+  isLastPage = false; // Booleano para detener las llamadas cuando no haya más datos
 
+  // El método ngOnInit se ejecuta una vez que el componente se ha inicializado
+  ngOnInit(): void {
+    // Iniciamos la carga de la primera página de hilos
+    this.loadThreads();
+  }
+
+  // --- Lógica de negocio para obtener los datos ---
+  loadThreads(): void {
+    // Prevenimos llamadas múltiples si ya está cargando o si ya se cargó todo
+    if (this.isLoading || this.isLastPage) {
+      return;
+    }
+
+    this.isLoading = true; // Marcamos como "cargando"
+
+    // Llamamos al método getFeed de nuestro servicio
+    this.feedService.getFeed(this.currentPage, 10).subscribe({
+      next: (page) => {
+        // Usamos el spread operator (...) para AÑADIR los nuevos hilos sin borrar los antiguos
+        this.threads = [...this.threads, ...page.content];
+        this.isLastPage = page.last; // Actualizamos si es la última página
+        this.isLoading = false; // Marcamos como "carga finalizada"
+      },
+      error: (err) => {
+        console.error('Error al cargar los hilos del feed', err);
+        this.isLoading = false; // Marcamos como "carga finalizada" incluso si hay error
+      },
+    });
+  }
+
+  // --- Función para la paginación (ej. un botón "Cargar más") ---
+  loadMore(): void {
+    if (!this.isLastPage) {
+      this.currentPage++; // Incrementamos el número de página
+      this.loadThreads(); // Y volvemos a llamar a la función de carga
+    }
+  }
+
+  // --- Tu método para abrir comentarios (no cambia) ---
   openCommentsModal(postId: number): void {
     this.dialog.open(Comments, {
       width: '700px',
