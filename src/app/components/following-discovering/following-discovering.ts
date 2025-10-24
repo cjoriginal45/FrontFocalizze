@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-following-discovering',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './following-discovering.html',
-  styleUrl: './following-discovering.css'
+  styleUrl: './following-discovering.css',
 })
-export class FollowingDiscovering {
-
-}
+export class FollowingDiscovering {}
