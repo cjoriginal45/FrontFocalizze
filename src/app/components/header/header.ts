@@ -74,14 +74,18 @@ export class Header implements OnInit{
 
     // Se ejecuta cuando el usuario presiona Enter en el campo de búsqueda
     onSearchSubmit(event: Event): void {
-      event.preventDefault(); // Previene que el formulario se envíe de la forma tradicional
-      const query = this.searchControl.value || '';
+      event.preventDefault();
+      const query = this.searchControl.value?.trim() || '';
+      
+      // Solo navegamos si hay una query y no es una búsqueda de usuario
       if (query && !query.startsWith('@')) {
         console.log('Realizando búsqueda de contenido para:', query);
-        // Aquí navegarías a la página de resultados de búsqueda
-        // this.router.navigate(['/search'], { queryParams: { q: query } });
+        
+        // --- NAVEGACIÓN A LA PÁGINA DE RESULTADOS ---
+        this.router.navigate(['/feed'], { queryParams: { q: query } });
       }
     }
+
 
      // Se ejecuta cuando el usuario selecciona una opción del autocompletado
   onUserSelected(event: MatAutocompleteSelectedEvent): void {

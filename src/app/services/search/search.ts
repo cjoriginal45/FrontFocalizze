@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserSearch } from '../../interfaces/UserSearch';
+import { ThreadResponse } from '../../interfaces/ThreadResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +20,10 @@ export class Search {
     const fullUrl = `${this.apiUrl}/search/users?q=${encodeURIComponent(query)}`;
     console.log('CONSTRUYENDO PETICIÓN GET A (relativa):', fullUrl);
     return this.http.get<UserSearch[]>(fullUrl);
+  }
+
+  searchContent(query: string): Observable<ThreadResponse[]> {
+    const fullUrl = `${this.apiUrl}/search/content?q=${encodeURIComponent(query)}`;
+    return this.http.get<ThreadResponse[]>(fullUrl);
   }
 }
