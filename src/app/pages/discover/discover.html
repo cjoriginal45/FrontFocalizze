@@ -1,1 +1,20 @@
-<p>discover works!</p>
+<app-header></app-header>
+
+<div class="discover-layout">
+  <main class="discover-layout__content">
+    <div class="discover-layout__threads-list">
+      @for (thread of threads; track thread.id) {
+      <app-thread [thread]="thread" (openComments)="openCommentsModal($event)"></app-thread>
+      }
+    </div>
+
+    @if (isLoading) {
+    <div class="loading-indicator">Cargando...</div>
+    } @if (!isLastPage && threads.length > 0 && !isLoading) {
+    <button (click)="loadMore()" class="load-more-button">Cargar más</button>
+    }
+  </main>
+</div>
+
+<app-botton-nav></app-botton-nav>
+<app-create-thread-button></app-create-thread-button>
