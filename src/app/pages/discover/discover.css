@@ -1,0 +1,109 @@
+/* --- ESTILOS BASE / MÓVIL --- */
+/* --- BASE / MOBILE STYLES --- */
+.discover-layout {
+  display: block;
+  padding: 15px;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+}
+
+.discover-layout__content {
+  width: 100%;
+}
+
+.discover-layout__threads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* --- Animación de entrada de los hilos --- */
+/* --- Thread entry animation --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Aplica la animación a cada hilo */
+/* Apply the animation to each thread */
+.discover-layout__threads-list app-thread {
+  opacity: 0;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+/* Agrega un pequeño retraso progresivo entre hilos (efecto cascada) */
+/* Adds a small progressive delay between threads (cascade effect) */
+.discover-layout__threads-list app-thread:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.discover-layout__threads-list app-thread:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.discover-layout__threads-list app-thread:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.discover-layout__threads-list app-thread:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.discover-layout__threads-list app-thread:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+/* --- Indicador de carga y botón --- */
+/* --- Loading indicator and button --- */
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #333;
+}
+
+.load-more-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.load-more-button:hover {
+  background-color: var(--primary-color-hover, #0055cc);
+  transform: scale(1.03);
+}
+
+/* --- MEDIA QUERY PARA ESCRITORIO --- */
+/* --- DESKTOP MEDIA QUERY --- */
+@media (min-width: 992px) {
+  .discover-layout {
+    display: grid;
+    grid-template-columns: 1fr minmax(500px, 600px) 1fr;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .discover-layout__content {
+    grid-column: 2 / 3;
+  }
+}
+
+/* --- RESPONSIVIDAD --- */
+/* --- RESPONSIVITY --- */
+@media (max-width: 991px) {
+  .load-more-button {
+    width: 100%;
+    max-width: 300px;
+  }
+}
