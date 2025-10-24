@@ -1,22 +1,20 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Suggestions } from '../../components/suggestions/suggestions';
+import { FeedService } from '../../services/feedService/feed';
+import { MatDialog } from '@angular/material/dialog';
+import { FeedThreadDto } from '../../interfaces/FeedThread';
+import { Comments } from '../../components/comments/comments';
 import { BottonNav } from '../../components/botton-nav/botton-nav';
 import { Header } from '../../components/header/header';
 import { CreateThreadButton } from '../../components/create-thread-button/create-thread-button';
-import { FollowingDiscovering } from '../../components/following-discovering/following-discovering';
 import { Thread } from '../../components/thread/thread';
-import { MatDialog } from '@angular/material/dialog';
-import { Comments } from '../../components/comments/comments';
-import { FeedThreadDto } from '../../interfaces/FeedThread';
-import { FeedService } from '../../services/feedService/feed';
 
 @Component({
-  selector: 'app-feed',
-  imports: [Suggestions, BottonNav, Header, CreateThreadButton, FollowingDiscovering, Thread],
-  templateUrl: './feed.html',
-  styleUrl: './feed.css',
+  selector: 'app-discover',
+  imports: [BottonNav, Header, CreateThreadButton, Thread],
+  templateUrl: './discover.html',
+  styleUrl: './discover.css',
 })
-export class Feed implements OnInit {
+export class Discover implements OnInit {
   private feedService = inject(FeedService);
   public dialog = inject(MatDialog);
 
