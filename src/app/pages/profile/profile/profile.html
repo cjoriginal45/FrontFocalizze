@@ -1,0 +1,23 @@
+<!-- El contenedor principal de la página de perfil -->
+<!-- The main container for the profile page -->
+<div class="profile-page">
+
+    <!-- Usamos @if para asegurarnos de que 'username' tiene un valor antes de mostrarlo -->
+    <!-- We use @if to ensure 'username' has a value before displaying it -->
+    @if (username) {
+      <h1 class="profile-page__welcome-message">
+        Bienvenido al perfil de <span class="profile-page__username">@{{ username }}</span>
+      </h1>
+  
+      <!-- 
+        (En el futuro, aquí es donde harías una llamada a una API 
+         para obtener y mostrar el resto de la información del perfil: 
+         avatar, biografía, hilos del usuario, etc.)
+      -->
+      <p class="profile-page__placeholder">Próximamente: biografía, hilos y más...</p>
+  
+    } @else {
+      <p class="profile-page__loading">Cargando perfil...</p>
+    }
+    
+  </div>

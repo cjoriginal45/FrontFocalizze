@@ -7,6 +7,7 @@ import { Suggestions } from './components/suggestions/suggestions';
 import { Feed } from './pages/feed/feed';
 import { Header } from './components/header/header';
 import { PasswordRecovery } from './pages/password-recovery/password-recovery';
+import { Profile } from './pages/profile/profile/profile';
 
 export const routes: Routes = [
   { path: '', component: Login },
@@ -15,4 +16,5 @@ export const routes: Routes = [
   { path: 'suggestions', component: Suggestions },
   { path: 'home', component: Feed },
   { path: 'feed', component: Feed },
+  { path: 'profile/:username', component: Profile },
 ];

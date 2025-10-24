@@ -1,0 +1,25 @@
+.profile-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el contenido horizontalmente */
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .profile-page__welcome-message {
+    font-size: 2rem;
+    font-weight: 300; /* Un peso de fuente más ligero para un look moderno */
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  .profile-page__username {
+    font-weight: 500; /* Destaca el nombre de usuario */
+    color: var(--primary-color); /* Usa tu color primario global */
+  }
+  
+  .profile-page__placeholder,
+  .profile-page__loading {
+    color: #777;
+    font-size: 1.1rem;
+  }
