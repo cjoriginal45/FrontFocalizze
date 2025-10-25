@@ -14,6 +14,7 @@ import { Comment } from '../../services/commentService/comment';
 import { CommentResponseDto } from '../../interfaces/CommentResponse';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Interaction } from '../../services/interactionService/interaction';
 
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
@@ -41,6 +42,7 @@ export interface DialogData {
 })
 export class Comments {
   private commentService = inject(Comment);
+  private interactionService = inject(Interaction);
   public dialogRef = inject(MatDialogRef<Comments>);
   public data: DialogData = inject(MAT_DIALOG_DATA);
 
@@ -75,21 +77,24 @@ export class Comments {
     if (this.commentControl.invalid || !this.commentControl.value) {
       return;
     }
-
     const content = this.commentControl.value;
-    this.commentControl.disable(); // Deshabilitamos el input mientras se envía / We disable the input while it is being sent
+    this.commentControl.disable();
 
     this.commentService.createComment(this.data.postId, content).subscribe({
       next: (newComment) => {
-        // Añadimos el nuevo comentario al principio de la lista para feedback instantáneo
-        // We add the new comment to the top of the list for instant feedback
-        this.comments = [newComment, ...this.comments];
-        this.commentControl.reset(); // Limpiamos el input / We clean the input
-        this.commentControl.enable(); // Lo volvemos a habilitar / We re-enable it
+        // Actualizamos la lista local de comentarios para que se vea el nuevo
+        // We update the local list of comments to show the new one
+        this.comments.unshift(newComment);
+        this.commentControl.reset();
+        this.commentControl.enable();
+
+        // Notificamos al servicio de interacción que se ha añadido un comentario a un hilo específico.
+        // We notify the interaction service that a comment has been added to a specific thread.
+        this.interactionService.notifyCommentAdded(this.data.postId);
       },
       error: (err) => {
         console.error('Error al publicar el comentario', err);
-        this.commentControl.enable(); // Habilitamos de nuevo si hay error / We enable again if there is an error
+        this.commentControl.enable();
       },
     });
   }
