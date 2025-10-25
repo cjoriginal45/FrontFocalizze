@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Suggestions } from '../../components/suggestions/suggestions';
 import { BottonNav } from '../../components/botton-nav/botton-nav';
 import { Header } from '../../components/header/header';
@@ -9,6 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Comments } from '../../components/comments/comments';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { FeedService } from '../../services/feedService/feed';
+import { Interaction } from '../../services/interactionService/interaction';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-feed',
@@ -16,8 +18,9 @@ import { FeedService } from '../../services/feedService/feed';
   templateUrl: './feed.html',
   styleUrl: './feed.css',
 })
-export class Feed implements OnInit {
+export class Feed implements OnInit, OnDestroy {
   private feedService = inject(FeedService);
+  private interactionService = inject(Interaction);
   public dialog = inject(MatDialog);
 
   // Propiedades para manejar el estado de la carga y los datos
@@ -27,8 +30,33 @@ export class Feed implements OnInit {
   currentPage = 0; // Contador para la paginación / Counter for pagination
   isLastPage = false; // Booleano para detener las llamadas cuando no haya más datos / Boolean to stop calls when there is no more data
 
+  private commentAddedSubscription: Subscription | undefined;
+
   ngOnInit(): void {
     this.loadThreads();
+    this.listenForCommentUpdates();
+  }
+
+  // Método para destruir la suscripción y evitar memory leaks
+  // Method to destroy the subscription and avoid memory leaks
+  ngOnDestroy(): void {
+    this.commentAddedSubscription?.unsubscribe();
+  }
+
+  // Método que configura la suscripción
+  // Method that configures the subscription
+  private listenForCommentUpdates(): void {
+    this.commentAddedSubscription = this.interactionService.commentAdded$.subscribe((event) => {
+      console.log(`FeedComponent: Recibida notificación para el hilo ${event.threadId}`);
+      this.updateCommentCount(event.threadId);
+    });
+  }
+
+  private updateCommentCount(threadId: number): void {
+    const threadToUpdate = this.threads.find((thread) => thread.id === threadId);
+    if (threadToUpdate) {
+      threadToUpdate.stats.comments++;
+    }
   }
 
   // Lógica de negocio para obtener los datos
