@@ -1,28 +1,50 @@
 <header class="comments-header" mat-dialog-title>
   <h2>Comentarios</h2>
-  <button mat-icon-button (click)="onClose()" aria-label="Cerrar ventana de comentarios">
+  <button mat-icon-button (click)="onClose()" aria-label="Cerrar">
     <mat-icon>close</mat-icon>
   </button>
 </header>
 
 <mat-dialog-content class="comments-content">
+  <!-- Sección para añadir comentario CONECTADA A LA LÓGICA -->
+  <!-- Section to add comment CONNECTED TO LOGIC -->
   <div class="add-comment-section">
     <img class="avatar" src="assets/images/gamer.png" alt="Tu avatar" />
     <mat-form-field appearance="outline" class="comment-input">
-      <textarea matInput placeholder="Escribe un comentario..." cdkTextareaAutosize></textarea>
+      <textarea
+        matInput
+        placeholder="Escribe un comentario..."
+        cdkTextareaAutosize
+        [formControl]="commentControl"
+      ></textarea>
     </mat-form-field>
-    <button mat-flat-button color="primary">Comentar</button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="postComment()"
+      [disabled]="commentControl.invalid"
+    >
+      Comentar
+    </button>
   </div>
 
+  <!-- Indicador de carga -->
+  <!-- Loading indicator -->
+  @if (isLoading) {
+  <p>Cargando comentarios...</p>
+  }
+
+  <!-- Lista de comentarios CONECTADA A LOS DATOS DE LA API -->
+  <!-- Comment list CONNECTED TO API DATA -->
   <div class="comments-list">
-    @for (comment of comments; track comment.author) {
+    @for (comment of comments; track comment.id) {
     <div class="comment-item">
-      <img class="avatar" src="assets/images/woman.png" alt="Avatar del usuario" />
+      <img class="avatar" src="assets/images/woman.png" alt="Avatar" />
       <div class="comment-body">
         <div class="comment-author">
-          <strong>{{ comment.author }}</strong>
-          <span class="handle">{{ comment.handle }}</span>
-          <span class="date">· {{ comment.date }}</span>
+          <strong>{{ comment.author.displayName }}</strong>
+          <span class="handle">@{{ comment.author.username }}</span>
+          <span class="date">· {{ comment.createdAt | date : 'short' }}</span>
         </div>
         <p class="comment-text">{{ comment.content }}</p>
       </div>

@@ -12,7 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Comment } from '../../services/commentService/comment';
 import { CommentResponseDto } from '../../interfaces/CommentResponse';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
@@ -32,6 +33,8 @@ export interface DialogData {
     MatFormFieldModule,
     MatInputModule,
     CdkTextareaAutosize,
+    CommonModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './comments.html',
   styleUrl: './comments.css',
