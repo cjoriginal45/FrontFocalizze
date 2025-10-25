@@ -10,11 +10,14 @@ import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { Comment } from '../../services/commentService/comment';
+import { CommentResponseDto } from '../../interfaces/CommentResponse';
+import { FormControl, Validators } from '@angular/forms';
 
-// Esta interfaz define la forma de los datos que nuestro modal espera recibir
-// This interface defines the form of data our modal expects to receive
+// Interfaz para la data que recibe el modal
+// Interface for the data that the modal receives
 export interface DialogData {
-  postId: string;
+  postId: number; // El ID que nos pasa el FeedComponent / The ID that the FeedComponent passes to us
 }
 
 @Component({
@@ -34,49 +37,60 @@ export interface DialogData {
   styleUrl: './comments.css',
 })
 export class Comments {
-  // Inyectamos la referencia al propio diálogo para poder cerrarlo
-  // We inject the reference to the dialog itself to be able to close it
+  private commentService = inject(Comment);
   public dialogRef = inject(MatDialogRef<Comments>);
-  // Inyectamos los datos que nos pasaron al abrir el diálogo (el postId)
-  // We inject the data that was passed to us when opening the dialog (the postId)
   public data: DialogData = inject(MAT_DIALOG_DATA);
 
-  // En una aplicación real, usarías this.data.postId para llamar a un servicio
-  // y obtener los comentarios de la base de datos. Por ahora, usamos datos de ejemplo.
-  // In a real-world application, you would use this.data.postId to call a service
-  // and retrieve the comments from the database. For now, let's use sample data.
-  comments = [
-    {
-      author: 'Elena Gómez',
-      handle: '@elena',
-      avatarUrl: '',
-      content: '¡Totalmente de acuerdo! Angular Material simplifica mucho las cosas.',
-      date: 'hace 5m',
-    },
-    {
-      author: 'Carlos Ruiz',
-      handle: '@carlos',
-      avatarUrl: '',
-      content: 'Buen punto. Yo añadiría también la importancia de los observables con RxJS.',
-      date: 'hace 2h',
-    },
-    {
-      author: 'Ana García',
-      handle: '@anagarcia',
-      avatarUrl: '',
-      content: 'Excelente explicación, me ha servido de mucho para mi proyecto.',
-      date: 'hace 1 día',
-    },
-  ];
+  // Estado del componente
+  // Component state
+  comments: CommentResponseDto[] = [];
+  isLoading = false;
 
-  constructor() {
-    // Verificar que recibo el ID del post correcto
-    // Verify that I receive the correct post ID
-    console.log('Mostrando comentarios para el post ID:', this.data.postId);
+  // Formulario para el nuevo comentario
+  // Form for new comment
+  commentControl = new FormControl('', [Validators.required, Validators.maxLength(280)]);
+
+  ngOnInit(): void {
+    this.loadComments();
   }
 
-  // Cierra el diálogo cuando el usuario hace clic en el botón de cerrar
-  // Closes the dialog when the user clicks the close button
+  loadComments(): void {
+    this.isLoading = true;
+    this.commentService.getComments(this.data.postId, 0, 20).subscribe({
+      next: (page) => {
+        this.comments = page.content;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar comentarios', err);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  postComment(): void {
+    if (this.commentControl.invalid || !this.commentControl.value) {
+      return;
+    }
+
+    const content = this.commentControl.value;
+    this.commentControl.disable(); // Deshabilitamos el input mientras se envía / We disable the input while it is being sent
+
+    this.commentService.createComment(this.data.postId, content).subscribe({
+      next: (newComment) => {
+        // Añadimos el nuevo comentario al principio de la lista para feedback instantáneo
+        // We add the new comment to the top of the list for instant feedback
+        this.comments = [newComment, ...this.comments];
+        this.commentControl.reset(); // Limpiamos el input / We clean the input
+        this.commentControl.enable(); // Lo volvemos a habilitar / We re-enable it
+      },
+      error: (err) => {
+        console.error('Error al publicar el comentario', err);
+        this.commentControl.enable(); // Habilitamos de nuevo si hay error / We enable again if there is an error
+      },
+    });
+  }
+
   onClose(): void {
     this.dialogRef.close();
   }
