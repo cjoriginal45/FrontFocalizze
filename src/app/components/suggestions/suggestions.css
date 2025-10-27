@@ -72,6 +72,16 @@
   text-decoration: underline;
 }
 
+
+.suggestions__list--scrollable {
+  /* Le damos una altura máxima para que no ocupe toda la pantalla */
+  max-height: 250px; 
+  /* Si la lista supera esta altura, aparecerá una barra de scroll vertical */
+  overflow-y: auto;
+  /* Añadimos un poco de padding a la derecha para que el scrollbar no se pegue al texto */
+  padding-right: 10px;
+}
+
 .footer-links {
   display: flex;
   flex-direction: column;
