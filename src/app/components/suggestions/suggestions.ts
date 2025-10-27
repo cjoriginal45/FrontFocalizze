@@ -18,27 +18,32 @@ interface SuggestedCategory {
 })
 export class Suggestions implements OnInit{
   // Variable para controlar la visibilidad del panel en móvil
+  // Visibility of the mobile panel
   isMobilePanelOpen = false;
 
   // Lógica para las categorías
-  protected allCategories: CategoryInterface[] = []; // Almacena todas las categorías de la API
-  suggestedCategories: CategoryInterface[] = []; // Las 3 categorías aleatorias que se muestran
-  showAllCategories = false; // Controla la visibilidad de la lista completa
+  // Logic for categories
+  protected allCategories: CategoryInterface[] = [];
+  suggestedCategories: CategoryInterface[] = []; 
+  showAllCategories = false; 
 
   constructor(private categoryService: Category) {}
 
   // ngOnInit se ejecuta cuando el componente se inicializa
+  // ngOnInit is executed when the component is initialized
   ngOnInit(): void {
     this.loadCategories();
   }
 
   /**
    * Selecciona 3 categorías aleatorias de la lista completa.
+   * Selects 3 random categories from the full list.
    */
   loadCategories(): void {
     this.categoryService.getAllCategories().subscribe({
       next: (categories) => {
-        this.allCategories = categories;
+        // Excluimos la categoría "Ninguna"
+        this.allCategories = categories.filter(cat => cat.name !== "Ninguna");
         // Al cargar, seleccionamos 3 categorías aleatorias para mostrar
         this.selectRandomSuggestions();
       },
@@ -50,6 +55,7 @@ export class Suggestions implements OnInit{
 
    /**
    * Selecciona 3 categorías aleatorias de la lista completa.
+   * Selects 3 random categories from the full list.
    */
    selectRandomSuggestions(): void {
     // Barajamos una copia del array para no modificar el original
@@ -60,6 +66,7 @@ export class Suggestions implements OnInit{
 
   /**
    * Cambia el estado para mostrar/ocultar la lista completa de categorías.
+   * Toggles the state to show/hide the full list of categories.
    */
   toggleShowAllCategories(): void {
     this.showAllCategories = !this.showAllCategories;
@@ -67,6 +74,7 @@ export class Suggestions implements OnInit{
 
   /**
    * Cambia el estado de visibilidad del panel móvil.
+   * Toggles the visibility state of the mobile panel.
    */
   toggleMobilePanel(): void {
     this.isMobilePanelOpen = !this.isMobilePanelOpen;
