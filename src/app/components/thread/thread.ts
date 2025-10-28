@@ -35,42 +35,31 @@ export class Thread {
 
   constructor() {}
 
-  // LÓGICA DE INTERACCIÓN (POR AHORA, SOLO VISUAL)
-  // A futuro, estos métodos deberían emitir eventos al padre para llamar a un servicio.
-  // INTERACTION LOGIC (FOR NOW, ONLY VISUAL)
-  // In the future, these methods should emit events to the parent to call a service.
   toggleLike(): void {
-    // Guardamos el estado anterior y actualizamos la UI inmediatamente (Optimistic Update)
-    // We save the previous state and update the UI immediately (Optimistic Update)
+    // Guardamos el estado anterior para poder revertir en caso de error
+    // We save the previous state so we can revert in case of error
     const previousState = this.thread.isLiked;
     const previousCount = this.thread.stats.likes;
 
+    // Aplicamos la actualización optimista a la UI
+    // We apply optimistic updating to the UI
     this.thread.isLiked = !this.thread.isLiked;
     this.thread.stats.likes += this.thread.isLiked ? 1 : -1;
 
-    // Notificamos a otros componentes (como el feed, si fuera necesario) a través del servicio
-    // We notify other components (such as the feed, if necessary) through the service
-    this.interactionService.notifyLikeToggled(this.thread.id, this.thread.isLiked);
-
-    // Llamamos al servicio de API para persistir el cambio en el backend
-    // We call the API service to persist the change to the backend
+    // Llamamos a la API
+    // We call the API
     this.likeService.toggleLike(this.thread.id).subscribe({
-      next: () => {
-        // La operación en el backend fue exitosa, no necesitamos hacer nada más.
-        // The operation on the backend was successful, we don't need to do anything else.
-        console.log(`Like para el hilo ${this.thread.id} actualizado en el servidor.`);
-      },
       error: (err) => {
-        // Si la API falla, revertimos los cambios en la UI para mantener la consistencia.
-        // If the API fails, we roll back UI changes to maintain consistency.
+        // Solo si hay un error, revertimos el estado
+        // Only if there is an error, we revert the state
         console.error('Error al actualizar el like', err);
         this.thread.isLiked = previousState;
         this.thread.stats.likes = previousCount;
-        this.interactionService.notifyLikeToggled(this.thread.id, previousState);
       },
+      // No necesitamos hacer nada en 'next' porque la UI ya está actualizada.
+      // We don't need to do anything in 'next' because the UI is already updated.
     });
   }
-
   toggleSave(): void {
     this.thread.isSaved = !this.thread.isSaved;
     console.log('Save toggled for thread:', this.thread.id);
@@ -79,7 +68,7 @@ export class Thread {
   }
 
   // LÓGICA DE EXPANSIÓN
-  // LÓGICA DE EXPANSIÓN
+  // EXPANSION LOGIC
   toggleExpansion(): void {
     this.isExpanded = !this.isExpanded;
   }

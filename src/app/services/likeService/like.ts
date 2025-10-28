@@ -20,6 +20,6 @@ export class Like {
    * @returns An Observable that completes when the operation completes.
    */
   toggleLike(threadId: number): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/thread/${threadId}/like`, {});
+    return this.http.post<void>(`${this.apiUrl}/${threadId}/like`, {});
   }
 }
