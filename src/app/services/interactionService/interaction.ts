@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { CommentAddedEvent } from '../../interfaces/CommentAddedEvent';
+import { LikeToggledEvent } from '../../interfaces/LikeToggledEvent';
 
 @Injectable({
   providedIn: 'root',
@@ -30,5 +31,24 @@ export class Interaction {
   notifyCommentAdded(threadId: number): void {
     console.log(`InteractionService: Notificando que se añadió un comentario al hilo ${threadId}`);
     this._commentAddedSource.next({ threadId });
+  }
+
+  private _likeToggledSource = new Subject<LikeToggledEvent>();
+  likeToggled$ = this._likeToggledSource.asObservable();
+
+  /**
+   * Notifica que el estado de "like" de un hilo ha cambiado.
+   * @param threadId El ID del hilo afectado.
+   * @param isLiked El nuevo estado del "like" (true si se dio, false si se quitó).
+   *
+   * * Notifies that a thread's like status has changed.
+   * @param threadId The ID of the affected thread.
+   * @param isLiked The new like status (true if liked, false if unliked).
+   */
+  notifyLikeToggled(threadId: number, isLiked: boolean): void {
+    console.log(
+      `InteractionService: Notificando que el like del hilo ${threadId} ahora es ${isLiked}`
+    );
+    this._likeToggledSource.next({ threadId, isLiked });
   }
 }
