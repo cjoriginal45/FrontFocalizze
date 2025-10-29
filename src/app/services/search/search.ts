@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserSearch } from '../../interfaces/UserSearch';
-import { ThreadResponse } from '../../interfaces/ThreadResponse';
+import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 
 @Injectable({
   providedIn: 'root'

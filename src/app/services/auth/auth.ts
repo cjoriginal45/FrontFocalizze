@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable, tap } from 'rxjs';
 import { LoginResponse } from '../../interfaces/LoginResponse';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,11 @@ export class Auth {
     this.router.navigate(['/login']); // Redirige al login
   }
 
-
+  getCurrentUser(): { username: string } | null {
+    const token = localStorage.getItem('jwt_token');
+    if (!token) return null;
+    const decodedToken: { sub: string } = jwtDecode(token);
+    return { username: decodedToken.sub };
+  }
 
 }
