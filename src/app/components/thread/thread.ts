@@ -98,6 +98,8 @@ export class Thread {
   // LÓGICA DE EXPANSIÓN
   // EXPANSION LOGIC
   toggleExpansion(): void {
+    console.log(`Toggling expansion for thread ID: ${this.thread.id}. Current state: ${this.isExpanded}`);
+
     // Si ya está expandido, simplemente lo colapsamos
     // If it's already expanded, we just collapse it
     if (this.isExpanded) {
@@ -133,6 +135,8 @@ export class Thread {
         this.isLoadingDetails = false;
       },
     });
+
+    console.log(`New state: ${this.isExpanded}`);
   }
 
   // LÓGICA PARA ABRIR COMENTARIOS

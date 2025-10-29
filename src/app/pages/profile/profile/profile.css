@@ -127,7 +127,14 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  /* --- AÑADIDO: Limitamos el ancho y centramos la lista de hilos --- */
+  max-width: 600px; /* El mismo ancho que en el feed */
+  margin: 0 auto; 
 }
+
+
+
 
 /* --- RESPONSIVE PARA MÓVIL (VERSIÓN MEJORADA) --- */
 @media (max-width: 768px) {
