@@ -1,18 +1,19 @@
+/* --- ESTILOS BASE (DESKTOP FIRST, YA QUE ES TU BASE ACTUAL) --- */
 .profile-page {
   max-width: 980px;
   margin: 0 auto;
   padding: 20px;
 }
 
-/* --- Header del Perfil --- */
+/* Header del Perfil */
 .profile-header {
   display: grid;
-  grid-template-columns: auto 1fr; /* Columna para avatar, columna para el resto */
-  gap: 20px 40px; /* Espacio vertical y horizontal */
+  grid-template-columns: auto 1fr;
+  gap: 20px 40px;
   padding: 24px;
   border: 1px solid #e0e0e0;
   border-radius: 16px;
-  position: relative; /* Para el posicionamiento absoluto del botón de editar */
+  position: relative;
   margin-bottom: 40px;
 }
 
@@ -32,7 +33,8 @@
 .profile-header__display-name {
   font-size: 1.8rem;
   font-weight: bold;
-  margin: 0;
+  margin-bottom: 5px;
+  color: var(--primary-color);
 }
 
 .profile-header__username {
@@ -49,13 +51,22 @@
 .profile-header__biography {
   font-size: 1rem;
   line-height: 1.6;
-  margin: 0 0 24px 0;
-  min-height: 50px; /* Espacio reservado para la bio */
+  margin: 24px 0;
+  min-height: 40px; /* Espacio reservado para la bio */
+  margin-top: 3px;
+  color: #444;
+  }
+
+.biography-title {
+  font-weight: bold;
+  margin-bottom: 7px;
+  color: var(--primary-color);
 }
 
 .profile-header__stats {
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente línea */
+  gap: 15px 30px; /* Espacio vertical y horizontal */
   margin-bottom: 24px;
 }
 
@@ -68,23 +79,31 @@
 .stat__value {
   font-size: 1.1rem;
   font-weight: bold;
+  color: var(--primary-color);
 }
 
 .stat__label {
   font-size: 1rem;
-  color: #555;
+  color: #444;
 }
 
 .profile-header__meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
   color: #777;
   font-size: 0.9rem;
 }
 
 .meta__icon {
   font-size: 18px;
+  color: var(--primary-color);
+  align-self: center;
+}
+
+.meta__text {
+  color: #444;
+  align-self: center;
 }
 
 .profile-header__edit-btn {
@@ -93,44 +112,94 @@
   right: 24px;
 }
 
-/* --- Hilos del Perfil --- */
+/* Hilos del Perfil */
 .profile-threads__title {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 20px;
   border-bottom: 1px solid #e0e0e0;
   padding-bottom: 12px;
+  color: var(--primary-color);
+  text-align: center;
 }
+
 .profile-threads__list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-
-/* --- RESPONSIVE PARA MÓVIL --- */
+/* --- RESPONSIVE PARA MÓVIL (VERSIÓN MEJORADA) --- */
 @media (max-width: 768px) {
+  .profile-page {
+    padding: 10px; /* Menos padding en pantallas pequeñas */
+  }
+
   .profile-header {
     grid-template-columns: 1fr; /* Una sola columna */
-    gap: 16px;
+    gap: 20px;
     padding: 16px;
+    margin-bottom: 30px;
   }
+
   .profile-header__left {
     display: flex;
     align-items: center;
     gap: 16px;
     text-align: left;
   }
+
   .profile-header__avatar {
     width: 80px;
     height: 80px;
-    margin-bottom: 0;
+    margin-bottom: 0; /* Reseteamos el margen inferior */
   }
+
+  /* Contenedor para el nombre y username en móvil */
+  .profile-header__user-identity {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .profile-header__display-name {
+    font-size: 1.5rem; /* Reducimos el tamaño de la fuente */
+  }
+
+  .profile-header__username {
+    font-size: 0.9rem; /* Reducimos el tamaño de la fuente */
+  }
+
   .profile-header__right {
-    /* El orden ya es correcto */
+    /* El orden ya es correcto, no necesita cambios */
   }
+  
+  .profile-header__biography {
+    font-size: 0.95rem; /* Hacemos la bio un poco más pequeña */
+    margin-bottom: 20px;
+  }
+
+  .profile-header__stats {
+    gap: 10px 20px; /* Reducimos el espaciado entre stats */
+    margin-bottom: 20px;
+  }
+  
+  .stat__value {
+    font-size: 1rem;
+  }
+  
+  .stat__label {
+    font-size: 0.9rem;
+  }
+
   .profile-header__edit-btn {
     top: 16px;
     right: 16px;
+    /* Hacemos el botón más pequeño en móvil */
+    transform: scale(0.9);
+    transform-origin: top right;
+  }
+  
+  .profile-threads__title {
+    font-size: 1.3rem;
   }
 }

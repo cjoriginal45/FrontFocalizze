@@ -11,12 +11,15 @@
       <!-- Sección Izquierda: Avatar e Info Básica -->
       <div class="profile-header__left">
         <img [src]="profile.avatarUrl" [alt]="'Avatar de ' + profile.displayName" class="profile-header__avatar">
-        <h1 class="profile-header__display-name">{{ profile.displayName }}</h1>
-        <p class="profile-header__username">@{{ profile.username }}</p>
+        <div class="profile-header__user-identity">
+          <h1 class="profile-header__display-name">{{ profile.displayName }}</h1>
+          <p class="profile-header__username">@{{ profile.username }}</p>
+        </div>
       </div>
 
       <!-- Sección Derecha: Bio, Estadísticas y Acciones -->
       <div class="profile-header__right">
+        <h2 class="biography-title">Biografía</h2>
         <p class="profile-header__biography">{{ profile.biography || 'Este usuario aún no tiene una biografía.' }}</p>
 
         <div class="profile-header__stats">
@@ -30,13 +33,13 @@
           </div>
           <div class="stat">
             <span class="stat__value">{{ profile.threadCount }}</span>
-            <span class="stat__label">Hilos</span>
+            <span class="stat__label">Hilos Publicados</span>
           </div>
           <!-- Solo muestra los hilos disponibles si es nuestro propio perfil -->
           @if (isOwnProfile && profile.threadsAvailableToday !== null) {
             <div class="stat">
               <span class="stat__value">{{ profile.threadsAvailableToday }}</span>
-              <span class="stat__label">Disponibles Hoy</span>
+              <span class="stat__label">Hilos Disponibles Hoy</span>
             </div>
           }
         </div>
