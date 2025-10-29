@@ -1,3 +1,9 @@
+:host {
+  display: block;
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
 /* --- ESTILOS BASE / MÓVIL --- */
 .feed-layout {
   display: block;
@@ -14,6 +20,70 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+
+/* --- Animación de entrada de los hilos --- */
+/* --- Thread entry animation --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Aplica la animación a cada hilo */
+/* Apply the animation to each thread */
+.feed-layout__threads-list app-thread {
+  opacity: 0;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+/* Agrega un pequeño retraso progresivo entre hilos (efecto cascada) */
+/* Adds a small progressive delay between threads (cascade effect) */
+.feed-layout__threads-list app-thread:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.fedd-layout__threads-list app-thread:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.feed-layout__threads-list app-thread:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.feed-layout__threads-list app-thread:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.feed-layout__threads-list app-thread:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+/* --- Indicador de carga y botón --- */
+/* --- Loading indicator and button --- */
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #333;
+}
+
+.load-more-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.load-more-button:hover {
+  background-color: var(--primary-color-hover, #0055cc);
+  transform: scale(1.03);
 }
 
 /* --- MEDIA QUERY PARA ESCRITORIO --- */
