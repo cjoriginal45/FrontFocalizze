@@ -1,0 +1,39 @@
+.modal-header { /* ... estilos del header ... */ }
+.modal-content { display: flex; flex-direction: column; gap: 16px; }
+.modal-footer { /* ... estilos del footer ... */ }
+
+/* Estilos para el cargador de avatar */
+.avatar-uploader {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.avatar-uploader__label {
+  position: relative;
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.avatar-uploader__preview {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+.avatar-uploader__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+.avatar-uploader__label:hover .avatar-uploader__overlay {
+  opacity: 1;
+}

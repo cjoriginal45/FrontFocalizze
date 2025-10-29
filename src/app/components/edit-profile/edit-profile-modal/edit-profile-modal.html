@@ -1,0 +1,40 @@
+<header class="modal-header">
+    <h2 class="modal-header__title">Editar Perfil</h2>
+    <button mat-icon-button class="modal-header__button" (click)="closeModal()" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+  
+  <div class="modal-content" mat-dialog-content [formGroup]="profileForm">
+    
+    <!-- Selector de Avatar -->
+    <div class="avatar-uploader">
+      <label for="avatar-input" class="avatar-uploader__label">
+        <img [src]="imagePreview" alt="Vista previa del avatar" class="avatar-uploader__preview">
+        <div class="avatar-uploader__overlay">
+          <mat-icon>photo_camera</mat-icon>
+        </div>
+      </label>
+      <input id="avatar-input" type="file" (change)="onFileSelected($event)" accept="image/png, image/jpeg, image/webp" hidden>
+    </div>
+  
+    <!-- Campo para Display Name -->
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="displayName" [maxlength]="50">
+      <mat-hint align="end">{{ profileForm.get('displayName')?.value?.length || 0 }} / 50</mat-hint>
+    </mat-form-field>
+    
+    <!-- Campo para Biografía -->
+    <mat-form-field appearance="fill">
+      <mat-label>Biografía</mat-label>
+      <textarea matInput formControlName="biography" [maxlength]="160" cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+      <mat-hint align="end">{{ profileForm.get('biography')?.value?.length || 0 }} / 160</mat-hint>
+    </mat-form-field>
+  
+  </div>
+  
+  <footer class="modal-footer" mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="closeModal()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onSave()" [disabled]="profileForm.invalid">Guardar</button>
+  </footer>
