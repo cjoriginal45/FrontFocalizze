@@ -35,9 +35,9 @@
       </div>
       } }
     </div>
-    @if (thread.posts.length > 1) {
+    @if (thread.posts.length > 1 || !isFullyLoaded) {
     <a (click)="toggleExpansion()" class="thread__expand-btn">
-      @if (isExpanded) { Ocultar - } @else { Ampliar + }
+      @if (isLoadingDetails) { Cargando... } @else if (isExpanded) { Ocultar - } @else { Ampliar + }
     </a>
     }
   </div>

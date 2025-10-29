@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { Like } from '../../services/likeService/like';
 import { Interaction } from '../../services/interactionService/interaction';
+import { threadService } from '../../services/thread/thread';
 
 @Component({
   selector: 'app-thread',
@@ -15,6 +16,7 @@ import { Interaction } from '../../services/interactionService/interaction';
 export class Thread {
   private likeService = inject(Like);
   private interactionService = inject(Interaction);
+  private threadService = inject(threadService);
 
   // Aceptamos el objeto completo que viene del feed.
   // El tipo ahora coincide con la respuesta de la API.
@@ -26,7 +28,11 @@ export class Thread {
 
   // Esta propiedad es para el estado local del componente, se mantiene
   // This property is for the local state of the component, it is persisted
+
+  // Propiedades de estado local
   isExpanded = false;
+  isLoadingDetails = false; // Para mostrar un indicador de carga
+  isFullyLoaded = false; // Para evitar llamar a la API más de una vez
 
   // Ya no necesitamos las propiedades duplicadas (id, user, etc.) aquí.
   // Podemos acceder a ellas directamente en el template como 'thread.id', 'thread.user', etc.
@@ -69,8 +75,38 @@ export class Thread {
 
   // LÓGICA DE EXPANSIÓN
   // EXPANSION LOGIC
+  // --- LÓGICA DE EXPANSIÓN MEJORADA ---
   toggleExpansion(): void {
-    this.isExpanded = !this.isExpanded;
+    // Si ya está expandido, simplemente lo colapsamos
+    if (this.isExpanded) {
+      this.isExpanded = false;
+      return;
+    }
+
+    // Si ya hemos cargado todos los datos antes, simplemente lo volvemos a mostrar
+    if (this.isFullyLoaded) {
+      this.isExpanded = true;
+      return;
+    }
+
+    // --- Si es la primera vez que se expande, llamamos a la API ---
+    this.isLoadingDetails = true;
+    this.threadService.getThreadById(this.thread.id).subscribe({
+      next: (fullThreadData) => {
+        // Actualizamos nuestro objeto 'thread' local con los datos completos de la API
+        this.thread.posts = fullThreadData.posts;
+        this.thread.stats = fullThreadData.stats; // ¡Esto actualiza el contador de vistas!
+
+        // Marcamos que ya está completamente cargado y lo expandimos
+        this.isFullyLoaded = true;
+        this.isExpanded = true;
+        this.isLoadingDetails = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar los detalles del hilo', err);
+        this.isLoadingDetails = false;
+      },
+    });
   }
 
   // LÓGICA PARA ABRIR COMENTARIOS

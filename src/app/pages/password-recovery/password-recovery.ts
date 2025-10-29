@@ -3,7 +3,7 @@ import { Header } from '../../components/header/header';
 
 @Component({
   selector: 'app-password-recovery',
-  imports: [Header],
+  imports: [],
   templateUrl: './password-recovery.html',
   styleUrl: './password-recovery.css',
 })
