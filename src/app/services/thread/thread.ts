@@ -3,8 +3,8 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ThreadRequest } from '../../interfaces/ThreadRequest';
 import { Observable } from 'rxjs';
-import { ThreadResponse } from '../../interfaces/ThreadResponse';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
+import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 
 @Injectable({
   providedIn: 'root',
