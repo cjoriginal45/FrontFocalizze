@@ -1,25 +1,136 @@
 .profile-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* --- Header del Perfil --- */
+.profile-header {
+  display: grid;
+  grid-template-columns: auto 1fr; /* Columna para avatar, columna para el resto */
+  gap: 20px 40px; /* Espacio vertical y horizontal */
+  padding: 24px;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  position: relative; /* Para el posicionamiento absoluto del botón de editar */
+  margin-bottom: 40px;
+}
+
+.profile-header__left {
+  text-align: center;
+}
+
+.profile-header__avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 4px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+}
+
+.profile-header__display-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.profile-header__username {
+  font-size: 1rem;
+  color: #555;
+  margin: 0;
+}
+
+.profile-header__right {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-header__biography {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+  min-height: 50px; /* Espacio reservado para la bio */
+}
+
+.profile-header__stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stat__value {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.stat__label {
+  font-size: 1rem;
+  color: #555;
+}
+
+.profile-header__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.meta__icon {
+  font-size: 18px;
+}
+
+.profile-header__edit-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+/* --- Hilos del Perfil --- */
+.profile-threads__title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 12px;
+}
+.profile-threads__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* --- RESPONSIVE PARA MÓVIL --- */
+@media (max-width: 768px) {
+  .profile-header {
+    grid-template-columns: 1fr; /* Una sola columna */
+    gap: 16px;
+    padding: 16px;
+  }
+  .profile-header__left {
     display: flex;
-    flex-direction: column;
-    align-items: center; /* Centra el contenido horizontalmente */
-    padding: 40px 20px;
-    text-align: center;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
   }
-  
-  .profile-page__welcome-message {
-    font-size: 2rem;
-    font-weight: 300; /* Un peso de fuente más ligero para un look moderno */
-    color: #333;
-    margin-bottom: 8px;
+  .profile-header__avatar {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 0;
   }
-  
-  .profile-page__username {
-    font-weight: 500; /* Destaca el nombre de usuario */
-    color: var(--primary-color); /* Usa tu color primario global */
+  .profile-header__right {
+    /* El orden ya es correcto */
   }
-  
-  .profile-page__placeholder,
-  .profile-page__loading {
-    color: #777;
-    font-size: 1.1rem;
+  .profile-header__edit-btn {
+    top: 16px;
+    right: 16px;
   }
+}

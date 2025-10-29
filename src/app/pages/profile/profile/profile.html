@@ -1,23 +1,80 @@
-<!-- El contenedor principal de la página de perfil -->
-<!-- The main container for the profile page -->
 <div class="profile-page">
 
-    <!-- Usamos @if para asegurarnos de que 'username' tiene un valor antes de mostrarlo -->
-    <!-- We use @if to ensure 'username' has a value before displaying it -->
-    @if (username) {
-      <h1 class="profile-page__welcome-message">
-        Bienvenido al perfil de <span class="profile-page__username">@{{ username }}</span>
-      </h1>
-  
-      <!-- 
-        (En el futuro, aquí es donde harías una llamada a una API 
-         para obtener y mostrar el resto de la información del perfil: 
-         avatar, biografía, hilos del usuario, etc.)
-      -->
-      <p class="profile-page__placeholder">Próximamente: biografía, hilos y más...</p>
-  
-    } @else {
-      <p class="profile-page__loading">Cargando perfil...</p>
-    }
-    
-  </div>
+  @if (isLoading && !profile) {
+    <p class="profile-page__loading">Cargando perfil...</p> <!-- O un spinner de Material -->
+  }
+
+  @if (profile) {
+    <!-- Contenedor superior con la información del usuario -->
+    <header class="profile-header">
+
+      <!-- Sección Izquierda: Avatar e Info Básica -->
+      <div class="profile-header__left">
+        <img [src]="profile.avatarUrl" [alt]="'Avatar de ' + profile.displayName" class="profile-header__avatar">
+        <h1 class="profile-header__display-name">{{ profile.displayName }}</h1>
+        <p class="profile-header__username">@{{ profile.username }}</p>
+      </div>
+
+      <!-- Sección Derecha: Bio, Estadísticas y Acciones -->
+      <div class="profile-header__right">
+        <p class="profile-header__biography">{{ profile.biography || 'Este usuario aún no tiene una biografía.' }}</p>
+
+        <div class="profile-header__stats">
+          <div class="stat">
+            <span class="stat__value">{{ profile.follow }}</span>
+            <span class="stat__label">Siguiendo</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">{{ profile.followers }}</span>
+            <span class="stat__label">Seguidores</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">{{ profile.threadCount }}</span>
+            <span class="stat__label">Hilos</span>
+          </div>
+          <!-- Solo muestra los hilos disponibles si es nuestro propio perfil -->
+          @if (isOwnProfile && profile.threadsAvailableToday !== null) {
+            <div class="stat">
+              <span class="stat__value">{{ profile.threadsAvailableToday }}</span>
+              <span class="stat__label">Disponibles Hoy</span>
+            </div>
+          }
+        </div>
+        
+        <div class="profile-header__meta">
+          <mat-icon class="meta__icon">calendar_today</mat-icon>
+          <span class="meta__text">Se unió en {{ profile.registerDate | date: 'MMMM yyyy' }}</span>
+        </div>
+
+      </div>
+
+      <!-- Botón de Editar (solo visible si es nuestro perfil) -->
+      @if (isOwnProfile) {
+        <button mat-stroked-button class="profile-header__edit-btn" (click)="editProfile()">
+          Editar Perfil
+        </button>
+      }
+
+    </header>
+
+    <!-- Contenedor de Hilos Publicados -->
+    <div class="profile-threads">
+      <h2 class="profile-threads__title">Hilos Publicados</h2>
+
+      @if (threads.length > 0) {
+        <div class="profile-threads__list">
+          @for (thread of threads; track thread.id) {
+            <app-thread [thread]="thread"></app-thread>
+          }
+        </div>
+      } @else {
+        <p class="profile-threads__no-results">Este usuario aún no ha publicado ningún hilo.</p>
+      }
+
+      @if (isLoading && profile) {
+        <p>Cargando más hilos...</p> <!-- Indicador para scroll infinito -->
+      }
+    </div>
+  }
+
+</div>
