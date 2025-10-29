@@ -5,6 +5,11 @@ import { Observable } from 'rxjs';
 import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 import { ProfileInterface } from '../../interfaces/ProfileInterface';
 
+export interface ProfileUpdateData {
+  displayName: string;
+  biography: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,5 +36,24 @@ export class ProfileService {
       .set('size', size.toString());
     
     return this.http.get<ThreadResponse[]>(`${this.apiUrl}/${username}/threads`, { params });
+  }
+
+  /**
+   * Actualiza los datos de texto de un perfil.
+   * Updates the text data of a profile.
+   */
+  updateProfile(username: string, data: ProfileUpdateData): Observable<ProfileInterface> {
+    return this.http.patch<ProfileInterface>(`${this.apiUrl}/${username}`, data);
+  }
+
+  /**
+   * Sube un nuevo avatar para un usuario.
+   * Uploads a new avatar for a user.
+   */
+  uploadAvatar(username: string, file: File): Observable<{ avatarUrl: string }> {
+    const formData = new FormData();
+    formData.append('avatar', file, file.name);
+
+    return this.http.post<{ avatarUrl:string }>(`${this.apiUrl}/${username}/avatar`, formData);
   }
 }

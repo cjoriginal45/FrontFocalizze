@@ -8,8 +8,10 @@ import { Auth } from '../../../services/auth/auth';
 import { ThreadResponse } from '../../../interfaces/ThreadResponseDto';
 import { ProfileService } from '../../../services/profile/profile';
 import { ProfileInterface } from '../../../interfaces/ProfileInterface';
-import { forkJoin, map, switchMap, tap } from 'rxjs';
+import { filter, forkJoin, map, switchMap, tap } from 'rxjs';
 import { FeedThreadDto } from '../../../interfaces/FeedThread';
+import { MatDialog } from '@angular/material/dialog';
+import { EditProfileModal } from '../../../components/edit-profile/edit-profile-modal/edit-profile-modal';
 
 @Component({
   selector: 'app-profile',
@@ -26,6 +28,7 @@ export class Profile implements OnInit {
  private route = inject(ActivatedRoute);
  private profileService = inject(ProfileService);
  private authService = inject(Auth);
+ private dialog = inject(MatDialog);
 
  // Propiedades del componente
  profile: ProfileInterface | null = null;
@@ -56,7 +59,8 @@ export class Profile implements OnInit {
        }
 
        // Verificamos si es nuestro propio perfil
-       // this.isOwnProfile = this.authService.getCurrentUser()?.username === username;
+       // Check if it's the user's own profile
+       this.isOwnProfile = this.authService.getCurrentUser()?.username === username;
 
        // Hacemos las dos llamadas a la API en paralelo
        return forkJoin({
@@ -132,8 +136,50 @@ export class Profile implements OnInit {
      });
  }
 
- editProfile(): void {
-   console.log('Abrir modal para editar perfil...');
-   // Aquí llamarías a un ModalService para abrir la modal de edición
- }
+  editProfile(): void {
+    if (!this.profile) return;
+
+    const dialogRef = this.dialog.open(EditProfileModal, {
+      width: '500px',
+      data: { profile: this.profile }
+    });
+
+    dialogRef.afterClosed().pipe(
+      filter(result => !!result)
+    ).subscribe(result => {
+      const { formData, file } = result;
+
+      // 1. Si se seleccionó un nuevo archivo de avatar, lo subimos primero
+      // 1. if a new avatar file is selected, upload it first
+      if (file) {
+        this.profileService.uploadAvatar(this.profile!.username, file).subscribe({
+          next: (response) => {
+            console.log('Avatar actualizado con éxito');
+            this.profile!.avatarUrl = response.avatarUrl; 
+            this.updateProfileText(formData);
+          },
+          error: (err) => console.error('Error al subir el avatar', err)
+        });
+      } else {
+        // 2. Si no hay archivo nuevo, solo actualizamos los datos de texto
+        // 2. If no new file, just update the text data
+        this.updateProfileText(formData);
+      }
+    });
+  }
+
+  private updateProfileText(data: { displayName: string, biography: string }): void {
+    if (!this.profile) return;
+
+    this.profileService.updateProfile(this.profile.username, data).subscribe({
+      next: (updatedProfile) => {
+        console.log('Perfil actualizado con éxito');
+        this.profile = updatedProfile;
+      },
+      error: (err) => console.error('Error al actualizar el perfil', err)
+    });
+  }
 }
+
+
+
