@@ -3,11 +3,7 @@
   <!-- Mini Thread Header -->
   <header class="thread__header">
     <a routerLink="/profile/{{ thread.user.username }}" class="thread__user">
-      <img
-        src="assets/images/gammer.png"
-        alt="Avatar de {{ thread.user.displayName }}"
-        class="thread__avatar"
-      />
+      <img [src]="thread.user.avatarUrl" alt="Avatar de {{ thread.user.displayName }}" class="thread__avatar">
       <div class="thread__user-info">
         <!-- Usamos la propiedad 'displayName' del DTO -->
         <!-- We use the 'displayName' property of the DTO -->
