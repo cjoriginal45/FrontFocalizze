@@ -6,6 +6,7 @@ import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { Like } from '../../services/likeService/like';
 import { Interaction } from '../../services/interactionService/interaction';
 import { threadService } from '../../services/thread/thread';
+import { Save } from '../../services/saveService/save';
 
 @Component({
   selector: 'app-thread',
@@ -17,6 +18,7 @@ export class Thread {
   private likeService = inject(Like);
   private interactionService = inject(Interaction);
   private threadService = inject(threadService);
+  private saveService = inject(Save);
 
   // Aceptamos el objeto completo que viene del feed.
   // El tipo ahora coincide con la respuesta de la API.
@@ -66,38 +68,62 @@ export class Thread {
       // We don't need to do anything in 'next' because the UI is already updated.
     });
   }
+
   toggleSave(): void {
+    // 1. Guardamos el estado anterior para poder revertir en caso de error
+    // 1. We save the previous state so we can revert it in case of error
+    const previousState = this.thread.isSaved;
+    const previousCount = this.thread.stats.saves;
+
+    // 2. Aplicamos la actualización optimista a la UI
+    // 2. We applied the optimistic update to the UI
     this.thread.isSaved = !this.thread.isSaved;
-    console.log('Save toggled for thread:', this.thread.id);
-    // TODO: Emitir evento para notificar al servicio de Guardados
-    // TODO: Emit event to notify the Saved service
+    this.thread.stats.saves += this.thread.isSaved ? 1 : -1;
+
+    // 3. Llamamos al servicio de API para persistir el cambio
+    // 3. We call the API service to persist the change
+    this.saveService.toggleSave(this.thread.id).subscribe({
+      error: (err) => {
+        // 4. Si la API falla, revertimos los cambios en la UI
+        // 4. If the API fails, we revert the UI changes
+        console.error('Error al actualizar el guardado', err);
+        this.thread.isSaved = previousState;
+        this.thread.stats.saves = previousCount;
+      },
+      // No necesitamos hacer nada en 'next' porque la UI ya está actualizada.
+      // We don't need to do anything in 'next' because the UI is already updated.
+    });
   }
 
   // LÓGICA DE EXPANSIÓN
   // EXPANSION LOGIC
-  // --- LÓGICA DE EXPANSIÓN MEJORADA ---
   toggleExpansion(): void {
     // Si ya está expandido, simplemente lo colapsamos
+    // If it's already expanded, we just collapse it
     if (this.isExpanded) {
       this.isExpanded = false;
       return;
     }
 
     // Si ya hemos cargado todos los datos antes, simplemente lo volvemos a mostrar
+    // If we have already loaded all the data before, we simply display it again
     if (this.isFullyLoaded) {
       this.isExpanded = true;
       return;
     }
 
-    // --- Si es la primera vez que se expande, llamamos a la API ---
+    // Si es la primera vez que se expande, llamamos a la API
+    // If it's the first time it's being expanded, we call the API
     this.isLoadingDetails = true;
     this.threadService.getThreadById(this.thread.id).subscribe({
       next: (fullThreadData) => {
         // Actualizamos nuestro objeto 'thread' local con los datos completos de la API
+        // We update our local 'thread' object with the complete API data
         this.thread.posts = fullThreadData.posts;
         this.thread.stats = fullThreadData.stats; // ¡Esto actualiza el contador de vistas!
 
         // Marcamos que ya está completamente cargado y lo expandimos
+        // We mark that it is fully loaded and expand it
         this.isFullyLoaded = true;
         this.isExpanded = true;
         this.isLoadingDetails = false;
