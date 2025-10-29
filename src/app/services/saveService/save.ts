@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class Save {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiBaseUrl}/v1/thread`; // Ruta base de hilos
+  private apiUrl = `${environment.apiBaseUrl}/thread`;
 
   /**
    * Envía una petición para guardar o quitar el guardado de un hilo.
