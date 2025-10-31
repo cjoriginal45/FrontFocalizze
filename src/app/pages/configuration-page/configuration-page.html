@@ -1,1 +1,82 @@
-<p>configuration-page works!</p>
+<app-header></app-header>
+<!-- 
+  Contenedor principal de la página de configuración.
+  Main container for the settings page.
+-->
+<div class="settings-container">
+  <!-- 
+    Encabezado de la página usando MatToolbar para una estructura consistente.
+    Page header using MatToolbar for a consistent structure.
+  -->
+  <mat-toolbar class="settings-toolbar">
+    <button mat-icon-button class="back-button" aria-label="Volver">
+      <mat-icon class="arrow-icon">arrow_back</mat-icon>
+    </button>
+    <span>Configuración</span>
+  </mat-toolbar>
+
+  <!-- 
+    Contenido principal con el menú de opciones y el logo de fondo.
+    Main content with the options menu and the background logo.
+  -->
+  <main class="settings-content">
+    <!-- 
+      El logo de Focalizze se muestra en el centro, con baja opacidad.
+      The Focalizze logo is displayed in the center with low opacity.
+    -->
+    <div class="logo-placeholder">
+      <img src="assets/images/focalizze-logo.webp" alt="Focalizze Logo" />
+    </div>
+
+    <!-- 
+      Menú de navegación con MatNavList, semánticamente correcto para listas de enlaces.
+      Navigation menu with MatNavList, semantically correct for lists of links.
+    -->
+    <mat-nav-list>
+      <a mat-list-item href="#">
+        <!-- Más adelante será un [routerLink] -->
+        <mat-icon matListItemIcon>person</mat-icon>
+        <span matListItemTitle>Cuenta y perfil</span>
+      </a>
+      <a mat-list-item href="#">
+        <mat-icon matListItemIcon>lock</mat-icon>
+        <span matListItemTitle>Seguridad y acceso</span>
+      </a>
+      <a mat-list-item href="#">
+        <mat-icon matListItemIcon>notifications</mat-icon>
+        <span matListItemTitle>Notificaciones</span>
+      </a>
+      <a mat-list-item href="#">
+        <mat-icon matListItemIcon>volume_off</mat-icon>
+        <span matListItemTitle>Modo enfoque</span>
+      </a>
+      <a mat-list-item href="#">
+        <mat-icon matListItemIcon>block</mat-icon>
+        <span matListItemTitle>Bloqueo y privacidad</span>
+      </a>
+      <a mat-list-item href="#">
+        <mat-icon matListItemIcon>palette</mat-icon>
+        <span matListItemTitle>Tema</span>
+      </a>
+      <a mat-list-item href="#">
+        <mat-icon matListItemIcon>language</mat-icon>
+        <span matListItemTitle>Idioma</span>
+      </a>
+    </mat-nav-list>
+  </main>
+
+  <!-- 
+    Pie de página con enlaces a políticas y el copyright.
+    Footer with links to policies and the copyright notice.
+  -->
+  <footer class="settings-footer">
+    <div class="footer-links">
+      <a href="#">Condiciones de Servicio</a>
+      <a href="#">Política de Privacidad</a>
+      <a href="#">Política de cookies</a>
+      <a href="#">Accesibilidad</a>
+      <a href="#">Más opciones</a>
+    </div>
+    <p class="copyright">&copy; 2025 Focalizze.</p>
+  </footer>
+</div>
