@@ -33,4 +33,16 @@ export class InteractionCounter {
   decrementCount() {
     this.remainingInteractions.update(current => (current !== null && current > 0) ? current - 1 : 0);
   }
+
+  // Incrementa el contador localmente
+  // Increments the counter locally
+  incrementCount() {
+    this.remainingInteractions.update(current => {
+      // Solo incrementamos si el valor no es nulo y es menor que el límite.
+      if (current !== null && this.interactionLimit() !== null && current < this.interactionLimit()!) {
+        return current + 1;
+      }
+      return current; // Si no, devolvemos el valor actual.
+    });
+  }
 }

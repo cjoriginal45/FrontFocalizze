@@ -54,7 +54,11 @@ export class Interaction {
     this._likeToggledSource.next({ threadId, isLiked });
     // Solo decrementamos si se dio un like, no si se quitó
     if (isLiked) {
+      // Si se dio un like, decrementamos.
       this.interactionCounterService.decrementCount();
+    } else {
+      // Si se quitó un like, incrementamos (reembolsamos).
+      this.interactionCounterService.incrementCount();
     }
   }
 }
