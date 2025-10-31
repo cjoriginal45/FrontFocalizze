@@ -1,0 +1,192 @@
+:host {
+  display: block;
+  background-color: var(--background-color);
+  min-height: 100vh;
+
+  /* Espaciado base de los items Material */
+  /* Base spacing of Material items */
+  --mdc-list-list-item-leading-space: 20px;
+  --mdc-list-list-item-trailing-space: 20px;
+}
+
+/* ---------- Mobile first design ---------- */
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 100px);
+  background-color: var(--background-color);
+}
+
+.settings-toolbar {
+  border-bottom: 1px solid rgba(51, 51, 51, 0.3);
+  box-shadow: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .back-button {
+    position: absolute;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+
+    .arrow-icon {
+      font-size: 24px;
+      color: rgba(1, 52, 74, 0.7);
+    }
+
+    &:hover .arrow-icon {
+      color: rgba(1, 52, 74, 0.5);
+      transform: translatex(-3px);
+    }
+  }
+
+  span {
+    font-size: 1em;
+    font-weight: 600;
+    color: rgba(1, 52, 74, 0.7);
+    text-align: center;
+  }
+}
+
+.settings-content {
+  flex-grow: 1;
+  position: relative;
+  padding-bottom: 3rem;
+}
+
+.logo-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.05;
+  pointer-events: none;
+
+  img {
+    width: 280px;
+  }
+}
+
+mat-nav-list {
+  position: relative;
+  flex-direction: column;
+  z-index: 1;
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  a {
+    width: 90%;
+    padding: 5px 5px 5px 10px !important;
+    border-radius: 10px;
+    color: var(--text-color);
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    transition: all 0.2s ease;
+    text-decoration: none;
+
+    .mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+      color: rgba(1, 52, 74, 0.7);
+      margin: 0 15px 0 0;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    span {
+      font-size: 1.2em;
+    }
+  }
+}
+
+.settings-footer {
+  text-align: center;
+  padding: 1.5rem;
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 0.9rem;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .copyright {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+/* ---------- Desktop design ---------- */
+
+@media (min-width: 768px) {
+  .settings-container {
+    max-width: 900px;
+    min-height: calc(100vh - 60px);
+    margin: 2rem auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  }
+
+  .settings-toolbar span {
+    font-size: 1.1em;
+  }
+
+  .logo-placeholder img {
+    width: 300px;
+  }
+
+  mat-nav-list {
+    gap: 15px;
+    padding: 10px !important;
+    justify-content: center;
+    a {
+      width: 100%;
+      .mat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+      }
+      span {
+        font-size: 1.4em;
+      }
+    }
+
+    .settings-content {
+      padding: 0;
+    }
+
+    .footer-links {
+      flex-direction: row !important;
+      justify-content: center;
+      gap: 24px !important;
+    }
+  }
+}
