@@ -1,12 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { CommentAddedEvent } from '../../interfaces/CommentAddedEvent';
 import { LikeToggledEvent } from '../../interfaces/LikeToggledEvent';
+import { InteractionCounter } from '../interactionCounter/interaction-counter';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Interaction {
+
+  private interactionCounterService = inject(InteractionCounter);
+
+
   // Un Subject es como un EventEmitter que puede ser observado por múltiples componentes.
   // Lo hacemos privado para que solo este servicio pueda emitir eventos.
   // A Subject is like an EventEmitter that can be observed by multiple components.
@@ -29,10 +34,10 @@ export class Interaction {
    * @param threadId The ID of the thread that received the new comment.
    */
   notifyCommentAdded(threadId: number): void {
-    console.log(`InteractionService: Notificando que se añadió un comentario al hilo ${threadId}`);
     this._commentAddedSource.next({ threadId });
+    // Decrementamos el contador global
+    this.interactionCounterService.decrementCount();
   }
-
   private _likeToggledSource = new Subject<LikeToggledEvent>();
   likeToggled$ = this._likeToggledSource.asObservable();
 
@@ -46,9 +51,10 @@ export class Interaction {
    * @param isLiked The new like status (true if liked, false if unliked).
    */
   notifyLikeToggled(threadId: number, isLiked: boolean): void {
-    console.log(
-      `InteractionService: Notificando que el like del hilo ${threadId} ahora es ${isLiked}`
-    );
     this._likeToggledSource.next({ threadId, isLiked });
+    // Solo decrementamos si se dio un like, no si se quitó
+    if (isLiked) {
+      this.interactionCounterService.decrementCount();
+    }
   }
 }
