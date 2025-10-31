@@ -32,9 +32,10 @@
       <div class="sidenav__header-line-mobile"></div>
       <mat-nav-list class="sidenav__nav-list"
         ><a mat-list-item href="#"><mat-icon>search</mat-icon> <span>Buscar</span></a
-        ><a mat-list-item href="#"><mat-icon>person</mat-icon> <span>Perfil</span></a
-        ><a mat-list-item href="#"><mat-icon>bookmark</mat-icon> <span>Guardados</span></a
-        ><a mat-list-item href="#"
+        ><a mat-list-item routerLink="/profile"><mat-icon>person</mat-icon> <span>Perfil</span></a
+        ><a mat-list-item routerLink="/threads-saved"
+          ><mat-icon>bookmark</mat-icon> <span>Guardados</span></a
+        ><a mat-list-item routerLink="/configuration-page"
           ><mat-icon>settings</mat-icon> <span>Configuración</span></a
         ></mat-nav-list
       >
@@ -58,10 +59,12 @@
         </button>
       </div>
       <mat-nav-list class="sidenav__nav-list"
-        ><a mat-list-item href="#"><mat-icon>home</mat-icon> <span>Inicio</span></a
-        ><a mat-list-item href="#"><mat-icon>notifications</mat-icon> <span>Notificaciones</span></a
-        ><a mat-list-item href="#"><mat-icon>bookmark</mat-icon> <span>Guardados</span></a
-        ><a mat-list-item href="#"
+        ><a mat-list-item routerLink="/feed"><mat-icon>home</mat-icon> <span>Inicio</span></a
+        ><a mat-list-item routerLink="/notifications"
+          ><mat-icon>notifications</mat-icon> <span>Notificaciones</span></a
+        ><a mat-list-item routerLink="/threads-saved"
+          ><mat-icon>bookmark</mat-icon> <span>Guardados</span></a
+        ><a mat-list-item routerLink="/configuration-page"
           ><mat-icon>settings</mat-icon> <span>Configuración</span></a
         ></mat-nav-list
       >
