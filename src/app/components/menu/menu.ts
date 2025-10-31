@@ -4,10 +4,19 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { MatNavList } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
-  imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, MatNavList, MatIcon, CommonModule],
+  imports: [
+    MatSidenav,
+    MatSidenavContainer,
+    MatSidenavContent,
+    MatNavList,
+    MatIcon,
+    CommonModule,
+    RouterLink,
+  ],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
