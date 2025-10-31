@@ -9,6 +9,7 @@ import { Header } from './components/header/header';
 import { PasswordRecovery } from './pages/password-recovery/password-recovery';
 import { Profile } from './pages/profile/profile/profile';
 import { Discover } from './pages/discover/discover';
+import { ConfigurationPage } from './pages/configuration-page/configuration-page';
 
 export const routes: Routes = [
   { path: '', component: Login },
@@ -19,4 +20,5 @@ export const routes: Routes = [
   { path: 'feed', component: Feed },
   { path: 'profile/:username', component: Profile },
   { path: 'discover', component: Discover },
+  { path: 'configuration-page', component: ConfigurationPage },
 ];
