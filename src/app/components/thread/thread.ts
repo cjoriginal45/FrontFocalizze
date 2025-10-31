@@ -44,28 +44,41 @@ export class Thread {
   constructor() {}
 
   toggleLike(): void {
-    // Guardamos el estado anterior para poder revertir en caso de error
-    // We save the previous state so we can revert in case of error
+    // Guardamos el estado anterior para poder revertir en caso de error.
+    // We save the previous state so we can revert it in case of error.
     const previousState = this.thread.isLiked;
     const previousCount = this.thread.stats.likes;
-
-    // Aplicamos la actualización optimista a la UI
-    // We apply optimistic updating to the UI
+  
+    // APLICAMOS LA ACTUALIZACIÓN OPTIMISTA A LA UI
+    // We applied the optimistic update to the UI.
     this.thread.isLiked = !this.thread.isLiked;
     this.thread.stats.likes += this.thread.isLiked ? 1 : -1;
-
-    // Llamamos a la API
-    // We call the API
+    
+    // Guardamos el nuevo estado para pasarlo a la notificación.
+    const newLikedState = this.thread.isLiked;
+  
+    // LLAMAMOS A LA API
+    // We call the API.
     this.likeService.toggleLike(this.thread.id).subscribe({
+      next: () => {
+        //  SI LA API TIENE ÉXITO, NOTIFICAMOS LA INTERACCIÓN
+        // If the API is successful, we notify the interaction.
+        this.interactionService.notifyLikeToggled(this.thread.id, newLikedState);
+      },
       error: (err) => {
-        // Solo si hay un error, revertimos el estado
-        // Only if there is an error, we revert the state
-        console.error('Error al actualizar el like', err);
+        // SI LA API FALLA, REVERTIMOS TODO
+        // If the API fails, we revert everything.
+
+        // Revertimos el estado visual del componente del hilo.
+        // We revert the visual state of the thread component.
         this.thread.isLiked = previousState;
         this.thread.stats.likes = previousCount;
-      },
-      // No necesitamos hacer nada en 'next' porque la UI ya está actualizada.
-      // We don't need to do anything in 'next' because the UI is already updated.
+        
+        if (err.status === 429) {
+          // Aquí podrías usar un servicio de "toasts" o notificaciones para avisar al usuario.
+          console.warn('Límite de interacciones diarias alcanzado.');
+        }
+      }
     });
   }
 
