@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { Page } from '../../interfaces/PageInterface';
+import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 
 @Injectable({
   providedIn: 'root',

@@ -4,25 +4,21 @@
 <div class="feed-layout">
   <main class="feed-layout__content">
     <div class="feed-layout__threads-list">
-      <!-- Iteramos sobre el array 'threads' que ahora viene de la API -->
-      <!-- We iterate over the 'threads' array that now comes from the API -->
-      @for (thread of threads; track thread.id) {
-      <!-- 'app-thread' debe tener un @Input() que acepte un objeto de tipo FeedThreadDto -->
-      <!-- 'app-thread' must have an @Input() that accepts an object of type FeedThreadDto -->
-      <app-thread [thread]="thread" (openComments)="openCommentsModal($event)"></app-thread>
+      @for (threadId of threadIds; track threadId) {
+        <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
       }
     </div>
 
     <!-- Mostramos un mensaje de carga mientras se obtienen los datos -->
     <!-- We show a loading message while the data is being fetched -->
     @if (isLoading) {
-    <div class="loading-indicator">Cargando más hilos...</div>
+      <div class="loading-indicator">Cargando más hilos...</div>
     }
 
     <!-- Mostramos un botón para cargar más si no hemos llegado al final -->
     <!-- We show a button to load more if we haven't reached the end -->
-    @if (!isLastPage && threads.length > 0 && !isLoading) {
-    <button (click)="loadMore()" class="load-more-button">Cargar más</button>
+    @if (!isLastPage && threadIds.length > 0 && !isLoading) {
+      <button (click)="loadMoreThreads()" class="load-more-button">Cargar más</button>
     }
   </main>
 

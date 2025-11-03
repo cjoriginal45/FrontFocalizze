@@ -1,88 +1,82 @@
-<article class="thread">
-  <!-- Mini Header del Hilo -->
-  <!-- Mini Thread Header -->
-  <header class="thread__header">
-    <a routerLink="/profile/{{ thread.user.username }}" class="thread__user">
-      <img [src]="thread.user.avatarUrl" alt="Avatar de {{ thread.user.displayName }}" class="thread__avatar">
-      <div class="thread__user-info">
-        <!-- Usamos la propiedad 'displayName' del DTO -->
-        <!-- We use the 'displayName' property of the DTO -->
-        <span class="thread__display-name">{{ thread.user.displayName }}</span>
-        <span class="thread__username">@{{ thread.user.username }}</span>
+@if (threadSignal?.(); as thread) {
+
+  <article class="thread">
+    <!-- Mini Header del Hilo -->
+    <header class="thread__header">
+      <a routerLink="/profile/{{ thread.user.username }}" class="thread__user">
+        <img [src]="thread.user.avatarUrl" alt="Avatar de {{ thread.user.displayName }}" class="thread__avatar">
+        <div class="thread__user-info">
+          <span class="thread__display-name">{{ thread.user.displayName }}</span>
+          <span class="thread__username">@{{ thread.user.username }}</span>
+        </div>
+      </a>
+      <span class="thread__date">{{ thread.publicationDate | date : 'd MMM' }}</span>
+    </header>
+  
+    <!-- Cuerpo del Hilo -->
+    <div class="thread__body" [class.thread__body--expanded]="isExpanded">
+      <div class="thread__content">
+        <!-- Post 1 (siempre visible) -->
+        <div class="thread__post">
+          <h3 class="thread__post-title">1° post</h3>
+          <p class="thread__post-text">{{ thread.posts[0] }}</p>
+        </div>
+  
+        <!-- Posts adicionales (visibles si está expandido) -->
+        @if (isExpanded) {
+          @if (isLoadingDetails) {
+            <div class="thread__loading-spinner">Cargando...</div>
+          } @else {
+            @for (post of thread.posts.slice(1); track $index) {
+              <div class="thread__post">
+                <h3 class="thread__post-title">{{ $index + 2 }}° post</h3>
+                <p class="thread__post-text">{{ post }}</p>
+              </div>
+            }
+          }
+        }
       </div>
-    </a>
-    <!-- Usamos el pipe 'date' para formatear la fecha que viene como string desde la API -->
-    <!-- We use the 'date' pipe to format the date that comes as a string from the API -->
-    <span class="thread__date">{{ thread.publicationDate | date : 'd MMM' }}</span>
-  </header>
-
-  <!-- Cuerpo del Hilo -->
-  <!-- Thread Body -->
-  <div class="thread__body" [class.thread__body--expanded]="isExpanded">
-    <div class="thread__content">
-      <div class="thread__post">
-        <h3 class="thread__post-title">1° post</h3>
-        <p class="thread__post-text">{{ thread.posts[0] }}</p>
+  
+      <!-- Botón de Expandir (visible si hay más de 1 post O si aún no se ha cargado por completo) -->
+      @if (thread.posts.length > 1 || !isFullyLoaded) {
+        <a (click)="toggleExpansion()" class="thread__expand-btn">
+          @if (isLoadingDetails) {
+            Cargando...
+          } @else if (isExpanded) {
+            Ocultar -
+          } @else {
+            Ampliar +
+          }
+        </a>
+      }
+    </div>
+  
+    <!-- Footer con Acciones -->
+    <footer class="thread__footer">
+      <!-- Acción: Me Gusta -->
+      <div class="thread__action thread__action--like" (click)="toggleLike()" [class.thread__action--liked]="thread.isLiked">
+        <mat-icon class="thread__icon">{{ thread.isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
+        <span class="thread__counter">{{ thread.stats.likes | number }}</span>
       </div>
-      @if (isExpanded) { @for (post of thread.posts.slice(1); track $index) {
-      <div class="thread__post">
-        <h3 class="thread__post-title">{{ $index + 2 }}° post</h3>
-        <p class="thread__post-text">{{ post }}</p>
+  
+      <!-- Acción: Comentarios -->
+      <div class="thread__action" (click)="onCommentClick()">
+        <mat-icon class="thread__icon">chat_bubble_outline</mat-icon>
+        <span class="thread__counter">{{ thread.stats.comments | number }}</span>
       </div>
-      } }
-    </div>
-    @if (thread.posts.length > 1 || !isFullyLoaded) {
-    <a (click)="toggleExpansion()" class="thread__expand-btn">
-      @if (isLoadingDetails) { Cargando... } @else if (isExpanded) { Ocultar - } @else { Ampliar + }
-    </a>
-    }
-  </div>
-
-  <!-- Footer con Acciones -->
-  <!-- Footer with Actions -->
-  <footer class="thread__footer">
-    <!-- Acción: Me Gusta -->
-    <!-- Action: Like -->
-    <div
-      class="thread__action thread__action--like"
-      (click)="toggleLike()"
-      [class.thread__action--liked]="thread.isLiked"
-    >
-      <!-- El ícono cambia dinámicamente basado en thread.isLiked -->
-      <!-- The icon changes dynamically based on thread.isLiked -->
-      <mat-icon class="thread__icon">{{
-        thread.isLiked ? 'favorite' : 'favorite_border'
-      }}</mat-icon>
-      <span class="thread__counter">{{ thread.stats.likes | number }}</span>
-    </div>
-
-    <!-- Acción: Comentarios -->
-    <!-- Action: Comments -->
-    <div class="thread__action" (click)="onCommentClick()">
-      <mat-icon class="thread__icon">chat_bubble_outline</mat-icon>
-      <span class="thread__counter">{{ thread.stats.comments | number }}</span>
-    </div>
-
-    <!-- Acción: Visualizaciones -->
-    <!-- Action: Views -->
-    <div class="thread__action">
-      <mat-icon class="thread__icon">bar_chart</mat-icon>
-      <!-- Usamos la propiedad 'views' del nuevo DTO de estadísticas -->
-      <!-- We use the 'views' property of the new statistics DTO -->
-      <span class="thread__counter">{{ thread.stats.views | number }}</span>
-    </div>
-
-    <!-- Acción: Guardar -->
-    <!-- Action: Save -->
-    <div class="thread__action" (click)="toggleSave()">
-      <!-- El ícono cambia dinámicamente basado en thread.isSaved -->
-      <!-- The icon changes dynamically based on thread.isSaved -->
-      <mat-icon class="thread__icon">{{
-        thread.isSaved ? 'bookmark' : 'bookmark_border'
-      }}</mat-icon>
-      <!-- Usamos la propiedad 'saves' del nuevo DTO de estadísticas -->
-      <!-- We use the 'know' property of the new statistics DECREE -->
-      <span class="thread__counter">{{ thread.stats.saves | number }}</span>
-    </div>
-  </footer>
-</article>
+  
+      <!-- Acción: Visualizaciones -->
+      <div class="thread__action">
+        <mat-icon class="thread__icon">bar_chart</mat-icon>
+        <span class="thread__counter">{{ thread.stats.views | number }}</span>
+      </div>
+  
+      <!-- Acción: Guardar -->
+      <div class="thread__action" (click)="toggleSave()">
+        <mat-icon class="thread__icon">{{ thread.isSaved ? 'bookmark' : 'bookmark_border' }}</mat-icon>
+        <span class="thread__counter">{{ thread.stats.saves | number }}</span>
+      </div>
+    </footer>
+  </article>
+  
+  }

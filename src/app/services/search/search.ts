@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserSearch } from '../../interfaces/UserSearch';
 import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
+import { FeedThreadDto } from '../../interfaces/FeedThread';
 
 @Injectable({
   providedIn: 'root'

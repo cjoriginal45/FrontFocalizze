@@ -64,18 +64,21 @@
     <div class="profile-threads">
       <h2 class="profile-threads__title">Hilos Publicados</h2>
 
-      @if (threads.length > 0) {
+      @if (threadIds.length > 0) {
         <div class="profile-threads__list">
-          @for (thread of threads; track thread.id) {
-            <app-thread [thread]="thread"></app-thread>
+    
+          <!-- --- CAMBIO CLAVE: Iteramos sobre 'threadIds' y pasamos 'threadId' --- -->
+          @for (threadId of threadIds; track threadId) {
+            <app-thread [threadId]="threadId"></app-thread>
           }
+    
         </div>
-      } @else {
+      } @else if (!isLoading) { <!-- Añadimos !isLoading para no mostrarlo mientras carga -->
         <p class="profile-threads__no-results">Este usuario aún no ha publicado ningún hilo.</p>
       }
 
       @if (isLoading && profile) {
-        <p>Cargando más hilos...</p> <!-- Indicador para scroll infinito -->
+        <p>Cargando más hilos...</p>
       }
     </div>
   }

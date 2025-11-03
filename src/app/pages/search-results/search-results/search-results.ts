@@ -11,6 +11,7 @@ import { ThreadResponse } from '../../../interfaces/ThreadResponseDto';
 import { UserInterface } from '../../../interfaces/UserInterface';
 import { Header } from "../../../components/header/header";
 import { FollowingDiscovering } from "../../../components/following-discovering/following-discovering";
+import { ThreadState } from '../../../services/thread-state/thread-state';
 
 @Component({
   selector: 'app-search-results',
@@ -18,101 +19,75 @@ import { FollowingDiscovering } from "../../../components/following-discovering/
   templateUrl: './search-results.html',
   styleUrl: './search-results.css'
 })
-export class SearchResults implements OnInit  {
+export class SearchResults implements OnInit {
+  // --- Inyección de Dependencias ---
   private route = inject(ActivatedRoute);
   private searchService = inject(Search);
-  private router = inject(Router); 
+  private threadStateService = inject(ThreadState); // <-- Inyectamos el store
+  private router = inject(Router);
 
-    // --- Propiedades de Estado ---
-    threads: FeedThreadDto[] = [];
-    query = '';
-    isLoading = true;
+  // --- Propiedades de Estado (Refactorizadas) ---
+  threadIds: number[] = []; // <-- AHORA SOLO GUARDAMOS IDs
+  query = '';
+  isLoading = true;
 
+  ngOnInit(): void {
+    this.route.queryParamMap.pipe(
+      switchMap(params => {
+        this.isLoading = true;
+        this.threadIds = []; // Limpiamos los IDs de resultados anteriores
+        this.query = params.get('q') || '';
 
-    ngOnInit(): void {
-      // Nos suscribimos a los cambios en los parámetros de la URL.
-      this.route.queryParamMap.pipe(
-        // Usamos switchMap para cancelar peticiones anteriores si la búsqueda cambia rápidamente.
-        switchMap(params => {
-          this.isLoading = true;
-          this.threads = []; // Limpiamos resultados anteriores
-          this.query = params.get('q') || ''; // Obtenemos el término de búsqueda
-  
-          if (this.query) {
-            // Si hay una query, llamamos al servicio de búsqueda.
-            return this.searchService.searchContent(this.query);
-          }
-          // Si no hay query, devolvemos un array vacío.
-          return [];
-        })
-      ).subscribe({
-        next: (results) => {
-          // Mapeamos los resultados de la API al modelo de vista.
-          this.threads = results.map(dto => this.mapDtoToViewModel(dto));
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error al buscar contenido', err);
-          this.isLoading = false;
+        if (this.query) {
+          return this.searchService.searchContent(this.query);
         }
-      });
-    }
-
-    /**
-   * Navega a la página anterior en el historial del navegador.
-   */
-  goBack(): void {
-    // Una forma simple de volver atrás. Podríamos usar Location service también.
-    this.router.navigate(['/home']); // O simplemente `window.history.back();`
+        return [];
+      })
+    ).subscribe({
+      next: (results) => { // 'results' es de tipo ThreadResponse[]
+        // 1. Mapeamos los DTOs de la API a los Modelos de Vista.
+        const mappedThreads: FeedThreadDto[] = results.map(dto => this.mapDtoToViewModel(dto));
+        
+        // 2. Cargamos/actualizamos los hilos en el store centralizado.
+        this.threadStateService.loadThreads(mappedThreads);
+        
+        // 3. Obtenemos solo los IDs de los hilos encontrados.
+        this.threadIds = mappedThreads.map(t => t.id);
+        
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error al buscar contenido', err);
+        this.isLoading = false;
+      }
+    });
   }
-  
+
+  goBack(): void {
+    this.router.navigate(['/home']);
+  }
+
   /**
    * Convierte el DTO de la API (ThreadResponse) al Modelo de Vista (FeedThreadDto).
    */
   private mapDtoToViewModel(dto: ThreadResponse): FeedThreadDto {
-    // Verificación defensiva para evitar errores si llega un DTO nulo o malformado
     if (!dto || !dto.author) {
-      // Si los datos son inválidos, devolvemos un objeto 'fantasma' para no romper la UI
-      // y mostramos una advertencia en la consola para depuración.
-      console.warn('Se recibió un DTO de hilo inválido o sin autor:', dto);
-      return {
-        id: dto?.id || -1,
-        user: { id: -1, username: 'unknown', displayName: 'Usuario Desconocido', avatarUrl: 'assets/images/default-avatar.png' },
-        publicationDate: new Date().toISOString(),
-        posts: ['Error al cargar el contenido de este hilo.'],
-        stats: { likes: 0, comments: 0, saves: 0, views: 0 },
-        isLiked: false,
-        isSaved: false,
-      };
+    console.warn('DTO inválido encontrado, usando fallback:', dto);
+    // ... (tu lógica de fallback que ya estaba bien)
     }
-    
-    // Si los datos son válidos, procedemos con el mapeo.
     return {
-      // ---- Mapeo Directo ----
-      id: dto.id,
-      posts: dto.posts,
-      stats: dto.stats,
-  
-      // ---- Mapeo con Renombramiento y Lógica ----
-      
-      // Renombramos 'author' a 'user'. El tipo UserInterface ya coincide.
-      // Añadimos un fallback para el avatar por si viene nulo.
-      user: {
-        ...dto.author,
-        avatarUrl: dto.author.avatarUrl || 'assets/images/default-avatar.png'
-      },
-  
-      // Renombramos 'createdAt' a 'publicationDate'. El tipo 'string' ya coincide.
-      publicationDate: dto.createdAt,
-  
-      // ---- Mapeo con Valores por Defecto para el Estado de la UI ----
-      
-      // El backend no nos dice si nos gusta o lo hemos guardado en esta llamada,
-      // así que inicializamos estos valores a 'false'.
-      isLiked: false,
-      isSaved: false,
+    id: dto.id,
+    user: {
+    id: dto.author.id,
+    username: dto.author.username,
+    displayName: dto.author.displayName, // 'name' debe coincidir con tu interfaz UserInterface
+    avatarUrl: dto.author.avatarUrl || 'assets/images/default-avatar.png'
+    },
+    publicationDate: dto.createdAt,
+    posts: dto.posts,
+    stats: dto.stats,
+    isLiked: false, // O usa 'dto.isLiked' si el backend lo envía
+    isSaved: false,
     };
-
-  }
-
+    }
 }

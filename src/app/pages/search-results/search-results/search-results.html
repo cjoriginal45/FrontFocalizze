@@ -1,33 +1,35 @@
 <app-header></app-header>
 <app-following-discovering></app-following-discovering>
+
 <div class="search-results-page">
   
-    <!-- Header de la página con el botón para volver -->
-    <header class="search-results-page__header">
-      <button mat-icon-button (click)="goBack()" class="search-results-page__back-btn" aria-label="Volver a la página anterior">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <div class="search-results-page__title-container">
-        <h1 class="search-results-page__title">Resultados de Búsqueda</h1>
-        <p class="search-results-page__query">para: "{{ query }}"</p>
-      </div>
-    </header>
+  <header class="search-results-page__header">
+    <button mat-icon-button (click)="goBack()" class="search-results-page__back-btn" aria-label="Volver a la página anterior">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="search-results-page__title-container">
+      <h1 class="search-results-page__title">Resultados de Búsqueda</h1>
+      <p class="search-results-page__query">para: "{{ query }}"</p>
+    </div>
+  </header>
   
-    <!-- Contenido principal: indicador de carga o lista de resultados -->
-    <main class="search-results-page__content">
-      @if (isLoading) {
-        <div class="loading-indicator">Cargando resultados...</div>
+  <main class="search-results-page__content">
+    @if (isLoading) {
+      <div class="loading-indicator">Cargando resultados...</div>
+    } @else {
+      @if (threadIds.length > 0) {
+        <div class="search-results-page__threads-list">
+          
+          <!-- --- CAMBIO CLAVE: Iteramos sobre 'threadIds' y pasamos 'threadId' --- -->
+          @for (threadId of threadIds; track threadId) {
+            <app-thread [threadId]="threadId"></app-thread>
+          }
+
+        </div>
       } @else {
-        @if (threads.length > 0) {
-          <div class="search-results-page__threads-list">
-            @for (thread of threads; track thread.id) {
-              <app-thread [thread]="thread"></app-thread>
-            }
-          </div>
-        } @else {
-          <p class="search-results-page__no-results">No se encontraron hilos para tu búsqueda.</p>
-        }
+        <p class="search-results-page__no-results">No se encontraron hilos para tu búsqueda.</p>
       }
-    </main>
-  
-  </div>
+    }
+  </main>
+
+</div>
