@@ -38,7 +38,6 @@ export class threadService {
    * @returns An Observable with the full thread data in FeedThreadDto format.
    */
   getThreadById(id: number): Observable<FeedThreadDto> {
-    // La URL coincide con el endpoint del backend: GET /api/v1/thread/{id}
     return this.http.get<FeedThreadDto>(`${this.apiUrl}/${id}`);
   }
 }

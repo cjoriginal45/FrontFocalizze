@@ -10,13 +10,15 @@ import { PasswordRecovery } from './pages/password-recovery/password-recovery';
 import { Profile } from './pages/profile/profile/profile';
 import { Discover } from './pages/discover/discover';
 import { ConfigurationPage } from './pages/configuration-page/configuration-page';
+import { SearchResults } from './pages/search-results/search-results/search-results';
 
 export const routes: Routes = [
   { path: '', component: Login },
   { path: 'register', component: Register },
   { path: 'bottonNav', component: BottonNav },
   { path: 'suggestions', component: Suggestions },
-  { path: 'home', component: Feed },
+  { path: 'home', component: Feed}, 
+  { path: 'search', component: SearchResults },
   { path: 'feed', component: Feed },
   { path: 'profile/:username', component: Profile },
   { path: 'discover', component: Discover },

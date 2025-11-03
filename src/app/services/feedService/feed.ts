@@ -4,7 +4,6 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { Page } from '../../interfaces/PageInterface';
-import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +11,7 @@ import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 export class FeedService {
   private http = inject(HttpClient);
   // Construimos la URL base de nuestro endpoint del feed
-  private apiUrl = `${environment.apiBaseUrl}/feed`;
+  private feedApiUrl = `${environment.apiBaseUrl}/feed`;
 
   /**
    * Obtiene una página de hilos del feed desde el backend.
@@ -20,12 +19,13 @@ export class FeedService {
    * @param size El número de hilos por página.
    * @returns Un Observable con la respuesta paginada.
    */
-  getFeed(page: number, size: number): Observable<Page<ThreadResponse>> {
+  getFeed(page: number, size: number): Observable<Page<FeedThreadDto>> {
     const params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString());
-      
-    return this.http.get<Page<ThreadResponse>>(this.apiUrl, { params });
-  }
+      .set('size', size.toString())
+      .set('sort', 'createdAt,desc'); // Aseguramos que los hilos vengan ordenados por fecha
 
+    // Hacemos la llamada GET con los parámetros
+    return this.http.get<Page<FeedThreadDto>>(this.feedApiUrl, { params });
+  }
 }

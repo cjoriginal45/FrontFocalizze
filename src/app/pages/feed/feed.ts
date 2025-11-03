@@ -11,9 +11,6 @@ import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { FeedService } from '../../services/feedService/feed';
 import { Interaction } from '../../services/interactionService/interaction';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Search } from '../../services/search/search';
-import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 
 @Component({
   selector: 'app-feed',
@@ -23,10 +20,7 @@ import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 })
 export class Feed implements OnInit, OnDestroy {
   private feedService = inject(FeedService);
-  private searchService = inject(Search);
   private interactionService = inject(Interaction);
-  public route = inject(ActivatedRoute); 
-  private router = inject(Router);
   public dialog = inject(MatDialog);
 
   // Propiedades para manejar el estado de la carga y los datos
@@ -36,145 +30,80 @@ export class Feed implements OnInit, OnDestroy {
   currentPage = 0; // Contador para la paginación / Counter for pagination
   isLastPage = false; // Booleano para detener las llamadas cuando no haya más datos / Boolean to stop calls when there is no more data
 
-
-  // -- propiedad para el título dinámico --
-  pageTitle = 'Inicio';
-
-  private routeSubscription: Subscription | undefined;
   private commentAddedSubscription: Subscription | undefined;
 
   ngOnInit(): void {
-    // La carga inicial y las futuras cargas (por búsqueda) se manejan aquí.
-    this.listenForRouteChange();
+    this.loadThreads();
     this.listenForCommentUpdates();
   }
 
+  // Método para destruir la suscripción y evitar memory leaks
+  // Method to destroy the subscription and avoid memory leaks
   ngOnDestroy(): void {
-    // Limpiamos las suscripciones para evitar fugas de memoria.
-    this.routeSubscription?.unsubscribe();
     this.commentAddedSubscription?.unsubscribe();
   }
 
-  /**
-   * Se suscribe a los cambios en la URL (parámetros de consulta) para decidir
-   * si debe mostrar el feed principal o los resultados de una búsqueda.
-   */
-  private listenForRouteChange(): void {
-    this.routeSubscription = this.route.queryParamMap.subscribe(params => {
-      const searchQuery = params.get('q');
-      
-      // Reiniciamos el estado para cada nueva vista (feed o búsqueda).
-      this.threads = [];
-      this.currentPage = 0;
-      this.isLastPage = false;
-      this.isLoading = true; // Inicia la carga
-
-      if (searchQuery) {
-        // MODO BÚSQUEDA
-        this.pageTitle = `Resultados para: "${searchQuery}"`;
-        this.loadSearchResults(searchQuery);
-      } else {
-        // MODO FEED PRINCIPAL ("Siguiendo")
-        this.pageTitle = 'Siguiendo';
-        this.loadFollowingFeed();
-      }
-    });
-  }
-
-  /**
-   * Carga los hilos para el feed principal ("Siguiendo") de forma paginada.
-   */
-  private loadFollowingFeed(): void {
-    if (this.isLoading && this.currentPage > 0) return; // Previene cargas múltiples en scroll
-    this.isLoading = true;
-
-    this.feedService.getFeed(this.currentPage, 10).subscribe({
-      next: (page) => {
-        const newThreads: FeedThreadDto[] = page.content.map(dto => this.mapDtoToViewModel(dto));
-        this.threads.push(...newThreads); // Añade los nuevos hilos
-        this.isLastPage = page.last;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar el feed', err);
-        this.isLoading = false;
-      }
-    });
-  }
-
-  /**
-   * Carga los resultados de una búsqueda de contenido. No es paginada.
-   */
-  private loadSearchResults(query: string): void {
-    this.searchService.searchContent(query).subscribe({
-      next: (results) => {
-        const newThreads: FeedThreadDto[] = results.map(dto => this.mapDtoToViewModel(dto));
-        this.threads = newThreads;
-        this.isLastPage = true; // La búsqueda no es paginada
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar los resultados de búsqueda', err);
-        this.isLoading = false;
-      }
-    });
-  }
-
-  /**
-   * Carga la siguiente página de resultados para el feed principal.
-   * No hace nada si estamos en una vista de búsqueda.
-   */
-  loadMore(): void {
-    if (this.isLoading || this.isLastPage || this.route.snapshot.queryParamMap.has('q')) {
-      return;
-    }
-    this.currentPage++;
-    this.loadFollowingFeed();
-  }
-
-  /**
-   * Convierte un DTO de respuesta de la API (ThreadResponse)
-   * a un modelo de vista que la UI puede usar (FeedThreadDto).
-   */
-  private mapDtoToViewModel(dto: ThreadResponse): FeedThreadDto {
-    return {
-      id: dto.id,
-      user: {
-        id: dto.author.id, // Asumiendo que UserInterface tiene 'id'
-        username: dto.author.username,
-        displayName: dto.author.displayName, // 'name' en lugar de 'displayName' si así lo requiere UserInterface
-        avatarUrl: dto.author.avatarUrl || 'assets/images/default-avatar.png'
-      },
-      publicationDate: dto.createdAt,
-      posts: dto.posts,
-      stats: dto.stats || { likes: 0, comments: 0, views: 0 },
-      isLiked: false, // El estado inicial siempre es 'false' al cargar
-      isSaved: false,
-    };
-  }
-  
-  /**
-   * Se suscribe a eventos de nuevos comentarios para actualizar la UI en tiempo real.
-   */
+  // Método que configura la suscripción
+  // Method that configures the subscription
   private listenForCommentUpdates(): void {
     this.commentAddedSubscription = this.interactionService.commentAdded$.subscribe((event) => {
       console.log(`FeedComponent: Recibida notificación para el hilo ${event.threadId}`);
-      const threadToUpdate = this.threads.find((thread) => thread.id === event.threadId);
-      if (threadToUpdate) {
-        threadToUpdate.stats.comments++;
-      }
+      this.updateCommentCount(event.threadId);
     });
   }
 
-  /**
-   * Abre la modal de comentarios para un hilo específico.
-   */
-  openCommentsModal(threadId: number): void {
+  private updateCommentCount(threadId: number): void {
+    const threadToUpdate = this.threads.find((thread) => thread.id === threadId);
+    if (threadToUpdate) {
+      threadToUpdate.stats.comments++;
+    }
+  }
+
+  // Lógica de negocio para obtener los datos
+  // Business logic to get the data
+  loadThreads(): void {
+    // Prevenimos llamadas múltiples si ya está cargando o si ya se cargó todo
+    // We prevent multiple calls if it is already loading or if everything has already loaded
+    if (this.isLoading || this.isLastPage) {
+      return;
+    }
+
+    this.isLoading = true; // Marcamos como "cargando" / // We mark as "loading"
+
+    this.feedService.getFeed(this.currentPage, 10).subscribe({
+      next: (page) => {
+        // Usamos el spread operator (...) para AÑADIR los nuevos hilos sin borrar los antiguos
+        // We use the spread operator (...) to ADD the new threads without deleting the old ones
+        this.threads = [...this.threads, ...page.content];
+        this.isLastPage = page.last; // Actualizamos si es la última página / We update if it is the last page
+        this.isLoading = false; // Marcamos como "carga finalizada" / We mark it as "loading completed"
+      },
+      error: (err) => {
+        console.error('Error al cargar los hilos del feed', err);
+        this.isLoading = false; // Marcamos como "carga finalizada" incluso si hay error / We mark it as "loading completed" even if there is an error
+      },
+    });
+  }
+
+  // Función para la paginación (ej. un botón "Cargar más")
+  // Function for pagination (in a "Load More" button)
+  loadMore(): void {
+    if (!this.isLastPage) {
+      this.currentPage++; // Incrementamos el número de página / We increased the page number
+      this.loadThreads(); // Y volvemos a llamar a la función de carga / And we call the load function again
+    }
+  }
+
+  // Método para abrir comentarios
+  // Method for opening comments
+  openCommentsModal(postId: number): void {
     this.dialog.open(Comments, {
       width: '700px',
       maxWidth: '95vw',
       maxHeight: '90vh',
-      data: { threadId: threadId },
+      data: {
+        postId: postId,
+      },
       panelClass: 'comments-dialog-container',
     });
   }

@@ -3,27 +3,33 @@
 
 <div class="feed-layout">
   <main class="feed-layout__content">
-    
-    <!-- TÍTULO DINÁMICO -->
-    <h1 class="feed-layout__title">{{ pageTitle }}</h1>
-
     <div class="feed-layout__threads-list">
+      <!-- Iteramos sobre el array 'threads' que ahora viene de la API -->
+      <!-- We iterate over the 'threads' array that now comes from the API -->
       @for (thread of threads; track thread.id) {
-        <app-thread [thread]="thread" (openComments)="openCommentsModal($event)"></app-thread>
+      <!-- 'app-thread' debe tener un @Input() que acepte un objeto de tipo FeedThreadDto -->
+      <!-- 'app-thread' must have an @Input() that accepts an object of type FeedThreadDto -->
+      <app-thread [thread]="thread" (openComments)="openCommentsModal($event)"></app-thread>
       }
     </div>
 
-    @if (isLoading) { /* ... */ }
+    <!-- Mostramos un mensaje de carga mientras se obtienen los datos -->
+    <!-- We show a loading message while the data is being fetched -->
+    @if (isLoading) {
+    <div class="loading-indicator">Cargando más hilos...</div>
+    }
 
-    <!-- El botón "Cargar más" solo aparece si NO estamos en la última página Y NO estamos en una búsqueda -->
-    @if (!isLastPage && !route.snapshot.queryParamMap.has('q') && threads.length > 0 && !isLoading) {
-      <button (click)="loadMore()" class="load-more-button">Cargar más</button>
+    <!-- Mostramos un botón para cargar más si no hemos llegado al final -->
+    <!-- We show a button to load more if we haven't reached the end -->
+    @if (!isLastPage && threads.length > 0 && !isLoading) {
+    <button (click)="loadMore()" class="load-more-button">Cargar más</button>
     }
   </main>
 
   <aside class="feed-layout__sidebar">
     <app-suggestions></app-suggestions>
   </aside>
+</div>
 
 <app-botton-nav></app-botton-nav>
 <app-create-thread-button></app-create-thread-button>
