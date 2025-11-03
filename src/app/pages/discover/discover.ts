@@ -9,10 +9,12 @@ import { CreateThreadButton } from '../../components/create-thread-button/create
 import { Thread } from '../../components/thread/thread';
 import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 import { ThreadState } from '../../services/thread-state/thread-state';
+import { FollowingDiscovering } from "../../components/following-discovering/following-discovering";
+import { Suggestions } from "../../components/suggestions/suggestions";
 
 @Component({
   selector: 'app-discover',
-  imports: [BottonNav, Header, CreateThreadButton, Thread],
+  imports: [BottonNav, Header, CreateThreadButton, Thread, FollowingDiscovering, Suggestions],
   templateUrl: './discover.html',
   styleUrl: './discover.css',
 })

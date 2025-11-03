@@ -13,6 +13,7 @@ import { FeedThreadDto } from '../../../interfaces/FeedThread';
 import { MatDialog } from '@angular/material/dialog';
 import { EditProfileModal } from '../../../components/edit-profile/edit-profile-modal/edit-profile-modal';
 import { ThreadState } from '../../../services/thread-state/thread-state';
+import { Header } from "../../../components/header/header";
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +21,7 @@ import { ThreadState } from '../../../services/thread-state/thread-state';
     RouterLink,
     MatIconModule,
     MatButtonModule,
-    Thread],
+    Thread, Header],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })

@@ -1,4 +1,5 @@
 <app-header></app-header>
+<app-following-discovering></app-following-discovering>
 
 <div class="discover-layout">
   <main class="discover-layout__content">
@@ -16,6 +17,9 @@
       <button (click)="loadMoreThreads()" class="load-more-button">Cargar más</button>
     }
   </main>
+  <aside class="feed-layout__sidebar">
+    <app-suggestions></app-suggestions>
+  </aside>
 </div>
 
 <app-botton-nav></app-botton-nav>
