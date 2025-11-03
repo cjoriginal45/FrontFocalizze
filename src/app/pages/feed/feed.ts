@@ -68,10 +68,18 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
     });
   }
   
-  // (El manejo de comentarios se moverá al ThreadStateService para ser global)
-  // private listenForCommentUpdates(): void { ... }
-
+  /**
+   * Abre la modal de comentarios.
+   */
   openCommentsModal(threadId: number): void {
-    this.dialog.open(Comments, { /* ... */ });
+    this.dialog.open(Comments, {
+      width: '700px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: {
+        postId: threadId, 
+      },
+      panelClass: 'comments-dialog-container',
+    });
   }
 }

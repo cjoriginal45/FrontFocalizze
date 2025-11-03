@@ -1,17 +1,32 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
+import { Interaction } from '../interactionService/interaction';
+import { Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThreadState {
+
+  private interactionService = inject(Interaction);
   
  // La clave es el 'id' del hilo, el valor es una Señal (Signal) que contiene el hilo.
   // Usar una señal para cada hilo hace que los cambios sean extremadamente granulares y performantes.
   private threadsMap = new Map<number, WritableSignal<FeedThreadDto>>();
 
-  constructor() { }
+  private commentAddedSubscription: Subscription;
 
+  constructor() {
+
+    this.commentAddedSubscription = this.interactionService.commentAdded$.subscribe(event => {
+      this.incrementCommentCount(event.threadId);
+    });
+   }
+
+
+   ngOnDestroy() {
+    this.commentAddedSubscription?.unsubscribe();
+  }
   /**
    * Carga o actualiza los hilos en el store.
    * Si un hilo ya existe, actualiza sus datos base pero PRESERVA su estado de interacción.
@@ -83,6 +98,20 @@ export class ThreadState {
           isSaved: currentThread.isSaved
         };
       });
+    }
+  }
+
+
+  private incrementCommentCount(threadId: number): void {
+    const threadSignal = this.threadsMap.get(threadId);
+    if (threadSignal) {
+      console.log(`[Store] Incrementando contador de comentarios para el hilo ID: ${threadId}`);
+      threadSignal.update(thread => ({
+        ...thread,
+        stats: { ...thread.stats, comments: thread.stats.comments + 1 }
+      }));
+    } else {
+      console.warn(`[Store] Se recibió una notificación de comentario para el hilo ID ${threadId}, pero no se encontró en el store.`);
     }
   }
 }
