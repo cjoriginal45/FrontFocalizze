@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { Page } from '../../interfaces/PageInterface';
@@ -8,7 +8,7 @@ import { CommentResponseDto } from '../../interfaces/CommentResponse';
 @Injectable({
   providedIn: 'root',
 })
-export class Comment {
+export class Comment{
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiBaseUrl}/threads`;
 

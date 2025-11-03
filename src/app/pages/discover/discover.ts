@@ -7,74 +7,72 @@ import { BottonNav } from '../../components/botton-nav/botton-nav';
 import { Header } from '../../components/header/header';
 import { CreateThreadButton } from '../../components/create-thread-button/create-thread-button';
 import { Thread } from '../../components/thread/thread';
+import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
+import { ThreadState } from '../../services/thread-state/thread-state';
+import { FollowingDiscovering } from "../../components/following-discovering/following-discovering";
+import { Suggestions } from "../../components/suggestions/suggestions";
 
 @Component({
   selector: 'app-discover',
-  imports: [BottonNav, Header, CreateThreadButton, Thread],
+  imports: [BottonNav, Header, CreateThreadButton, Thread, FollowingDiscovering, Suggestions],
   templateUrl: './discover.html',
   styleUrl: './discover.css',
 })
 export class Discover implements OnInit {
   private feedService = inject(FeedService);
   public dialog = inject(MatDialog);
+  private threadStateService = inject(ThreadState);
 
-  // Propiedades para manejar el estado de la carga y los datos
-  // Properties to manage the loading state and data
-  threads: FeedThreadDto[] = []; // Array vacío para almacenar los hilos de la API / Empty array to store API threads
-  isLoading = false; // Booleano para saber si estamos esperando una respuesta / Boolean to know if we are waiting for a response
-  currentPage = 0; // Contador para la paginación / Counter for pagination
-  isLastPage = false; // Booleano para detener las llamadas cuando no haya más datos / Boolean to stop calls when there is no more data
+ // --- Propiedades de Estado (Refactorizadas) ---
+ threadIds: number[] = []; // <-- SOLO GUARDAMOS IDs
+ isLoading = false;
+ currentPage = 0;
+ isLastPage = false;
 
-  ngOnInit(): void {
-    this.loadThreads();
-  }
+ ngOnInit(): void {
+   this.loadMoreThreads(); // Carga inicial
+ }
 
-  // Lógica de negocio para obtener los datos
-  // Business logic to get the data
-  loadThreads(): void {
-    // Prevenimos llamadas múltiples si ya está cargando o si ya se cargó todo
-    // We prevent multiple calls if it is already loading or if everything has already loaded
-    if (this.isLoading || this.isLastPage) {
-      return;
-    }
+ /**
+  * Carga la siguiente página de hilos para la sección "Descubrir".
+  */
+ loadMoreThreads(): void {
+   if (this.isLoading || this.isLastPage) return;
+   this.isLoading = true;
 
-    this.isLoading = true; // Marcamos como "cargando" / // We mark as "loading"
+   this.feedService.getFeed(this.currentPage, 10).subscribe({
+    next: (page) => {
+      // 2. EXTRAEMOS los datos directamente. ¡NO HAY MAPEO!
+      const newThreads: FeedThreadDto[] = page.content;
 
-    this.feedService.getFeed(this.currentPage, 10).subscribe({
-      next: (page) => {
-        // Usamos el spread operator (...) para AÑADIR los nuevos hilos sin borrar los antiguos
-        // We use the spread operator (...) to ADD the new threads without deleting the old ones
-        this.threads = [...this.threads, ...page.content];
-        this.isLastPage = page.last; // Actualizamos si es la última página / We update if it is the last page
-        this.isLoading = false; // Marcamos como "carga finalizada" / We mark it as "loading completed"
-      },
-      error: (err) => {
-        console.error('Error al cargar los hilos del feed', err);
-        this.isLoading = false; // Marcamos como "carga finalizada" incluso si hay error / We mark it as "loading completed" even if there is an error
-      },
-    });
-  }
+      // 3. Cargamos los datos en el store.
+      this.threadStateService.loadThreads(newThreads);
 
-  // Función para la paginación (ej. un botón "Cargar más")
-  // Function for pagination (in a "Load More" button)
-  loadMore(): void {
-    if (!this.isLastPage) {
-      this.currentPage++; // Incrementamos el número de página / We increased the page number
-      this.loadThreads(); // Y volvemos a llamar a la función de carga / And we call the load function again
-    }
-  }
+      // 4. Guardamos los IDs.
+      const newThreadIds = newThreads.map(t => t.id);
+      this.threadIds.push(...newThreadIds);
 
-  // Método para abrir comentarios
-  // Method for opening comments
-  openCommentsModal(postId: number): void {
-    this.dialog.open(Comments, {
-      width: '700px',
-      maxWidth: '95vw',
-      maxHeight: '90vh',
-      data: {
-        postId: postId,
-      },
-      panelClass: 'comments-dialog-container',
-    });
-  }
+      this.isLastPage = page.last;
+      this.currentPage++;
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Error al cargar los hilos del feed', err);
+      this.isLoading = false;
+    },
+  });
+ }
+
+ /**
+  * Abre la modal de comentarios.
+  */
+ openCommentsModal(threadId: number): void {
+   this.dialog.open(Comments, {
+     width: '700px',
+     maxWidth: '95vw',
+     maxHeight: '90vh',
+     data: { threadId: threadId },
+     panelClass: 'comments-dialog-container',
+   });
+ }
 }

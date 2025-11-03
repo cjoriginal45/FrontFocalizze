@@ -78,11 +78,9 @@ export class Header implements OnInit{
       const query = this.searchControl.value?.trim() || '';
       
       // Solo navegamos si hay una query y no es una búsqueda de usuario
-      if (query && !query.startsWith('@')) {
-        console.log('Realizando búsqueda de contenido para:', query);
-        
+      if (query && !query.startsWith('@')) {        
         // --- NAVEGACIÓN A LA PÁGINA DE RESULTADOS ---
-        this.router.navigate(['/feed'], { queryParams: { q: query } });
+        this.router.navigate(['/search'], { queryParams: { q: query } });
       }
     }
 

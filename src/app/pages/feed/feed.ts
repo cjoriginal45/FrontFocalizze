@@ -11,98 +11,73 @@ import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { FeedService } from '../../services/feedService/feed';
 import { Interaction } from '../../services/interactionService/interaction';
 import { Subscription } from 'rxjs';
+import { ThreadState } from '../../services/thread-state/thread-state';
+import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 
 @Component({
   selector: 'app-feed',
-  imports: [Suggestions, BottonNav, Header, CreateThreadButton, FollowingDiscovering, Thread],
+  standalone: true,
+  imports: [Header, FollowingDiscovering, Thread, Suggestions, BottonNav, CreateThreadButton],
   templateUrl: './feed.html',
-  styleUrl: './feed.css',
+  styleUrls: ['./feed.css'],
 })
-export class Feed implements OnInit, OnDestroy {
+export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
+  // --- Inyección de Dependencias ---
   private feedService = inject(FeedService);
-  private interactionService = inject(Interaction);
+  private threadStateService = inject(ThreadState);
   public dialog = inject(MatDialog);
 
-  // Propiedades para manejar el estado de la carga y los datos
-  // Properties to manage the loading state and data
-  threads: FeedThreadDto[] = []; // Array vacío para almacenar los hilos de la API / Empty array to store API threads
-  isLoading = false; // Booleano para saber si estamos esperando una respuesta / Boolean to know if we are waiting for a response
-  currentPage = 0; // Contador para la paginación / Counter for pagination
-  isLastPage = false; // Booleano para detener las llamadas cuando no haya más datos / Boolean to stop calls when there is no more data
-
-  private commentAddedSubscription: Subscription | undefined;
+  // --- Propiedades de Estado (Refactorizadas) ---
+  threadIds: number[] = []; // <-- SOLO GUARDAMOS IDs
+  isLoading = false;
+  currentPage = 0;
+  isLastPage = false;
 
   ngOnInit(): void {
-    this.loadThreads();
-    this.listenForCommentUpdates();
+    this.loadMoreThreads(); // Carga inicial
   }
 
-  // Método para destruir la suscripción y evitar memory leaks
-  // Method to destroy the subscription and avoid memory leaks
-  ngOnDestroy(): void {
-    this.commentAddedSubscription?.unsubscribe();
-  }
+  /**
+   * Carga la siguiente página de hilos.
+   */
+  loadMoreThreads(): void {
+    if (this.isLoading || this.isLastPage) return;
+    this.isLoading = true;
 
-  // Método que configura la suscripción
-  // Method that configures the subscription
-  private listenForCommentUpdates(): void {
-    this.commentAddedSubscription = this.interactionService.commentAdded$.subscribe((event) => {
-      console.log(`FeedComponent: Recibida notificación para el hilo ${event.threadId}`);
-      this.updateCommentCount(event.threadId);
-    });
-  }
-
-  private updateCommentCount(threadId: number): void {
-    const threadToUpdate = this.threads.find((thread) => thread.id === threadId);
-    if (threadToUpdate) {
-      threadToUpdate.stats.comments++;
-    }
-  }
-
-  // Lógica de negocio para obtener los datos
-  // Business logic to get the data
-  loadThreads(): void {
-    // Prevenimos llamadas múltiples si ya está cargando o si ya se cargó todo
-    // We prevent multiple calls if it is already loading or if everything has already loaded
-    if (this.isLoading || this.isLastPage) {
-      return;
-    }
-
-    this.isLoading = true; // Marcamos como "cargando" / // We mark as "loading"
-
+    // 1. El servicio devuelve la página con los datos ya en el formato correcto.
     this.feedService.getFeed(this.currentPage, 10).subscribe({
       next: (page) => {
-        // Usamos el spread operator (...) para AÑADIR los nuevos hilos sin borrar los antiguos
-        // We use the spread operator (...) to ADD the new threads without deleting the old ones
-        this.threads = [...this.threads, ...page.content];
-        this.isLastPage = page.last; // Actualizamos si es la última página / We update if it is the last page
-        this.isLoading = false; // Marcamos como "carga finalizada" / We mark it as "loading completed"
+        // 2. EXTRAEMOS los datos directamente. ¡NO HAY MAPEO!
+        const newThreads: FeedThreadDto[] = page.content;
+
+        // 3. Cargamos los datos en el store.
+        this.threadStateService.loadThreads(newThreads);
+
+        // 4. Guardamos los IDs.
+        const newThreadIds = newThreads.map(t => t.id);
+        this.threadIds.push(...newThreadIds);
+
+        this.isLastPage = page.last;
+        this.currentPage++;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error al cargar los hilos del feed', err);
-        this.isLoading = false; // Marcamos como "carga finalizada" incluso si hay error / We mark it as "loading completed" even if there is an error
+        this.isLoading = false;
       },
     });
   }
-
-  // Función para la paginación (ej. un botón "Cargar más")
-  // Function for pagination (in a "Load More" button)
-  loadMore(): void {
-    if (!this.isLastPage) {
-      this.currentPage++; // Incrementamos el número de página / We increased the page number
-      this.loadThreads(); // Y volvemos a llamar a la función de carga / And we call the load function again
-    }
-  }
-
-  // Método para abrir comentarios
-  // Method for opening comments
-  openCommentsModal(postId: number): void {
+  
+  /**
+   * Abre la modal de comentarios.
+   */
+  openCommentsModal(threadId: number): void {
     this.dialog.open(Comments, {
       width: '700px',
       maxWidth: '95vw',
       maxHeight: '90vh',
       data: {
-        postId: postId,
+        postId: threadId, 
       },
       panelClass: 'comments-dialog-container',
     });

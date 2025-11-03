@@ -12,6 +12,8 @@ import { filter, forkJoin, map, switchMap, tap } from 'rxjs';
 import { FeedThreadDto } from '../../../interfaces/FeedThread';
 import { MatDialog } from '@angular/material/dialog';
 import { EditProfileModal } from '../../../components/edit-profile/edit-profile-modal/edit-profile-modal';
+import { ThreadState } from '../../../services/thread-state/thread-state';
+import { Header } from "../../../components/header/header";
 
 @Component({
   selector: 'app-profile',
@@ -19,7 +21,7 @@ import { EditProfileModal } from '../../../components/edit-profile/edit-profile-
     RouterLink,
     MatIconModule,
     MatButtonModule,
-    Thread],
+    Thread, Header],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })
@@ -29,10 +31,11 @@ export class Profile implements OnInit {
  private profileService = inject(ProfileService);
  private authService = inject(Auth);
  private dialog = inject(MatDialog);
+ private threadStateService = inject(ThreadState);
 
  // Propiedades del componente
  profile: ProfileInterface | null = null;
- threads: FeedThreadDto[] = []; 
+ threadIds: number[] = []; 
  isLoading = true;
  isOwnProfile = false;
 
@@ -42,54 +45,46 @@ export class Profile implements OnInit {
  private allThreadsLoaded = false;
 
  ngOnInit(): void {
-   // Escuchamos los cambios en el parámetro 'username' de la URL
-   this.route.paramMap.pipe(
-     tap(() => {
-       // Reiniciamos el estado en cada cambio de perfil
-       this.isLoading = true;
-       this.profile = null;
-       this.threads = [];
-       this.currentPage = 0;
-       this.allThreadsLoaded = false;
-     }),
-     switchMap(params => {
-       const username = params.get('username');
-       if (!username) {
-         throw new Error('Username no encontrado en la URL');
-       }
+  this.route.paramMap.pipe(
+    tap(() => {
+      this.isLoading = true;
+      this.profile = null;
+      this.threadIds = []; // Reiniciamos los IDs
+      this.currentPage = 0;
+      this.allThreadsLoaded = false;
+    }),
+    switchMap(params => {
+      const username = params.get('username');
+      if (!username) throw new Error('Username no encontrado');
 
-       // Verificamos si es nuestro propio perfil
-       // Check if it's the user's own profile
-       this.isOwnProfile = this.authService.getCurrentUser()?.username === username;
+      this.isOwnProfile = this.authService.getCurrentUser()?.username === username;
 
-       // Hacemos las dos llamadas a la API en paralelo
-       return forkJoin({
+      return forkJoin({
         profile: this.profileService.getProfile(username),
         threads: this.profileService.getThreadsForUser(username, this.currentPage, this.pageSize)
       });
-    }),
-    // --- MAPEAMOS LA RESPUESTA ANTES DE SUSCRIBIRNOS ---
-    map(({ profile, threads: threadResponses }) => {
-      const mappedThreads: FeedThreadDto[] = threadResponses.map(dto => this.mapDtoToViewModel(dto));
-      return { profile, threads: mappedThreads };
     })
-   ).subscribe({
-     next: ({ profile, threads }) => {
-       this.profile = profile;
-       this.threads = threads;
-       this.isLoading = false;
-       // Si la primera carga trae menos hilos que el tamaño de página, ya no hay más
-       if (threads.length < this.pageSize) {
-         this.allThreadsLoaded = true;
-       }
-     },
-     error: (err) => {
-       console.error('Error al cargar los datos del perfil', err);
-       this.isLoading = false;
-       // Aquí podrías redirigir a una página de "Usuario no encontrado"
-     }
-   });
- }
+  ).subscribe({
+    next: ({ profile, threads: threadResponses }) => {
+      this.profile = profile;
+
+      // --- LÓGICA DE CARGA EN EL STORE ---
+      const mappedThreads: FeedThreadDto[] = threadResponses.map(dto => this.mapDtoToViewModel(dto));
+      this.threadStateService.loadThreads(mappedThreads);
+      this.threadIds = mappedThreads.map(t => t.id);
+      // ---------------------------------
+
+      this.isLoading = false;
+      if (threadResponses.length < this.pageSize) {
+        this.allThreadsLoaded = true;
+      }
+    },
+    error: (err) => {
+      console.error('Error al cargar los datos del perfil', err);
+      this.isLoading = false;
+    }
+  });
+}
 
  private mapDtoToViewModel(dto: ThreadResponse): FeedThreadDto {
   // Asumo que 'ThreadResponse' tiene la estructura que discutimos
@@ -112,29 +107,32 @@ export class Profile implements OnInit {
 
 
  // Lógica para el scroll infinito (se llamaría desde una directiva o evento de scroll)
- loadMoreThreads(): void {
-   if (this.isLoading || this.allThreadsLoaded || !this.profile) return;
+loadMoreThreads(): void {
+    if (this.isLoading || this.allThreadsLoaded || !this.profile) return;
+    this.isLoading = true;
+    this.currentPage++;
+    
+    this.profileService.getThreadsForUser(this.profile.username, this.currentPage, this.pageSize)
+      .subscribe({
+        next: (newThreadResponses) => {
+          // --- LÓGICA DE CARGA EN EL STORE ---
+          const mappedNewThreads: FeedThreadDto[] = newThreadResponses.map(dto => this.mapDtoToViewModel(dto));
+          this.threadStateService.loadThreads(mappedNewThreads);
+          const newThreadIds = mappedNewThreads.map(t => t.id);
+          this.threadIds.push(...newThreadIds);
+          // ---------------------------------
 
-   this.isLoading = true;
-   this.currentPage++;
-   
-   this.profileService.getThreadsForUser(this.profile.username, this.currentPage, this.pageSize)
-     .subscribe({
-       next: (newThreads) => {
-         if (newThreads.length > 0) {
-           this.threads = [...this.threads, ...newThreads.map(dto => this.mapDtoToViewModel(dto))]; 
-         }
-         if (newThreads.length < this.pageSize) {
-           this.allThreadsLoaded = true; // No hay más hilos que cargar
-         }
-         this.isLoading = false;
-       },
-       error: (err) => {
-         console.error('Error al cargar más hilos', err);
-         this.isLoading = false;
-       }
-     });
- }
+          if (newThreadResponses.length < this.pageSize) {
+            this.allThreadsLoaded = true;
+          }
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error al cargar más hilos', err);
+          this.isLoading = false;
+        }
+      });
+  }
 
   editProfile(): void {
     if (!this.profile) return;

@@ -61,4 +61,13 @@ export class Interaction {
       this.interactionCounterService.incrementCount();
     }
   }
+
+  notifySaveToggled(threadId: number, isSaved: boolean): void {
+    if(!isSaved) {
+      this.interactionCounterService.decrementCount();
+    }else{
+      this.interactionCounterService.incrementCount();
+    }
+
+  }
 }
