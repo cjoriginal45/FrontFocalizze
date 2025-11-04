@@ -1,0 +1,93 @@
+/* --- ESTILOS PARA MÓVIL (POR DEFECTO) --- */
+:host {
+    display: block;
+  }
+  
+  .saved-threads-layout {
+    /* En móvil, el layout es un simple bloque */
+    padding-bottom: 80px; /* Espacio para el navbar inferior */
+  }
+  
+  /* Barra de título en la parte superior */
+  .title-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    top: var(--header-height, 60px); /* Se pega justo debajo del header principal */
+    background-color: var(--background-color, #f4f6f8); /* Fondo para que no se vea el contenido de atrás */
+    z-index: 10;
+  }
+  
+  .title-bar__back-btn {
+    border: none;
+    background-color: transparent;
+    color: var(--primary-color);
+  }
+  
+  .title-bar__title {
+    font-size: 1.3rem; /* Tamaño de fuente adecuado para móvil */
+    font-weight: bold;
+    margin: 0;
+    color: var(--primary-color);
+  }
+  
+  /* Contenido principal con la lista de hilos */
+  .saved-threads-layout__content {
+    padding: 0 8px; /* Pequeño padding a los lados en móvil */
+  }
+  
+  .saved-threads-layout__threads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Espacio entre hilos */
+    padding-top: 16px;
+  }
+  
+  /* Animación de entrada (sin cambios, es correcta) */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .saved-threads-layout__threads-list app-thread {
+    animation: fadeInUp 0.4s ease forwards;
+  }
+  /* ... (tus estilos de animation-delay) ... */
+  
+  
+  /* Indicador de "no resultados" */
+  .no-results {
+    text-align: center;
+    padding: 40px;
+    color: #777;
+  }
+  
+  /* Indicador de carga y botón "Cargar más" (sin cambios, son correctos) */
+  .loading-indicator { /* ... */ }
+  .load-more-button { /* ... */ }
+  
+  
+  /* --- MEDIA QUERY PARA ESCRITORIO (A PARTIR DE 768px o el breakpoint que prefieras) --- */
+  @media (min-width: 768px) {
+  
+    .saved-threads-layout {
+      /* En escritorio, centramos el contenido */
+      max-width: 600px; /* Hacemos que la lista de hilos tenga el mismo ancho que el feed */
+      margin: 0 auto; /* Centra el bloque en la página */
+      padding: 20px 0; /* Padding vertical, sin padding horizontal */
+    }
+  
+    .title-bar {
+      /* Podemos hacer el título un poco más grande en escritorio */
+      padding: 12px 0; /* Quitamos el padding horizontal ya que el contenedor padre lo tiene */
+    }
+  
+    .title-bar__title {
+      font-size: 1.5rem;
+    }
+  
+    .saved-threads-layout__content {
+      padding: 0; /* Reseteamos el padding de móvil */
+    }
+  }

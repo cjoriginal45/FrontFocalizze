@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class savedThreadsService {
-  private apiUrl = environment.apiBaseUrl + '/threads/saved';
+  private apiUrl = environment.apiBaseUrl + '/saved-threads';
 
   constructor(private http: HttpClient) { }
 

@@ -7,10 +7,11 @@ import { savedThreadsService } from '../../../services/savedThreadsService/saved
 import { BottonNav } from "../../../components/botton-nav/botton-nav";
 import { Header } from "../../../components/header/header";
 import { Thread } from "../../../components/thread/thread";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: 'app-saved-threads',
-  imports: [BottonNav, Header, Thread],
+  imports: [BottonNav, Header, Thread, MatIcon],
   templateUrl: './saved-threads.html',
   styleUrl: './saved-threads.css'
 })
@@ -54,5 +55,9 @@ export class SavedThreads implements OnInit {
   
   openCommentsModal(threadId: number): void {
     this.dialog.open(Comments, { /* ... */ });
+  }
+
+  goBack(): void {
+    window.history.back();
   }
 }
