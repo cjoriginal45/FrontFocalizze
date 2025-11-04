@@ -11,6 +11,8 @@ export class Interaction {
 
   private interactionCounterService = inject(InteractionCounter);
 
+  private _saveToggledSource = new Subject<{ threadId: number; isSaved: boolean }>();
+  saveToggled$ = this._saveToggledSource.asObservable();
 
   // Un Subject es como un EventEmitter que puede ser observado por múltiples componentes.
   // Lo hacemos privado para que solo este servicio pueda emitir eventos.
@@ -63,11 +65,7 @@ export class Interaction {
   }
 
   notifySaveToggled(threadId: number, isSaved: boolean): void {
-    if(!isSaved) {
-      this.interactionCounterService.decrementCount();
-    }else{
-      this.interactionCounterService.incrementCount();
-    }
-
-  }
+    this._saveToggledSource.next({ threadId, isSaved });
+}
+  
 }

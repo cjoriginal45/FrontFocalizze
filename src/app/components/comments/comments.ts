@@ -19,7 +19,7 @@ import { Interaction } from '../../services/interactionService/interaction';
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
 export interface DialogData {
-  postId: number; // El ID que nos pasa el FeedComponent / The ID that the FeedComponent passes to us
+  threadId: number; // El ID que nos pasa el FeedComponent / The ID that the FeedComponent passes to us
 }
 
 @Component({
@@ -61,7 +61,7 @@ export class Comments {
 
   loadComments(): void {
     this.isLoading = true;
-    this.commentService.getComments(this.data.postId, 0, 20).subscribe({
+    this.commentService.getComments(this.data.threadId, 0, 20).subscribe({
       next: (page) => {
         this.comments = page.content;
         this.isLoading = false;
@@ -80,7 +80,7 @@ export class Comments {
     const content = this.commentControl.value;
     this.commentControl.disable();
 
-    this.commentService.createComment(this.data.postId, content).subscribe({
+    this.commentService.createComment(this.data.threadId, content).subscribe({
       next: (newComment) => {
         // Actualizamos la lista local de comentarios para que se vea el nuevo
         // We update the local list of comments to show the new one
@@ -90,7 +90,7 @@ export class Comments {
 
         // Notificamos al servicio de interacción que se ha añadido un comentario a un hilo específico.
         // We notify the interaction service that a comment has been added to a specific thread.
-        this.interactionService.notifyCommentAdded(this.data.postId);
+        this.interactionService.notifyCommentAdded(this.data.threadId);
       },
       error: (err) => {
         console.error('Error al publicar el comentario', err);

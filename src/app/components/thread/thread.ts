@@ -95,13 +95,14 @@ export class Thread implements OnInit {
     });
   }
 
+  // Lógica para alternar el estado de guardado
   toggleSave(): void {
     if (!this.threadSignal) return;
     const currentThread = this.threadSignal();
     const previousState = currentThread.isSaved;
     const newSavedState = !previousState;
 
-    this.threadStateService.updateSaveState(this.threadId, newSavedState);
+    this.threadSignal.update(thread => ({ ...thread, isSaved: newSavedState }));
 
     this.saveService.toggleSave(this.threadId).subscribe({
       next: () => {
@@ -109,7 +110,7 @@ export class Thread implements OnInit {
       },
       error: (err) => {
         console.error('Error en API de Save, revirtiendo estado.', err);
-        this.threadStateService.updateSaveState(this.threadId, previousState);
+        this.threadSignal!.update(thread => ({ ...thread, isSaved: previousState }));
       }
     });
   }

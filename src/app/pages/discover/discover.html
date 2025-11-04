@@ -5,6 +5,7 @@
   <main class="discover-layout__content">
     <div class="discover-layout__threads-list">
       @for (threadId of threadIds; track threadId) {
+        <!-- --- AÑADE (openComments) AQUÍ --- -->
         <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
       }
     </div>
