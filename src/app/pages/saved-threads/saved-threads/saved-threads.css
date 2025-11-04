@@ -25,6 +25,11 @@
     background-color: transparent;
     color: var(--primary-color);
   }
+
+  .title-bar__back-btn:hover {
+    background-color: color-mix(#888 60%, white 40%);
+    border-radius: 50%;
+  }
   
   .title-bar__title {
     font-size: 1.3rem; /* Tamaño de fuente adecuado para móvil */
