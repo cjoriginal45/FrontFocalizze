@@ -11,6 +11,7 @@ import { Profile } from './pages/profile/profile/profile';
 import { Discover } from './pages/discover/discover';
 import { ConfigurationPage } from './pages/configuration-page/configuration-page';
 import { SearchResults } from './pages/search-results/search-results/search-results';
+import { SavedThreads } from './pages/saved-threads/saved-threads/saved-threads';
 
 export const routes: Routes = [
   { path: '', component: Login },
@@ -23,4 +24,5 @@ export const routes: Routes = [
   { path: 'profile/:username', component: Profile },
   { path: 'discover', component: Discover },
   { path: 'configuration-page', component: ConfigurationPage },
+  { path: 'saved', component: SavedThreads} 
 ];

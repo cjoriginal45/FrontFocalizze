@@ -1,0 +1,25 @@
+<app-header></app-header>
+
+<div class="saved-threads-layout">
+  <main class="saved-threads-layout__content">
+    <h1 class="saved-threads-layout__title">Hilos Guardados</h1>
+    
+    <div class="saved-threads-layout__threads-list">
+      @for (threadId of threadIds; track threadId) {
+        <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
+      }
+    </div>
+
+    @if (isLoading) {
+      <div class="loading-indicator">Cargando...</div>
+    }
+    @if (!isLastPage && threadIds.length > 0 && !isLoading) {
+      <button (click)="loadMoreThreads()" class="load-more-button">Cargar más</button>
+    }
+    @if (!isLoading && threadIds.length === 0) {
+      <p class="no-results">Aún no has guardado ningún hilo.</p>
+    }
+  </main>
+</div>
+
+<app-botton-nav></app-botton-nav>
