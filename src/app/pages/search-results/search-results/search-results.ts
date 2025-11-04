@@ -64,7 +64,7 @@ export class SearchResults implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/home']);
+    window.history.back();
   }
 
   /**
