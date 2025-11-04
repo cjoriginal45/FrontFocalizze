@@ -67,12 +67,12 @@ export class Discover implements OnInit {
   * Abre la modal de comentarios.
   */
  openCommentsModal(threadId: number): void {
-   this.dialog.open(Comments, {
-     width: '700px',
-     maxWidth: '95vw',
-     maxHeight: '90vh',
-     data: { threadId: threadId },
-     panelClass: 'comments-dialog-container',
-   });
- }
+  this.dialog.open(Comments, {
+    width: '700px',
+    maxWidth: '95vw',
+    maxHeight: '90vh',
+    data: { threadId: threadId },
+    panelClass: 'comments-dialog-container',
+  });
+}
 }

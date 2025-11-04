@@ -4,6 +4,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 import { ProfileInterface } from '../../interfaces/ProfileInterface';
+import { FeedThreadDto } from '../../interfaces/FeedThread';
+import { Page } from '../../interfaces/PageInterface';
 
 export interface ProfileUpdateData {
   displayName: string;
@@ -30,12 +32,12 @@ export class ProfileService {
    * Obtiene los hilos de un usuario de forma paginada.
    * Gets the threads of a user in a paginated way.
    */
-  getThreadsForUser(username: string, page: number, size: number): Observable<ThreadResponse[]> {
+  getThreadsForUser(username: string, page: number, size: number): Observable<Page<FeedThreadDto>> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
     
-    return this.http.get<ThreadResponse[]>(`${this.apiUrl}/${username}/threads`, { params });
+    return this.http.get<Page<FeedThreadDto>>(`${this.apiUrl}/${username}/threads`, { params });
   }
 
   /**

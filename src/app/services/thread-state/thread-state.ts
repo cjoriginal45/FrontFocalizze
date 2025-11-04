@@ -1,7 +1,7 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { Interaction } from '../interactionService/interaction';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,17 +15,25 @@ export class ThreadState {
   private threadsMap = new Map<number, WritableSignal<FeedThreadDto>>();
 
   private commentAddedSubscription: Subscription;
+  private saveToggledSubscription: Subscription;
 
   constructor() {
 
     this.commentAddedSubscription = this.interactionService.commentAdded$.subscribe(event => {
       this.incrementCommentCount(event.threadId);
     });
+    
+
+    this.saveToggledSubscription = this.interactionService.saveToggled$.subscribe(event => {
+      this.updateSaveState(event.threadId, event.isSaved);
+    });
+
    }
 
 
    ngOnDestroy() {
     this.commentAddedSubscription?.unsubscribe();
+    this.saveToggledSubscription?.unsubscribe();
   }
   /**
    * Carga o actualiza los hilos en el store.
@@ -78,7 +86,8 @@ export class ThreadState {
     if (threadSignal) {
       threadSignal.update(thread => ({
         ...thread,
-        isSaved: isSaved
+        isSaved: isSaved,
+        stats: { ...thread.stats, saves: thread.stats.saves + (isSaved ? 1 : -1) }
       }));
     }
   }
@@ -114,4 +123,6 @@ export class ThreadState {
       console.warn(`[Store] Se recibió una notificación de comentario para el hilo ID ${threadId}, pero no se encontró en el store.`);
     }
   }
+
+
 }

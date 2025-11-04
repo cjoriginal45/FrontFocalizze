@@ -77,7 +77,7 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
       maxWidth: '95vw',
       maxHeight: '90vh',
       data: {
-        postId: threadId, 
+        threadId: threadId, 
       },
       panelClass: 'comments-dialog-container',
     });
