@@ -1,12 +1,16 @@
 :host {
-  display: block; /* Asegura que el componente se comporte como un bloque */
+  display: block;
 }
 
 .thread {
   background-color: white;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  overflow: hidden; /* Asegura que los bordes redondeados se apliquen al contenido */
+  overflow: hidden;
+}
+
+.thread:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* --- Header --- */
@@ -16,7 +20,7 @@
   align-items: center;
   padding: 12px 16px;
   border-bottom: 1px solid #eeeeee;
-  gap: 16px; /* Espacio entre el grupo izquierdo y derecho */
+  gap: 16px;
 }
 
 /* Contenedor para la parte izquierda (avatar, nombre, botón seguir) */
@@ -24,7 +28,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  min-width: 0; /* Previene desbordamientos */
+  min-width: 0;
 }
 
 /* Contenedor para la parte derecha (categoría, fecha) */
@@ -57,7 +61,7 @@
 .thread__user-info {
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Previene que textos largos rompan el layout */
+  overflow: hidden;
 }
 
 .thread__display-name {
@@ -166,8 +170,6 @@
 .thread__expand-btn:hover {
   text-decoration: underline;
 }
-
-/* ... (todos tus otros estilos) ... */
 
 /* 
   El contenedor que actuará como el "riel" de la animación Grid.
