@@ -9,4 +9,5 @@ export interface FeedThreadDto {
   stats: StastsInterface;
   isLiked: boolean;
   isSaved: boolean;
+  categoryName?: string;
 }
