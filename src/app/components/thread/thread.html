@@ -40,15 +40,18 @@
         <h3 class="thread__post-title">1° post</h3>
         <p class="thread__post-text">{{ thread.posts[0] }}</p>
       </div>
-      <!-- Posts adicionales (visibles si está expandido) -->
-      @if (isExpanded) { @if (isLoadingDetails) {
-      <div class="thread__loading-spinner">Cargando...</div>
-      } @else { @for (post of thread.posts.slice(1); track $index) {
-      <div class="thread__post">
-        <h3 class="thread__post-title">{{ $index + 2 }}° post</h3>
-        <p class="thread__post-text">{{ post }}</p>
+      <div class="thread__expand-wrapper" [class.expanded]="isExpanded">
+        <div class="thread__expanded-content">
+          @if (isLoadingDetails) {
+          <div class="thread__loading-spinner">Cargando...</div>
+          } @else { @for (post of thread.posts.slice(1); track $index) {
+          <div class="thread__post">
+            <h3 class="thread__post-title">{{ $index + 2 }}° post</h3>
+            <p class="thread__post-text">{{ post }}</p>
+          </div>
+          } }
+        </div>
       </div>
-      } } }
     </div>
     <!-- Botón de Expandir (visible si hay más de 1 post O si aún no se ha cargado por completo) -->
     @if (thread.posts.length > 1 || !isFullyLoaded) {

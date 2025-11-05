@@ -167,6 +167,62 @@
   text-decoration: underline;
 }
 
+/* ... (todos tus otros estilos) ... */
+
+/* 
+  El contenedor que actuará como el "riel" de la animación Grid.
+  The container that will act as the "rail" for the Grid animation.
+*/
+.thread__expand-wrapper {
+  display: grid;
+  /* El estado inicial es colapsado (0 fracciones de altura). */
+  /* The initial state is collapsed (0 fractions of height). */
+  grid-template-rows: 0fr;
+  /* Definimos la transición que queremos animar. */
+  /* We define the transition we want to animate. */
+  transition: grid-template-rows 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 
+  Cuando el contenedor tiene la clase 'expanded'...
+  When the container has the 'expanded' class...
+*/
+.thread__expand-wrapper.expanded {
+  /* ...le decimos que ocupe 1 fracción de su altura de contenido. */
+  /* ...we tell it to take up 1 fraction of its content height. */
+  grid-template-rows: 1fr;
+}
+
+/*
+  El contenido interno que se oculta/muestra.
+  The inner content that is hidden/shown.
+*/
+.thread__expanded-content {
+  /* Es crucial ocultar el desbordamiento para que el contenido no se vea
+     mientras el contenedor 'wrapper' está colapsado. */
+  /* It is crucial to hide the overflow so the content is not visible
+     while the 'wrapper' container is collapsed. */
+  overflow: hidden;
+
+  /* También animaremos la opacidad para un efecto de desvanecimiento. */
+  /* We will also animate the opacity for a fade effect. */
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* 
+  Cuando el contenedor se expande, hacemos visible el contenido.
+  When the container expands, we make the content visible.
+*/
+.thread__expand-wrapper.expanded .thread__expanded-content {
+  opacity: 1;
+  /* Añadimos un pequeño retraso para que el fade-in ocurra
+     después de que la animación de altura haya comenzado. */
+  /* We add a small delay so the fade-in occurs
+     after the height animation has started. */
+  transition-delay: 0.15s;
+}
+
 /* --- Footer --- */
 .thread__footer {
   display: flex;
