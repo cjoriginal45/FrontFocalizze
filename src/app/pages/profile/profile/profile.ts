@@ -51,7 +51,12 @@ export class Profile implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
-      tap(() => { /* ... reinicio de estado ... */ }),
+      tap(() => { 
+        this.isLoading = true;
+        this.profile = null;
+        this.threadIds = [];
+        this.userObject = null;
+       }),
       switchMap(params => {
         const username = params.get('username');
         if (!username) throw new Error('Username no encontrado');
@@ -61,12 +66,14 @@ export class Profile implements OnInit {
         // forkJoin ahora espera que getThreadsForUser devuelva Page<FeedThreadDto>
         return forkJoin({
           profile: this.profileService.getProfile(username),
-          threads: this.profileService.getThreadsForUser(username, this.currentPage, this.pageSize)
+          threads: this.profileService.getThreadsForUser(username, this.currentPage, this.pageSize),
+          userForButton: this.profileService.getUserForFollowButton(username)
         });
       })
     ).subscribe({
-      next: ({ profile, threads: threadPage }) => { // 'threadPage' ahora es de tipo Page<FeedThreadDto>
+      next: ({ profile, threads: threadPage,userForButton }) => { // 'threadPage' ahora es de tipo Page<FeedThreadDto>
         this.profile = profile;
+        this.userObject = userForButton;
 
         this.buildUserForFollowButton(profile);
         // --- LÓGICA RESTAURADA ---
@@ -169,14 +176,11 @@ export class Profile implements OnInit {
     // En el futuro, la API GET /api/profiles/{username} debería devolver este booleano.
     
     this.userObject = {
-      // La API de perfil no devuelve el ID, lo cual es un problema.
-      // Por ahora, usamos un valor temporal o lo dejamos en 0.
-      // LO IDEAL es que la API GET /api/profiles/{username} devuelva también el ID.
-      id: 0, // Placeholder
+      id: profile.id, // Usamos el ID del perfil
       username: profile.username,
       displayName: profile.displayName,
       avatarUrl: profile.avatarUrl,
-      isFollowing: false // Placeholder, la API debería proveer esto
+      isFollowing: profile.isFollowing // <-- ¡LA CORRECCIÓN CLAVE!
     };
   }
 

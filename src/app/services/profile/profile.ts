@@ -6,6 +6,7 @@ import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 import { ProfileInterface } from '../../interfaces/ProfileInterface';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { Page } from '../../interfaces/PageInterface';
+import { UserInterface } from '../../interfaces/UserInterface';
 
 export interface ProfileUpdateData {
   displayName: string;
@@ -17,6 +18,7 @@ export interface ProfileUpdateData {
 })
 export class ProfileService {
   private apiUrl = environment.apiBaseUrl + '/profiles';
+  private usersApiUrl = environment.apiBaseUrl + '/users';
 
   constructor(private http: HttpClient) { }
 
@@ -57,5 +59,10 @@ export class ProfileService {
     formData.append('avatar', file, file.name);
 
     return this.http.post<{ avatarUrl:string }>(`${this.apiUrl}/${username}/avatar`, formData);
+  }
+
+
+  getUserForFollowButton(username: string): Observable<UserInterface> {
+    return this.http.get<UserInterface>(`${this.usersApiUrl}/${username}`);
   }
 }
