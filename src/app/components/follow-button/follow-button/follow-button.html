@@ -1,0 +1,12 @@
+<button 
+  mat-stroked-button 
+  class="follow-btn" 
+  [class.follow-btn--following]="user.isFollowing"
+  [disabled]="isLoading"
+  (click)="toggleFollow()">
+  
+  <!-- El texto del botón cambia según el estado 'isFollowing' del usuario -->
+  <!-- The button text changes according to the user's 'isFollowing' state -->
+  {{ user.isFollowing ? 'Siguiendo' : 'Seguir' }}
+  
+</button>
