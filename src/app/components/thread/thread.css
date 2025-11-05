@@ -85,26 +85,8 @@
 }
 
 /* --- Botón Seguir --- */
-.thread__follow-btn {
-  flex-shrink: 0;
-  height: 32px;
-  line-height: 30px;
-  padding: 0 16px;
-  border-radius: 16px;
-  font-weight: bold;
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
-  transition: all 0.2s ease-in-out;
-}
-
-.thread__follow-btn:hover {
-  background-color: var(--primary-color);
-  color: #fff;
-}
-
-.thread__follow-btn--following {
-  background-color: var(--primary-color);
-  color: #fff;
+.follow-button{
+  margin-left: 8px;
 }
 
 /* --- Categoría --- */

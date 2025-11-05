@@ -1,12 +1,21 @@
+<!-- Usamos un botón HTML estándar, sin directivas de Angular Material -->
 <button 
-  mat-stroked-button 
   class="follow-btn" 
   [class.follow-btn--following]="user.isFollowing"
   [disabled]="isLoading"
-  (click)="toggleFollow()">
+  (click)="toggleFollow()"
+  (mouseenter)="isHovering = true"
+  (mouseleave)="isHovering = false">
   
-  <!-- El texto del botón cambia según el estado 'isFollowing' del usuario -->
-  <!-- The button text changes according to the user's 'isFollowing' state -->
-  {{ user.isFollowing ? 'Siguiendo' : 'Seguir' }}
+  <!-- La lógica para cambiar el texto se mantiene igual -->
+  @if (user.isFollowing) {
+    @if (isHovering) {
+      <span>Dejar de Seguir</span>
+    } @else {
+      <span>Siguiendo</span>
+    }
+  } @else {
+    <span>Seguir</span>
+  }
   
 </button>

@@ -17,10 +17,11 @@ import { threadService } from '../../services/thread/thread';
 import { Save } from '../../services/saveService/save';
 import { ThreadState } from '../../services/thread-state/thread-state';
 import { MatButtonModule } from '@angular/material/button';
+import { FollowButton } from "../follow-button/follow-button/follow-button";
 
 @Component({
   selector: 'app-thread',
-  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink],
+  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink, FollowButton],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
 })
