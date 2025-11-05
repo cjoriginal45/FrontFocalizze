@@ -51,7 +51,7 @@ export class CreateThreadModal implements OnInit {
 
   //categories logic
   categories: SelectCategory[] = [];
-  selectedCategory: string = 'Ninguna';
+  selectedCategory: string | null = null;
 
   constructor(
     public dialogRef: MatDialogRef<CreateThreadModal>,
@@ -68,20 +68,17 @@ export class CreateThreadModal implements OnInit {
   loadCategories(): void {
     this.categoryService.getAllCategories().subscribe({
       next: (apiCategories) => {
-        // 1. Mapeamos las categorías de la API al formato que necesita nuestro <mat-select>
-        // 1. We map the API categories to the format needed by our <mat-select>
         const mappedCategories = apiCategories.map((cat) => ({
           value: cat.name,
           viewValue: cat.name,
         }));
-
-        this.categories = [...mappedCategories];
+        this.categories = mappedCategories;
       },
       error: (err) => {
-        console.error('Error al cargar las categorías', err);
-        // En caso de error, al menos mostramos la opción por defecto
-        // In case of error, at least show the default option
-        this.categories = [{ value: 'Ninguna', viewValue: 'Ninguna' }];
+        console.error('Error al cargar las categorías:', err);
+        // Si hay un error, simplemente dejamos la lista de categorías vacía.
+        // La opción estática "Ninguna" en el HTML seguirá funcionando.
+        this.categories = [];
       },
     });
   }
@@ -116,7 +113,7 @@ export class CreateThreadModal implements OnInit {
       post1: this.threads[0],
       post2: this.threads[1],
       post3: this.threads[2],
-      category: this.selectedCategory,
+      category: this.selectedCategory || 'Ninguna',
     };
 
     // 3. Validar los límites de caracteres
