@@ -1,9 +1,10 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, WritableSignal } from '@angular/core';
 import { UserInterface } from '../../../interfaces/UserInterface';
 import { FollowButtonService } from '../../../services/follow-button/follow-button';
 import { CommonModule } from '@angular/common';
 import { ConfirmMatDialog } from '../../mat-dialog/mat-dialog/mat-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { UserState } from '../../../services/user-state/user-state';
 
 @Component({
   selector: 'app-follow-button',
@@ -11,83 +12,92 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './follow-button.html',
   styleUrl: './follow-button.css'
 })
-export class FollowButton {
+export class FollowButton implements OnInit{
   // --- INYECCIÓN DE SERVICIOS ---
   private followService = inject(FollowButtonService);
-  private dialog = inject(MatDialog); // <-- Usamos el MatDialog estándar
+  private dialog = inject(MatDialog); 
+  private userStateService = inject(UserState);
+ // --- INPUT ÚNICO Y REQUERIDO ---
+  // El componente solo necesita saber a QUÉ usuario afectar.
+  @Input({ required: true }) username!: string;
 
-  // --- PROPIEDADES ---
+  // --- OUTPUT (para notificar al padre) ---
+  @Output() followStateChanged = new EventEmitter<boolean>();
+  
+  // --- SEÑAL INTERNA ---
+  // Esta es la fuente de la verdad para la plantilla de ESTE componente.
+  public userSignal: WritableSignal<UserInterface> | undefined;
+
+  // --- ESTADO LOCAL ---
   isLoading = false;
   isHovering = false;
 
-  @Input({ required: true }) user!: UserInterface;
-  @Output() followStateChanged = new EventEmitter<boolean>();
-
-  constructor() {}
-
-  /**
-   * Gestiona el clic en el botón.
-   * Si el usuario ya está siguiendo, muestra una modal de confirmación.
-   * Si no, ejecuta la acción de seguir directamente.
-   */
-  onClickFollow(): void {
-    if (this.isLoading) return;
-
-    if (this.user.isFollowing) {
-      // Muestra la modal porque es una acción de "dejar de seguir"
-      this.openUnfollowConfirmDialog();
-    } else {
-      // Ejecuta la acción de "seguir" directamente
-      this.toggleFollowState();
+  ngOnInit(): void {
+    // Al iniciar, buscamos la señal del usuario correspondiente en nuestro store central.
+    this.userSignal = this.userStateService.getUserSignal(this.username);
+    if (!this.userSignal) {
+      console.error(`FollowButton: No se encontró el estado para el usuario @${this.username}. Asegúrate de que se carga en el store antes de renderizar este botón.`);
     }
   }
 
   /**
-   * Abre la modal de confirmación y actúa según la respuesta del usuario.
+   * Gestiona el clic en el botón, mostrando una confirmación si es necesario.
    */
-  private openUnfollowConfirmDialog(): void {
+  onClickFollow(): void {
+    if (this.isLoading || !this.userSignal) return;
+
+    const currentUser = this.userSignal(); // Leemos el valor actual de la señal
+
+    if (currentUser.isFollowing) {
+      this.openUnfollowConfirmDialog(currentUser);
+    } else {
+      this.executeToggleFollow(currentUser);
+    }
+  }
+
+  /**
+   * Abre la modal de confirmación.
+   */
+  private openUnfollowConfirmDialog(user: UserInterface): void {
     const dialogRef = this.dialog.open(ConfirmMatDialog, {
       width: '350px',
       data: {
-        title: `Dejar de seguir a @${this.user.username}`,
-        message: 'Sus hilos ya no aparecerán en tu feed de "Siguiendo". ¿Estás seguro?'
+        title: `Dejar de seguir a @${user.username}`,
+        message: 'Sus hilos ya no aparecerán en tu feed de "Sigriendo". ¿Estás seguro?'
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // El 'result' será 'true' si el usuario hizo clic en "Confirmar"
       if (result === true) {
-        this.toggleFollowState();
+        this.executeToggleFollow(user);
       }
     });
   }
 
   /**
-   * Contiene la lógica principal de la actualización optimista y la llamada a la API.
-   * Es llamado directamente o después de la confirmación de la modal.
+   * Ejecuta la lógica de la llamada a la API y actualiza el estado.
    */
-  private toggleFollowState(): void {
+  private executeToggleFollow(user: UserInterface): void {
     this.isLoading = true;
-    
-    // Guardamos el estado anterior para poder revertir en caso de error
-    const previousFollowingState = this.user.isFollowing;
+    const previousFollowingState = user.isFollowing;
+    const newFollowingState = !previousFollowingState;
 
-    // Actualización optimista de la UI
-    this.user.isFollowing = !this.user.isFollowing;
+    // 1. Actualización optimista en el store centralizado.
+    //    Esto notificará a TODOS los componentes que muestren a este usuario.
+    this.userStateService.updateFollowingState(this.username, newFollowingState);
 
-    // Llamada a la API
-    this.followService.toggleFollow(this.user.username).subscribe({
+    // 2. Llamada a la API.
+    this.followService.toggleFollow(this.username).subscribe({
       next: () => {
-        // Si la API tiene éxito, emitimos el evento al componente padre
-        this.followStateChanged.emit(this.user.isFollowing);
+        // La API tuvo éxito, emitimos el evento para que el padre actualice contadores.
+        this.followStateChanged.emit(newFollowingState);
         this.isLoading = false;
       },
       error: (err) => {
-        // Si la API falla, revertimos el estado en la UI
-        console.error('Error al actualizar el estado de seguimiento', err);
-        this.user.isFollowing = previousFollowingState;
+        // La API falló, revertimos el estado en el store.
+        console.error(`Error al seguir/dejar de seguir a @${this.username}`, err);
+        this.userStateService.updateFollowingState(this.username, previousFollowingState);
         this.isLoading = false;
-        // Opcional: mostrar un mensaje de error tipo "toast"
       }
     });
   }

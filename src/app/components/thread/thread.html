@@ -1,4 +1,8 @@
 @if (threadSignal(); as thread) {
+
+  <!-- Segundo @if (ANIDADO): Comprueba que la señal del USUARIO exista. -->
+  <!-- 'as user' desenvuelve el valor del usuario para usarlo dentro. -->
+  @if (userSignal?.(); as user) {
 <article class="thread">
   <!-- Mini Header del Hilo -->
   <!-- Mini Header del Hilo - Modificado Thread Header - Modified -->
@@ -16,7 +20,7 @@
         </div>
       </a>
 
-     <app-follow-button [user]="thread.user" class="follow-button"></app-follow-button>
+      <app-follow-button [username]="user.username"></app-follow-button>
 
 
     </div>
@@ -88,4 +92,5 @@
     </div>
   </footer>
 </article>
+}
 }

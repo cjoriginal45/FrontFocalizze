@@ -18,6 +18,8 @@ import { Save } from '../../services/saveService/save';
 import { ThreadState } from '../../services/thread-state/thread-state';
 import { MatButtonModule } from '@angular/material/button';
 import { FollowButton } from "../follow-button/follow-button/follow-button";
+import { UserState } from '../../services/user-state/user-state';
+import { UserInterface } from '../../interfaces/UserInterface';
 
 @Component({
   selector: 'app-thread',
@@ -32,6 +34,7 @@ export class Thread implements OnInit {
   private threadService = inject(threadService);
   private saveService = inject(Save);
   private threadStateService = inject(ThreadState);
+  private userStateService = inject(UserState);
 
   // --- INPUT: SOLO EL ID ---
   @Input({ required: true }) threadId!: number;
@@ -39,6 +42,8 @@ export class Thread implements OnInit {
   // --- SEÑAL DE DATOS (LA FUENTE DE LA VERDAD PARA LA PLANTILLA) ---
   @Output() openComments = new EventEmitter<number>();
   public threadSignal!: WritableSignal<FeedThreadDto>;
+
+  public userSignal: WritableSignal<UserInterface> | undefined;
 
   // --- ESTADO LOCAL (SOLO PARA ESTE COMPONENTE) ---
   isExpanded = false;
@@ -52,6 +57,8 @@ export class Thread implements OnInit {
       return;
     }
     this.threadSignal = signal;
+
+    this.userSignal = this.userStateService.getUserSignal(this.threadSignal().user.username);
   }
 
   toggleLike(): void {

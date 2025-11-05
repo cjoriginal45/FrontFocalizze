@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -17,6 +17,7 @@ import { Header } from "../../../components/header/header";
 import { Comments } from '../../../components/comments/comments';
 import { FollowButton } from "../../../components/follow-button/follow-button/follow-button";
 import { UserInterface } from '../../../interfaces/UserInterface';
+import { UserState } from '../../../services/user-state/user-state';
 
 @Component({
   selector: 'app-profile',
@@ -35,6 +36,7 @@ export class Profile implements OnInit {
   private authService = inject(Auth);
   private dialog = inject(MatDialog);
   private threadStateService = inject(ThreadState);
+  private userStateService = inject(UserState);
 
   // --- Propiedades de Estado ---
   profile: ProfileInterface | null = null;
@@ -46,8 +48,8 @@ export class Profile implements OnInit {
   private readonly pageSize = 10;
   private allThreadsLoaded = false;
   // --- Inicialización del objeto de usuario ---
-  userObject: UserInterface | null = null;
 
+  @Input({ required: true }) userSignal!: WritableSignal<UserInterface>;
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
@@ -55,7 +57,6 @@ export class Profile implements OnInit {
         this.isLoading = true;
         this.profile = null;
         this.threadIds = [];
-        this.userObject = null;
        }),
       switchMap(params => {
         const username = params.get('username');
@@ -73,9 +74,16 @@ export class Profile implements OnInit {
     ).subscribe({
       next: ({ profile, threads: threadPage,userForButton }) => { // 'threadPage' ahora es de tipo Page<FeedThreadDto>
         this.profile = profile;
-        this.userObject = userForButton;
 
-        this.buildUserForFollowButton(profile);
+        const userForState: UserInterface = {
+          id: profile.id,
+          username: profile.username,
+          displayName: profile.displayName,
+          avatarUrl: profile.avatarUrl,
+          isFollowing: profile.isFollowing
+        };
+        this.userStateService.loadUsers([userForState]);
+
         // --- LÓGICA RESTAURADA ---
         const newThreads: FeedThreadDto[] = threadPage.content; // <-- Ahora .content existe
         this.threadStateService.loadThreads(newThreads);
@@ -169,30 +177,16 @@ export class Profile implements OnInit {
     });
   }
 
-  private buildUserForFollowButton(profile: ProfileInterface): void {
-    // Para construir el objeto UserInterface, necesitamos saber si el usuario actual
-    // está siguiendo al usuario del perfil. Por ahora, como la API de perfil no
-    // nos da esta información, lo pondremos en 'false' por defecto.
-    // En el futuro, la API GET /api/profiles/{username} debería devolver este booleano.
-    
-    this.userObject = {
-      id: profile.id, // Usamos el ID del perfil
-      username: profile.username,
-      displayName: profile.displayName,
-      avatarUrl: profile.avatarUrl,
-      isFollowing: profile.isFollowing // <-- ¡LA CORRECCIÓN CLAVE!
-    };
-  }
-
   onFollowChange(isNowFollowing: boolean): void {
     if (this.profile) {
+      // Actualizamos el contador local del perfil de forma optimista.
       if (isNowFollowing) {
-        // Si la acción fue 'seguir', incrementamos el contador de seguidores.
         this.profile.followers++;
       } else {
-        // Si la acción fue 'dejar de seguir', lo decrementamos.
         this.profile.followers--;
       }
+      // También actualizamos el estado en el UserStateService por si acaso
+      this.userStateService.updateFollowingState(this.profile.username, isNowFollowing);
     }
   }
 
