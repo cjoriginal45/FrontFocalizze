@@ -1,0 +1,22 @@
+<!-- Primero, nos aseguramos de que la señal del usuario se haya cargado desde el store. -->
+@if (userSignal?.(); as user) {
+<button 
+  class="follow-btn" 
+  [class.follow-btn--following]="user.isFollowing"
+  [disabled]="isLoading"
+  (click)="onClickFollow()"
+  (mouseenter)="isHovering = true"
+  (mouseleave)="isHovering = false">
+  
+  @if (user.isFollowing) {
+    @if (isHovering) {
+      <span>Dejar de Seguir</span>
+    } @else {
+      <span>Siguiendo</span>
+    }
+  } @else {
+    <span>Seguir</span>
+  }
+  
+</button>
+}

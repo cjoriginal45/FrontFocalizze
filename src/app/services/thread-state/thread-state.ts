@@ -100,11 +100,11 @@ export class ThreadState {
         // Creamos un nuevo objeto
         return {
           // Copiamos todos los datos nuevos y completos que vienen de la API
-          ...fullThreadData,
+          ...currentThread,
           // Y SOBRESCRIBIMOS 'isLiked' y 'isSaved' con los valores que YA TENÍAMOS guardados
           // en el estado actual del store, que son la fuente de la verdad de la interacción.
-          isLiked: currentThread.isLiked,
-          isSaved: currentThread.isSaved
+          isLiked: fullThreadData.isLiked,
+          isSaved: fullThreadData.isSaved
         };
       });
     }

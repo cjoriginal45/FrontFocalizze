@@ -1,4 +1,8 @@
 @if (threadSignal(); as thread) {
+
+  <!-- Segundo @if (ANIDADO): Comprueba que la señal del USUARIO exista. -->
+  <!-- 'as user' desenvuelve el valor del usuario para usarlo dentro. -->
+  @if (userSignal?.(); as user) {
 <article class="thread">
   <!-- Mini Header del Hilo -->
   <!-- Mini Header del Hilo - Modificado Thread Header - Modified -->
@@ -15,14 +19,10 @@
           <span class="thread__username">@{{ thread.user.username }}</span>
         </div>
       </a>
-      <!-- NUEVO (Solo UI): Botón para Seguir/Dejar de Seguir. Sin lógica de click. NEW (UI Only): Follow/Unfollow Button. No click logic. -->
-      <button
-        mat-stroked-button
-        class="thread__follow-btn"
-        [class.thread__follow-btn--following]="thread.user.isFollowing"
-      >
-        {{ thread.user.isFollowing ? 'Siguiendo' : 'Seguir' }}
-      </button>
+
+      <app-follow-button [username]="user.username"></app-follow-button>
+
+
     </div>
     <div class="thread__header-right">
       <!-- NUEVO (Con Lógica): Nombre de la Categoría (solo si existe). NEW (With Logic): Category Name (only if it exists). -->
@@ -92,4 +92,5 @@
     </div>
   </footer>
 </article>
+}
 }

@@ -13,6 +13,7 @@ import { Interaction } from '../../services/interactionService/interaction';
 import { Subscription } from 'rxjs';
 import { ThreadState } from '../../services/thread-state/thread-state';
 import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
+import { UserState } from '../../services/user-state/user-state';
 
 @Component({
   selector: 'app-feed',
@@ -26,6 +27,7 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
   private feedService = inject(FeedService);
   private threadStateService = inject(ThreadState);
   public dialog = inject(MatDialog);
+  private userStateService = inject(UserState);
 
   // --- Propiedades de Estado (Refactorizadas) ---
   threadIds: number[] = []; // <-- SOLO GUARDAMOS IDs
@@ -49,6 +51,9 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
       next: (page) => {
         // 2. EXTRAEMOS los datos directamente. ¡NO HAY MAPEO!
         const newThreads: FeedThreadDto[] = page.content;
+
+        const usersFromThreads = newThreads.map(t => t.user);
+        this.userStateService.loadUsers(usersFromThreads);
 
         // 3. Cargamos los datos en el store.
         this.threadStateService.loadThreads(newThreads);

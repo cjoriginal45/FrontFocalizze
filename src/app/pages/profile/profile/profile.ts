@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -15,6 +15,9 @@ import { EditProfileModal } from '../../../components/edit-profile/edit-profile-
 import { ThreadState } from '../../../services/thread-state/thread-state';
 import { Header } from "../../../components/header/header";
 import { Comments } from '../../../components/comments/comments';
+import { FollowButton } from "../../../components/follow-button/follow-button/follow-button";
+import { UserInterface } from '../../../interfaces/UserInterface';
+import { UserState } from '../../../services/user-state/user-state';
 
 @Component({
   selector: 'app-profile',
@@ -22,7 +25,7 @@ import { Comments } from '../../../components/comments/comments';
     RouterLink,
     MatIconModule,
     MatButtonModule,
-    Thread, Header],
+    Thread, Header, FollowButton],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })
@@ -33,6 +36,7 @@ export class Profile implements OnInit {
   private authService = inject(Auth);
   private dialog = inject(MatDialog);
   private threadStateService = inject(ThreadState);
+  private userStateService = inject(UserState);
 
   // --- Propiedades de Estado ---
   profile: ProfileInterface | null = null;
@@ -43,10 +47,17 @@ export class Profile implements OnInit {
   private currentPage = 0;
   private readonly pageSize = 10;
   private allThreadsLoaded = false;
+  // --- Inicialización del objeto de usuario ---
+
+  @Input({ required: true }) userSignal!: WritableSignal<UserInterface>;
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
-      tap(() => { /* ... reinicio de estado ... */ }),
+      tap(() => { 
+        this.isLoading = true;
+        this.profile = null;
+        this.threadIds = [];
+       }),
       switchMap(params => {
         const username = params.get('username');
         if (!username) throw new Error('Username no encontrado');
@@ -56,12 +67,22 @@ export class Profile implements OnInit {
         // forkJoin ahora espera que getThreadsForUser devuelva Page<FeedThreadDto>
         return forkJoin({
           profile: this.profileService.getProfile(username),
-          threads: this.profileService.getThreadsForUser(username, this.currentPage, this.pageSize)
+          threads: this.profileService.getThreadsForUser(username, this.currentPage, this.pageSize),
+          userForButton: this.profileService.getUserForFollowButton(username)
         });
       })
     ).subscribe({
-      next: ({ profile, threads: threadPage }) => { // 'threadPage' ahora es de tipo Page<FeedThreadDto>
+      next: ({ profile, threads: threadPage,userForButton }) => { // 'threadPage' ahora es de tipo Page<FeedThreadDto>
         this.profile = profile;
+
+        const userForState: UserInterface = {
+          id: profile.id,
+          username: profile.username,
+          displayName: profile.displayName,
+          avatarUrl: profile.avatarUrl,
+          isFollowing: profile.isFollowing
+        };
+        this.userStateService.loadUsers([userForState]);
 
         // --- LÓGICA RESTAURADA ---
         const newThreads: FeedThreadDto[] = threadPage.content; // <-- Ahora .content existe
@@ -155,7 +176,24 @@ export class Profile implements OnInit {
       panelClass: 'comments-dialog-container',
     });
   }
+
+  onFollowChange(isNowFollowing: boolean): void {
+    if (this.profile) {
+      // Actualizamos el contador local del perfil de forma optimista.
+      if (isNowFollowing) {
+        this.profile.followers++;
+      } else {
+        this.profile.followers--;
+      }
+      // También actualizamos el estado en el UserStateService por si acaso
+      this.userStateService.updateFollowingState(this.profile.username, isNowFollowing);
+    }
+  }
+
+
+
 }
+
 
 
 
