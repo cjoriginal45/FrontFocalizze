@@ -15,6 +15,8 @@ import { EditProfileModal } from '../../../components/edit-profile/edit-profile-
 import { ThreadState } from '../../../services/thread-state/thread-state';
 import { Header } from "../../../components/header/header";
 import { Comments } from '../../../components/comments/comments';
+import { FollowButton } from "../../../components/follow-button/follow-button/follow-button";
+import { UserInterface } from '../../../interfaces/UserInterface';
 
 @Component({
   selector: 'app-profile',
@@ -22,7 +24,7 @@ import { Comments } from '../../../components/comments/comments';
     RouterLink,
     MatIconModule,
     MatButtonModule,
-    Thread, Header],
+    Thread, Header, FollowButton],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })
@@ -43,6 +45,9 @@ export class Profile implements OnInit {
   private currentPage = 0;
   private readonly pageSize = 10;
   private allThreadsLoaded = false;
+  // --- Inicialización del objeto de usuario ---
+  userObject: UserInterface | null = null;
+
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
@@ -63,6 +68,7 @@ export class Profile implements OnInit {
       next: ({ profile, threads: threadPage }) => { // 'threadPage' ahora es de tipo Page<FeedThreadDto>
         this.profile = profile;
 
+        this.buildUserForFollowButton(profile);
         // --- LÓGICA RESTAURADA ---
         const newThreads: FeedThreadDto[] = threadPage.content; // <-- Ahora .content existe
         this.threadStateService.loadThreads(newThreads);
@@ -155,7 +161,41 @@ export class Profile implements OnInit {
       panelClass: 'comments-dialog-container',
     });
   }
+
+  private buildUserForFollowButton(profile: ProfileInterface): void {
+    // Para construir el objeto UserInterface, necesitamos saber si el usuario actual
+    // está siguiendo al usuario del perfil. Por ahora, como la API de perfil no
+    // nos da esta información, lo pondremos en 'false' por defecto.
+    // En el futuro, la API GET /api/profiles/{username} debería devolver este booleano.
+    
+    this.userObject = {
+      // La API de perfil no devuelve el ID, lo cual es un problema.
+      // Por ahora, usamos un valor temporal o lo dejamos en 0.
+      // LO IDEAL es que la API GET /api/profiles/{username} devuelva también el ID.
+      id: 0, // Placeholder
+      username: profile.username,
+      displayName: profile.displayName,
+      avatarUrl: profile.avatarUrl,
+      isFollowing: false // Placeholder, la API debería proveer esto
+    };
+  }
+
+  onFollowChange(isNowFollowing: boolean): void {
+    if (this.profile) {
+      if (isNowFollowing) {
+        // Si la acción fue 'seguir', incrementamos el contador de seguidores.
+        this.profile.followers++;
+      } else {
+        // Si la acción fue 'dejar de seguir', lo decrementamos.
+        this.profile.followers--;
+      }
+    }
+  }
+
+
+
 }
+
 
 
 

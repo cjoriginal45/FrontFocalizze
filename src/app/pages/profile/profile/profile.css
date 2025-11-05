@@ -133,7 +133,11 @@
   margin: 0 auto; 
 }
 
-
+.profile-header__action-btn{
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
 
 
 /* --- RESPONSIVE PARA MÓVIL (VERSIÓN MEJORADA) --- */

@@ -53,11 +53,17 @@
 
       </div>
 
-      <!-- Botón de Editar (solo visible si es nuestro perfil) -->
       @if (isOwnProfile) {
         <button mat-stroked-button class="profile-header__edit-btn" (click)="editProfile()">
           Editar Perfil
         </button>
+      } @else {
+        <!-- El @if se asegura de que el objeto no sea nulo antes de pasarlo -->
+        @if (userObject) {
+          <div class="profile-header__action-btn">
+            <app-follow-button [user]="userObject" (followStateChanged)="onFollowChange($event)"></app-follow-button>
+          </div>
+        }
       }
 
     </header>

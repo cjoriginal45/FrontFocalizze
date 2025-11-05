@@ -3,7 +3,7 @@
   class="follow-btn" 
   [class.follow-btn--following]="user.isFollowing"
   [disabled]="isLoading"
-  (click)="toggleFollow()"
+  (click)="onClickFollow()"
   (mouseenter)="isHovering = true"
   (mouseleave)="isHovering = false">
   

@@ -1,4 +1,5 @@
 export interface ProfileInterface {
+  id:number;
   username: string;
   displayName: string;
   avatarUrl: string;
@@ -8,4 +9,5 @@ export interface ProfileInterface {
   threadCount: number;
   threadsAvailableToday: number | null; 
   registerDate: string; 
+  isFollowing: boolean;
 }
