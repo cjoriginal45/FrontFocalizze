@@ -38,34 +38,24 @@
   <div class="suggestions">
     <h2 class="suggestions__title">Tal vez te guste</h2>
     
-    <!-- LÓGICA DE VISIBILIDAD: Muestra la lista completa o solo las sugerencias -->
     @if (showAllCategories) {
+      <!-- Vista de "Todas las categorías" -->
       <ul class="suggestions__list suggestions__list--scrollable">
-        @for (category of allCategories; track category.id) {
+        @for (categoryId of allCategoryIds; track categoryId) {
           <li class="suggestions__item">
-            <span class="suggestions__name">{{ category.name }}</span>
-            <!-- USAMOS EL COMPONENTE REUTILIZABLE -->
-            <app-follow-button 
-              type="category" 
-              [entity]="{ id: category.id, name: category.name, isFollowing: category.isFollowedByCurrentUser}"
-              (followStateChanged)="onFollowCategoryChange(category, $event)">
-            </app-follow-button>
+            <!-- Renderiza un item por cada ID -->
+            <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
           </li>
         }
       </ul>
-      <!-- ... -->
+      <a class="suggestions__see-more" (click)="toggleShowAllCategories()">Mostrar menos...</a>
     } @else {
+      <!-- Vista de "Sugerencias" -->
       <ul class="suggestions__list">
-        @for (category of suggestedCategories; track category.id) {
+        @for (categoryId of suggestedCategoryIds; track categoryId) {
           <li class="suggestions__item">
-            <mat-icon class="suggestions__icon">label</mat-icon>
-            <span class="suggestions__name">{{ category.name }}</span>
-            <!-- USAMOS EL COMPONENTE REUTILIZABLE -->
-            <app-follow-button 
-              type="category" 
-              [entity]="{ id: category.id, name: category.name, isFollowing: category.isFollowedByCurrentUser}"
-              (followStateChanged)="onFollowCategoryChange(category, $event)">
-            </app-follow-button>
+            <!-- Renderiza un item por cada ID -->
+            <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
           </li>
         }
       </ul>

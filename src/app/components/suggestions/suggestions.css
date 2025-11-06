@@ -1,5 +1,6 @@
 /* --- ESTILOS COMUNES (USADOS POR AMBAS VERSIONES) --- */
 /* Estos estilos se aplican al contenido interno, que es el mismo en ambos casos. */
+
 .suggestions-content {
   display: flex;
   flex-direction: column;

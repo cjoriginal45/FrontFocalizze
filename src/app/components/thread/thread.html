@@ -20,7 +20,13 @@
         </div>
       </a>
 
-      <app-follow-button [username]="user.username"></app-follow-button>
+      @if (authService.getCurrentUser()?.username !== user.username) {
+        <app-follow-button 
+          type="user" 
+          [identifier]="user.username">
+        </app-follow-button>
+      }
+
 
 
     </div>
