@@ -20,6 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FollowButton } from "../follow-button/follow-button/follow-button";
 import { UserState } from '../../services/user-state/user-state';
 import { UserInterface } from '../../interfaces/UserInterface';
+import { Auth } from '../../services/auth/auth';
 
 @Component({
   selector: 'app-thread',
@@ -35,6 +36,7 @@ export class Thread implements OnInit {
   private saveService = inject(Save);
   private threadStateService = inject(ThreadState);
   private userStateService = inject(UserState);
+  public authService = inject(Auth);
 
   // --- INPUT: SOLO EL ID ---
   @Input({ required: true }) threadId!: number;
@@ -44,6 +46,8 @@ export class Thread implements OnInit {
   public threadSignal!: WritableSignal<FeedThreadDto>;
 
   public userSignal: WritableSignal<UserInterface> | undefined;
+
+
 
   // --- ESTADO LOCAL (SOLO PARA ESTE COMPONENTE) ---
   isExpanded = false;

@@ -1,0 +1,28 @@
+:host {
+    /* display: contents; no es necesario si controlamos el layout interno */
+    display: flex; /* Hacemos que el propio componente sea el contenedor flex */
+    align-items: center;
+    width: 100%;
+  }
+  
+  .suggestion-item__icon {
+    margin-right: 10px;
+    color: var(--primary-color); /* Usa las variables del aside */
+  }
+  
+  .suggestion-item__name {
+    /* Esta propiedad es clave. Hace que el nombre ocupe todo el espacio
+       disponible, empujando los elementos siguientes a la derecha. */
+    flex-grow: 1; 
+    font-weight: 500;
+    color: var(--primary-color);
+  }
+  
+  .suggestion-item__followers {
+    font-size: 0.8rem;
+    color: #555;
+    /* Espacio entre el contador y el botón de seguir */
+    margin-right: 12px; 
+  }
+  
+  /* El app-follow-button no necesita estilos aquí, se alinea al final por defecto */

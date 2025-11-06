@@ -7,12 +7,19 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FollowButtonService {
-  private apiUrl = environment.apiBaseUrl + '/users';
+  private usersApiUrl = '/api/users';
+  private categoriesApiUrl = '/api/categories';
 
   constructor(private http: HttpClient) { }
   
 
-  public toggleFollow(username: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${username}/follow`, {});
+  toggleFollow(type: 'user' | 'category', id: number | string): Observable<void> {
+    let url = '';
+    if (type === 'user') {
+      url = `${this.usersApiUrl}/${id}/follow`;
+    } else {
+      url = `${this.categoriesApiUrl}/${id}/follow`;
+    }
+    return this.http.post<void>(url, {});
   }
 }

@@ -38,27 +38,24 @@
   <div class="suggestions">
     <h2 class="suggestions__title">Tal vez te guste</h2>
     
-    <!-- LÓGICA DE VISIBILIDAD: Muestra la lista completa o solo las sugerencias -->
     @if (showAllCategories) {
       <!-- Vista de "Todas las categorías" -->
       <ul class="suggestions__list suggestions__list--scrollable">
-        @for (category of allCategories; track category.name) {
+        @for (categoryId of allCategoryIds; track categoryId) {
           <li class="suggestions__item">
-            <span class="suggestions__name">{{ category.name }}</span>
-            <button class="suggestions__button">Seguir</button>
+            <!-- Renderiza un item por cada ID -->
+            <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
           </li>
         }
       </ul>
       <a class="suggestions__see-more" (click)="toggleShowAllCategories()">Mostrar menos...</a>
     } @else {
-      <!-- Vista de "Sugerencias" (3 aleatorias) -->
+      <!-- Vista de "Sugerencias" -->
       <ul class="suggestions__list">
-        @for (category of suggestedCategories; track category.name) {
+        @for (categoryId of suggestedCategoryIds; track categoryId) {
           <li class="suggestions__item">
-            <!-- Asignamos un icono genérico por ahora -->
-            <mat-icon class="suggestions__icon">label</mat-icon>
-            <span class="suggestions__name">{{ category.name }}</span>
-            <button class="suggestions__button">Seguir</button>
+            <!-- Renderiza un item por cada ID -->
+            <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
           </li>
         }
       </ul>

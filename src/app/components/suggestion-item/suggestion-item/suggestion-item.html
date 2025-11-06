@@ -1,0 +1,12 @@
+<!-- El contenido solo se renderiza si la señal de la categoría existe -->
+@if (categorySignal?.(); as category) {
+    <mat-icon class="suggestion-item__icon">label</mat-icon>
+    <span class="suggestion-item__name">{{ category.name }}</span>
+    
+    <span class="suggestion-item__followers">{{ category.followerCount}}</span>
+    
+    <app-follow-button 
+      type="category" 
+      [identifier]="category.id">
+    </app-follow-button>
+  }

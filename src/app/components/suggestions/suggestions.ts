@@ -1,18 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { CategoryInterface } from '../../interfaces/CategoryInterface';
 import { Category } from '../../services/category/category';
+import { FollowButton } from "../follow-button/follow-button/follow-button";
+import { CategoryState } from '../../services/category-state/category-state';
+import { SuggestionItem } from "../suggestion-item/suggestion-item/suggestion-item";
 
 interface SuggestedCategory {
   icon: string; // Nombre del icono de Material Icons
   name: string;
 }
 
+
 @Component({
   selector: 'app-suggestions',
-  imports: [MatIconModule, RouterLink,CommonModule],
+  imports: [MatIconModule, RouterLink, CommonModule, FollowButton, SuggestionItem],
   templateUrl: './suggestions.html',
   styleUrl: './suggestions.css'
 })
@@ -23,11 +27,15 @@ export class Suggestions implements OnInit{
 
   // Lógica para las categorías
   // Logic for categories
-  protected allCategories: CategoryInterface[] = [];
-  suggestedCategories: CategoryInterface[] = []; 
+  allCategoryIds: number[] = [];
+  suggestedCategoryIds: number[] = [];
   showAllCategories = false; 
 
-  constructor(private categoryService: Category) {}
+
+  private categoryStateService = inject(CategoryState);
+  private categoryService = inject(Category);
+
+  constructor() {}
 
   // ngOnInit se ejecuta cuando el componente se inicializa
   // ngOnInit is executed when the component is initialized
@@ -42,10 +50,14 @@ export class Suggestions implements OnInit{
   loadCategories(): void {
     this.categoryService.getAllCategories().subscribe({
       next: (categories) => {
-        // Excluimos la categoría "Ninguna"
-        this.allCategories = categories.filter(cat => cat.name !== "Ninguna");
-        // Al cargar, seleccionamos 3 categorías aleatorias para mostrar
+        const validCategories = categories.filter(cat => cat.name !== "Ninguna");
+
+        // CARGAMOS LAS CATEGORÍAS EN EL NUEVO STORE
+        this.categoryStateService.loadCategories(validCategories);
+        
+        this.allCategoryIds = validCategories.map(c => c.id);
         this.selectRandomSuggestions();
+
       },
       error: (err) => {
         console.error('Error al cargar las categorías de sugerencias', err);
@@ -58,10 +70,8 @@ export class Suggestions implements OnInit{
    * Selects 3 random categories from the full list.
    */
    selectRandomSuggestions(): void {
-    // Barajamos una copia del array para no modificar el original
-    const shuffled = [...this.allCategories].sort(() => 0.5 - Math.random());
-    // Tomamos las primeras 3
-    this.suggestedCategories = shuffled.slice(0, 3);
+    const shuffled = [...this.allCategoryIds].sort(() => 0.5 - Math.random());
+    this.suggestedCategoryIds = shuffled.slice(0, 3);
   }
 
   /**
@@ -79,4 +89,5 @@ export class Suggestions implements OnInit{
   toggleMobilePanel(): void {
     this.isMobilePanelOpen = !this.isMobilePanelOpen;
   }
+
 }
