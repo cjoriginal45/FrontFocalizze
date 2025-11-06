@@ -55,7 +55,7 @@
   min-height: 40px; /* Espacio reservado para la bio */
   margin-top: 3px;
   color: #444;
-  }
+}
 
 .biography-title {
   font-weight: bold;
@@ -108,8 +108,15 @@
 
 .profile-header__edit-btn {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: 10px;
+  right: 10px;
+  color: var(--primary-color) !important;
+  transition: all 0.3s ease;
+}
+
+.profile-header__edit-btn:hover {
+  background-color: var(--primary-color);
+  color: #fff !important;
 }
 
 /* Hilos del Perfil */
@@ -130,15 +137,14 @@
 
   /* --- AÑADIDO: Limitamos el ancho y centramos la lista de hilos --- */
   max-width: 600px; /* El mismo ancho que en el feed */
-  margin: 0 auto; 
+  margin: 0 auto;
 }
 
-.profile-header__action-btn{
+.profile-header__action-btn {
   position: absolute;
   top: 24px;
   right: 24px;
 }
-
 
 /* --- RESPONSIVE PARA MÓVIL (VERSIÓN MEJORADA) --- */
 @media (max-width: 768px) {
@@ -183,7 +189,7 @@
   .profile-header__right {
     /* El orden ya es correcto, no necesita cambios */
   }
-  
+
   .profile-header__biography {
     font-size: 0.95rem; /* Hacemos la bio un poco más pequeña */
     margin-bottom: 20px;
@@ -193,11 +199,11 @@
     gap: 10px 20px; /* Reducimos el espaciado entre stats */
     margin-bottom: 20px;
   }
-  
+
   .stat__value {
     font-size: 1rem;
   }
-  
+
   .stat__label {
     font-size: 0.9rem;
   }
@@ -209,7 +215,7 @@
     transform: scale(0.9);
     transform-origin: top right;
   }
-  
+
   .profile-threads__title {
     font-size: 1.3rem;
   }
