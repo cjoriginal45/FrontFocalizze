@@ -1,8 +1,63 @@
-.modal-header { /* ... estilos del header ... */ }
-.modal-content { display: flex; flex-direction: column; gap: 16px; }
-.modal-footer { /* ... estilos del footer ... */ }
+/* --- Header de la Modal --- */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el título horizontalmente */
+  position: relative; /* Necesario para posicionar el botón de cierre de forma absoluta */
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0; /* Un separador sutil */
+}
 
-/* Estilos para el cargador de avatar */
+.modal-header__title {
+  margin: 0;
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  color: rgba(1, 52, 74, 0.7);
+}
+
+.modal-header__button {
+  position: absolute; /* Saca el botón del flujo normal del layout */
+  right: 16px; /* Lo posiciona a la izquierda con un padding */
+  top: 50%;
+  color: rgba(1, 52, 74, 0.7);
+  transform: translateY(-50%); /* Lo centra verticalmente de forma perfecta */
+}
+
+/* --- Contenido y Footer (sin cambios) --- */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 24px; /* Añadimos espacio superior para que no se pegue al header */
+}
+.modal-footer {
+  padding: 8px 24px;
+}
+
+.save-button {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: 1px solid var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.save-button:hover {
+  background-color: rgba(1, 52, 74, 0.7);
+}
+
+.cancel-button {
+  background-color: #fff;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.cancel-button:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+/* Estilos para el cargador de avatar (sin cambios) */
 .avatar-uploader {
   display: flex;
   justify-content: center;
