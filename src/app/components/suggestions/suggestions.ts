@@ -4,15 +4,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { CategoryInterface } from '../../interfaces/CategoryInterface';
 import { Category } from '../../services/category/category';
+import { FollowButton } from "../follow-button/follow-button/follow-button";
 
 interface SuggestedCategory {
   icon: string; // Nombre del icono de Material Icons
   name: string;
 }
 
+
 @Component({
   selector: 'app-suggestions',
-  imports: [MatIconModule, RouterLink,CommonModule],
+  imports: [MatIconModule, RouterLink, CommonModule, FollowButton],
   templateUrl: './suggestions.html',
   styleUrl: './suggestions.css'
 })
@@ -43,7 +45,11 @@ export class Suggestions implements OnInit{
     this.categoryService.getAllCategories().subscribe({
       next: (categories) => {
         // Excluimos la categoría "Ninguna"
-        this.allCategories = categories.filter(cat => cat.name !== "Ninguna");
+        this.allCategories = categories.filter(cat => cat.name !== "Ninguna")
+        .map(cat => ({
+          ...cat,
+          isFollowing: cat.isFollowedByCurrentUser 
+        }));
         // Al cargar, seleccionamos 3 categorías aleatorias para mostrar
         this.selectRandomSuggestions();
       },
@@ -78,5 +84,11 @@ export class Suggestions implements OnInit{
    */
   toggleMobilePanel(): void {
     this.isMobilePanelOpen = !this.isMobilePanelOpen;
+  }
+
+
+  onFollowCategoryChange(category: CategoryInterface, isNowFollowing: boolean): void {
+    category.isFollowedByCurrentUser = isNowFollowing;
+    category.followerCount += isNowFollowing ? 1 : -1;
   }
 }

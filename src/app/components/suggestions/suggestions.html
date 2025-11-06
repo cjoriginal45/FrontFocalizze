@@ -40,25 +40,32 @@
     
     <!-- LÓGICA DE VISIBILIDAD: Muestra la lista completa o solo las sugerencias -->
     @if (showAllCategories) {
-      <!-- Vista de "Todas las categorías" -->
       <ul class="suggestions__list suggestions__list--scrollable">
-        @for (category of allCategories; track category.name) {
+        @for (category of allCategories; track category.id) {
           <li class="suggestions__item">
             <span class="suggestions__name">{{ category.name }}</span>
-            <button class="suggestions__button">Seguir</button>
+            <!-- USAMOS EL COMPONENTE REUTILIZABLE -->
+            <app-follow-button 
+              type="category" 
+              [entity]="{ id: category.id, name: category.name, isFollowing: category.isFollowedByCurrentUser}"
+              (followStateChanged)="onFollowCategoryChange(category, $event)">
+            </app-follow-button>
           </li>
         }
       </ul>
-      <a class="suggestions__see-more" (click)="toggleShowAllCategories()">Mostrar menos...</a>
+      <!-- ... -->
     } @else {
-      <!-- Vista de "Sugerencias" (3 aleatorias) -->
       <ul class="suggestions__list">
-        @for (category of suggestedCategories; track category.name) {
+        @for (category of suggestedCategories; track category.id) {
           <li class="suggestions__item">
-            <!-- Asignamos un icono genérico por ahora -->
             <mat-icon class="suggestions__icon">label</mat-icon>
             <span class="suggestions__name">{{ category.name }}</span>
-            <button class="suggestions__button">Seguir</button>
+            <!-- USAMOS EL COMPONENTE REUTILIZABLE -->
+            <app-follow-button 
+              type="category" 
+              [entity]="{ id: category.id, name: category.name, isFollowing: category.isFollowedByCurrentUser}"
+              (followStateChanged)="onFollowCategoryChange(category, $event)">
+            </app-follow-button>
           </li>
         }
       </ul>
