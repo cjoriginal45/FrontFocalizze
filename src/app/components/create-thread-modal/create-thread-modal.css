@@ -129,3 +129,28 @@
     background-color: var(--primary-color);
   }
 }
+
+.modal-header__button mat-icon.active {
+  color: var(--secondary-color);
+}
+
+/* Panel de Programación */
+.scheduler-panel {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #f9f9f9;
+}
+.scheduler-panel h4 {
+  margin: 0 0 12px 0;
+}
+.scheduler-inputs {
+  display: flex;
+  gap: 16px;
+}
+.scheduler-info {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #555;
+}

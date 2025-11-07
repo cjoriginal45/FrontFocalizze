@@ -20,8 +20,8 @@
 
   <!-- Contenedor derecho para las acciones principales -->
   <div class="modal-header__right">
-    <button mat-icon-button class="modal-header__button" aria-label="Programar publicación">
-      <mat-icon>schedule</mat-icon>
+    <button mat-icon-button class="modal-header__button" (click)="showScheduler = !showScheduler" aria-label="Programar publicación">
+      <mat-icon [class.active]="showScheduler">schedule</mat-icon>
     </button>
     <button
       mat-icon-button
@@ -36,10 +36,55 @@
 
 <!-- Contenido Principal de la Modal (sin cambios) -->
 <div class="modal-content" mat-dialog-content>
+
+  @if (showScheduler) {
+    <div class="scheduler-panel">
+      <h4>Programar Publicación</h4>
+      <div class="scheduler-inputs">
+        
+        <!-- Selector de Fecha (sin cambios) -->
+        <mat-form-field appearance="outline" class="scheduler-inputs__datepicker">
+          <mat-label>Fecha</mat-label>
+          <input matInput [matDatepicker]="picker" [(ngModel)]="scheduledDate">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- --- ¡CAMBIOS AQUÍ! SELECTORES PARA HORA Y MINUTOS --- -->
+        <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+          <mat-label>Hora</mat-label>
+          <mat-select [(ngModel)]="scheduledHour">
+            @for (hour of hours; track hour) {
+              <mat-option [value]="hour">{{ hour < 10 ? '0' + hour : hour }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+          <mat-label>Min</mat-label>
+          <mat-select [(ngModel)]="scheduledMinute">
+            @for (minute of minutes; track minute) {
+              <mat-option [value]="minute">{{ minute < 10 ? '0' + minute : minute }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+      @if (scheduledDate && scheduledHour !== null && scheduledMinute !== null) {
+        <p class="scheduler-info">
+          Se publicará aproximadamente el 
+          {{ scheduledDate | date:'fullDate' }} a las 
+          {{ (scheduledHour < 10 ? '0' : '') + scheduledHour }}:{{ (scheduledMinute < 10 ? '0' : '') + scheduledMinute }}
+        </p>
+      }
+    </div>
+  }
+
+
   <!-- === VERSIÓN DESKTOP: TODOS LOS HILOS VISIBLES === -->
   <div class="modal-content__desktop-view">
     <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Hilo 1</mat-label>
+      <mat-label>Post 1</mat-label>
       <textarea
         matInput
         [(ngModel)]="threads[0]"
@@ -52,7 +97,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Hilo 2</mat-label>
+      <mat-label>Post 2</mat-label>
       <textarea
         matInput
         [(ngModel)]="threads[1]"
@@ -64,7 +109,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Hilo 3</mat-label>
+      <mat-label>Post 3</mat-label>
       <textarea
         matInput
         [(ngModel)]="threads[2]"
@@ -80,7 +125,7 @@
   <div class="modal-content__mobile-view">
     @switch (currentStep) { @case (1) {
     <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Hilo 1 de 3</mat-label>
+      <mat-label>Post 1 de 3</mat-label>
       <textarea
         matInput
         [(ngModel)]="threads[0]"
@@ -93,7 +138,7 @@
     </mat-form-field>
     } @case (2) {
     <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Hilo 2 de 3</mat-label>
+      <mat-label>Post 2 de 3</mat-label>
       <textarea
         matInput
         [(ngModel)]="threads[1]"
@@ -105,7 +150,7 @@
     </mat-form-field>
     } @case (3) {
     <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Hilo 3 de 3</mat-label>
+      <mat-label>Post 3 de 3</mat-label>
       <textarea
         matInput
         [(ngModel)]="threads[2]"
