@@ -1,0 +1,32 @@
+<form class="search-bar__form" (submit)="onSearchSubmit()">
+  <mat-form-field class="search-bar__field" appearance="outline">
+    <input
+      matInput
+      type="search"
+      placeholder="Buscar..."
+      [formControl]="searchControl"
+      [matAutocomplete]="userAutocomplete"
+    />
+    <button mat-icon-button matSuffix type="submit" aria-label="Realizar búsqueda">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+</form>
+
+<mat-autocomplete
+  #userAutocomplete="matAutocomplete"
+  (optionSelected)="onUserSelected($event)"
+  [displayWith]="displayUser"
+>
+  @for (user of userSearchResults$ | async; track user.username) {
+  <mat-option [value]="user.username">
+    <div class="user-option">
+      <img [src]="user.avatarUrl" class="user-option__avatar" alt="Avatar" />
+      <div class="user-option__info">
+        <span class="user-option__display-name">{{ user.displayName }}</span>
+        <span class="user-option__username">@{{ user.username }}</span>
+      </div>
+    </div>
+  </mat-option>
+  }
+</mat-autocomplete>
