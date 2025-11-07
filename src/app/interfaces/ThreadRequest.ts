@@ -3,5 +3,6 @@ export interface ThreadRequest {
     post2: string;
     post3: string;
     category: string;
+    scheduledTime?: string | null;
   }
   

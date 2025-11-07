@@ -10,6 +10,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { threadService } from '../../services/thread/thread';
 import { ThreadRequest } from '../../interfaces/ThreadRequest';
 import { Category } from '../../services/category/category';
+import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTimepicker } from '@angular/material/timepicker';
 
 // Interfaz para el formato que necesita el <mat-select>
 // Interface for the format needed by <mat-select>
@@ -29,13 +32,29 @@ interface SelectCategory {
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-  ],
+    MatDatepicker,
+    MatDatepickerModule,
+    MatNativeDateModule
+],
   templateUrl: './create-thread-modal.html',
   styleUrl: './create-thread-modal.css',
 })
 export class CreateThreadModal implements OnInit {
   threads: string[] = ['', '', ''];
   errorMessage: string | null = null;
+
+  // --- PROPIEDADES NUEVAS PARA LA PROGRAMACIÓN ---
+  showScheduler = false;
+  scheduledDate: Date | null = null;
+  
+  // Propiedades para los selectores de hora y minutos
+  scheduledHour: number | null = null;
+  scheduledMinute: number | null = null;
+  
+  // Arrays para rellenar los <mat-select>
+  hours: number[] = Array.from({ length: 24 }, (_, i) => i); // [0, 1, ..., 23]
+  minutes: number[] = Array.from({ length: 60 }, (_, i) => i); // [0, 1, ..., 59]
+
 
   //limite de caracteres por paso
   //character limit per step
@@ -107,6 +126,28 @@ export class CreateThreadModal implements OnInit {
     // 1. Reset any previous error message
     this.errorMessage = null;
 
+
+    let finalScheduledTime: string | null = null;
+    if (this.showScheduler && this.scheduledDate && this.scheduledHour !== null && this.scheduledMinute !== null) {
+      const date = new Date(this.scheduledDate);
+      date.setHours(this.scheduledHour, this.scheduledMinute, 0, 0);
+  
+      // --- ¡CAMBIO CLAVE AQUÍ! ---
+      // En lugar de toISOString(), construimos el string manualmente
+      // para evitar la conversión a UTC.
+  
+      // Obtenemos los componentes de la fecha en la zona horaria LOCAL.
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Meses son 0-11
+      const day = date.getDate().toString().padStart(2, '0');
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const seconds = date.getSeconds().toString().padStart(2, '0');
+  
+      // Formato "yyyy-MM-ddTHH:mm:ss" que LocalDateTime parsea directamente.
+      finalScheduledTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    }
+
     // 2. Crear el objeto de datos
     // 2. Create the data object
     const threadData: ThreadRequest = {
@@ -114,6 +155,7 @@ export class CreateThreadModal implements OnInit {
       post2: this.threads[1],
       post3: this.threads[2],
       category: this.selectedCategory || 'Ninguna',
+      scheduledTime: finalScheduledTime,
     };
 
     // 3. Validar los límites de caracteres
@@ -130,10 +172,13 @@ export class CreateThreadModal implements OnInit {
       this.errorMessage = `El tercer hilo excede el límite de ${this.charLimits.step3} caracteres.`;
       return;
     }
-    if (threadData.post1.trim() === '') {
-      this.errorMessage = 'El primer hilo no puede estar vacío.';
+    if (threadData.post1.trim() === '' 
+    || threadData.post2.trim() === '' 
+    || threadData.post3.trim() === '') {
+      this.errorMessage = 'Los post no pueden estar vacios.';
       return;
     }
+  
 
     // 4. Si todas las validaciones pasan, se llama al servicio
     // 4. If all validations pass, call the service
