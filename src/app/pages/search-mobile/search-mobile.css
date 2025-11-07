@@ -1,0 +1,43 @@
+/* Estilos para la página móvil */
+.search-mobile-page__header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+.search-mobile-page__header app-search-bar {
+  flex-grow: 1;
+}
+
+.search-mobile-page__content {
+  padding: 0;
+}
+.search-history {
+  padding: 16px;
+}
+.search-history__title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #333;
+}
+.search-history ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.search-history__item {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  color: #555;
+  transition: background-color 0.2s ease;
+}
+.search-history__item:hover {
+  background-color: #f9f9f9;
+}
+.search-history__empty {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}

@@ -1,0 +1,24 @@
+<div class="search-mobile-page">
+  <header class="search-mobile-page__header">
+    <button mat-icon-button (click)="goBack()" aria-label="Volver">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <app-search-bar></app-search-bar>
+  </header>
+
+  <main class="search-mobile-page__content">
+    <div class="search-history">
+      <h2 class="search-history__title">Búsquedas Recientes</h2>
+      @if (searchHistory.length > 0) {
+      <ul>
+        @for (term of searchHistory; track term) {
+        <li class="search-history__item" (click)="onHistoryClick(term)">{{ term }}</li>
+        }
+      </ul>
+      } @else {
+      <p class="search-history__empty">No tienes búsquedas recientes.</p>
+      }
+    </div>
+    <app-botton-nav></app-botton-nav>
+  </main>
+</div>
