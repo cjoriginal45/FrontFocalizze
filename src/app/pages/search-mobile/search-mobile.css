@@ -3,25 +3,31 @@
   display: flex;
   flex-direction: column;
   height: 100vh; /* Ocupa toda la altura de la pantalla */
-  background-color: #fff;
+  background-color: var(--background-color);
 }
 
 .search-mobile-page__header {
   display: flex;
   align-items: center;
   padding: 8px;
-  border-bottom: 1px solid #eee;
+  /* background-color: var(--primary-color); */
+  border-bottom: 1px solid rgba(51, 51, 51, 0.3);
   flex-shrink: 0; /* Evita que el header se encoja */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 .search-mobile-page__header app-search-bar {
   flex-grow: 1;
+  margin-right: 30px;
+}
+
+.search-mobile-page__header mat-icon {
+  color: rgba(1, 52, 74, 0.7);
 }
 
 /* El contenido principal ahora es el que se puede desplazar (scroll) */
 .search-mobile-page__content {
   flex-grow: 1; /* Ocupa todo el espacio sobrante */
   overflow-y: auto; /* Permite el scroll si el contenido es largo */
-
   /* --- SOLUCIÓN AL LAYOUT --- */
   /* Añadimos un padding inferior igual a la altura de tu nav-bar */
   padding-bottom: 75px; /* 65px de la barra + 10px de espacio */
@@ -32,7 +38,7 @@
   font-size: 1.1rem;
   font-weight: bold;
   margin: 16px 16px 4px;
-  color: #333;
+  color: rgba(1, 52, 74, 0.7);
 }
 .search-history ul {
   list-style: none;
@@ -63,7 +69,7 @@
   gap: 12px;
 }
 .item-content__icon {
-  color: #555;
+  color: rgba(1, 52, 74, 0.7);
 }
 .item-content__avatar {
   width: 40px;
@@ -80,5 +86,5 @@
 }
 
 .remove-button {
-  color: #999;
+  color: rgba(1, 52, 74, 0.7);
 }

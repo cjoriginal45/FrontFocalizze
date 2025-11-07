@@ -6,6 +6,11 @@
   max-width: 450px;
   margin-top: 20px;
 }
+
+.mat-mdc-form-field-flex {
+  padding: 0 !important;
+}
+
 .user-option {
   display: flex;
   align-items: center;
