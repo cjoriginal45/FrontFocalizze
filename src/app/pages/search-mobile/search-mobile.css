@@ -1,24 +1,37 @@
-/* Estilos para la página móvil */
+/* --- Estructura principal y fix para el bottom-nav --- */
+.search-mobile-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  background-color: #fff;
+}
+
 .search-mobile-page__header {
   display: flex;
   align-items: center;
   padding: 8px;
   border-bottom: 1px solid #eee;
+  flex-shrink: 0; /* Evita que el header se encoja */
 }
 .search-mobile-page__header app-search-bar {
   flex-grow: 1;
 }
 
+/* El contenido principal ahora es el que se puede desplazar (scroll) */
 .search-mobile-page__content {
-  padding: 0;
+  flex-grow: 1; /* Ocupa todo el espacio sobrante */
+  overflow-y: auto; /* Permite el scroll si el contenido es largo */
+
+  /* --- SOLUCIÓN AL LAYOUT --- */
+  /* Añadimos un padding inferior igual a la altura de tu nav-bar */
+  padding-bottom: 75px; /* 65px de la barra + 10px de espacio */
 }
-.search-history {
-  padding: 16px;
-}
+
+/* --- Estilos para el historial (mejorados) --- */
 .search-history__title {
   font-size: 1.1rem;
   font-weight: bold;
-  margin-bottom: 12px;
+  margin: 16px 16px 4px;
   color: #333;
 }
 .search-history ul {
@@ -26,18 +39,46 @@
   padding: 0;
   margin: 0;
 }
+.search-history__empty {
+  text-align: center;
+  color: #888;
+  padding: 40px;
+}
+
 .search-history__item {
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
   cursor: pointer;
-  color: #555;
   transition: background-color 0.2s ease;
 }
 .search-history__item:hover {
   background-color: #f9f9f9;
 }
-.search-history__empty {
-  text-align: center;
-  color: #888;
-  padding: 20px;
+
+.item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.item-content__icon {
+  color: #555;
+}
+.item-content__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.item-content__user-info {
+  display: flex;
+  flex-direction: column;
+}
+.user-info__username {
+  font-size: 0.9em;
+  color: #777;
+}
+
+.remove-button {
+  color: #999;
 }

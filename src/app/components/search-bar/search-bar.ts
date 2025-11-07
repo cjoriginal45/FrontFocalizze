@@ -54,17 +54,27 @@ export class SearchBar implements OnInit {
   onSearchSubmit(): void {
     const query = this.searchControl.value?.trim() || '';
     if (query && !query.startsWith('@')) {
-      this.searchHistoryService.addSearchTerm(query);
+      // --- CAMBIO ---
+      // Ahora llamamos al método específico para búsqueda de contenido
+      this.searchHistoryService.addContentSearch(query);
       this.router.navigate(['/search'], { queryParams: { q: query } });
     }
   }
 
   onUserSelected(event: MatAutocompleteSelectedEvent): void {
-    const username = event.option.value;
-    this.router.navigate(['/profile', username]);
+    // --- CAMBIO ---
+    // El valor de la opción ahora es el objeto de usuario COMPLETO
+    const user: UserSearch = event.option.value;
+
+    // Guardamos el usuario en el historial
+    this.searchHistoryService.addUserSearch(user);
+
+    this.router.navigate(['/profile', user.username]);
     this.searchControl.setValue('');
   }
 
+  // --- CAMBIO ---
+  // Esta función ahora debe manejar un objeto UserSearch
   displayUser(user: UserSearch): string {
     return user ? `@${user.username}` : '';
   }

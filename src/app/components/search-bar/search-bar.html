@@ -19,7 +19,11 @@
   [displayWith]="displayUser"
 >
   @for (user of userSearchResults$ | async; track user.username) {
-  <mat-option [value]="user.username">
+  <!-- 
+      CRITICAL CHANGE: The value is now the entire 'user' object.
+      CAMBIO CRÍTICO: El valor ahora es el objeto 'user' completo.
+    -->
+  <mat-option [value]="user">
     <div class="user-option">
       <img [src]="user.avatarUrl" class="user-option__avatar" alt="Avatar" />
       <div class="user-option__info">

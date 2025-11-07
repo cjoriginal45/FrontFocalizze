@@ -11,14 +11,43 @@
       <h2 class="search-history__title">Búsquedas Recientes</h2>
       @if (searchHistory.length > 0) {
       <ul>
-        @for (term of searchHistory; track term) {
-        <li class="search-history__item" (click)="onHistoryClick(term)">{{ term }}</li>
+        @for (item of searchHistory; track item.id) {
+        <!-- Pasamos el objeto 'item' completo al hacer clic -->
+        <li class="search-history__item" (click)="onHistoryClick(item)">
+          <!-- Contenido del item -->
+          <div class="item-content">
+            @if (item.type === 'content') {
+            <mat-icon class="item-content__icon">history</mat-icon>
+            <span>{{ item.query }}</span>
+            } @else if (item.type === 'user') {
+            <img [src]="item.user.avatarUrl" class="item-content__avatar" alt="Avatar" />
+            <div class="item-content__user-info">
+              <span>{{ item.user.displayName }}</span>
+              <span class="user-info__username">@{{ item.user.username }}</span>
+            </div>
+            }
+          </div>
+
+          <!-- Botón de eliminar -->
+          <button
+            mat-icon-button
+            (click)="onRemoveHistoryItem(item.id, $event)"
+            class="remove-button"
+            aria-label="Eliminar del historial"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </li>
         }
       </ul>
       } @else {
       <p class="search-history__empty">No tienes búsquedas recientes.</p>
       }
     </div>
-    <app-botton-nav></app-botton-nav>
   </main>
+  <!-- 
+    El bottom-nav DEBE estar fuera del <main> para que el padding funcione.
+    The bottom-nav MUST be outside of <main> for the padding to work.
+  -->
+  <app-botton-nav></app-botton-nav>
 </div>
