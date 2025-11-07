@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Search } from '../../services/search/search';
 import { SearchHistory } from '../../services/searchHistory/search-history';
@@ -29,7 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './search-bar.html',
   styleUrl: './search-bar.css',
 })
-export class SearchBar {
+export class SearchBar implements OnInit {
   private router = inject(Router);
   private searchService = inject(Search);
   private searchHistoryService = inject(SearchHistory);
