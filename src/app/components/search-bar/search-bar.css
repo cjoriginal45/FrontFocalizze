@@ -1,0 +1,53 @@
+.search-bar__form {
+  width: 100%;
+}
+.search-bar__field {
+  width: 100%;
+  max-width: 450px;
+  margin-top: 20px;
+}
+
+.mat-mdc-form-field-flex {
+  padding: 0 !important;
+}
+
+.user-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.user-option__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+.user-option__info {
+  display: flex;
+  flex-direction: column;
+}
+.user-option__display-name {
+  font-weight: 500;
+}
+.user-option__username {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+:host ::ng-deep .search-bar__field .mat-mdc-form-field-flex {
+  height: 40px;
+  background-color: #fff;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+}
+:host ::ng-deep .search-bar__field .mdc-notched-outline > * {
+  border: none !important;
+}
+:host ::ng-deep .search-bar__field input,
+:host ::ng-deep .search-bar__field mat-icon {
+  color: var(--primary-color) !important;
+}
+:host ::ng-deep .search-bar__field input::placeholder {
+  color: #888 !important;
+}

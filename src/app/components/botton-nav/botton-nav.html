@@ -1,55 +1,54 @@
-
 <!-- The main block of our component -->
 <nav class="mobile-nav">
-    <!-- The list element containing the navigation links -->
-    <ul class="mobile-nav__list">
-      <!-- Item: Home -->
-      <li class="mobile-nav__item">
-        <a
-          class="mobile-nav__link"
-          routerLink="/home"
-          routerLinkActive="mobile-nav__link--active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          aria-label="Ir a la página de inicio"
-        >
-          <mat-icon class="mobile-nav__icon">home</mat-icon>
-        </a>
-      </li>
-  
-      <!-- Item: Search -->
-      <li class="mobile-nav__item">
-        <a
-          class="mobile-nav__link"
-          routerLink="/search"
-          routerLinkActive="mobile-nav__link--active"
-          aria-label="Ir a la página de búsqueda"
-        >
-          <mat-icon class="mobile-nav__icon">search</mat-icon>
-        </a>
-      </li>
-  
-      <!-- Item: Notifications -->
-      <li class="mobile-nav__item">
-        <a
-          class="mobile-nav__link"
-          routerLink="/notifications"
-          routerLinkActive="mobile-nav__link--active"
-          aria-label="Ver notificaciones"
-        >
-          <mat-icon class="mobile-nav__icon">notifications</mat-icon>
-        </a>
-      </li>
-  
-      <!-- Item: Profile -->
-      <li class="mobile-nav__item">
-        <a
-          class="mobile-nav__link"
-          routerLink="/profile"
-          routerLinkActive="mobile-nav__link--active"
-          aria-label="Ver perfil de usuario"
-        >
-          <mat-icon class="mobile-nav__icon">account_circle</mat-icon>
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <!-- The list element containing the navigation links -->
+  <ul class="mobile-nav__list">
+    <!-- Item: Home -->
+    <li class="mobile-nav__item">
+      <a
+        class="mobile-nav__link"
+        routerLink="/home"
+        routerLinkActive="mobile-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        aria-label="Ir a la página de inicio"
+      >
+        <mat-icon class="mobile-nav__icon">home</mat-icon>
+      </a>
+    </li>
+
+    <!-- Item: Search -->
+    <li class="mobile-nav__item">
+      <a
+        class="mobile-nav__link"
+        routerLink="/search-mobile"
+        routerLinkActive="mobile-nav__link--active"
+        aria-label="Ir a la página de búsqueda"
+      >
+        <mat-icon class="mobile-nav__icon">search</mat-icon>
+      </a>
+    </li>
+
+    <!-- Item: Notifications -->
+    <li class="mobile-nav__item">
+      <a
+        class="mobile-nav__link"
+        routerLink="/notifications"
+        routerLinkActive="mobile-nav__link--active"
+        aria-label="Ver notificaciones"
+      >
+        <mat-icon class="mobile-nav__icon">notifications</mat-icon>
+      </a>
+    </li>
+
+    <!-- Item: Profile -->
+    <li class="mobile-nav__item">
+      <a
+        class="mobile-nav__link"
+        routerLink="/profile"
+        routerLinkActive="mobile-nav__link--active"
+        aria-label="Ver perfil de usuario"
+      >
+        <mat-icon class="mobile-nav__icon">account_circle</mat-icon>
+      </a>
+    </li>
+  </ul>
+</nav>
