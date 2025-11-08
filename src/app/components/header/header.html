@@ -1,4 +1,3 @@
-
 <!-- CAMBIO: La etiqueta ahora es <app-menu> -->
 <app-menu [isMobile$]="isMobile$"></app-menu>
 
@@ -17,40 +16,9 @@
     /></a>
   </div>
   <div class="header__section header__section--center">
-  
-    <!-- Usamos un <form> para capturar el evento 'submit' (Enter) -->
-    <form class="header__search-form" (submit)="onSearchSubmit($event)">
-      <mat-form-field class="header__search hide-on-mobile" appearance="outline">
-        <input 
-          matInput 
-          type="search" 
-          placeholder="Buscar..."
-          [formControl]="searchControl"
-          [matAutocomplete]="userAutocomplete" />
-        <button mat-icon-button matSuffix type="submit" aria-label="Realizar búsqueda">
-          <mat-icon>search</mat-icon>
-        </button>
-      </mat-form-field>
-    </form>
-  
-    <!-- Panel de Autocompletado (solo para usuarios) -->
-    <mat-autocomplete #userAutocomplete="matAutocomplete" (optionSelected)="onUserSelected($event)" [displayWith]="displayUser">
-      @for (user of userSearchResults$ | async; track user.username) {
-        <mat-option [value]="user.username">
-          <!-- Estructura de la opción -->
-          <div class="user-option">
-            <img [src]="user.avatarUrl" class="user-option__avatar" alt="Avatar">
-            <div class="user-option__info">
-              <span class="user-option__display-name">{{ user.displayName }}</span>
-              <span class="user-option__username">@{{ user.username }}</span>
-            </div>
-          </div>
-        </mat-option>
-      }
-    </mat-autocomplete>
-  
+    <app-search-bar class="header__section hide-on-mobile"></app-search-bar>
     <a href="/" class="header__logo-container show-on-mobile">
-      <!-- ... logo ... -->
+      <img class="header__logo" src="/assets/images/focalizze-logo-short.webp" alt="" />
     </a>
   </div>
   <div class="header__section header__section--right">

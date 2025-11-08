@@ -1,14 +1,14 @@
 .search-bar__form {
-  width: 100%;
+  width: 500px;
+  display: flex;
+  justify-content: center;
+  position: relative; /* 'position' es necesario para que 'z-index' funcione */
+  z-index: 1001; /* Un valor más alto que el overlay por defecto (1000) */
 }
 .search-bar__field {
   width: 100%;
   max-width: 450px;
   margin-top: 20px;
-}
-
-.mat-mdc-form-field-flex {
-  padding: 0 !important;
 }
 
 .user-option {
@@ -50,4 +50,63 @@
 }
 :host ::ng-deep .search-bar__field input::placeholder {
   color: #888 !important;
+}
+
+/* 
+  1. Apuntamos al contenedor principal del campo (.search-bar__field) y luego,
+     con ::ng-deep, entramos para estilizar el "wrapper" interno.
+*/
+:host .search-bar__field ::ng-deep .mat-mdc-text-field-wrapper {
+  /* Le damos una altura fija al contenedor */
+  height: 40px;
+
+  /* El fondo blanco que quieres */
+  background-color: #fff;
+
+  /* Los bordes redondeados */
+  border-radius: 50px;
+  border: 1px solid rgba(51, 51, 51, 0.3);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 
+  2. Quitamos los bordes por defecto del 'mat-form-field' con appearance="outline".
+*/
+:host .search-bar__field ::ng-deep .mdc-notched-outline > * {
+  border: none !important;
+}
+
+/* 
+  3. Nos aseguramos de que el contenedor flexible interno (flex) ocupe toda la altura
+     y tenga el padding correcto para el ícono y el texto.
+*/
+:host .search-bar__field ::ng-deep .mat-mdc-form-field-flex {
+  height: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* 
+  4. Finalmente, ajustamos los colores del texto y del ícono.
+*/
+:host .search-bar__field ::ng-deep input,
+:host .search-bar__field ::ng-deep mat-icon {
+  color: #0f1419 !important; /* Un color oscuro para el texto, como en Twitter */
+}
+
+:host .search-bar__field ::ng-deep input::placeholder {
+  color: #536471 !important; /* Un gris medio para el placeholder */
+}
+
+@media (max-width: 768px) {
+  .search-bar__form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  :host .search-bar__field ::ng-deep .mat-mdc-text-field-wrapper {
+    box-shadow: none !important;
+  }
 }
