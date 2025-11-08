@@ -36,57 +36,65 @@
 }
 
 .header__button {
+  display: flex;
+  align-items: center;
   color: #fff;
-
+  background-color: transparent;
   transition: background-color 0.2s ease-in-out;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  mat-icon {
+    font-size: 28px;
+    height: 28px;
+    width: 28px;
+  }
 }
 
 .header__button:hover {
   background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
 }
 
 .header__button:active {
   color: rgba(255, 255, 255, 0.8);
 }
 
-.header__search {
-  width: 100%;
-  max-width: 450px;
-  margin-top: 20px;
-}
-
 .user-option {
   display: flex;
   align-items: center;
   gap: 10px;
-  }
+}
 
-  .user-option__avatar {
+.user-option__avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  }
+}
 
-  .user-option__info {
+.user-option__info {
   display: flex;
   flex-direction: column;
-  }
-  .user-option__display-name {
+}
+.user-option__display-name {
   font-weight: 500;
-  }
-  .user-option__username {
+}
+.user-option__username {
   font-size: 0.8rem;
   color: #555;
-  }
+}
 
-:host ::ng-deep .header__search .mat-mdc-form-field-flex {
+/* :host ::ng-deep .header__search .mat-mdc-form-field-flex {
   height: 35px;
   background-color: #fff;
   border-radius: 50px;
   display: flex;
   align-items: center;
   padding-left: 15px;
-}
+} */
 
 :host ::ng-deep .header__search .mdc-notched-outline > * {
   border: none !important;
@@ -127,6 +135,8 @@
   }
   .show-on-mobile {
     display: flex !important;
+    justify-content: center;
+    align-items: center;
   }
   .header__section--left,
   .header__section--right {
