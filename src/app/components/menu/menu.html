@@ -39,8 +39,8 @@
           <!-- Contadores de seguidores/seguidos (necesitarás cargarlos en el futuro) -->
           <div class="mobile-stats-container">
             <div class="mobile-stats">
-              <span><strong>0</strong> siguiendo</span>
-              <span><strong>0</strong> seguidores</span>
+              <span><strong>{{ user.followingCount | number }}</strong> siguiendo</span>
+              <span><strong>{{ user.followersCount | number }}</strong> seguidores</span>
             </div>
           </div>
           <div class="sidenav__header-line-mobile"></div>
@@ -101,12 +101,14 @@
               </div>
               <!-- Contadores (necesitarás cargarlos) -->
               <div class="user-profile__stats">
-                <span><strong>0</strong> siguiendo</span> <span><strong>0</strong> seguidores</span>
+                <span><strong>{{ user.followingCount | number }}</strong> siguiendo</span>
+                <span><strong>{{ user.followersCount | number }}</strong> seguidores</span>
               </div>
             </div>
           </a>
           <!-- Botón de Cerrar Sesión -->
-          <button mat-stroked-button class="sidenav__logout-btn" (click)="logout()">
+          <button mat-stroked-button class="sidenav__logout-btn" (click)="logout()" 
+          routerLink="/login">
             Cerrar Sesión
           </button>
         </div>

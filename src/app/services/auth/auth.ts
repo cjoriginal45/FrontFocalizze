@@ -12,6 +12,8 @@ export interface AuthUser {
   username: string;
   displayName: string;
   avatarUrl?: string; // Opcional, lo cargaremos después
+  followingCount: number;
+  followersCount: number;
 }
 
 interface UserTokenData {
@@ -52,7 +54,7 @@ export class Auth {
         } else {
           // Usamos 'await' para esperar la respuesta de la API
           const user = await firstValueFrom(this.userService.getMe());
-          this.currentUser.set(user);
+          this.currentUser.set(user)
         }
       } catch (error) {
         console.error('Fallo al inicializar el estado de autenticación:', error);
@@ -81,7 +83,9 @@ export class Auth {
             id: response.userId,
             username: decodedToken.sub,
             displayName: response.displayName,
-            avatarUrl: '' // La API de login no devuelve el avatar, lo cargaremos al recargar.
+            avatarUrl: response.avatarUrl || undefined,
+            followingCount: response.followingCount,
+            followersCount: response.followersCount
           };
           this.currentUser.set(user);
         }
@@ -98,5 +102,18 @@ export class Auth {
 
   getCurrentUser(): AuthUser | null {
     return this.currentUser();
+  }
+
+  updateCurrentUserCounts(counts: { followingCount?: number, followersCount?: number }): void {
+    this.currentUser.update(user => {
+      if (!user) return null; // Si no hay usuario, no hacemos nada
+
+      // Creamos un nuevo objeto de usuario con los contadores actualizados
+      return {
+        ...user,
+        followingCount: counts.followingCount ?? user.followingCount,
+        followersCount: counts.followersCount ?? user.followersCount
+      };
+    });
   }
 }

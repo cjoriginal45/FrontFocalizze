@@ -4,4 +4,6 @@ export interface UserInterface {
   displayName: string;
   avatarUrl?: string;
   isFollowing: boolean;
+  followingCount: number;
+  followersCount: number;
 }
