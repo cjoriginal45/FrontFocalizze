@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserState } from '../../../services/user-state/user-state';
 import { Followable } from '../../../interfaces/Followable';
 import { CategoryState } from '../../../services/category-state/category-state';
+import { Auth } from '../../../services/auth/auth';
 
 interface DisplayableFollow {
   name: string;
@@ -26,6 +27,7 @@ export class FollowButton implements OnInit{
   private dialog = inject(MatDialog); 
   private userStateService = inject(UserState);
   private categoryStateService = inject(CategoryState);
+  private authService = inject(Auth);
 
   // --- INPUTS SIMPLIFICADOS ---
   @Input({ required: true }) type!: 'user' | 'category';
@@ -117,27 +119,53 @@ export class FollowButton implements OnInit{
     const previousState = entity.isFollowing;
     const newState = !previousState;
   
-    // --- LÓGICA DE ACTUALIZACIÓN DEL STORE ---
+    // --- LÓGICA DE ACTUALIZACIÓN OPTIMISTA ---
+
     if (this.type === 'user') {
+      // 1. Actualiza el estado 'isFollowing' del usuario que se está viendo.
       this.userStateService.updateFollowingState(this.identifier as string, newState);
+
+      // 2. Actualiza el contador 'followingCount' del usuario que está logueado.
+      const currentUser = this.authService.getCurrentUser();
+      if (currentUser) {
+        // Calculamos el nuevo contador.
+        const newFollowingCount = currentUser.followingCount + (newState ? 1 : -1);
+        // Pedimos al AuthService que actualice su propia señal (o a un servicio de estado si es necesario).
+        this.authService.updateCurrentUserCounts({ followingCount: newFollowingCount });
+      }
+
     } else if (this.type === 'category') {
-      // ESTA ES LA LÍNEA QUE DEBE ESTAR FUNCIONANDO
+      // Actualiza el estado 'isFollowing' de la categoría.
       this.categoryStateService.updateFollowingState(this.identifier as number, newState);
     }
   
-    // Llamada a la API...
+    // --- LLAMADA A LA API ---
     this.followService.toggleFollow(this.type, this.identifier).subscribe({
       next: () => {
+        // La API tuvo éxito. La UI ya está actualizada optimistamente.
         this.followStateChanged.emit(newState);
         this.isLoading = false;
       },
       error: (err) => {
-        // Revertir el estado en el store
+        console.error(`Error al seguir/dejar de seguir ${this.type}`, err);
+        
+        // --- LÓGICA DE REVERSIÓN ---
         if (this.type === 'user') {
+          // 1. Revierte el estado 'isFollowing' del usuario que se está viendo.
           this.userStateService.updateFollowingState(this.identifier as string, previousState);
-        } else {
+
+          // 2. Revierte el contador 'followingCount' del usuario que está logueado.
+          const currentUser = this.authService.getCurrentUser();
+          if (currentUser) {
+            // No necesitamos recalcular, simplemente volvemos al valor original.
+            this.authService.updateCurrentUserCounts({ followingCount: currentUser.followingCount });
+          }
+
+        } else if (this.type === 'category') {
+          // Revierte el estado 'isFollowing' de la categoría.
           this.categoryStateService.updateFollowingState(this.identifier as number, previousState);
         }
+        
         this.isLoading = false;
       }
     });

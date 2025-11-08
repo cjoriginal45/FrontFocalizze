@@ -37,14 +37,31 @@ export class UserState {
    * Actualiza el estado de 'isFollowing' para un usuario.
    * Esto notificará a TODOS los componentes que muestren a este usuario.
    */
-  updateFollowingState(username: string, isFollowing: boolean): void {
+  updateFollowCounts(username: string, change: { followers?: number, following?: number }): void {
     const userSignal = this.userMap.get(username);
     if (userSignal) {
       userSignal.update(user => ({
         ...user,
+        followersCount: change.followers ?? user.followersCount, // Actualiza si se provee
+        followingCount: change.following ?? user.followingCount,
+      }));
+    }
+  } 
+
+  updateFollowingState(username: string, isFollowing: boolean): void {
+    // 1. Buscamos la señal del usuario en nuestro mapa.
+    const userSignal = this.userMap.get(username);
+
+    // 2. Si la señal existe, la actualizamos.
+    if (userSignal) {
+      // 'update' es el método de las señales para modificar su valor de forma segura.
+      // Crea una nueva copia del objeto UserInterface con la propiedad 'isFollowing' actualizada.
+      userSignal.update(user => ({
+        ...user,
         isFollowing: isFollowing
       }));
-      console.log(`[UserState] Estado de seguimiento para ${username} actualizado a ${isFollowing}`);
+    } else {
+      console.warn(`[UserState] Se intentó actualizar el estado de seguimiento para @${username}, pero no se encontró en el store.`);
     }
-  }  
+  }
 }

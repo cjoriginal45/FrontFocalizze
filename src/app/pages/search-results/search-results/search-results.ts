@@ -86,6 +86,8 @@ export class SearchResults implements OnInit {
         displayName: dto.author.displayName, // 'name' debe coincidir con tu interfaz UserInterface
         avatarUrl: dto.author.avatarUrl || 'assets/images/default-avatar.png',
         isFollowing: dto.author.isFollowing || false,
+        followersCount: dto.author.followersCount || 0,
+        followingCount: dto.author.followingCount || 0,
       },
       publicationDate: dto.createdAt,
       posts: dto.posts,
