@@ -1,126 +1,131 @@
+/* --- ESTILOS GLOBALES DEL SIDENAV --- */
 :host {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  pointer-events: none; /* Permite hacer clic a través del contenedor */
   z-index: 2000;
 }
+
 .sidenav-container {
-  width: 100dvw;
-  height: 100dvh;
+  width: 100%;
+  height: 100%;
   background-color: transparent;
 }
+
 .sidenav {
   background-color: var(--primary-color);
   color: #fff;
   border-right: none;
-  display: flex;
   box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.2), 0 16px 24px 2px rgba(0, 0, 0, 0.14),
     0 6px 30px 5px rgba(0, 0, 0, 0.12);
-  pointer-events: auto;
-  border-radius: 0px !important;
+  pointer-events: auto; /* El panel sí debe ser interactivo */
+  padding: 20px;
+  box-sizing: border-box;
 }
-.is-mobile .sidenav {
-  border-radius: 0px !important;
-}
+
 .sidenav__desktop,
 .sidenav__mobile {
   display: flex;
   flex-direction: column;
-
-  height: 100dvh;
-  box-sizing: border-box;
+  height: 100%;
 }
+
+
+/* --- ESTILOS DE ESCRITORIO (DESKTOP) --- */
 
 .sidenav__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-  width: 120px;
-}
-
-.sidenav__close-button {
-  color: #fff;
-  margin-right: -230px;
-  margin-top: -10px;
-  background-color: var(--primary-color);
-  border: none;
-  border-radius: 50%;
-  outline: none;
-}
-
-.sidenav__close-button:active {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.sidenav__nav-list {
-  padding-top: 0 !important;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 10px;
-}
-:host ::ng-deep .sidenav__nav-list a[mat-list-item] .mdc-list-item__content {
-  display: flex !important;
-  align-items: center !important;
-}
-.sidenav__nav-list a[mat-list-item] {
-  color: #fff;
-  font-size: 1.2rem;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  transition: background-color 0.2s ease-in-out;
-  display: flex;
-  gap: 10px;
-  text-decoration: none;
-  padding: 10px;
-}
-.sidenav__nav-list a[mat-list-item]:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  width: 100%;
-}
-.sidenav__nav-list mat-icon {
-  color: #fff;
-  font-size: 26px;
-}
-
-.sidenav__close-button {
-  cursor: pointer;
-}
-
-.sidenav__close-button mat-icon:hover {
-  font-size: 28px;
-  transform: translateX(-2px);
 }
 
 .sidenav__logo-container img {
-  width: 120px;
+  width: 150px; /* Un poco más grande para el logo principal */
   display: block;
 }
-.sidenav__user-profile {
-  display: grid;
-  grid-template-areas: 'avatar info' 'stats stats';
-  gap: 8px 12px;
-  margin-top: auto;
-  margin: 0 0 20px 20px;
-  width: 280px;
+
+.sidenav__close-button {
+  color: #fff;
+  background-color: var(--primary-color);
+  border: none;
 }
-.user-profile__avatar {
-  grid-area: avatar;
-  font-size: 50px;
-  width: 50px;
-  height: 50px;
+
+.sidenav__close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+.sidenav__nav-list {
+  padding-top: 0;
+  flex-grow: 1; /* Empuja el perfil de usuario hacia abajo */
+  list-style: none;
+}
+
+.sidenav__nav-list a[mat-list-item] {
+  /* La propiedad clave para eliminar el subrayado */
+  text-decoration: none;
+  
+  /* Mantén el resto de tus estilos para los items aquí */
+  color: #fff;
+  font-size: 1.1rem;
+  border-radius: 25px;
+  margin-bottom: 8px;
+  transition: background-color 0.2s ease-in-out;
   display: flex;
+  gap: 40px;
+  align-items: center;
+  padding: 10px 16px;
+}
+
+.sidenav__nav-list a[mat-list-item]:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  text-decoration: none; /* También lo quitamos en el estado hover por si acaso */
+}
+
+.sidenav__nav-list mat-icon {
+  color: #fff;
+  font-size: 24px;
+}
+
+/* Footer del Perfil de Usuario (Desktop) */
+.sidenav__user-profile-link {
+  text-decoration: none; /* Quita el subrayado del enlace */
+  color: inherit;
+  display: block; /* Asegura que el enlace ocupe todo el ancho */
+  border-radius: 8px;
+  padding: 8px;
+  transition: background-color 0.2s ease-in-out;
+  margin-bottom: 16px; /* Espacio antes del botón de logout */
+}
+.sidenav__user-profile-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidenav__user-profile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+/* CORRECCIÓN: Estilos para la IMAGEN del avatar y el ICONO de fallback */
+.user-profile__avatar,
+.user-profile__avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover; /* Para que la imagen no se deforme */
+  font-size: 40px;   /* Para que el mat-icon tenga el tamaño correcto */
 }
 
 .user-profile__info {
-  margin-right: 190px;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
 .user-profile__name {
@@ -131,111 +136,119 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-.user-profile__stats {
-  grid-area: stats;
-  display: flex;
-  gap: 10px;
-  font-size: 0.9em;
+.sidenav__logout-btn {
+  align-self: center;
+  width: 50%;
+  border-color: rgba(255, 255, 255, 0.5);
+  border-radius: 14px;
+  color: white;
+  background-color: var(--primary-color);
 }
-.sidenav__header .user-profile__info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.sidenav__logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* ---------- Mobile Desing ---------- */
+/* --- ESTILOS MÓVIL --- */
 
 .sidenav__header-mobile {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  width: 320px;
-  padding: 16px 24px;
+  align-items: flex-start;
+  padding: 16px;
   box-sizing: border-box;
 }
 
 .user-profile__info-mobile {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.user-profile__avatar-link {
+  text-decoration: none;
+}
+
+.user-profile_avatar-box-mobile {
+  display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.user-profile__avatar-mobile {
-  font-size: 50px;
+/* CORRECCIÓN: Estilos para la IMAGEN del avatar móvil y el ICONO */
+.user-profile__avatar-mobile,
+.user-profile__avatar-mobile-img {
   width: 50px;
   height: 50px;
-  color: #ffffff;
+  border-radius: 50%;
+  object-fit: cover;
+  font-size: 50px;
 }
 
 .user-profile__name-handle-mobile {
   display: flex;
   flex-direction: column;
 }
-
 .user-profile__name-mobile {
-  font-weight: 600;
-  font-size: 1.15rem;
-  color: #ffffff;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
-
 .user-profile__handle-mobile {
   font-size: 0.95em;
   color: rgba(255, 255, 255, 0.7);
 }
 
 .sidenav__close-button-mobile {
-  color: #ffffff;
-}
-
-.sidenav__close-button-mobile {
   color: #fff;
-  margin-right: -230px;
-  margin-top: -10px;
-  background-color: var(--primary-color);
-  border: none;
-  border-radius: 50%;
-  outline: none;
-  height: 50px;
-  justify-content: center;
-}
-
-.sidenav__close-button-mobile:active {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.sidenav__header-line-mobile {
-  width: 100%;
-  height: 2px;
-  background-color: #fff;
-  margin-top: 5px;
-}
-
-.sidenav__nav-list {
-  padding: 30px 10px 10px 10px !important;
 }
 
 .mobile-stats-container {
-  display: flex;
-  justify-content: center;
+  padding: 0 16px;
 }
 .mobile-stats {
-  width: 200px;
   font-size: 0.9em;
   color: rgba(255, 255, 255, 0.8);
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 16px;
-  padding-left: 8px;
+  gap: 8px 16px; /* Espacio vertical y horizontal */
+}
+
+.sidenav__header-line-mobile {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 16px 0;
+}
+
+.sidenav__footer-mobile {
+  margin-top: auto; /* Empuja el footer hacia abajo */
+  padding: 16px 0;
   text-align: center;
 }
-.sidenav__footer-mobile {
+.sidenav__footer-mobile img {
+  width: 50px;
+  opacity: 0.7;
+}
+
+/* --- ESTILOS PARA LA VISTA DE USUARIO ANÓNIMO --- */
+
+.sidenav__anonymous-view {
   display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.sidenav__anonymous-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: 16px;
-  margin-top: auto;
-  margin-bottom: 15px;
+  text-align: center;
+  padding: 20px;
 }
-.sidenav__footer-mobile img {
-  width: 100px;
+.sidenav__anonymous-content h2 {
+  margin-bottom: 8px;
+}
+.sidenav__anonymous-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
 }

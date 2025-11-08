@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, effect, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Observable, tap } from 'rxjs';
+import { firstValueFrom, Observable, tap } from 'rxjs';
 import { LoginResponse } from '../../interfaces/LoginResponse';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { UserService } from '../user/user-service';
 
 export interface AuthUser {
   id: number;
@@ -21,44 +22,47 @@ interface UserTokenData {
   providedIn: 'root',
 })
 export class Auth {
-  private apiUrl = environment.apiBaseUrl;
+  private apiUrl = environment.apiBaseUrl + '/auth';
 
+
+  private http = inject(HttpClient);
+  private router = inject(Router);
   currentUser = signal<AuthUser | null>(null);
+  private userService = inject(UserService); 
 
   // SIGNAL: This is the "source of truth" for the session state.
   isLoggedIn = computed(() => !!this.currentUser());
 
-  constructor(private http: HttpClient, private router: Router) {
-    this.loadUserFromToken();
+  authReady = signal<boolean>(false);
 
+  constructor() {
     effect(() => {
       console.log('[AuthService] El estado de autenticación ha cambiado:', this.isLoggedIn());
     });
   }
 
-  private loadUserFromToken(): void {
+  async loadUserFromToken(): Promise<void> {
     const token = localStorage.getItem('jwt_token');
     if (token) {
       try {
-        const decodedToken: UserTokenData = jwtDecode(token);
-        // Aquí tenemos un problema: el token solo tiene el username ('sub').
-        // No tenemos el 'id' ni el 'displayName' al recargar la página.
-        // Por ahora, creamos un objeto de usuario parcial.
-        this.currentUser.set({ 
-          id: 0, // Placeholder
-          username: decodedToken.sub,
-          displayName: '' // Placeholder
-        });
-        
-        // TODO: En el futuro, hacer una llamada a una API GET /api/users/me
-        // para obtener los datos completos del usuario y rellenar la señal.
-        
+        const decodedToken: { exp: number } = jwtDecode(token);
+        if (Date.now() >= decodedToken.exp * 1000) {
+          localStorage.removeItem('jwt_token');
+          // No hacemos nada más, currentUser ya es null.
+        } else {
+          // Usamos 'await' para esperar la respuesta de la API
+          const user = await firstValueFrom(this.userService.getMe());
+          this.currentUser.set(user);
+        }
       } catch (error) {
-        // Si el token es inválido, lo limpiamos.
+        console.error('Fallo al inicializar el estado de autenticación:', error);
         localStorage.removeItem('jwt_token');
       }
     }
+    // Marcamos que la autenticación está lista.
+    this.authReady.set(true);
   }
+
 
 
   private hasToken(): boolean {
@@ -70,18 +74,15 @@ export class Auth {
       tap((response) => {
         if (response.token) {
           localStorage.setItem('jwt_token', response.token);
-          
-          // Decodificamos el token para obtener el 'username'.
           const decodedToken: UserTokenData = jwtDecode(response.token);
 
-          // Creamos el objeto AuthUser con los datos del login y del token.
+          // Al hacer login, construimos el objeto AuthUser con los datos del login.
           const user: AuthUser = {
             id: response.userId,
             username: decodedToken.sub,
             displayName: response.displayName,
+            avatarUrl: '' // La API de login no devuelve el avatar, lo cargaremos al recargar.
           };
-          
-          // Actualizamos la señal con el objeto del usuario completo.
           this.currentUser.set(user);
         }
       })

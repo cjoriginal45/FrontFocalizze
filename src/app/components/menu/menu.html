@@ -1,55 +1,76 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav class="sidenav" mode="over" [opened]="false">
-    @if (isMobile$ | async) {
-    <div class="sidenav__mobile">
-      <div class="sidenav__header-mobile">
-        <div class="user-profile__info-mobile">
-          <div class="user-profile_avatar-box-mobile">
-            <mat-icon class="user-profile__avatar-mobile">account_circle</mat-icon>
+
+    <!-- Usamos 'authService.currentUser()' para obtener la señal del usuario.
+         La sintaxis 'as user' lo desenvuelve en una variable local 'user'. -->
+    @if (authService.currentUser(); as user) {
+      @if (isMobile$ | async) {
+        <div class="sidenav__mobile">
+          <header class="sidenav__header-mobile">
+            <div class="user-profile__info-mobile">
+              <!-- Enlace a la página de perfil con avatar -->
+              <a class="user-profile__avatar-link" routerLink="/profile/{{ user.username }}" (click)="matSidenav.close()">
+                <div class="user-profile_avatar-box-mobile">
+                  @if (user.avatarUrl) {
+                    <img [src]="user.avatarUrl" alt="Avatar de {{ user.displayName }}" class="user-profile__avatar-mobile-img">
+                  } @else {
+                    <mat-icon class="user-profile__avatar-mobile">account_circle</mat-icon>
+                  }
+                </div>
+              </a>
+              <!-- Información de nombre y username -->
+              <div class="user-profile__name-handle-mobile">
+                <span class="user-profile__name-mobile">{{ user.displayName || user.username }}</span>
+                <span class="user-profile__handle-mobile">@{{ user.username }}</span>
+              </div>
+            </div>
+            <!-- Botón de cerrar -->
+            <div class="user-profile__button-box-mobile">
+              <button
+                mat-icon-button
+                class="sidenav__close-button"
+                (click)="matSidenav.close()"
+                aria-label="Cerrar menú"
+              >
+                <mat-icon>close</mat-icon>
+        </button>
+            </div>
+          </header>
+          <!-- Contadores de seguidores/seguidos (necesitarás cargarlos en el futuro) -->
+          <div class="mobile-stats-container">
+            <div class="mobile-stats">
+              <span><strong>0</strong> siguiendo</span>
+              <span><strong>0</strong> seguidores</span>
+            </div>
           </div>
-          <div class="user-profile__name-handle-mobile">
-            <span class="user-profile__name-mobile">Joaquin</span
-            ><span class="user-profile__handle-mobile">@joaquin45</span>
+          <div class="sidenav__header-line-mobile"></div>
+          <!-- Lista de Navegación -->
+          <mat-nav-list class="sidenav__nav-list">
+            <a mat-list-item routerLink="/saved" (click)="matSidenav.close()">
+              <mat-icon>bookmark</mat-icon> <span>Guardados</span>
+            </a>
+            <a mat-list-item routerLink="/configuration-page" (click)="matSidenav.close()">
+              <mat-icon>settings</mat-icon> <span>Configuración</span>
+            </a>
+            <!-- Botón de Cerrar Sesión -->
+            <a mat-list-item (click)="logout()">
+              <mat-icon>logout</mat-icon> <span>Cerrar Sesión</span>
+            </a>
+          </mat-nav-list>
+          <div class="sidenav__footer-mobile">
+            <img src="/assets/images/focalizze-logo-short.webp" alt="Logo de Focalizze" />
           </div>
         </div>
-        <div class="user-profile__button-box-mobile">
-          <button
-            mat-icon-button
-            class="sidenav__close-button-mobile"
-            (click)="matSidenav.close()"
-            aria-label="Cerrar menú"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-      </div>
-      <div class="mobile-stats-container">
-        <div class="mobile-stats">
-          <span><strong>20</strong> siguiendo</span> <span><strong>15</strong> seguidores</span>
-          <span>Interacciones disponibles: <strong>18/20</strong></span>
-        </div>
-      </div>
-      <div class="sidenav__header-line-mobile"></div>
-      <mat-nav-list class="sidenav__nav-list"
-        ><a mat-list-item href="#"><mat-icon>search</mat-icon> <span>Buscar</span></a
-        ><a mat-list-item routerLink="/profile"><mat-icon>person</mat-icon> <span>Perfil</span></a
-        ><a mat-list-item routerLink="/threads-saved"
-          ><mat-icon>bookmark</mat-icon> <span>Guardados</span></a
-        ><a mat-list-item routerLink="/configuration-page"
-          ><mat-icon>settings</mat-icon> <span>Configuración</span></a
-        ></mat-nav-list
-      >
-      <div class="sidenav__footer-mobile">
-        <img src="/assets/images/focalizze-logo-short.webp" alt="Logo de Focalizze" />
-      </div>
-    </div>
-    } @else {
-    <div class="sidenav__desktop">
-      <div class="sidenav__header">
-        <div class="sidenav__logo-container">
-          <img src="/assets/images/focalizze-logo.webp" alt="Logo de Focalizze" />
-        </div>
-        <button
+      } 
+      
+      <!-- === VISTA ESCRITORIO (AUTENTICADO) === -->
+      @else {
+        <div class="sidenav__desktop">
+          <header class="sidenav__header">
+            <div class="sidenav__logo-container">
+              <img src="/assets/images/focalizze-logo.webp" alt="Logo de Focalizze" />
+            </div>
+            <button
           mat-icon-button
           class="sidenav__close-button"
           (click)="matSidenav.close()"
@@ -57,29 +78,64 @@
         >
           <mat-icon>close</mat-icon>
         </button>
-      </div>
-      <mat-nav-list class="sidenav__nav-list"
-        ><a mat-list-item routerLink="/feed"><mat-icon>home</mat-icon> <span>Inicio</span></a
-        ><a mat-list-item routerLink="/notifications"
-          ><mat-icon>notifications</mat-icon> <span>Notificaciones</span></a
-        ><a mat-list-item routerLink="/saved"
-          ><mat-icon>bookmark</mat-icon> <span>Guardados</span></a
-        ><a mat-list-item routerLink="/configuration-page"
-          ><mat-icon>settings</mat-icon> <span>Configuración</span></a
-        ></mat-nav-list
-      >
-      <div class="sidenav__user-profile">
-        <mat-icon class="user-profile__avatar">account_circle</mat-icon>
-        <div class="user-profile__info">
-          <span class="user-profile__name">Joaquin</span
-          ><span class="user-profile__handle">@joaquin45</span>
+          </header>
+          <!-- Lista de Navegación -->
+          <mat-nav-list class="sidenav__nav-list">
+            <a mat-list-item routerLink="/home" (click)="matSidenav.close()"><mat-icon>home</mat-icon> <span>Inicio</span></a>
+            <a mat-list-item routerLink="/notifications" (click)="matSidenav.close()"><mat-icon>notifications</mat-icon> <span>Notificaciones</span></a>
+            <a mat-list-item routerLink="/saved" (click)="matSidenav.close()"><mat-icon>bookmark</mat-icon> <span>Guardados</span></a>
+            <a mat-list-item routerLink="/configuration-page" (click)="matSidenav.close()"><mat-icon>settings</mat-icon> <span>Configuración</span></a>
+          </mat-nav-list>
+
+          <!-- Perfil de Usuario en el Footer (ahora dinámico) -->
+          <a class="sidenav__user-profile-link" routerLink="/profile/{{ user.username }}" (click)="matSidenav.close()">
+            <div class="sidenav__user-profile">
+              @if (user.avatarUrl) {
+                <img [src]="user.avatarUrl" alt="Avatar de {{ user.displayName }}" class="user-profile__avatar-img">
+              } @else {
+                <mat-icon class="user-profile__avatar">account_circle</mat-icon>
+              }
+              <div class="user-profile__info">
+                <span class="user-profile__name">{{ user.displayName || user.username }}</span>
+                <span class="user-profile__handle">@{{ user.username }}</span>
+              </div>
+              <!-- Contadores (necesitarás cargarlos) -->
+              <div class="user-profile__stats">
+                <span><strong>0</strong> siguiendo</span> <span><strong>0</strong> seguidores</span>
+              </div>
+            </div>
+          </a>
+          <!-- Botón de Cerrar Sesión -->
+          <button mat-stroked-button class="sidenav__logout-btn" (click)="logout()">
+            Cerrar Sesión
+          </button>
         </div>
-        <div class="user-profile__stats">
-          <span><strong>20</strong> siguiendo</span> <span><strong>15</strong> seguidores</span>
+      }
+
+    } @else {
+      <!-- ========================================================== -->
+      <!-- CONTENIDO A MOSTRAR SI EL USUARIO NO ESTÁ AUTENTICADO -->
+      <!-- ========================================================== -->
+      <div class="sidenav__anonymous-view">
+        <div class="sidenav__header">
+          <div class="sidenav__logo-container">
+            <img src="/assets/images/focalizze-logo.webp" alt="Logo de Focalizze" />
+          </div>
+          <button mat-icon-button class="sidenav__close-button" (click)="matSidenav.close()" aria-label="Cerrar menú">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="sidenav__anonymous-content">
+          <h2>¡Bienvenido a Focalizze!</h2>
+          <p>Donde menos es más. Únete a la conversación.</p>
+          <div class="sidenav__anonymous-actions">
+            <a mat-stroked-button routerLink="/login" (click)="matSidenav.close()">Iniciar Sesión</a>
+            <a mat-flat-button color="primary" routerLink="/register" (click)="matSidenav.close()">Registrarse</a>
+          </div>
         </div>
       </div>
-    </div>
     }
+
   </mat-sidenav>
   <mat-sidenav-content></mat-sidenav-content>
 </mat-sidenav-container>
