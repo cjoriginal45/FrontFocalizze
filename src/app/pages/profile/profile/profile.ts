@@ -80,7 +80,9 @@ export class Profile implements OnInit {
           username: profile.username,
           displayName: profile.displayName,
           avatarUrl: profile.avatarUrl,
-          isFollowing: profile.isFollowing
+          isFollowing: profile.isFollowing,
+          followersCount: profile.followers,
+          followingCount: profile.followingCount,
         };
         this.userStateService.loadUsers([userForState]);
 

@@ -10,4 +10,6 @@ export interface ProfileInterface {
   threadsAvailableToday: number | null; 
   registerDate: string; 
   isFollowing: boolean;
+  followingCount: number;
+  followersCount: number;
 }
