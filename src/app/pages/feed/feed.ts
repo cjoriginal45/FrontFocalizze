@@ -37,6 +37,11 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
 
   ngOnInit(): void {
     this.loadMoreThreads(); // Carga inicial
+
+    this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
+      // Filtramos el array de IDs para quitar el que fue eliminado.
+      this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
+    });
   }
 
   /**

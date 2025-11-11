@@ -97,6 +97,11 @@ export class Profile implements OnInit {
       },
       // ...
     });
+
+    this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
+      // Filtramos el array de IDs para quitar el que fue eliminado.
+      this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
+    });
   }
 
   loadMoreThreads(): void {

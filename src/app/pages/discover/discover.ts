@@ -31,6 +31,11 @@ export class Discover implements OnInit {
 
  ngOnInit(): void {
    this.loadMoreThreads(); // Carga inicial
+
+   this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
+    // Filtramos el array de IDs para quitar el que fue eliminado.
+    this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
+  });
  }
 
  /**

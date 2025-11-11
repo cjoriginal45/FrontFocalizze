@@ -17,6 +17,9 @@ export class ThreadState {
   private commentAddedSubscription: Subscription;
   private saveToggledSubscription: Subscription;
 
+  private threadDeletedSource = new Subject<number>();
+  threadDeleted$ = this.threadDeletedSource.asObservable();
+
   constructor() {
 
     this.commentAddedSubscription = this.interactionService.commentAdded$.subscribe(event => {
@@ -126,8 +129,10 @@ export class ThreadState {
 
 
   removeThread(threadId: number): void {
-    this.threadsMap.delete(threadId);
-    
+    const deleted = this.threadsMap.delete(threadId);
+    if (deleted) {
+      this.threadDeletedSource.next(threadId);
+    }
   }
 
 }
