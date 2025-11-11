@@ -21,10 +21,12 @@ import { FollowButton } from "../follow-button/follow-button/follow-button";
 import { UserState } from '../../services/user-state/user-state';
 import { UserInterface } from '../../interfaces/UserInterface';
 import { Auth } from '../../services/auth/auth';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-thread',
-  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink, FollowButton],
+  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink, FollowButton,MatMenuModule],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
 })
@@ -37,6 +39,7 @@ export class Thread implements OnInit {
   private threadStateService = inject(ThreadState);
   private userStateService = inject(UserState);
   public authService = inject(Auth);
+  private dialog = inject(MatDialog);
 
   // --- INPUT: SOLO EL ID ---
   @Input({ required: true }) threadId!: number;

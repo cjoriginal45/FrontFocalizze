@@ -1,0 +1,41 @@
+<header class="modal-header">
+    <h2 class="modal-header__title">Editar Hilo</h2>
+    <button mat-icon-button (click)="closeModal()" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+  
+  <div class="modal-content" mat-dialog-content>
+    <!-- Vista única para editar los 3 hilos -->
+    <mat-form-field appearance="fill" class="thread-input">
+      <mat-label>Post 1</mat-label>
+      <textarea matInput [(ngModel)]="threads[0]" [maxlength]="charLimits.step1" cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+      <mat-hint align="end">{{ threads[0].length }} / {{ charLimits.step1 }}</mat-hint>
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill" class="thread-input">
+      <mat-label>Post 2</mat-label>
+      <textarea matInput [(ngModel)]="threads[1]" [maxlength]="charLimits.step2" cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+      <mat-hint align="end">{{ threads[1].length }} / {{ charLimits.step2 }}</mat-hint>
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill" class="thread-input">
+      <mat-label>Post 3</mat-label>
+      <textarea matInput [(ngModel)]="threads[2]" [maxlength]="charLimits.step3" cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+      <mat-hint align="end">{{ threads[2].length }} / {{ charLimits.step3 }}</mat-hint>
+    </mat-form-field>
+  </div>
+  
+  <footer class="modal-footer" mat-dialog-actions>
+    <mat-form-field appearance="outline" class="category-selector">
+      <mat-label>Categoría</mat-label>
+      <mat-select [(ngModel)]="selectedCategory">
+        <mat-option value="Ninguna">Ninguna</mat-option>
+        @for (category of categories; track category) {
+          <mat-option [value]="category.name">{{ category.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    
+    <button mat-flat-button color="primary" (click)="onSave()">Guardar Cambios</button>
+  </footer>
