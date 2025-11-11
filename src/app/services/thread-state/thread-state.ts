@@ -125,4 +125,9 @@ export class ThreadState {
   }
 
 
+  removeThread(threadId: number): void {
+    this.threadsMap.delete(threadId);
+    
+  }
+
 }

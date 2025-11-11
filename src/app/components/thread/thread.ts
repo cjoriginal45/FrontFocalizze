@@ -23,6 +23,9 @@ import { UserInterface } from '../../interfaces/UserInterface';
 import { Auth } from '../../services/auth/auth';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
+import { EditThreadModal } from '../edit-thread-modal/edit-thread-modal/edit-thread-modal';
+import { ThreadUpdateRequest } from '../../interfaces/ThreadUpdateRequest';
+import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 
 @Component({
   selector: 'app-thread',
@@ -142,5 +145,52 @@ export class Thread implements OnInit {
   onCommentClick(): void {
     // No es necesario 'if (!this.threadSignal) return;' porque el botón no se renderizaría si no hay señal
     this.openComments.emit(this.threadId);
+  }
+
+
+  openEditModal(): void {
+    if (!this.threadSignal) return;
+    const threadToEdit = this.threadSignal();
+
+    const dialogRef = this.dialog.open(EditThreadModal, {
+      width: '600px',
+      data: { thread: threadToEdit },
+      panelClass: 'edit-thread-modal-panel'
+    });
+
+    dialogRef.afterClosed().subscribe((result: ThreadUpdateRequest | undefined) => {
+      if (!result) return; // El usuario canceló
+
+      this.threadService.updateThread(this.threadId, result).subscribe({
+        next: (updatedThread) => {
+          // Actualizamos el estado en el store con la respuesta del backend
+          this.threadStateService.updateThreadData(this.threadId, updatedThread);
+          console.log('Hilo actualizado con éxito');
+        },
+        error: (err) => console.error('Error al actualizar el hilo', err)
+      });
+    });
+  }
+
+  openDeleteConfirm(): void {
+    const dialogRef = this.dialog.open(ConfirmMatDialog, {
+      data: {
+        title: '¿Eliminar Hilo?',
+        message: 'Esta acción no se puede deshacer. El hilo será eliminado permanentemente.'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.threadService.deleteThread(this.threadId).subscribe({
+          next: () => {
+            console.log('Hilo eliminado con éxito');
+            // Aquí notificamos al store para que elimine el hilo
+            this.threadStateService.removeThread(this.threadId);
+          },
+          error: (err) => console.error('Error al eliminar el hilo', err)
+        });
+      }
+    });
   }
 }
