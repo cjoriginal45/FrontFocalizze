@@ -30,13 +30,18 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
   private userStateService = inject(UserState);
 
   // --- Propiedades de Estado (Refactorizadas) ---
-  threadIds: number[] = []; // <-- SOLO GUARDAMOS IDs
+  threadIds: number[] = []; 
   isLoading = false;
   currentPage = 0;
   isLastPage = false;
 
   ngOnInit(): void {
     this.loadMoreThreads(); // Carga inicial
+
+    this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
+      // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
+      this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
+    });
   }
 
   /**

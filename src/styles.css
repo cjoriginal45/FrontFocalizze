@@ -29,7 +29,13 @@ body {
   --footer-height: 40px;
 }
 
-.create-thread-modal-panel .mat-dialog-container {
+.create-thread-modal-panel .mat-dialog-container{
+  padding: 0 !important;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.edit-thread-modal-panel .mat-dialog-container{
   padding: 0 !important;
   border-radius: 15px;
   overflow: hidden;

@@ -5,6 +5,7 @@ import { ThreadRequest } from '../../interfaces/ThreadRequest';
 import { Observable } from 'rxjs';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
+import { ThreadUpdateRequest } from '../../interfaces/ThreadUpdateRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -39,5 +40,24 @@ export class threadService {
    */
   getThreadById(id: number): Observable<FeedThreadDto> {
     return this.http.get<FeedThreadDto>(`${this.apiUrl}/${id}`);
+  }
+
+    /**
+   * Envía una petición para actualizar el contenido de un hilo.
+   * @param threadId El ID del hilo a actualizar.
+   * @param updateData Los nuevos datos para los posts y la categoría.
+   * @returns Un Observable con los datos del hilo actualizado.
+   */
+    updateThread(threadId: number, updateData: ThreadUpdateRequest): Observable<FeedThreadDto> {
+      return this.http.patch<FeedThreadDto>(`${this.apiUrl}/${threadId}`, updateData);
+    }
+
+     /**
+   * Envía una petición para borrar lógicamente un hilo.
+   * @param threadId El ID del hilo a borrar.
+   * @returns Un Observable<void> que se completa al finalizar.
+   */
+  deleteThread(threadId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${threadId}`);
   }
 }

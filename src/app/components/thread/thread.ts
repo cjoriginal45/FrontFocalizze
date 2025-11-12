@@ -21,10 +21,15 @@ import { FollowButton } from "../follow-button/follow-button/follow-button";
 import { UserState } from '../../services/user-state/user-state';
 import { UserInterface } from '../../interfaces/UserInterface';
 import { Auth } from '../../services/auth/auth';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
+import { EditThreadModal } from '../edit-thread-modal/edit-thread-modal/edit-thread-modal';
+import { ThreadUpdateRequest } from '../../interfaces/ThreadUpdateRequest';
+import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 
 @Component({
   selector: 'app-thread',
-  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink, FollowButton],
+  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink, FollowButton,MatMenuModule],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
 })
@@ -37,6 +42,7 @@ export class Thread implements OnInit {
   private threadStateService = inject(ThreadState);
   private userStateService = inject(UserState);
   public authService = inject(Auth);
+  private dialog = inject(MatDialog);
 
   // --- INPUT: SOLO EL ID ---
   @Input({ required: true }) threadId!: number;
@@ -139,5 +145,63 @@ export class Thread implements OnInit {
   onCommentClick(): void {
     // No es necesario 'if (!this.threadSignal) return;' porque el botón no se renderizaría si no hay señal
     this.openComments.emit(this.threadId);
+  }
+
+
+  openEditModal(): void {
+    // Guarda de seguridad
+    if (!this.threadSignal) return;
+  
+    // 1. Obtenemos los datos actuales para pasarlos a la modal
+    const threadToEdit = this.threadSignal();
+  
+    // 2. Abrimos la modal de edición
+    const dialogRef = this.dialog.open(EditThreadModal, {
+      width: '600px',
+      data: { thread: threadToEdit }, // Pasamos los datos del hilo
+      panelClass: 'thread-modal-panel' // Consistencia de estilo
+    });
+  
+    // 3. Nos suscribimos al resultado cuando la modal se cierre
+    dialogRef.afterClosed().subscribe((result: ThreadUpdateRequest | undefined) => {
+      // Si el usuario canceló, el resultado será 'undefined'. No hacemos nada.
+      if (!result) return;
+  
+      // 4. Si hay resultado, llamamos a la API para actualizar el hilo
+      this.threadService.updateThread(this.threadId, result).subscribe({
+        next: (updatedThreadFromApi) => {
+          // 5. Actualizamos el store con los nuevos datos del hilo
+          this.threadStateService.updateThreadData(this.threadId, updatedThreadFromApi);
+          
+          console.log('Hilo actualizado con éxito en el store.');
+        },
+        error: (err) => {
+          console.error('Error al actualizar el hilo', err);
+          // Opcional: mostrar un mensaje de error tipo "toast"
+        }
+      });
+    });
+  }
+
+  openDeleteConfirm(): void {
+    const dialogRef = this.dialog.open(ConfirmMatDialog, {
+      data: {
+        title: '¿Eliminar Hilo?',
+        message: 'Esta acción no se puede deshacer. El hilo será eliminado permanentemente.'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.threadService.deleteThread(this.threadId).subscribe({
+          next: () => {
+            console.log('Hilo eliminado con éxito');
+            // Aquí notificamos al store para que elimine el hilo
+            this.threadStateService.removeThread(this.threadId);
+          },
+          error: (err) => console.error('Error al eliminar el hilo', err)
+        });
+      }
+    });
   }
 }
