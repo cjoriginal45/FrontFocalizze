@@ -26,10 +26,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditThreadModal } from '../edit-thread-modal/edit-thread-modal/edit-thread-modal';
 import { ThreadUpdateRequest } from '../../interfaces/ThreadUpdateRequest';
 import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
+import { TimeAgoPipe } from '../../pipes/time-ago/time-ago-pipe';
 
 @Component({
   selector: 'app-thread',
-  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink, FollowButton,MatMenuModule],
+  imports: [
+    CommonModule, 
+    MatIconModule, 
+    MatButtonModule, 
+    RouterLink, 
+    FollowButton,
+    MatMenuModule,
+    TimeAgoPipe ],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
 })

@@ -35,7 +35,7 @@
       @if (thread.categoryName) {
       <a href="#" class="thread__category">{{ thread.categoryName }}</a>
       <span class="thread__separator">·</span> }
-      <span class="thread__date">{{ thread.publicationDate | date : 'd MMM' }}</span>
+      <span class="thread__date">{{ thread.publicationDate | timeAgo }}</span>
 
       @if (authService.getCurrentUser()?.username === thread.user.username) {
         <button mat-icon-button [matMenuTriggerFor]="threadMenu" aria-label="Opciones del hilo">
