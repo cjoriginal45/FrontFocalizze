@@ -8,6 +8,10 @@
   position: relative;
   display: flex;
   align-items: center;
+  position: sticky;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  top: 60px;
+  z-index: 1000;
 }
 
 .f-d-container__options {
@@ -45,6 +49,7 @@
   .f-d-container {
     justify-content: space-between;
     padding: 0 15px;
+    top: 100px;
   }
 
   .f-d-container__options,
