@@ -33,7 +33,8 @@ export class Discover implements OnInit {
    this.loadMoreThreads(); // Carga inicial
 
    this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
-    // Filtramos el array de IDs para quitar el que fue eliminado.
+    console.log(`[FeedComponent] Recibida notificación para eliminar el hilo ID: ${deletedThreadId}`);
+    // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
     this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
   });
  }

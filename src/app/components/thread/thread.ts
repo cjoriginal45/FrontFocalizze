@@ -149,25 +149,36 @@ export class Thread implements OnInit {
 
 
   openEditModal(): void {
+    // Guarda de seguridad
     if (!this.threadSignal) return;
+  
+    // 1. Obtenemos los datos actuales para pasarlos a la modal
     const threadToEdit = this.threadSignal();
-
+  
+    // 2. Abrimos la modal de edición
     const dialogRef = this.dialog.open(EditThreadModal, {
       width: '600px',
-      data: { thread: threadToEdit },
-      panelClass: 'edit-thread-modal-panel'
+      data: { thread: threadToEdit }, // Pasamos los datos del hilo
+      panelClass: 'thread-modal-panel' // Consistencia de estilo
     });
-
+  
+    // 3. Nos suscribimos al resultado cuando la modal se cierre
     dialogRef.afterClosed().subscribe((result: ThreadUpdateRequest | undefined) => {
-      if (!result) return; // El usuario canceló
-
+      // Si el usuario canceló, el resultado será 'undefined'. No hacemos nada.
+      if (!result) return;
+  
+      // 4. Si hay resultado, llamamos a la API para actualizar el hilo
       this.threadService.updateThread(this.threadId, result).subscribe({
-        next: (updatedThread) => {
-          // Actualizamos el estado en el store con la respuesta del backend
-          this.threadStateService.updateThreadData(this.threadId, updatedThread);
-          console.log('Hilo actualizado con éxito');
+        next: (updatedThreadFromApi) => {
+          // 5. Actualizamos el store con los nuevos datos del hilo
+          this.threadStateService.updateThreadData(this.threadId, updatedThreadFromApi);
+          
+          console.log('Hilo actualizado con éxito en el store.');
         },
-        error: (err) => console.error('Error al actualizar el hilo', err)
+        error: (err) => {
+          console.error('Error al actualizar el hilo', err);
+          // Opcional: mostrar un mensaje de error tipo "toast"
+        }
       });
     });
   }

@@ -72,7 +72,7 @@ export class Profile implements OnInit {
         });
       })
     ).subscribe({
-      next: ({ profile, threads: threadPage,userForButton }) => { // 'threadPage' ahora es de tipo Page<FeedThreadDto>
+      next: ({ profile, threads: threadPage }) => { // 'threadPage' ahora es de tipo Page<FeedThreadDto>
         this.profile = profile;
 
         const userForState: UserInterface = {
@@ -99,7 +99,8 @@ export class Profile implements OnInit {
     });
 
     this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
-      // Filtramos el array de IDs para quitar el que fue eliminado.
+      console.log(`[FeedComponent] Recibida notificación para eliminar el hilo ID: ${deletedThreadId}`);
+      // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
       this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
     });
   }
