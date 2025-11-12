@@ -20,8 +20,6 @@ export class ThreadState {
   private threadDeletedSource = new Subject<number>();
   threadDeleted$ = this.threadDeletedSource.asObservable();
 
-  private threadUpdatedSource = new Subject<number>();
-  threadUpdated$ = this.threadUpdatedSource.asObservable();
 
   constructor() {
 
@@ -123,14 +121,10 @@ export class ThreadState {
   
     // 3. Usamos 'update' para modificar el estado de forma segura.
     threadSignal.update(currentThreadInStore => {
-      
-      console.log('[Store] Actualizando hilo. Estado actual:', currentThreadInStore);
-      console.log('[Store] Datos nuevos de la API:', updatedDataFromApi);
   
       // 4. Creamos un nuevo objeto de estado, combinando lo mejor de ambos mundos.
       const newState: FeedThreadDto = {
-        // Tomamos la base del objeto que ya está en el store,
-        // que tiene el estado correcto de 'isLiked' y 'isSaved'.
+
         ...currentThreadInStore,
   
         // Y sobrescribimos solo las propiedades que sabemos que han cambiado

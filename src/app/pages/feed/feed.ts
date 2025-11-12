@@ -42,9 +42,6 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
       // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
       this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
     });
-
-    this.threadStateService.threadUpdated$.subscribe(updatedThreadId => {
-    });
   }
 
   /**
