@@ -61,7 +61,8 @@ body {
   /* Quitamos cualquier borde que pueda tener por defecto */
   border: 1px solid rgba(51, 51, 51, 0.3) !important;
   border-top: none !important;
-
+  position: relative !important;
+  z-index: 1000 !important;
   /* Lo separamos un poco de la barra de búsqueda */
 }
 

@@ -8,10 +8,10 @@
   position: relative;
   display: flex;
   align-items: center;
-  position: sticky;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  position: sticky;
   top: 60px;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .f-d-container__options {
