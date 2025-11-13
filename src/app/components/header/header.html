@@ -25,6 +25,22 @@
     <button mat-icon-button class="header__button hide-on-mobile" aria-label="Ver notificaciones">
       <mat-icon>notifications</mat-icon>
     </button>
+
+    @if (currentUser(); as user) {
+    <!-- El enlace apunta al perfil del usuario -->
+    <a
+      [routerLink]="['/profile', user.username]"
+      class="header__avatar-link hide-on-mobile"
+      aria-label="Ver perfil de usuario"
+    >
+      <img
+        [src]="user.avatarUrl"
+        class="header__user-avatar"
+        alt="Avatar de {{ user.displayName }}"
+      />
+    </a>
+    } @else {
+    <!-- Fallback: Muestra el ícono si no hay un usuario -->
     <button
       mat-icon-button
       class="header__button hide-on-mobile"
@@ -32,6 +48,8 @@
     >
       <mat-icon>account_circle</mat-icon>
     </button>
+    }
+
     <button mat-icon-button class="header__button show-on-mobile" aria-label="Ver configuración">
       <mat-icon>settings</mat-icon>
     </button>
