@@ -6,6 +6,8 @@ import { LoginResponse } from '../../interfaces/LoginResponse';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { UserService } from '../user/user-service';
+import { ThreadState } from '../thread-state/thread-state';
+import { UserState } from '../user-state/user-state';
 
 export interface AuthUser {
   id: number;
@@ -31,6 +33,9 @@ export class Auth {
   private router = inject(Router);
   currentUser = signal<AuthUser | null>(null);
   private userService = inject(UserService); 
+
+  private threadStateService = inject(ThreadState);
+  private userStateService = inject(UserState);
 
   // SIGNAL: This is the "source of truth" for the session state.
   isLoggedIn = computed(() => !!this.currentUser());
@@ -97,6 +102,9 @@ export class Auth {
   logout(): void {
     localStorage.removeItem('jwt_token');
     this.currentUser.set(null); // Esto hará que isLoggedIn() se vuelva false automáticamente.
+     // 3. Limpiamos los stores de datos.
+     this.threadStateService.clearState();
+     this.userStateService.clearState();
     this.router.navigate(['/login']);
   }
 

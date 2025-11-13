@@ -66,4 +66,8 @@ export class UserState {
       );
     }
   }
+
+  clearState(): void {
+    this.userMap.clear();
+  }
 }

@@ -23,10 +23,9 @@ export class FeedService {
   getFeed(page: number, size: number): Observable<Page<FeedThreadDto>> {
     const params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString())
-      .set('sort', 'createdAt,desc'); // Aseguramos que los hilos vengan ordenados por fecha
-
-    // Hacemos la llamada GET con los parámetros
+      .set('size', size.toString());
+    
+    // Spring usará automáticamente el 'sort' de @PageableDefault si no se envía uno.
     return this.http.get<Page<FeedThreadDto>>(this.feedApiUrl, { params });
   }
 }
