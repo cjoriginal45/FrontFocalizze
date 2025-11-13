@@ -6,7 +6,12 @@ import { LoginResponse } from '../../interfaces/LoginResponse';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { UserService } from '../user/user-service';
+<<<<<<< HEAD
 import { ViewTracking } from '../viewTracking/view-tracking';
+=======
+import { ThreadState } from '../thread-state/thread-state';
+import { UserState } from '../user-state/user-state';
+>>>>>>> da267d88a0c864af5a4d0dbee3df4ce5a304779e
 
 export interface AuthUser {
   id: number;
@@ -32,6 +37,9 @@ export class Auth {
   currentUser = signal<AuthUser | null>(null);
   private userService = inject(UserService);
   private viewTrackingService = inject(ViewTracking);
+
+  private threadStateService = inject(ThreadState);
+  private userStateService = inject(UserState);
 
   // SIGNAL: This is the "source of truth" for the session state.
   isLoggedIn = computed(() => !!this.currentUser());
@@ -96,7 +104,13 @@ export class Auth {
   logout(): void {
     localStorage.removeItem('jwt_token');
     this.currentUser.set(null); // Esto hará que isLoggedIn() se vuelva false automáticamente.
+<<<<<<< HEAD
     this.viewTrackingService.clearViewedThreads();
+=======
+     // 3. Limpiamos los stores de datos.
+     this.threadStateService.clearState();
+     this.userStateService.clearState();
+>>>>>>> da267d88a0c864af5a4d0dbee3df4ce5a304779e
     this.router.navigate(['/login']);
   }
 
