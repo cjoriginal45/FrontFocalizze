@@ -8,15 +8,31 @@
 <mat-dialog-content class="comments-content">
   <!-- Sección para añadir comentario CONECTADA A LA LÓGICA -->
   <!-- Section to add comment CONNECTED TO LOGIC -->
+
   <div class="add-comment-section">
-    <img class="avatar" src="assets/images/gamer.png" alt="Tu avatar" />
+    @if (authService.currentUser(); as user) {
+      <img 
+        class="avatar" 
+        [src]="user.avatarUrl || defaultAvatar" 
+        alt="Tu avatar" 
+      />
+    } @else {
+      <!-- Fallback si, por alguna razón, no hay usuario logueado -->
+      <img 
+        class="avatar" 
+        [src]="defaultAvatar" 
+        alt="Avatar por defecto" 
+      />
+    }
     <mat-form-field appearance="outline" class="comment-input">
       <textarea
-        matInput
-        placeholder="Escribe un comentario..."
-        cdkTextareaAutosize
-        [formControl]="commentControl"
-      ></textarea>
+      matInput
+      placeholder="Escribe un comentario..."
+      cdkTextareaAutosize
+      [formControl]="commentControl"
+      maxlength="280" 
+    ></textarea>
+    <mat-hint align="end">{{ commentControl.value?.length || 0 }} / 280</mat-hint>
     </mat-form-field>
     <button
       mat-flat-button
@@ -27,6 +43,7 @@
       Comentar
     </button>
   </div>
+
 
   <!-- Indicador de carga -->
   <!-- Loading indicator -->
@@ -39,12 +56,12 @@
   <div class="comments-list">
     @for (comment of comments; track comment.id) {
     <div class="comment-item">
-      <img class="avatar" src="assets/images/woman.png" alt="Avatar" />
+      <img class="avatar" [src]="comment.author.avatarUrl" alt="Avatar" />
       <div class="comment-body">
         <div class="comment-author">
           <strong>{{ comment.author.displayName }}</strong>
           <span class="handle">@{{ comment.author.username }}</span>
-          <span class="date">· {{ comment.createdAt | date : 'short' }}</span>
+          <span class="date">· {{ comment.createdAt | timeAgo }}</span>
         </div>
         <p class="comment-text">{{ comment.content }}</p>
       </div>
