@@ -41,6 +41,22 @@
 
     <!-- Item: Profile -->
     <li class="mobile-nav__item">
+      @if (currentUser(); as user) {
+      <!-- Enlace dinámico al perfil del usuario -->
+      <a
+        class="mobile-nav__link"
+        [routerLink]="['/profile', user.username]"
+        routerLinkActive="mobile-nav__link--active"
+        aria-label="Ver perfil de usuario"
+      >
+        <img
+          [src]="user.avatarUrl"
+          class="mobile-nav__user-avatar"
+          alt="Avatar de {{ user.displayName }}"
+        />
+      </a>
+      } @else {
+      <!-- Fallback si no hay usuario -->
       <a
         class="mobile-nav__link"
         routerLink="/profile"
@@ -49,6 +65,7 @@
       >
         <mat-icon class="mobile-nav__icon">account_circle</mat-icon>
       </a>
+      }
     </li>
   </ul>
 </nav>
