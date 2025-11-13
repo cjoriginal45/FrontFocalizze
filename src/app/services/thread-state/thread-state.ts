@@ -164,4 +164,8 @@ removeThread(threadId: number): void {
     }
   }
 
+  clearState(): void {
+    this.threadsMap.clear();
+  }
+
 }
