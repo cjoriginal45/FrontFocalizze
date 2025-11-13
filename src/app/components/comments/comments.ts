@@ -15,6 +15,8 @@ import { CommentResponseDto } from '../../interfaces/CommentResponse';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Interaction } from '../../services/interactionService/interaction';
+import { TimeAgoPipe } from "../../pipes/time-ago/time-ago-pipe";
+import { Auth } from '../../services/auth/auth';
 
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
@@ -36,7 +38,8 @@ export interface DialogData {
     CdkTextareaAutosize,
     CommonModule,
     ReactiveFormsModule,
-  ],
+    TimeAgoPipe
+],
   templateUrl: './comments.html',
   styleUrl: './comments.css',
 })
@@ -45,6 +48,7 @@ export class Comments {
   private interactionService = inject(Interaction);
   public dialogRef = inject(MatDialogRef<Comments>);
   public data: DialogData = inject(MAT_DIALOG_DATA);
+  public authService = inject(Auth);
 
   // Estado del componente
   // Component state
@@ -54,6 +58,8 @@ export class Comments {
   // Formulario para el nuevo comentario
   // Form for new comment
   commentControl = new FormControl('', [Validators.required, Validators.maxLength(280)]);
+
+  defaultAvatar = 'assets/images/default-avatar.png';
 
   ngOnInit(): void {
     this.loadComments();
