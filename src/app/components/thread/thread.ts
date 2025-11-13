@@ -17,7 +17,7 @@ import { threadService } from '../../services/thread/thread';
 import { Save } from '../../services/saveService/save';
 import { ThreadState } from '../../services/thread-state/thread-state';
 import { MatButtonModule } from '@angular/material/button';
-import { FollowButton } from "../follow-button/follow-button/follow-button";
+import { FollowButton } from '../follow-button/follow-button/follow-button';
 import { UserState } from '../../services/user-state/user-state';
 import { UserInterface } from '../../interfaces/UserInterface';
 import { Auth } from '../../services/auth/auth';
@@ -27,17 +27,19 @@ import { EditThreadModal } from '../edit-thread-modal/edit-thread-modal/edit-thr
 import { ThreadUpdateRequest } from '../../interfaces/ThreadUpdateRequest';
 import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 import { TimeAgoPipe } from '../../pipes/time-ago/time-ago-pipe';
+import { ViewTracking } from '../../services/viewTracking/view-tracking';
 
 @Component({
   selector: 'app-thread',
   imports: [
-    CommonModule, 
-    MatIconModule, 
-    MatButtonModule, 
-    RouterLink, 
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    RouterLink,
     FollowButton,
     MatMenuModule,
-    TimeAgoPipe ],
+    TimeAgoPipe,
+  ],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
 })
@@ -51,6 +53,7 @@ export class Thread implements OnInit {
   private userStateService = inject(UserState);
   public authService = inject(Auth);
   private dialog = inject(MatDialog);
+  private viewTrackingService = inject(ViewTracking);
 
   // --- INPUT: SOLO EL ID ---
   @Input({ required: true }) threadId!: number;
@@ -60,8 +63,6 @@ export class Thread implements OnInit {
   public threadSignal!: WritableSignal<FeedThreadDto>;
 
   public userSignal: WritableSignal<UserInterface> | undefined;
-
-
 
   // --- ESTADO LOCAL (SOLO PARA ESTE COMPONENTE) ---
   isExpanded = false;
@@ -104,22 +105,33 @@ export class Thread implements OnInit {
 
   toggleExpansion(): void {
     if (!this.threadSignal) return;
+
+    // Si ya está expandido, simplemente lo colapsamos.
     if (this.isExpanded) {
       this.isExpanded = false;
       return;
     }
-    if (this.isFullyLoaded) {
+
+    // --- LÓGICA CLAVE ---
+    // 1. Comprobamos si el hilo ya fue visto en esta sesión.
+    if (this.viewTrackingService.hasBeenViewed(this.threadId)) {
+      // Si ya fue visto, simplemente lo expandimos. NO hacemos llamada a la API.
       this.isExpanded = true;
       return;
     }
 
+    // 2. Si NO ha sido visto, entonces hacemos la llamada a la API para incrementar el contador.
     this.isLoadingDetails = true;
     this.isExpanded = true; // Expandimos para mostrar el spinner
+
     this.threadService.getThreadById(this.threadId).subscribe({
       next: (threadData: FeedThreadDto) => {
-        // Actualizamos el store centralizado con los datos completos
+        // Actualizamos el store con los datos completos
         this.threadStateService.updateThreadData(this.threadId, threadData);
-        this.isFullyLoaded = true;
+
+        // 3. EN CASO DE ÉXITO, marcamos el hilo como visto.
+        this.viewTrackingService.markAsViewed(this.threadId);
+
         this.isLoadingDetails = false;
       },
       error: (err: any) => {
@@ -155,38 +167,37 @@ export class Thread implements OnInit {
     this.openComments.emit(this.threadId);
   }
 
-
   openEditModal(): void {
     // Guarda de seguridad
     if (!this.threadSignal) return;
-  
+
     // 1. Obtenemos los datos actuales para pasarlos a la modal
     const threadToEdit = this.threadSignal();
-  
+
     // 2. Abrimos la modal de edición
     const dialogRef = this.dialog.open(EditThreadModal, {
       width: '600px',
       data: { thread: threadToEdit }, // Pasamos los datos del hilo
-      panelClass: 'thread-modal-panel' // Consistencia de estilo
+      panelClass: 'thread-modal-panel', // Consistencia de estilo
     });
-  
+
     // 3. Nos suscribimos al resultado cuando la modal se cierre
     dialogRef.afterClosed().subscribe((result: ThreadUpdateRequest | undefined) => {
       // Si el usuario canceló, el resultado será 'undefined'. No hacemos nada.
       if (!result) return;
-  
+
       // 4. Si hay resultado, llamamos a la API para actualizar el hilo
       this.threadService.updateThread(this.threadId, result).subscribe({
         next: (updatedThreadFromApi) => {
           // 5. Actualizamos el store con los nuevos datos del hilo
           this.threadStateService.updateThreadData(this.threadId, updatedThreadFromApi);
-          
+
           console.log('Hilo actualizado con éxito en el store.');
         },
         error: (err) => {
           console.error('Error al actualizar el hilo', err);
           // Opcional: mostrar un mensaje de error tipo "toast"
-        }
+        },
       });
     });
   }
@@ -195,11 +206,11 @@ export class Thread implements OnInit {
     const dialogRef = this.dialog.open(ConfirmMatDialog, {
       data: {
         title: '¿Eliminar Hilo?',
-        message: 'Esta acción no se puede deshacer. El hilo será eliminado permanentemente.'
-      }
+        message: 'Esta acción no se puede deshacer. El hilo será eliminado permanentemente.',
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result === true) {
         this.threadService.deleteThread(this.threadId).subscribe({
           next: () => {
@@ -207,7 +218,7 @@ export class Thread implements OnInit {
             // Aquí notificamos al store para que elimine el hilo
             this.threadStateService.removeThread(this.threadId);
           },
-          error: (err) => console.error('Error al eliminar el hilo', err)
+          error: (err) => console.error('Error al eliminar el hilo', err),
         });
       }
     });

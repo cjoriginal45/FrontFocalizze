@@ -6,6 +6,7 @@ import { LoginResponse } from '../../interfaces/LoginResponse';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { UserService } from '../user/user-service';
+import { ViewTracking } from '../viewTracking/view-tracking';
 
 export interface AuthUser {
   id: number;
@@ -26,11 +27,11 @@ interface UserTokenData {
 export class Auth {
   private apiUrl = environment.apiBaseUrl + '/auth';
 
-
   private http = inject(HttpClient);
   private router = inject(Router);
   currentUser = signal<AuthUser | null>(null);
-  private userService = inject(UserService); 
+  private userService = inject(UserService);
+  private viewTrackingService = inject(ViewTracking);
 
   // SIGNAL: This is the "source of truth" for the session state.
   isLoggedIn = computed(() => !!this.currentUser());
@@ -54,7 +55,7 @@ export class Auth {
         } else {
           // Usamos 'await' para esperar la respuesta de la API
           const user = await firstValueFrom(this.userService.getMe());
-          this.currentUser.set(user)
+          this.currentUser.set(user);
         }
       } catch (error) {
         console.error('Fallo al inicializar el estado de autenticación:', error);
@@ -64,8 +65,6 @@ export class Auth {
     // Marcamos que la autenticación está lista.
     this.authReady.set(true);
   }
-
-
 
   private hasToken(): boolean {
     return !!localStorage.getItem('jwt_token');
@@ -85,7 +84,7 @@ export class Auth {
             displayName: response.displayName,
             avatarUrl: response.avatarUrl || undefined,
             followingCount: response.followingCount,
-            followersCount: response.followersCount
+            followersCount: response.followersCount,
           };
           this.currentUser.set(user);
         }
@@ -97,6 +96,7 @@ export class Auth {
   logout(): void {
     localStorage.removeItem('jwt_token');
     this.currentUser.set(null); // Esto hará que isLoggedIn() se vuelva false automáticamente.
+    this.viewTrackingService.clearViewedThreads();
     this.router.navigate(['/login']);
   }
 
@@ -104,15 +104,15 @@ export class Auth {
     return this.currentUser();
   }
 
-  updateCurrentUserCounts(counts: { followingCount?: number, followersCount?: number }): void {
-    this.currentUser.update(user => {
+  updateCurrentUserCounts(counts: { followingCount?: number; followersCount?: number }): void {
+    this.currentUser.update((user) => {
       if (!user) return null; // Si no hay usuario, no hacemos nada
 
       // Creamos un nuevo objeto de usuario con los contadores actualizados
       return {
         ...user,
         followingCount: counts.followingCount ?? user.followingCount,
-        followersCount: counts.followersCount ?? user.followersCount
+        followersCount: counts.followersCount ?? user.followersCount,
       };
     });
   }
