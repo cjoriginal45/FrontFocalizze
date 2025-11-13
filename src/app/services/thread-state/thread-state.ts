@@ -17,6 +17,10 @@ export class ThreadState {
   private commentAddedSubscription: Subscription;
   private saveToggledSubscription: Subscription;
 
+  private threadDeletedSource = new Subject<number>();
+  threadDeleted$ = this.threadDeletedSource.asObservable();
+
+
   constructor() {
 
     this.commentAddedSubscription = this.interactionService.commentAdded$.subscribe(event => {
@@ -40,18 +44,31 @@ export class ThreadState {
    * Si un hilo ya existe, actualiza sus datos base pero PRESERVA su estado de interacción.
    */
   loadThreads(threads: FeedThreadDto[]): void {
-    threads.forEach(thread => {
-      const existingSignal = this.threadsMap.get(thread.id);
+    threads.forEach(threadFromApi => {
+      const existingSignal = this.threadsMap.get(threadFromApi.id);
       if (existingSignal) {
-        // El hilo ya existe, actualizamos sus datos pero mantenemos isLiked/isSaved
-        existingSignal.update(currentValue => ({
-          ...thread, // Nuevos datos de la API
-          isLiked: currentValue.isLiked, // Mantenemos el estado de like existente
-          isSaved: currentValue.isSaved, // Mantenemos el estado de guardado existente
-        }));
+        // El hilo ya existe.
+        existingSignal.update(currentThreadInStore => {
+          // Creamos el nuevo estado
+          return {
+            // 1. Tomamos todos los datos que vienen de la API como base
+            ...threadFromApi,
+            
+            // 2. PERO, si el store ya tenía un estado de 'isLiked'
+            //    o 'isSaved' diferente, lo preservamos.
+            //    Esto es útil si la API no devuelve estos booleanos.
+            isLiked: currentThreadInStore.isLiked,
+            isSaved: currentThreadInStore.isSaved,
+  
+            // Si el objeto de la API es la fuente de la verdad para isLiked/isSaved,
+            // entonces la lógica original era correcta.
+            // Como tu backend ahora los calcula, esta es la lógica correcta:
+            // ...thread, // La de la API es la fuente de la verdad
+          };
+        });
       } else {
         // Es un hilo nuevo, lo añadimos al mapa
-        this.threadsMap.set(thread.id, signal(thread));
+        this.threadsMap.set(threadFromApi.id, signal(threadFromApi));
       }
     });
   }
@@ -92,22 +109,35 @@ export class ThreadState {
     }
   }
 
-  updateThreadData(threadId: number, fullThreadData: FeedThreadDto): void {
+  updateThreadData(threadId: number, updatedDataFromApi: FeedThreadDto): void {
+    // 1. Buscamos la señal del hilo en nuestro mapa.
     const threadSignal = this.threadsMap.get(threadId);
-    if (threadSignal) {
-      // La función 'update' recibe el valor actual del hilo en el store
-      threadSignal.update(currentThread => {
-        // Creamos un nuevo objeto
-        return {
-          // Copiamos todos los datos nuevos y completos que vienen de la API
-          ...currentThread,
-          // Y SOBRESCRIBIMOS 'isLiked' y 'isSaved' con los valores que YA TENÍAMOS guardados
-          // en el estado actual del store, que son la fuente de la verdad de la interacción.
-          isLiked: fullThreadData.isLiked,
-          isSaved: fullThreadData.isSaved
-        };
-      });
+  
+    // 2. Si no existe, no podemos hacer nada (esto no debería pasar).
+    if (!threadSignal) {
+      console.error(`[Store] Se intentó actualizar el hilo ID ${threadId}, pero no se encontró.`);
+      return;
     }
+  
+    // 3. Usamos 'update' para modificar el estado de forma segura.
+    threadSignal.update(currentThreadInStore => {
+  
+      // 4. Creamos un nuevo objeto de estado, combinando lo mejor de ambos mundos.
+      const newState: FeedThreadDto = {
+
+        ...currentThreadInStore,
+  
+        // Y sobrescribimos solo las propiedades que sabemos que han cambiado
+        // con los datos frescos que vienen de la API.
+        posts: updatedDataFromApi.posts,
+        categoryName: updatedDataFromApi.categoryName,
+        // Opcional: la API también puede devolver stats actualizados
+        stats: updatedDataFromApi.stats 
+      };
+  
+      console.log('[Store] Nuevo estado fusionado:', newState);
+      return newState;
+    });
   }
 
 
@@ -124,5 +154,14 @@ export class ThreadState {
     }
   }
 
+
+removeThread(threadId: number): void {
+    const wasDeleted = this.threadsMap.delete(threadId);
+    if (wasDeleted) {
+      // Si se borró del mapa, notificamos a los contenedores.
+      console.log(`[Store] Hilo ID ${threadId} eliminado. Notificando...`);
+      this.threadDeletedSource.next(threadId);
+    }
+  }
 
 }

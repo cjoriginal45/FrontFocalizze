@@ -35,7 +35,23 @@
       @if (thread.categoryName) {
       <a href="#" class="thread__category">{{ thread.categoryName }}</a>
       <span class="thread__separator">·</span> }
-      <span class="thread__date">{{ thread.publicationDate | date : 'd MMM' }}</span>
+      <span class="thread__date">{{ thread.publicationDate | timeAgo }}</span>
+
+      @if (authService.getCurrentUser()?.username === thread.user.username) {
+        <button mat-icon-button [matMenuTriggerFor]="threadMenu" aria-label="Opciones del hilo">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #threadMenu="matMenu">
+          <button mat-menu-item (click)="openEditModal()">
+            <mat-icon>edit</mat-icon>
+            <span>Editar Hilo</span>
+          </button>
+          <button mat-menu-item (click)="openDeleteConfirm()">
+            <mat-icon>delete</mat-icon>
+            <span>Eliminar Hilo</span>
+          </button>
+        </mat-menu>
+      }
     </div>
   </header>
   <!-- Cuerpo del Hilo -->

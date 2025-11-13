@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SearchBar } from '../../components/search-bar/search-bar';
 import { BottonNav } from '../../components/botton-nav/botton-nav';
 import { Router } from '@angular/router';
+import { ThreadState } from '../../services/thread-state/thread-state';
 
 @Component({
   selector: 'app-search-mobile',
@@ -17,7 +18,9 @@ export class SearchMobile implements OnInit {
   private location = inject(Location);
   private searchHistoryService = inject(SearchHistory);
   private router = inject(Router);
+  private threadStateService = inject(ThreadState);
 
+  threadIds: number[] = [];
   // Apuntamos al componente hijo SearchBar para poder interactuar con él
   @ViewChild(SearchBar) searchBar!: SearchBar;
 
@@ -26,6 +29,11 @@ export class SearchMobile implements OnInit {
 
   ngOnInit(): void {
     this.searchHistory = this.searchHistoryService.getHistory();
+    this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
+      console.log(`[FeedComponent] Recibida notificación para eliminar el hilo ID: ${deletedThreadId}`);
+      // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
+      this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
+    });
   }
 
   onHistoryClick(item: SearchHistoryItem): void {

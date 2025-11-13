@@ -29,6 +29,12 @@ export class SavedThreads implements OnInit {
 
   ngOnInit(): void {
     this.loadMoreThreads();
+
+    this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
+      console.log(`[FeedComponent] Recibida notificación para eliminar el hilo ID: ${deletedThreadId}`);
+      // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
+      this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
+    });
   }
 
   loadMoreThreads(): void {
