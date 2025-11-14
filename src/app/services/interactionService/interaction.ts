@@ -8,8 +8,8 @@ import { InteractionCounter } from '../interactionCounter/interaction-counter';
   providedIn: 'root',
 })
 export class Interaction {
-
   private interactionCounterService = inject(InteractionCounter);
+  public commentDeleted$ = new Subject<{ threadId: number }>();
 
   private _saveToggledSource = new Subject<{ threadId: number; isSaved: boolean }>();
   saveToggled$ = this._saveToggledSource.asObservable();
@@ -66,6 +66,9 @@ export class Interaction {
 
   notifySaveToggled(threadId: number, isSaved: boolean): void {
     this._saveToggledSource.next({ threadId, isSaved });
-}
-  
+  }
+
+  notifyCommentDeleted(threadId: number) {
+    this.commentDeleted$.next({ threadId });
+  }
 }
