@@ -2,9 +2,13 @@
 <app-following-discovering></app-following-discovering>
 
 <div class="search-results-page">
-  
   <header class="search-results-page__header">
-    <button mat-icon-button (click)="goBack()" class="search-results-page__back-btn" aria-label="Volver a la página anterior">
+    <button
+      mat-icon-button
+      (click)="goBack()"
+      class="search-results-page__back-btn"
+      aria-label="Volver a la página anterior"
+    >
       <mat-icon>arrow_back</mat-icon>
     </button>
     <div class="search-results-page__title-container">
@@ -12,24 +16,18 @@
       <p class="search-results-page__query">para: "{{ query }}"</p>
     </div>
   </header>
-  
+
   <main class="search-results-page__content">
     @if (isLoading) {
-      <div class="loading-indicator">Cargando resultados...</div>
-    } @else {
-      @if (threadIds.length > 0) {
-        <div class="search-results-page__threads-list">
-          
-          <!-- --- CAMBIO CLAVE: Iteramos sobre 'threadIds' y pasamos 'threadId' --- -->
-          @for (threadId of threadIds; track threadId) {
-            <app-thread [threadId]="threadId"></app-thread>
-          }
-
-        </div>
-      } @else {
-        <p class="search-results-page__no-results">No se encontraron hilos para tu búsqueda.</p>
+    <div class="loading-indicator">Cargando resultados...</div>
+    } @else { @if (threadIds.length > 0) {
+    <div class="search-results-page__threads-list">
+      @for (threadId of threadIds; track threadId) {
+      <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
       }
-    }
+    </div>
+    } @else {
+    <p class="search-results-page__no-results">No se encontraron hilos para tu búsqueda.</p>
+    } }
   </main>
-
 </div>

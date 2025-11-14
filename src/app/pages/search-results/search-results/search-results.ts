@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,10 +8,12 @@ import { Search } from '../../../services/search/search';
 import { FeedThreadDto } from '../../../interfaces/FeedThread';
 import { switchMap } from 'rxjs';
 import { ThreadResponse } from '../../../interfaces/ThreadResponseDto';
-import { UserInterface } from '../../../interfaces/UserInterface';
 import { Header } from '../../../components/header/header';
 import { FollowingDiscovering } from '../../../components/following-discovering/following-discovering';
 import { ThreadState } from '../../../services/thread-state/thread-state';
+import { UserState } from '../../../services/user-state/user-state';
+import { MatDialog } from '@angular/material/dialog';
+import { Comments } from '../../../components/comments/comments';
 
 @Component({
   selector: 'app-search-results',
@@ -23,11 +25,14 @@ export class SearchResults implements OnInit {
   // --- Inyección de Dependencias ---
   private route = inject(ActivatedRoute);
   private searchService = inject(Search);
-  private threadStateService = inject(ThreadState); // <-- Inyectamos el store
+  private threadStateService = inject(ThreadState);
   private router = inject(Router);
+  private userStateService = inject(UserState);
+  public dialog = inject(MatDialog);
+  private location = inject(Location);
 
-  // --- Propiedades de Estado (Refactorizadas) ---
-  threadIds: number[] = []; // <-- AHORA SOLO GUARDAMOS IDs
+  // --- Propiedades de Estado ---
+  threadIds: number[] = [];
   query = '';
   isLoading = true;
 
@@ -36,9 +41,8 @@ export class SearchResults implements OnInit {
       .pipe(
         switchMap((params) => {
           this.isLoading = true;
-          this.threadIds = []; // Limpiamos los IDs de resultados anteriores
+          this.threadIds = [];
           this.query = params.get('q') || '';
-
           if (this.query) {
             return this.searchService.searchContent(this.query);
           }
@@ -47,14 +51,19 @@ export class SearchResults implements OnInit {
       )
       .subscribe({
         next: (results) => {
-          // 'results' es de tipo ThreadResponse[]
-          // 1. Mapeamos los DTOs de la API a los Modelos de Vista.
+          // 1. Mapeamos los DTOs de la API a los Modelos de Vista (CON LÓGICA CORREGIDA).
           const mappedThreads: FeedThreadDto[] = results.map((dto) => this.mapDtoToViewModel(dto));
 
-          // 2. Cargamos/actualizamos los hilos en el store centralizado.
+          // --- CAMBIO: SINCRONIZAMOS EL ESTADO DEL USUARIO ---
+          // 2. Extraemos los usuarios de los hilos y los cargamos en el UserState.
+          const usersFromThreads = mappedThreads.map((t) => t.user);
+          this.userStateService.loadUsers(usersFromThreads);
+
+          // 3. Cargamos los hilos en el store. `loadThreads` es inteligente y preservará
+          //    los estados de 'isLiked' y 'isSaved' si el hilo ya existía.
           this.threadStateService.loadThreads(mappedThreads);
 
-          // 3. Obtenemos solo los IDs de los hilos encontrados.
+          // 4. Obtenemos solo los IDs para renderizar.
           this.threadIds = mappedThreads.map((t) => t.id);
 
           this.isLoading = false;
@@ -65,40 +74,61 @@ export class SearchResults implements OnInit {
         },
       });
 
-      this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
-        console.log(`[FeedComponent] Recibida notificación para eliminar el hilo ID: ${deletedThreadId}`);
-        // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
-        this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
-      });
+    this.threadStateService.threadDeleted$.subscribe((deletedThreadId) => {
+      this.threadIds = this.threadIds.filter((id) => id !== deletedThreadId);
+    });
   }
 
   goBack(): void {
-    window.history.back();
+    this.location.back(); // Usamos Location para una navegación más limpia
+  }
+
+  // --- CAMBIO: AÑADIMOS EL MÉTODO PARA ABRIR COMENTARIOS ---
+  openCommentsModal(threadId: number): void {
+    this.dialog.open(Comments, {
+      width: '700px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: { threadId: threadId },
+      panelClass: 'comments-dialog-container',
+    });
   }
 
   /**
    * Convierte el DTO de la API (ThreadResponse) al Modelo de Vista (FeedThreadDto).
+   * VERSIÓN CORREGIDA Y COMPLETA.
    */
   private mapDtoToViewModel(dto: ThreadResponse): FeedThreadDto {
-    if (!dto || !dto.author) {
-      console.warn('DTO inválido encontrado, usando fallback:', dto);
-      // ... (tu lógica de fallback que ya estaba bien)
-    }
+    // Fallback por si la API devuelve datos incompletos.
+    const author = dto.author || {
+      id: -1,
+      username: 'unknown',
+      displayName: 'Usuario Desconocido',
+      avatarUrl: '',
+      isFollowing: false,
+      followersCount: 0,
+      followingCount: 0,
+    };
+
     return {
       id: dto.id,
       user: {
-        id: dto.author.id,
-        username: dto.author.username,
-        displayName: dto.author.displayName, // 'name' debe coincidir con tu interfaz UserInterface
-        avatarUrl: dto.author.avatarUrl || 'assets/images/default-avatar.png',
-        isFollowing: dto.author.isFollowing || false,
-        followersCount: dto.author.followersCount || 0,
-        followingCount: dto.author.followingCount || 0,
+        id: author.id,
+        username: author.username,
+        displayName: author.displayName,
+        avatarUrl: author.avatarUrl || 'assets/images/default-avatar.png',
+        isFollowing: author.isFollowing || false,
+        followersCount: author.followersCount || 0,
+        followingCount: author.followingCount || 0,
       },
       publicationDate: dto.createdAt,
       posts: dto.posts,
       stats: dto.stats,
-      isLiked: false, // O usa 'dto.isLiked' si el backend lo envía
+      // --- CAMBIO: AÑADIMOS LA CATEGORÍA ---
+      categoryName: dto.categoryName || undefined, // Asume que ThreadResponse ahora tiene 'categoryName'
+
+      // Estos valores son placeholders. `ThreadState` los corregirá con el estado real si ya existe.
+      isLiked: false,
       isSaved: false,
     };
   }
