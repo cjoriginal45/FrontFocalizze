@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import {
   MAT_DIALOG_DATA,
+  MatDialog,
   MatDialogContent,
   MatDialogModule,
   MatDialogRef,
@@ -15,8 +16,10 @@ import { CommentResponseDto } from '../../interfaces/CommentResponse';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Interaction } from '../../services/interactionService/interaction';
-import { TimeAgoPipe } from "../../pipes/time-ago/time-ago-pipe";
+import { TimeAgoPipe } from '../../pipes/time-ago/time-ago-pipe';
 import { Auth } from '../../services/auth/auth';
+import { MatMenuModule } from '@angular/material/menu';
+import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
@@ -38,8 +41,9 @@ export interface DialogData {
     CdkTextareaAutosize,
     CommonModule,
     ReactiveFormsModule,
-    TimeAgoPipe
-],
+    TimeAgoPipe,
+    MatMenuModule,
+  ],
   templateUrl: './comments.html',
   styleUrl: './comments.css',
 })
@@ -49,6 +53,7 @@ export class Comments {
   public dialogRef = inject(MatDialogRef<Comments>);
   public data: DialogData = inject(MAT_DIALOG_DATA);
   public authService = inject(Auth);
+  private dialog = inject(MatDialog);
 
   // Estado del componente
   // Component state
@@ -101,6 +106,45 @@ export class Comments {
       error: (err) => {
         console.error('Error al publicar el comentario', err);
         this.commentControl.enable();
+      },
+    });
+  }
+
+  openDeleteConfirm(commentId: number): void {
+    const dialogRef = this.dialog.open(ConfirmMatDialog, {
+      data: {
+        title: '¿Eliminar Comentario?',
+        message: 'Esta acción no se puede deshacer. El comentario será eliminado.',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // Si el usuario confirma, procedemos a borrar.
+      if (result === true) {
+        this.deleteComment(commentId);
+      }
+    });
+  }
+
+  // --- NUEVO MÉTODO ---
+  private deleteComment(commentId: number): void {
+    const originalComments = [...this.comments]; // Guardamos el estado original
+
+    // 1. Actualización optimista: eliminamos el comentario de la UI al instante.
+    this.comments = this.comments.filter((comment) => comment.id !== commentId);
+
+    // 2. Llamamos al servicio para eliminar el comentario en el backend.
+    this.commentService.deleteComment(commentId).subscribe({
+      next: () => {
+        // 3. Si tiene éxito, notificamos al resto de la app.
+        this.interactionService.notifyCommentDeleted(this.data.threadId);
+        console.log(`Comentario ${commentId} eliminado con éxito.`);
+      },
+      error: (err) => {
+        // 4. Si falla, revertimos la UI a su estado original.
+        console.error('Error al eliminar el comentario', err);
+        this.comments = originalComments;
+        // Opcional: Mostrar un mensaje de error (toast).
       },
     });
   }

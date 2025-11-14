@@ -6,33 +6,22 @@
 </header>
 
 <mat-dialog-content class="comments-content">
-  <!-- Sección para añadir comentario CONECTADA A LA LÓGICA -->
-  <!-- Section to add comment CONNECTED TO LOGIC -->
-
+  <!-- Sección para añadir comentario -->
   <div class="add-comment-section">
     @if (authService.currentUser(); as user) {
-      <img 
-        class="avatar" 
-        [src]="user.avatarUrl || defaultAvatar" 
-        alt="Tu avatar" 
-      />
+    <img class="avatar" [src]="user.avatarUrl || defaultAvatar" alt="Tu avatar" />
     } @else {
-      <!-- Fallback si, por alguna razón, no hay usuario logueado -->
-      <img 
-        class="avatar" 
-        [src]="defaultAvatar" 
-        alt="Avatar por defecto" 
-      />
+    <img class="avatar" [src]="defaultAvatar" alt="Avatar por defecto" />
     }
     <mat-form-field appearance="outline" class="comment-input">
       <textarea
-      matInput
-      placeholder="Escribe un comentario..."
-      cdkTextareaAutosize
-      [formControl]="commentControl"
-      maxlength="280" 
-    ></textarea>
-    <mat-hint align="end">{{ commentControl.value?.length || 0 }} / 280</mat-hint>
+        matInput
+        placeholder="Escribe un comentario..."
+        cdkTextareaAutosize
+        [formControl]="commentControl"
+        maxlength="280"
+      ></textarea>
+      <mat-hint align="end">{{ commentControl.value?.length || 0 }} / 280</mat-hint>
     </mat-form-field>
     <button
       mat-flat-button
@@ -44,15 +33,12 @@
     </button>
   </div>
 
-
   <!-- Indicador de carga -->
-  <!-- Loading indicator -->
   @if (isLoading) {
   <p>Cargando comentarios...</p>
   }
 
-  <!-- Lista de comentarios CONECTADA A LOS DATOS DE LA API -->
-  <!-- Comment list CONNECTED TO API DATA -->
+  <!-- Lista de comentarios -->
   <div class="comments-list">
     @for (comment of comments; track comment.id) {
     <div class="comment-item">
@@ -62,6 +48,20 @@
           <strong>{{ comment.author.displayName }}</strong>
           <span class="handle">@{{ comment.author.username }}</span>
           <span class="date">· {{ comment.createdAt | timeAgo }}</span>
+
+          <!-- --- Menú de opciones --- -->
+          <!-- Solo se muestra si el usuario logueado es el autor del comentario -->
+          @if (authService.currentUser()?.username === comment.author.username) {
+          <button mat-icon-button [matMenuTriggerFor]="commentMenu" class="comment-options-btn">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+          <mat-menu #commentMenu="matMenu">
+            <button mat-menu-item (click)="openDeleteConfirm(comment.id)">
+              <mat-icon color="warn">delete</mat-icon>
+              <span>Eliminar</span>
+            </button>
+          </mat-menu>
+          }
         </div>
         <p class="comment-text">{{ comment.content }}</p>
       </div>
