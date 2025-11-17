@@ -1,21 +1,36 @@
 <app-header></app-header>
 
-<app-menu></app-menu>
-
-<app-suggestions></app-suggestions>
+<div class="notification-page-container">
+  <header class="notification-page__header">
+    <h1>Notificaciones</h1>
+  </header>
 
 <div class="notification-list-container">
-    @for (notification of notifications; track notification.id) {
-      <div class="notification-item">
-        <div class="notif-icon">
-          <mat-icon>{{ getIconForNotification(notification.type) }}</mat-icon>
-        </div>
-        <div class="notif-content">
-          <div class="notif-title">{{ notification.message }}</div>
-          <!-- En el futuro, el 'notif-box' podría ser un resumen del hilo o comentario -->
-        </div>
+  @for (notification of notifications; track notification.id) {
+    <div class="notification-item" [class.notification-item--unread]="!notification.isRead">
+      <div class="notif-icon">
+        <mat-icon>{{ getIconForNotification(notification.type) }}</mat-icon>
       </div>
-    } @empty {
-      <p>No tienes notificaciones nuevas.</p>
+      <div class="notif-content">
+        <div class="notif-title">{{ notification.message }}</div>
+        <span class="notif-date">{{ notification.createdAt | timeAgo }}</span>
+      </div>
+    </div>
+  } @empty {
+    @if (!isLoading) {
+      <p class="no-notifications">No tienes notificaciones.</p>
     }
+  }
+    
   </div>
+
+  @if (isLoading) {
+    <p class="loading-indicator">Cargando...</p>
+  }
+  
+  <!-- En el futuro, esto se puede reemplazar con una directiva de scroll infinito -->
+  @if (!isLastPage && notifications.length > 0 && !isLoading) {
+    <button (click)="loadMoreNotifications()" class="load-more-button">Cargar más antiguas</button>
+  }
+
+</div>

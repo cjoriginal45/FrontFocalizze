@@ -1,37 +1,50 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Header } from "../../../components/header/header";
-import { Menu } from "../../../components/menu/menu";
 import { Suggestions } from "../../../components/suggestions/suggestions";
 import { NotificationInterface } from '../../../interfaces/NotificationInterface';
 import { Subscription } from 'rxjs';
 import { WebSockets } from '../../../services/webSockets/web-sockets';
+import { MatIcon } from "@angular/material/icon";
+import { Notification } from '../../../services/notification/notification';
+import { TimeAgoPipe } from "../../../pipes/time-ago/time-ago-pipe";
 
 @Component({
   selector: 'app-notifications',
-  imports: [Header, Menu, Suggestions],
+  imports: [Header, Suggestions, MatIcon, TimeAgoPipe],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css'
 })
 export class Notifications implements OnInit, OnDestroy {
-  notifications: NotificationInterface[] = [];
+  
   private notificationSubscription!: Subscription;
+  private webSocketService = inject(WebSockets);
+  private notificationService = inject(Notification);
 
-  constructor(private webSocketService: WebSockets) {}
+  notifications: NotificationInterface[] = [];
+  isLoading = false;
+  currentPage = 0;
+  isLastPage = false;
+
+  constructor() {}
 
   ngOnDestroy(): void {
-    this.webSocketService.connect();
-
-    this.notificationSubscription = this.webSocketService.notification$
-  .subscribe(notification => {
-    // Añadimos la nueva notificación al principio de la lista
-    this.notifications.unshift(notification);
-  });
+    this.notificationSubscription?.unsubscribe();
   }
 
   
   ngOnInit(): void {
-    this.notificationSubscription.unsubscribe();
-    // this.webSocketService.disconnect(); 
+    // 1. Conectamos al WebSocket para recibir notificaciones en tiempo real.
+    this.webSocketService.connect();
+    
+    // 2. Nos suscribimos a las nuevas notificaciones que lleguen.
+    this.notificationSubscription = this.webSocketService.notification$
+      .subscribe(newNotification => {
+        // Añadimos la nueva notificación al PRINCIPIO de la lista.
+        this.notifications.unshift(newNotification);
+      });
+      
+    // 3. Cargamos la primera página del historial de notificaciones.
+    this.loadMoreNotifications();
   }
 
   getIconForNotification(type: string): string {
@@ -42,6 +55,28 @@ export class Notifications implements OnInit, OnDestroy {
     case 'MENTION': return 'alternate_email';
     default: return 'notifications';
     }
+  }
+
+  /**
+   * Carga la siguiente página del historial de notificaciones.
+   */
+  loadMoreNotifications(): void {
+    if (this.isLoading || this.isLastPage) return;
+    this.isLoading = true;
+
+    this.notificationService.getNotifications(this.currentPage, 20).subscribe({
+      next: (page) => {
+        // Añadimos las notificaciones antiguas al FINAL de la lista.
+        this.notifications.push(...page.content);
+        this.isLastPage = page.last;
+        this.currentPage++;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error("Error al cargar el historial de notificaciones", err);
+        this.isLoading = false;
+      }
+    });
   }
     
 }
