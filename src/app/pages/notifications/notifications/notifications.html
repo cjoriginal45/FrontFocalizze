@@ -5,74 +5,17 @@
 <app-suggestions></app-suggestions>
 
 <div class="notification-list-container">
-    
-    <div class="notification-item">
+    @for (notification of notifications; track notification.id) {
+      <div class="notification-item">
         <div class="notif-icon">
-            <span class="material-icons-outlined">chat_bubble_outline</span>
+          <mat-icon>{{ getIconForNotification(notification.type) }}</mat-icon>
         </div>
         <div class="notif-content">
-            <div class="notif-title">User912 hizo un comentario en tu publicación:</div>
-            <div class="notif-box">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, libero. Atque, commodi facere voluptas quaerat at doloremque quos quia, omnis nemo id unde tempora
-            </div>
+          <div class="notif-title">{{ notification.message }}</div>
+          <!-- En el futuro, el 'notif-box' podría ser un resumen del hilo o comentario -->
         </div>
-    </div>
-
-    <div class="notification-item">
-        <div class="notif-icon">
-            <span class="material-icons-outlined">favorite_border</span>
-        </div>
-        <div class="notif-content">
-            <div class="notif-title">User912 le ha gustado tu publicación:</div>
-            <div class="notif-box">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, libero. Atque, commodi facere voluptas quaerat at doloremque quos quia, omnis nemo id unde tempora
-            </div>
-        </div>
-    </div>
-
-    <div class="notification-item">
-        <div class="notif-icon">
-            <span class="material-icons-outlined">person_add</span>
-        </div>
-        <div class="notif-content">
-            <div class="notif-title">User912 a comenzado a seguirte</div>
-        </div>
-    </div>
-
-    <div class="notification-item">
-        <div class="notif-icon">
-            <span class="material-icons-outlined">notifications_none</span>
-        </div>
-        <div class="notif-content">
-            <div class="notif-title">User912 ha publicado un hilo:</div>
-            <div class="notif-box">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, libero. Atque, commodi facere voluptas quaerat at doloremque quos quia, omnis nemo id unde tempora
-            </div>
-        </div>
-    </div>
-
-    <div class="notification-item">
-        <div class="notif-icon">
-            <span class="material-icons">alternate_email</span>
-        </div>
-        <div class="notif-content">
-            <div class="notif-title">User912 te ha mencionado en su publicación:</div>
-            <div class="notif-box">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, libero. Atque, commodi facere voluptas quaerat at doloremque quos quia, omnis nemo id unde tempora
-            </div>
-        </div>
-    </div>
-
-    <div class="notification-item">
-        <div class="notif-icon">
-            <span class="material-icons">alternate_email</span>
-        </div>
-        <div class="notif-content">
-            <div class="notif-title">Mati10 te ha mencionado en su publicación:</div>
-            <div class="notif-box">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, libero. Atque, commodi facere voluptas quaerat at doloremque quos quia, omnis nemo id unde tempora
-            </div>
-        </div>
-    </div>
-
-</div>
+      </div>
+    } @empty {
+      <p>No tienes notificaciones nuevas.</p>
+    }
+  </div>
