@@ -1,0 +1,81 @@
+/* Variables de color basadas en la imagen */
+:root {
+    --bg-notification: #dbeff5;     /* Azul muy claro de fondo */
+    --bg-box: #e6f0f3;              /* Fondo de la caja de texto */
+    --border-color: #8faab5;        /* Color de las líneas separadoras */
+    --text-dark: #00334e;           /* Azul oscuro para títulos */
+    --text-body: #444;              /* Color del lorem ipsum */
+}
+
+.notification-list-container {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-notification, #dbeff5);
+    width: 100%;
+}
+
+.notification-item {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color, #8faab5);
+    /* En la imagen el último item tiene una linea curva abajo si es el final de la lista,
+       pero en diseño web standard suele ser recto. Opcional: */
+    /* border-bottom: 1px solid rgba(0,0,0,0.1); */
+}
+
+/* Icono a la izquierda */
+.notif-icon {
+    margin-right: 15px;
+    color: #222;
+    display: flex;
+    align-items: flex-start; /* Alineado arriba como en la imagen */
+    padding-top: 2px;
+}
+
+.notif-icon span {
+    font-size: 30px; 
+}
+
+/* Contenedor de textos */
+.notif-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Título de la notificación (Quién hizo qué) */
+.notif-title {
+    color: var(--text-dark, #00334e);
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Caja con borde redondeado y Lorem Ipsum */
+.notif-box {
+    border: 1px solid #333; /* Borde oscuro y fino tal cual la imagen */
+    background-color: var(--bg-box, #e6f0f3);
+    border-radius: 15px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    color: var(--text-body, #444);
+    line-height: 1.4;
+    width: 100%;
+}
+
+/* Responsive básico para ajustar tamaños en móvil */
+@media (max-width: 600px) {
+    .notification-item {
+        padding: 12px;
+    }
+    .notif-title {
+        font-size: 0.95rem;
+    }
+    .notif-box {
+        font-size: 0.75rem;
+    }
+    .notif-icon span {
+        font-size: 26px;
+    }
+}
