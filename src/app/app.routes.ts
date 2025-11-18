@@ -14,20 +14,32 @@ import { SearchResults } from './pages/search-results/search-results/search-resu
 import { SavedThreads } from './pages/saved-threads/saved-threads/saved-threads';
 import { SearchMobile } from './pages/search-mobile/search-mobile';
 import { Notifications } from './pages/notifications/notifications/notifications';
+import { CategoryPage } from './pages/category-page/category-page';
+import { authReadyGuard } from './services/guards/auth-ready-guard';
 
 export const routes: Routes = [
-  { path: '', component: Login },
-  { path: 'login', component: Login },
-  { path: 'register', component: Register },
-  { path: 'bottonNav', component: BottonNav },
-  { path: 'suggestions', component: Suggestions },
-  { path: 'home', component: Feed },
-  { path: 'search', component: SearchResults },
-  { path: 'feed', component: Feed },
-  { path: 'profile/:username', component: Profile },
-  { path: 'discover', component: Discover },
-  { path: 'configuration-page', component: ConfigurationPage },
-  { path: 'saved', component: SavedThreads },
-  { path: 'search-mobile', component: SearchMobile },
-  {path: 'notifications', component: Notifications}
+  // ... (rutas públicas como login, register)
+  {
+    path: '',
+    canActivate: [authReadyGuard], // <-- Aplicamos el guardia aquí
+    children: [
+      // TODAS tus rutas principales (feed, profile, category, etc.) van aquí adentro.
+      // Ahora, ninguna de estas rutas se activará hasta que la autenticación esté lista.
+      { path: '', component: Login },
+      { path: 'login', component: Login },
+      { path: 'register', component: Register },
+      { path: 'bottonNav', component: BottonNav },
+      { path: 'suggestions', component: Suggestions },
+      { path: 'home', component: Feed },
+      { path: 'search', component: SearchResults },
+      { path: 'feed', component: Feed },
+      { path: 'profile/:username', component: Profile },
+      { path: 'discover', component: Discover },
+      { path: 'configuration-page', component: ConfigurationPage },
+      { path: 'saved', component: SavedThreads },
+      { path: 'search-mobile', component: SearchMobile },
+      { path: 'category/:name', component: CategoryPage },
+      {path: 'notifications', component: Notifications}
+    ],
+  },
 ];

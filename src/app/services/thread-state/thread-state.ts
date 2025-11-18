@@ -47,27 +47,8 @@ export class ThreadState {
     threads.forEach((threadFromApi) => {
       const existingSignal = this.threadsMap.get(threadFromApi.id);
       if (existingSignal) {
-        // El hilo ya existe.
-        existingSignal.update((currentThreadInStore) => {
-          // Creamos el nuevo estado
-          return {
-            // 1. Tomamos todos los datos que vienen de la API como base
-            ...threadFromApi,
-
-            // 2. PERO, si el store ya tenía un estado de 'isLiked'
-            //    o 'isSaved' diferente, lo preservamos.
-            //    Esto es útil si la API no devuelve estos booleanos.
-            isLiked: currentThreadInStore.isLiked,
-            isSaved: currentThreadInStore.isSaved,
-
-            // Si el objeto de la API es la fuente de la verdad para isLiked/isSaved,
-            // entonces la lógica original era correcta.
-            // Como tu backend ahora los calcula, esta es la lógica correcta:
-            // ...thread, // La de la API es la fuente de la verdad
-          };
-        });
+        existingSignal.set(threadFromApi);
       } else {
-        // Es un hilo nuevo, lo añadimos al mapa
         this.threadsMap.set(threadFromApi.id, signal(threadFromApi));
       }
     });

@@ -3,14 +3,15 @@ import { CategoryState } from '../../../services/category-state/category-state';
 import el from '@angular/common/locales/el';
 import se from '@angular/common/locales/se';
 import { CategoryInterface } from '../../../interfaces/CategoryInterface';
-import { MatIcon } from "@angular/material/icon";
-import { FollowButton } from "../../follow-button/follow-button/follow-button";
+import { MatIcon } from '@angular/material/icon';
+import { FollowButton } from '../../follow-button/follow-button/follow-button';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-suggestion-item',
-  imports: [MatIcon, FollowButton],
+  imports: [MatIcon, FollowButton, RouterLink],
   templateUrl: './suggestion-item.html',
-  styleUrl: './suggestion-item.css'
+  styleUrl: './suggestion-item.css',
 })
 export class SuggestionItem implements OnInit {
   // --- Inyección de Dependencias ---
@@ -20,10 +21,10 @@ export class SuggestionItem implements OnInit {
   // --- Señal de Datos ---
   public categorySignal: WritableSignal<CategoryInterface> | undefined;
   ngOnInit(): void {
-  // Obtenemos la señal de la categoría desde el store usando el ID.
-  this.categorySignal = this.categoryStateService.getCategorySignal(this.categoryId);
-  if (!this.categorySignal) {
-    console.error(`Error: No se encontró la señal para la categoría con ID ${this.categoryId}.`);
-  }
+    // Obtenemos la señal de la categoría desde el store usando el ID.
+    this.categorySignal = this.categoryStateService.getCategorySignal(this.categoryId);
+    if (!this.categorySignal) {
+      console.error(`Error: No se encontró la señal para la categoría con ID ${this.categoryId}.`);
+    }
   }
 }

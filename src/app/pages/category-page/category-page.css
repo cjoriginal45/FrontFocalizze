@@ -1,0 +1,136 @@
+/* (Copia y pega el CSS que te proporcioné en la respuesta anterior, ya que es el correcto para este diseño) */
+.category-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 20px 20px;
+}
+.category-page__loading {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2rem;
+  color: #555;
+}
+.category-banner {
+  height: 250px;
+  border-radius: 16px;
+  margin-top: 20px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
+}
+.banner-content {
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+}
+.banner-content__name {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 8px;
+}
+.banner-content__description {
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.category-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  max-width: 500px;
+  margin: -40px auto 40px;
+  position: relative;
+  z-index: 3;
+}
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.stat__value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+.stat__label {
+  font-size: 1rem;
+  color: #444;
+}
+.category-threads__title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 12px;
+  color: var(--primary-color);
+  text-align: center;
+}
+.category-threads__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+@media (max-width: 768px) {
+  .category-page {
+    padding: 0 10px 10px;
+  }
+  .category-banner {
+    height: 200px;
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .banner-content {
+    padding-bottom: 40px;
+  }
+  .banner-content__name {
+    font-size: 2rem;
+  }
+  .banner-content__description {
+    font-size: 1rem;
+  }
+  .category-stats {
+    gap: 20px;
+    padding: 15px;
+    margin-bottom: 30px;
+  }
+  .category-threads__title {
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 991px) {
+    /* Usamos 991px porque botton-nav se oculta en 992px */
+    .category-page {
+      /* 
+      Añadimos un padding inferior para crear un espacio vacío 
+      donde el 'botton-nav' pueda flotar sin tapar el último hilo.
+      (65px de la barra + 15px de margen = 80px)
+    */
+      padding-bottom: 80px;
+    }
+  }
+}

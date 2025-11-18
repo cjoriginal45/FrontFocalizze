@@ -1,14 +1,12 @@
+<!-- La condición principal ahora es simplemente la señal del hilo.
+     Angular no renderizará nada de esto hasta que 'threadSignal' deje de ser 'null'. -->
 @if (threadSignal(); as thread) {
 
-  <!-- Segundo @if (ANIDADO): Comprueba que la señal del USUARIO exista. -->
-  <!-- 'as user' desenvuelve el valor del usuario para usarlo dentro. -->
-  @if (userSignal?.(); as user) {
 <article class="thread">
   <!-- Mini Header del Hilo -->
-  <!-- Mini Header del Hilo - Modificado Thread Header - Modified -->
   <header class="thread__header">
     <div class="thread__header-left">
-      <a routerLink="/profile/{{ thread.user.username }}" class="thread__user">
+      <a [routerLink]="['/profile', thread.user.username]" class="thread__user">
         <img
           [src]="thread.user.avatarUrl"
           alt="Avatar de {{ thread.user.displayName }}"
@@ -20,44 +18,41 @@
         </div>
       </a>
 
-      @if (authService.getCurrentUser()?.username !== user.username) {
-        <app-follow-button 
-          type="user" 
-          [identifier]="user.username">
-        </app-follow-button>
+      <!-- La señal 'userSignal' ya no es necesaria aquí, podemos usar 'thread.user' directamente -->
+      @if (authService.getCurrentUser()?.username !== thread.user.username) {
+      <app-follow-button type="user" [identifier]="thread.user.username"></app-follow-button>
       }
-
-
-
     </div>
     <div class="thread__header-right">
-      <!-- NUEVO (Con Lógica): Nombre de la Categoría (solo si existe). NEW (With Logic): Category Name (only if it exists). -->
       @if (thread.categoryName) {
-      <a href="#" class="thread__category">{{ thread.categoryName }}</a>
-      <span class="thread__separator">·</span> }
+      <a [routerLink]="['/category', thread.categoryName]" class="thread__category">{{
+        thread.categoryName
+      }}</a>
+      <span class="thread__separator">·</span>
+      }
       <span class="thread__date">{{ thread.publicationDate | timeAgo }}</span>
 
       @if (authService.getCurrentUser()?.username === thread.user.username) {
-        <button mat-icon-button [matMenuTriggerFor]="threadMenu" aria-label="Opciones del hilo">
-          <mat-icon>more_vert</mat-icon>
+      <button mat-icon-button [matMenuTriggerFor]="threadMenu" aria-label="Opciones del hilo">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #threadMenu="matMenu">
+        <button mat-menu-item (click)="openEditModal()">
+          <mat-icon>edit</mat-icon>
+          <span>Editar Hilo</span>
         </button>
-        <mat-menu #threadMenu="matMenu">
-          <button mat-menu-item (click)="openEditModal()">
-            <mat-icon>edit</mat-icon>
-            <span>Editar Hilo</span>
-          </button>
-          <button mat-menu-item (click)="openDeleteConfirm()">
-            <mat-icon>delete</mat-icon>
-            <span>Eliminar Hilo</span>
-          </button>
-        </mat-menu>
+        <button mat-menu-item (click)="openDeleteConfirm()">
+          <mat-icon>delete</mat-icon>
+          <span>Eliminar Hilo</span>
+        </button>
+      </mat-menu>
       }
     </div>
   </header>
+
   <!-- Cuerpo del Hilo -->
   <div class="thread__body" [class.thread__body--expanded]="isExpanded">
     <div class="thread__content">
-      <!-- Post 1 (siempre visible) -->
       <div class="thread__post">
         <h3 class="thread__post-title">1° post</h3>
         <p class="thread__post-text">{{ thread.posts[0] }}</p>
@@ -75,16 +70,15 @@
         </div>
       </div>
     </div>
-    <!-- Botón de Expandir (visible si hay más de 1 post O si aún no se ha cargado por completo) -->
     @if (thread.posts.length > 1 || !isFullyLoaded) {
     <a (click)="toggleExpansion()" class="thread__expand-btn">
       @if (isLoadingDetails) { Cargando... } @else if (isExpanded) { Ocultar - } @else { Ampliar + }
     </a>
     }
   </div>
+
   <!-- Footer con Acciones -->
   <footer class="thread__footer">
-    <!-- Acción: Me Gusta -->
     <div
       class="thread__action thread__action--like"
       (click)="toggleLike()"
@@ -95,17 +89,14 @@
       }}</mat-icon>
       <span class="thread__counter">{{ thread.stats.likes | number }}</span>
     </div>
-    <!-- Acción: Comentarios -->
     <div class="thread__action" (click)="onCommentClick()">
       <mat-icon class="thread__icon">chat_bubble_outline</mat-icon>
       <span class="thread__counter">{{ thread.stats.comments | number }}</span>
     </div>
-    <!-- Acción: Visualizaciones -->
     <div class="thread__action">
       <mat-icon class="thread__icon">bar_chart</mat-icon>
       <span class="thread__counter">{{ thread.stats.views | number }}</span>
     </div>
-    <!-- Acción: Guardar -->
     <div class="thread__action" (click)="toggleSave()">
       <mat-icon class="thread__icon">{{
         thread.isSaved ? 'bookmark' : 'bookmark_border'
@@ -114,5 +105,5 @@
     </div>
   </footer>
 </article>
-}
+
 }

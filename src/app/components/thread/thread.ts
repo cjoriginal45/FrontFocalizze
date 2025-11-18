@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  effect,
   EventEmitter,
   inject,
   Input,
-  OnInit,
   Output,
+  signal,
   WritableSignal,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,6 +32,7 @@ import { ViewTracking } from '../../services/viewTracking/view-tracking';
 
 @Component({
   selector: 'app-thread',
+  standalone: true,
   imports: [
     CommonModule,
     MatIconModule,
@@ -43,8 +45,8 @@ import { ViewTracking } from '../../services/viewTracking/view-tracking';
   templateUrl: './thread.html',
   styleUrl: './thread.css',
 })
-export class Thread implements OnInit {
-  // --- INYECCIONES ---
+export class Thread {
+  // --- INYECCIONES (sin cambios) ---
   private likeService = inject(Like);
   private interactionService = inject(Interaction);
   private threadService = inject(threadService);
@@ -55,34 +57,66 @@ export class Thread implements OnInit {
   private dialog = inject(MatDialog);
   private viewTrackingService = inject(ViewTracking);
 
-  // --- INPUT: SOLO EL ID ---
-  @Input({ required: true }) threadId!: number;
+  // --- INPUT CON SETTER (sin cambios) ---
+  @Input({ required: true })
+  set threadId(id: number) {
+    this._threadId = id;
+    this.connectToState();
+  }
+  get threadId(): number {
+    return this._threadId;
+  }
+  private _threadId!: number;
 
-  // --- SEÑAL DE DATOS (LA FUENTE DE LA VERDAD PARA LA PLANTILLA) ---
   @Output() openComments = new EventEmitter<number>();
-  public threadSignal!: WritableSignal<FeedThreadDto>;
 
-  public userSignal: WritableSignal<UserInterface> | undefined;
+  // --- SEÑALES INTERNAS (sin cambios) ---
+  public threadSignal: WritableSignal<FeedThreadDto | null> = signal(null);
+  public userSignal: WritableSignal<UserInterface | null> = signal(null);
 
-  // --- ESTADO LOCAL (SOLO PARA ESTE COMPONENTE) ---
+  // --- ESTADO LOCAL (sin cambios) ---
   isExpanded = false;
   isLoadingDetails = false;
   isFullyLoaded = false;
 
-  ngOnInit(): void {
-    const signal = this.threadStateService.getThreadSignal(this.threadId);
-    if (!signal) {
-      console.error(`Error: No se encontró la señal para el hilo con ID ${this.threadId}.`);
-      return;
-    }
-    this.threadSignal = signal;
+  private connectToState(): void {
+    const signalFromState = this.threadStateService.getThreadSignal(this.threadId);
 
-    this.userSignal = this.userStateService.getUserSignal(this.threadSignal().user.username);
+    if (signalFromState) {
+      this.threadSignal = signalFromState as WritableSignal<FeedThreadDto | null>;
+      const userSignalFromState = this.userStateService.getUserSignal(
+        this.threadSignal()!.user.username
+      );
+      if (userSignalFromState) {
+        this.userSignal = userSignalFromState as WritableSignal<UserInterface | null>;
+      }
+    } else {
+      effect(
+        () => {
+          const newSignalFromState = this.threadStateService.getThreadSignal(this.threadId);
+          if (newSignalFromState && !this.threadSignal()) {
+            this.threadSignal = newSignalFromState as WritableSignal<FeedThreadDto | null>;
+
+            const userSignalFromState = this.userStateService.getUserSignal(
+              this.threadSignal()!.user.username
+            );
+            if (userSignalFromState) {
+              this.userSignal = userSignalFromState as WritableSignal<UserInterface | null>;
+            }
+          }
+        },
+        { allowSignalWrites: true }
+      );
+    }
   }
 
+  // --- MÉTODOS DE ACCIÓN CORREGIDOS ---
+
   toggleLike(): void {
-    if (!this.threadSignal) return;
     const currentThread = this.threadSignal();
+    // --- CORRECCIÓN: Comprobamos si el hilo es nulo antes de continuar ---
+    if (!currentThread) return;
+
     const previousState = currentThread.isLiked;
     const previousCount = currentThread.stats.likes;
     const newLikedState = !previousState;
@@ -101,55 +135,48 @@ export class Thread implements OnInit {
     });
   }
 
-  // (La lógica de toggleSave se adaptaría de forma idéntica a toggleLike)
-
   toggleExpansion(): void {
-    if (!this.threadSignal) return;
+    const currentThread = this.threadSignal();
+    // --- CORRECCIÓN ---
+    if (!currentThread) return;
 
-    // Si ya está expandido, simplemente lo colapsamos.
     if (this.isExpanded) {
       this.isExpanded = false;
       return;
     }
 
-    // --- LÓGICA CLAVE ---
-    // 1. Comprobamos si el hilo ya fue visto en esta sesión.
     if (this.viewTrackingService.hasBeenViewed(this.threadId)) {
-      // Si ya fue visto, simplemente lo expandimos. NO hacemos llamada a la API.
       this.isExpanded = true;
       return;
     }
 
-    // 2. Si NO ha sido visto, entonces hacemos la llamada a la API para incrementar el contador.
     this.isLoadingDetails = true;
-    this.isExpanded = true; // Expandimos para mostrar el spinner
+    this.isExpanded = true;
 
     this.threadService.getThreadById(this.threadId).subscribe({
-      next: (threadData: FeedThreadDto) => {
-        // Actualizamos el store con los datos completos
+      next: (threadData) => {
         this.threadStateService.updateThreadData(this.threadId, threadData);
-
-        // 3. EN CASO DE ÉXITO, marcamos el hilo como visto.
         this.viewTrackingService.markAsViewed(this.threadId);
-
         this.isLoadingDetails = false;
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error('Error al expandir el hilo', err);
         this.isLoadingDetails = false;
-        this.isExpanded = false; // Colapsamos si hay error
+        this.isExpanded = false;
       },
     });
   }
 
-  // Lógica para alternar el estado de guardado
   toggleSave(): void {
-    if (!this.threadSignal) return;
     const currentThread = this.threadSignal();
+    // --- CORRECCIÓN ---
+    if (!currentThread) return;
+
     const previousState = currentThread.isSaved;
     const newSavedState = !previousState;
 
-    this.threadSignal.update((thread) => ({ ...thread, isSaved: newSavedState }));
+    // Usamos 'update' para actualizar la señal. Es más seguro.
+    this.threadSignal.update((thread) => (thread ? { ...thread, isSaved: newSavedState } : null));
 
     this.saveService.toggleSave(this.threadId).subscribe({
       next: () => {
@@ -157,46 +184,37 @@ export class Thread implements OnInit {
       },
       error: (err) => {
         console.error('Error en API de Save, revirtiendo estado.', err);
-        this.threadSignal!.update((thread) => ({ ...thread, isSaved: previousState }));
+        this.threadSignal.update((thread) =>
+          thread ? { ...thread, isSaved: previousState } : null
+        );
       },
     });
   }
 
   onCommentClick(): void {
-    // No es necesario 'if (!this.threadSignal) return;' porque el botón no se renderizaría si no hay señal
     this.openComments.emit(this.threadId);
   }
 
   openEditModal(): void {
-    // Guarda de seguridad
-    if (!this.threadSignal) return;
-
-    // 1. Obtenemos los datos actuales para pasarlos a la modal
     const threadToEdit = this.threadSignal();
+    // --- CORRECCIÓN ---
+    if (!threadToEdit) return;
 
-    // 2. Abrimos la modal de edición
     const dialogRef = this.dialog.open(EditThreadModal, {
       width: '600px',
-      data: { thread: threadToEdit }, // Pasamos los datos del hilo
-      panelClass: 'thread-modal-panel', // Consistencia de estilo
+      data: { thread: threadToEdit },
+      panelClass: 'thread-modal-panel',
     });
 
-    // 3. Nos suscribimos al resultado cuando la modal se cierre
     dialogRef.afterClosed().subscribe((result: ThreadUpdateRequest | undefined) => {
-      // Si el usuario canceló, el resultado será 'undefined'. No hacemos nada.
       if (!result) return;
-
-      // 4. Si hay resultado, llamamos a la API para actualizar el hilo
       this.threadService.updateThread(this.threadId, result).subscribe({
         next: (updatedThreadFromApi) => {
-          // 5. Actualizamos el store con los nuevos datos del hilo
           this.threadStateService.updateThreadData(this.threadId, updatedThreadFromApi);
-
           console.log('Hilo actualizado con éxito en el store.');
         },
         error: (err) => {
           console.error('Error al actualizar el hilo', err);
-          // Opcional: mostrar un mensaje de error tipo "toast"
         },
       });
     });
@@ -215,7 +233,6 @@ export class Thread implements OnInit {
         this.threadService.deleteThread(this.threadId).subscribe({
           next: () => {
             console.log('Hilo eliminado con éxito');
-            // Aquí notificamos al store para que elimine el hilo
             this.threadStateService.removeThread(this.threadId);
           },
           error: (err) => console.error('Error al eliminar el hilo', err),

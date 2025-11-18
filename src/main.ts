@@ -4,8 +4,7 @@ import { App } from './app/app';
 import { ApplicationRef } from '@angular/core';
 import { Auth } from './app/services/auth/auth';
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(App, appConfig).catch((err) => console.error(err));
 
 async function bootstrap() {
   try {
@@ -17,12 +16,9 @@ async function bootstrap() {
 
     // 3. LLAMAMOS Y ESPERAMOS a que la inicialización del estado de autenticación termine.
     await authService.loadUserFromToken();
-
   } catch (err) {
     console.error('Error durante el arranque de la aplicación', err);
   }
 }
 
 bootstrap();
-
-
