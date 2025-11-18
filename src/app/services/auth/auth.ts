@@ -9,6 +9,7 @@ import { UserService } from '../user/user-service';
 import { ViewTracking } from '../viewTracking/view-tracking';
 import { ThreadState } from '../thread-state/thread-state';
 import { UserState } from '../user-state/user-state';
+import { CategoryState } from '../category-state/category-state';
 
 export interface AuthUser {
   id: number;
@@ -37,6 +38,7 @@ export class Auth {
 
   private threadStateService = inject(ThreadState);
   private userStateService = inject(UserState);
+  private categoryState = inject(CategoryState);
 
   // SIGNAL: This is the "source of truth" for the session state.
   isLoggedIn = computed(() => !!this.currentUser());
@@ -45,7 +47,11 @@ export class Auth {
 
   constructor() {
     effect(() => {
-      console.log('[AuthService] El estado de autenticación ha cambiado:', this.isLoggedIn());
+      // Si el usuario se convierte en 'null' (logout o inicio sin token)...
+      if (this.currentUser() === null) {
+        // ...limpiamos el estado de toda la aplicación.
+        this.clearAllAppState();
+      }
     });
   }
 
@@ -105,6 +111,7 @@ export class Auth {
     // 3. Limpiamos los stores de datos.
     this.threadStateService.clearState();
     this.userStateService.clearState();
+    this.categoryState.clearState();
     this.router.navigate(['/login']);
   }
 
@@ -123,5 +130,12 @@ export class Auth {
         followersCount: counts.followersCount ?? user.followersCount,
       };
     });
+  }
+
+  private clearAllAppState(): void {
+    console.log('[AuthService] No hay usuario. Limpiando todos los estados de la aplicación...');
+    this.threadStateService.clearState();
+    this.userStateService.clearState();
+    this.categoryState.clearState();
   }
 }

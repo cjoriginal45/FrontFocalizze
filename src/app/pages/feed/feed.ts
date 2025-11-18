@@ -22,7 +22,8 @@ import { UserState } from '../../services/user-state/user-state';
   templateUrl: './feed.html',
   styleUrls: ['./feed.css'],
 })
-export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
+export class Feed implements OnInit {
+  // Ya no necesitas OnDestroy aquí
   // --- Inyección de Dependencias ---
   private feedService = inject(FeedService);
   private threadStateService = inject(ThreadState);
@@ -30,7 +31,7 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
   private userStateService = inject(UserState);
 
   // --- Propiedades de Estado (Refactorizadas) ---
-  threadIds: number[] = []; 
+  threadIds: number[] = [];
   isLoading = false;
   currentPage = 0;
   isLastPage = false;
@@ -38,9 +39,9 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
   ngOnInit(): void {
     this.loadMoreThreads(); // Carga inicial
 
-    this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
+    this.threadStateService.threadDeleted$.subscribe((deletedThreadId) => {
       // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
-      this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
+      this.threadIds = this.threadIds.filter((id) => id !== deletedThreadId);
     });
   }
 
@@ -57,14 +58,14 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
         // 2. EXTRAEMOS los datos directamente. ¡NO HAY MAPEO!
         const newThreads: FeedThreadDto[] = page.content;
 
-        const usersFromThreads = newThreads.map(t => t.user);
+        const usersFromThreads = newThreads.map((t) => t.user);
         this.userStateService.loadUsers(usersFromThreads);
 
         // 3. Cargamos los datos en el store.
         this.threadStateService.loadThreads(newThreads);
 
         // 4. Guardamos los IDs.
-        const newThreadIds = newThreads.map(t => t.id);
+        const newThreadIds = newThreads.map((t) => t.id);
         this.threadIds.push(...newThreadIds);
 
         this.isLastPage = page.last;
@@ -77,7 +78,7 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
       },
     });
   }
-  
+
   /**
    * Abre la modal de comentarios.
    */
@@ -87,7 +88,7 @@ export class Feed implements OnInit { // Ya no necesitas OnDestroy aquí
       maxWidth: '95vw',
       maxHeight: '90vh',
       data: {
-        threadId: threadId, 
+        threadId: threadId,
       },
       panelClass: 'comments-dialog-container',
     });
