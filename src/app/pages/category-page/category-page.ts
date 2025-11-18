@@ -16,6 +16,8 @@ import { CategoryState } from '../../services/category-state/category-state';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { CategoryDetailsInterface } from '../../interfaces/CategoryDetailsInterface';
 import { CategoryInterface } from '../../interfaces/CategoryInterface';
+import { UserState } from '../../services/user-state/user-state';
+import { BottonNav } from '../../components/botton-nav/botton-nav';
 
 interface CategoryPageState {
   category: CategoryDetailsInterface | null;
@@ -26,7 +28,17 @@ interface CategoryPageState {
 
 @Component({
   selector: 'app-category-page',
-  imports: [CommonModule, MatIconModule, MatButtonModule, Header, Thread, FollowButton],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatIconModule,
+    MatButtonModule,
+    Header,
+    Thread,
+    FollowButton,
+    BottonNav,
+  ],
   templateUrl: './category-page.html',
   styleUrl: './category-page.css',
 })
@@ -36,6 +48,7 @@ export class CategoryPage implements OnInit {
   private threadStateService = inject(ThreadState);
   private categoryStateService = inject(CategoryState);
   private dialog = inject(MatDialog);
+  private userStateService = inject(UserState);
 
   private state = signal<CategoryPageState>({
     category: null,
@@ -52,9 +65,12 @@ export class CategoryPage implements OnInit {
   private readonly pageSize = 10;
 
   ngOnInit(): void {
+    console.log('[CategoryPage] ngOnInit: Iniciando componente.');
+
     this.route.paramMap
       .pipe(
         tap(() => {
+          console.log('[CategoryPage] 1. (tap) Reseteando estado...');
           this.state.set({
             category: null,
             threadIds: [],
@@ -65,11 +81,19 @@ export class CategoryPage implements OnInit {
         }),
         switchMap((params) => {
           const categoryName = params.get('name');
+          console.log(
+            `[CategoryPage] 2. (switchMap) Obtenido nombre de categoría: '${categoryName}'`
+          );
           if (!categoryName) throw new Error('Nombre de categoría no encontrado');
 
+          console.log('[CategoryPage] 3. (switchMap) Llamando a getCategoryDetails...');
           return this.categoryService.getCategoryDetails(categoryName);
         }),
         switchMap((categoryDetails) => {
+          console.log(
+            '[CategoryPage] 4. (switchMap) Detalles de categoría RECIBIDOS:',
+            categoryDetails
+          );
           this.state.update((s) => ({ ...s, category: categoryDetails }));
 
           const categoryForState: CategoryInterface = {
@@ -80,7 +104,9 @@ export class CategoryPage implements OnInit {
             isFollowedByCurrentUser: categoryDetails.isFollowing,
           };
           this.categoryStateService.loadCategories([categoryForState]);
+          console.log('[CategoryPage] 5. (switchMap) Categoría cargada en CategoryState.');
 
+          console.log('[CategoryPage] 6. (switchMap) Llamando a getThreadsForCategory...');
           return this.categoryService.getThreadsForCategory(
             categoryDetails.name,
             this.currentPage,
@@ -90,8 +116,19 @@ export class CategoryPage implements OnInit {
       )
       .subscribe({
         next: (threadPage) => {
+          console.log('[CategoryPage] 7. (subscribe) Página de hilos RECIBIDA:', threadPage);
           const newThreads: FeedThreadDto[] = threadPage.content;
+
+          // --- SOLUCIÓN AL ERROR ---
+          // 1. Extraemos los datos de los usuarios de los hilos que acabamos de recibir.
+          const usersFromThreads = newThreads.map((t) => t.user);
+          // 2. Cargamos esos usuarios en el UserState.
+          //    Ahora, cuando se creen los FollowButton, encontrarán el estado.
+          this.userStateService.loadUsers(usersFromThreads);
+          // --- FIN DE LA SOLUCIÓN ---
+
           this.threadStateService.loadThreads(newThreads);
+          console.log('[CategoryPage] 8. (subscribe) Hilos cargados en ThreadState.');
 
           this.state.update((s) => ({
             ...s,
@@ -99,9 +136,13 @@ export class CategoryPage implements OnInit {
             isLoading: false,
             allThreadsLoaded: threadPage.last,
           }));
+          console.log(
+            '[CategoryPage] 9. (subscribe) Estado final actualizado. threadIds:',
+            this.state().threadIds
+          );
         },
         error: (err) => {
-          console.error('Error al cargar la página de categoría', err);
+          console.error('[CategoryPage] ¡ERROR en el flujo de carga!', err);
           this.state.update((s) => ({ ...s, isLoading: false }));
         },
       });

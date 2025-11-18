@@ -23,6 +23,7 @@
   text-align: center;
   color: #fff;
   overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 .banner-overlay {
   position: absolute;
@@ -49,6 +50,7 @@
   margin-bottom: 20px;
   opacity: 0.9;
 }
+
 .category-stats {
   display: flex;
   justify-content: center;
@@ -101,6 +103,10 @@
     border-radius: 0;
     margin-top: 0;
   }
+
+  .banner-content {
+    padding-bottom: 40px;
+  }
   .banner-content__name {
     font-size: 2rem;
   }
@@ -114,5 +120,17 @@
   }
   .category-threads__title {
     font-size: 1.3rem;
+  }
+
+  @media (max-width: 991px) {
+    /* Usamos 991px porque botton-nav se oculta en 992px */
+    .category-page {
+      /* 
+      Añadimos un padding inferior para crear un espacio vacío 
+      donde el 'botton-nav' pueda flotar sin tapar el último hilo.
+      (65px de la barra + 15px de margen = 80px)
+    */
+      padding-bottom: 80px;
+    }
   }
 }
