@@ -6,7 +6,7 @@ import { Thread } from '../../../components/thread/thread';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Search } from '../../../services/search/search';
 import { FeedThreadDto } from '../../../interfaces/FeedThread';
-import { switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import { ThreadResponse } from '../../../interfaces/ThreadResponseDto';
 import { Header } from '../../../components/header/header';
 import { FollowingDiscovering } from '../../../components/following-discovering/following-discovering';
@@ -14,6 +14,7 @@ import { ThreadState } from '../../../services/thread-state/thread-state';
 import { UserState } from '../../../services/user-state/user-state';
 import { MatDialog } from '@angular/material/dialog';
 import { Comments } from '../../../components/comments/comments';
+import { threadService } from '../../../services/thread/thread';
 
 @Component({
   selector: 'app-search-results',
@@ -30,11 +31,13 @@ export class SearchResults implements OnInit {
   private userStateService = inject(UserState);
   public dialog = inject(MatDialog);
   private location = inject(Location);
+  private threadService = inject(threadService); 
 
   // --- Propiedades de Estado ---
   threadIds: number[] = [];
   query = '';
   isLoading = true;
+  pageTitle = '';
 
   ngOnInit(): void {
     this.route.queryParamMap
@@ -42,36 +45,56 @@ export class SearchResults implements OnInit {
         switchMap((params) => {
           this.isLoading = true;
           this.threadIds = [];
-          this.query = params.get('q') || '';
-          if (this.query) {
-            return this.searchService.searchContent(this.query);
+          
+          const searchQuery = params.get('q');
+          const threadIdStr = params.get('threadId');
+
+          if (threadIdStr) {
+            // Devuelve Observable<FeedThreadDto>
+            const threadId = Number(threadIdStr);
+            return this.threadService.getThreadById(threadId).pipe(
+              map(thread => [thread]) // Lo convierte en Observable<FeedThreadDto[]>
+            );
+          } 
+          else if (searchQuery) {
+            // Devuelve Observable<ThreadResponse[]>
+            return this.searchService.searchContent(searchQuery);
           }
-          return [];
+          
+          // Devuelve un Observable de array vacío
+          return of([]);
         })
       )
+      // --- ¡CORRECCIÓN CLAVE AQUÍ! ---
+      // TypeScript sabe que 'results' puede ser FeedThreadDto[] O ThreadResponse[]
       .subscribe({
-        next: (results) => {
-          // 1. Mapeamos los DTOs de la API a los Modelos de Vista (CON LÓGICA CORREGIDA).
-          const mappedThreads: FeedThreadDto[] = results.map((dto) => this.mapDtoToViewModel(dto));
+        next: (results: FeedThreadDto[] | ThreadResponse[]) => {
+          let mappedThreads: FeedThreadDto[];
 
-          // --- CAMBIO: SINCRONIZAMOS EL ESTADO DEL USUARIO ---
-          // 2. Extraemos los usuarios de los hilos y los cargamos en el UserState.
-          const usersFromThreads = mappedThreads.map((t) => t.user);
-          this.userStateService.loadUsers(usersFromThreads);
-
-          // 3. Cargamos los hilos en el store. `loadThreads` es inteligente y preservará
-          //    los estados de 'isLiked' y 'isSaved' si el hilo ya existía.
-          this.threadStateService.loadThreads(mappedThreads);
-
-          // 4. Obtenemos solo los IDs para renderizar.
-          this.threadIds = mappedThreads.map((t) => t.id);
-
+          // Hacemos una comprobación de tipo (Type Guard)
+          if (results.length > 0 && 'author' in results[0]) {
+            // Si el primer elemento tiene 'author', es un array de ThreadResponse[]
+            // y necesita ser mapeado.
+            mappedThreads = (results as ThreadResponse[]).map(dto => this.mapDtoToViewModel(dto));
+          } else {
+            // Si no, ya es un array de FeedThreadDto[] (o está vacío) y no necesita mapeo.
+            mappedThreads = results as FeedThreadDto[];
+          }
+          
+          // --- El resto de la lógica es la misma ---
+          if (mappedThreads.length > 0) {
+            const usersFromThreads = mappedThreads.map((t) => t.user);
+            this.userStateService.loadUsers(usersFromThreads);
+            this.threadStateService.loadThreads(mappedThreads);
+            this.threadIds = mappedThreads.map((t) => t.id);
+          }
+          
           this.isLoading = false;
         },
         error: (err) => {
-          console.error('Error al buscar contenido', err);
+          console.error('Error en la página de búsqueda', err);
           this.isLoading = false;
-        },
+        }
       });
 
     this.threadStateService.threadDeleted$.subscribe((deletedThreadId) => {

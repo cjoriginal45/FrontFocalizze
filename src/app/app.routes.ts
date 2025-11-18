@@ -13,6 +13,7 @@ import { ConfigurationPage } from './pages/configuration-page/configuration-page
 import { SearchResults } from './pages/search-results/search-results/search-results';
 import { SavedThreads } from './pages/saved-threads/saved-threads/saved-threads';
 import { SearchMobile } from './pages/search-mobile/search-mobile';
+import { Notifications } from './pages/notifications/notifications/notifications';
 import { CategoryPage } from './pages/category-page/category-page';
 import { authReadyGuard } from './services/guards/auth-ready-guard';
 
@@ -38,6 +39,7 @@ export const routes: Routes = [
       { path: 'saved', component: SavedThreads },
       { path: 'search-mobile', component: SearchMobile },
       { path: 'category/:name', component: CategoryPage },
+      {path: 'notifications', component: Notifications}
     ],
   },
 ];
