@@ -5,18 +5,54 @@
     <h1>Notificaciones</h1>
   </header>
 
-<div class="notification-list-container">
-  @for (notification of notifications; track notification.id) {
-    <div class="notification-item" [class.notification-item--unread]="!notification.isRead">
-      <div class="notif-icon">
-        <mat-icon>{{ getIconForNotification(notification.type) }}</mat-icon>
-      </div>
-      <div class="notif-content">
-        <div class="notif-title">{{ notification.message }}</div>
-        <span class="notif-date">{{ notification.createdAt | timeAgo }}</span>
-      </div>
-    </div>
-  } @empty {
+  <div class="notification-list-container">
+    @for (notification of notifications; track notification.id) {
+      <!-- --- ¡LÓGICA CLAVE AQUÍ! --- -->
+      <!-- El enlace exterior ahora es dinámico. -->
+      <a 
+      [routerLink]="getLinkForNotification(notification)"
+      [queryParams]="getQueryParamsForNotification(notification)"
+      class="notification-item-link">
+
+        <div class="notification-item" [class.notification-item--unread]="!notification.isRead">
+          
+          <div class="notif-icon">
+            <mat-icon>{{ getIconForNotification(notification.type) }}</mat-icon>
+          </div>
+
+          <div class="notif-content">
+            
+            @if (notification.triggerUser) {
+              <!-- El enlace del avatar siempre va al perfil del usuario que originó la acción -->
+              <a [routerLink]="['/profile', notification.triggerUser.username]" class="notif-trigger-user-avatar-link" (click)="$event.stopPropagation()">
+                <img [src]="notification.triggerUser.avatarUrl" class="notif-avatar" alt="Avatar">
+              </a>
+            }
+            
+            <div class="notif-text-content">
+              <div class="notif-title">
+                @if (notification.triggerUser) {
+                  <!-- El enlace del nombre de usuario también va al perfil -->
+                  <a [routerLink]="['/profile', notification.triggerUser.username]" class="notif-trigger-user-link" (click)="$event.stopPropagation()">
+                    {{ notification.triggerUser.displayName }}
+                  </a>
+                }
+                {{ notification.message }}
+              </div>
+              
+              @if (notification.threadPreview) {
+                <div class="notif-box">
+                  {{ notification.threadPreview }}
+                </div>
+              }
+              
+              <span class="notif-date">{{ notification.createdAt | timeAgo }}</span>
+            </div>
+            
+          </div>
+        </div>
+      </a>
+    } @empty {
     @if (!isLoading) {
       <p class="no-notifications">No tienes notificaciones.</p>
     }

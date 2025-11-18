@@ -19,7 +19,6 @@ export class Search {
     // Lógica para buscar usuarios en la API
     // Logic to search users in the API
     const fullUrl = `${this.apiUrl}/search/users?q=${encodeURIComponent(query)}`;
-    console.log('CONSTRUYENDO PETICIÓN GET A (relativa):', fullUrl);
     return this.http.get<UserSearch[]>(fullUrl);
   }
 

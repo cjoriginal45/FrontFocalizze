@@ -7,10 +7,11 @@ import { WebSockets } from '../../../services/webSockets/web-sockets';
 import { MatIcon } from "@angular/material/icon";
 import { Notification } from '../../../services/notification/notification';
 import { TimeAgoPipe } from "../../../pipes/time-ago/time-ago-pipe";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-notifications',
-  imports: [Header, Suggestions, MatIcon, TimeAgoPipe],
+  imports: [Header, Suggestions, MatIcon, TimeAgoPipe, RouterLink],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css'
 })
@@ -79,4 +80,45 @@ export class Notifications implements OnInit, OnDestroy {
     });
   }
     
+
+  getLinkForNotification(notification: NotificationInterface): any[] | null {
+    switch (notification.type) {
+      case 'NEW_FOLLOWER':
+        if (notification.triggerUser) {
+          return ['/profile', notification.triggerUser.username];
+        }
+        return null;
+  
+      case 'NEW_LIKE':
+      case 'NEW_COMMENT':
+      case 'MENTION':
+        // --- CORRECCIÓN: Solo devuelve el path base ---
+        if (notification.threadId) {
+          return ['/search'];
+        }
+        return null;
+  
+      default:
+        return null;
+    }
+  }
+
+
+  getQueryParamsForNotification(notification: NotificationInterface): object | null {
+    switch (notification.type) {
+      // Notificaciones relacionadas con un hilo usan el parámetro 'q'
+      case 'NEW_LIKE':
+      case 'NEW_COMMENT':
+      case 'MENTION':
+        if (notification.threadPreview) {
+          return { q: notification.threadPreview };
+        }
+        return null;
+
+      // Otros tipos de notificación no tienen queryParams
+      case 'NEW_FOLLOWER':
+      default:
+        return null;
+    }
+  }
 }
