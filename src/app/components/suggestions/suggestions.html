@@ -1,66 +1,78 @@
 <!-- === LÓGICA Y ESTRUCTURA SOLO PARA MÓVIL === -->
 <div class="suggestions-mobile">
-  
-    <!-- Disparador que siempre está visible en móvil -->
-    <button class="suggestions-mobile__trigger" (click)="toggleMobilePanel()" aria-label="Abrir/Cerrar sugerencias">
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-    
-    <!-- Overlay que solo existe cuando el panel está abierto -->
-    @if (isMobilePanelOpen) {
-      <div class="suggestions-mobile__overlay" (click)="toggleMobilePanel()"></div>
-    }
-    
-    <!-- El panel deslizable -->
-    <aside class="suggestions-mobile__panel" [class.suggestions-mobile__panel--is-open]="isMobilePanelOpen">
-      <!-- El contenido ahora se renderiza aquí -->
-      <div class="suggestions-content">
-        <!-- LLAMAMOS A UN TEMPLATE REUTILIZABLE -->
-        <ng-container *ngTemplateOutlet="suggestionsContent"></ng-container>
-      </div>
-    </aside>
-  
-  </div>
-  
-  
-  <!-- === ESTRUCTURA SOLO PARA ESCRITORIO === -->
-  <aside class="suggestions-desktop">
+  <!-- Disparador que siempre está visible en móvil -->
+  <button
+    class="suggestions-mobile__trigger"
+    (click)="toggleMobilePanel()"
+    aria-label="Abrir/Cerrar sugerencias"
+  >
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+
+  <!-- Overlay que solo existe cuando el panel está abierto -->
+  @if (isMobilePanelOpen) {
+  <div class="suggestions-mobile__overlay" (click)="toggleMobilePanel()"></div>
+  }
+
+  <!-- El panel deslizable -->
+  <aside
+    class="suggestions-mobile__panel"
+    [class.suggestions-mobile__panel--is-open]="isMobilePanelOpen"
+  >
     <!-- El contenido ahora se renderiza aquí -->
     <div class="suggestions-content">
       <!-- LLAMAMOS A UN TEMPLATE REUTILIZABLE -->
       <ng-container *ngTemplateOutlet="suggestionsContent"></ng-container>
     </div>
   </aside>
+</div>
 
-  <!-- === TEMPLATE DE CONTENIDO REUTILIZABLE === -->
+<!-- === ESTRUCTURA SOLO PARA ESCRITORIO === -->
+<aside class="suggestions-desktop">
+  <!-- El contenido ahora se renderiza aquí -->
+  <div class="suggestions-content">
+    <!-- LLAMAMOS A UN TEMPLATE REUTILIZABLE -->
+    <ng-container *ngTemplateOutlet="suggestionsContent"></ng-container>
+  </div>
+</aside>
+
+<!-- === TEMPLATE DE CONTENIDO REUTILIZABLE === -->
 <!-- Usamos ng-template para no duplicar el código del contenido -->
+<!-- === TEMPLATE DE CONTENIDO REUTILIZABLE === -->
 <ng-template #suggestionsContent>
   <div class="suggestions">
     <h2 class="suggestions__title">Tal vez te guste</h2>
-    
-    @if (showAllCategories) {
-      <!-- Vista de "Todas las categorías" -->
-      <ul class="suggestions__list suggestions__list--scrollable">
-        @for (categoryId of allCategoryIds; track categoryId) {
-          <li class="suggestions__item">
-            <!-- Renderiza un item por cada ID -->
-            <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
-          </li>
-        }
-      </ul>
-      <a class="suggestions__see-more" (click)="toggleShowAllCategories()">Mostrar menos...</a>
-    } @else {
-      <!-- Vista de "Sugerencias" -->
-      <ul class="suggestions__list">
-        @for (categoryId of suggestedCategoryIds; track categoryId) {
-          <li class="suggestions__item">
-            <!-- Renderiza un item por cada ID -->
-            <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
-          </li>
-        }
-      </ul>
-      <a class="suggestions__see-more" (click)="toggleShowAllCategories()">Otras categorías...</a>
+
+    <!-- Vista de "Sugerencias" (siempre visible si no se muestran todas) -->
+    @if (!showAllCategories) {
+    <ul class="suggestions__list">
+      @for (categoryId of suggestedCategoryIds(); track categoryId) {
+      <li class="suggestions__item">
+        <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
+      </li>
+      }
+    </ul>
     }
+
+    <!-- 
+      --- CAMBIO CLAVE ---
+      Contenedor para la lista completa que controlaremos con CSS.
+      Siempre está en el DOM.
+    -->
+    <div class="all-categories-wrapper" [class.expanded]="showAllCategories">
+      <ul class="suggestions__list suggestions__list--scrollable">
+        @for (categoryId of sortedCategoryIds(); track categoryId) {
+        <li class="suggestions__item">
+          <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
+        </li>
+        }
+      </ul>
+    </div>
+
+    <!-- El enlace para ver más/menos -->
+    <a class="suggestions__see-more" (click)="toggleShowAllCategories()">
+      {{ showAllCategories ? 'Mostrar menos...' : 'Otras categorías...' }}
+    </a>
   </div>
 
   <footer class="footer-links">

@@ -1,11 +1,9 @@
-<!-- El contenido solo se renderiza si la señal de la categoría existe -->
 @if (categorySignal?.(); as category) {
 <a [routerLink]="['/category', category.name]" class="suggestion-item__link">
   <mat-icon class="suggestion-item__icon">label</mat-icon>
   <span class="suggestion-item__name">{{ category.name }}</span>
 </a>
 
-<span class="suggestion-item__followers">{{ category.followerCount }}</span>
-
+<!-- El botón de seguir ahora está al final -->
 <app-follow-button type="category" [identifier]="category.id"> </app-follow-button>
 }

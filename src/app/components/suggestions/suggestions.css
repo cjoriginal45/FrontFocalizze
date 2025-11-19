@@ -8,7 +8,8 @@
 }
 
 .suggestions {
-  flex-grow: 1;
+  flex-grow: 0;
+  margin-bottom: 20px;
 }
 
 .suggestions__title {
@@ -25,6 +26,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding-right: 10px;
 }
 
 .suggestions__item {
@@ -67,15 +69,17 @@
   color: var(--primary-color);
   border-bottom: 1px solid #bec0c1;
   padding-bottom: 12px;
+  cursor: pointer;
 }
 
 .suggestions__see-more:hover {
-  text-decoration: underline;
+  color: rgba(1, 52, 74, 0.7);
 }
 
 .suggestions__list--scrollable {
   /* Le damos una altura máxima para que no ocupe toda la pantalla */
-  max-height: 250px;
+  max-height: 300px;
+
   /* Si la lista supera esta altura, aparecerá una barra de scroll vertical */
   overflow-y: auto;
   /* Añadimos un poco de padding a la derecha para que el scrollbar no se pegue al texto */
@@ -115,6 +119,62 @@
   font-size: 0.8rem;
   color: #657786;
   align-self: center;
+}
+
+/* --- ESTILOS CORREGIDOS PARA LA ANIMACIÓN DE DESPLIEGUE --- */
+
+/* 
+  Contenedor exterior: gestiona la animación de altura.
+*/
+.all-categories-wrapper {
+  display: grid;
+  grid-template-rows: 0fr; /* Estado inicial: colapsado */
+
+  /* --- CAMBIO 1: Transición más suave y solo al expandir --- */
+  transition: grid-template-rows 0.4s ease-out; /* Curva 'ease-out' para una apertura natural */
+}
+
+.all-categories-wrapper.expanded {
+  grid-template-rows: 1fr; /* Estado final: expandido */
+}
+
+/* 
+  Contenedor interior (el UL): gestiona el scroll.
+*/
+.suggestions__list--scrollable {
+  /* --- CAMBIO 2: Lógica de scroll y visibilidad --- */
+
+  overflow: hidden; /* Oculta el contenido mientras está colapsado */
+  visibility: hidden; /* Lo hace completamente invisible e inaccesible */
+  opacity: 0;
+
+  /* Le damos una altura máxima para que aparezca el scroll si es necesario */
+  max-height: 300px;
+
+  /* Transición para la opacidad y visibilidad al cerrar */
+  transition: opacity 0.3s ease-in, visibility 0.3s;
+}
+
+.all-categories-wrapper.expanded .suggestions__list--scrollable {
+  /* --- CAMBIO 3: Aplicar scroll y visibilidad al expandir --- */
+
+  overflow-y: auto; /* ¡Aquí es donde aparece la barra de scroll! */
+  visibility: visible;
+  opacity: 1;
+
+  /* Le damos un pequeño retraso a la aparición para que coincida con la animación de altura */
+  transition: opacity 0.3s ease-out 0.1s, visibility 0s 0s;
+}
+
+/* 
+  (Opcional pero recomendado) Estilos para la barra de scroll.
+*/
+.suggestions__list--scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+.suggestions__list--scrollable::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
 }
 
 /* --- LÓGICA DE VISIBILIDAD Y POSICIONAMIENTO --- */
