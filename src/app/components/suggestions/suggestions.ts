@@ -1,93 +1,91 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal, Signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { CategoryInterface } from '../../interfaces/CategoryInterface';
 import { Category } from '../../services/category/category';
-import { FollowButton } from "../follow-button/follow-button/follow-button";
 import { CategoryState } from '../../services/category-state/category-state';
-import { SuggestionItem } from "../suggestion-item/suggestion-item/suggestion-item";
-
-interface SuggestedCategory {
-  icon: string; // Nombre del icono de Material Icons
-  name: string;
-}
-
+import { SuggestionItem } from '../suggestion-item/suggestion-item/suggestion-item';
+import { trigger, state, style, transition, animate } from '@angular/animations'; // <-- AÑADIR para la animación
 
 @Component({
   selector: 'app-suggestions',
-  imports: [MatIconModule, RouterLink, CommonModule, FollowButton, SuggestionItem],
+  standalone: true, // <-- AÑADIR standalone y los imports
+  imports: [MatIconModule, RouterLink, CommonModule, SuggestionItem, CommonModule],
   templateUrl: './suggestions.html',
-  styleUrl: './suggestions.css'
+  styleUrl: './suggestions.css',
+  animations: [
+    // <-- AÑADIR bloque de animación
+    trigger('slideFade', [
+      transition(':enter', [
+        style({ height: 0, opacity: 0, overflow: 'hidden' }),
+        animate('300ms ease-out', style({ height: '*', opacity: 1 })),
+      ]),
+      transition(':leave', [animate('250ms ease-in', style({ height: 0, opacity: 0 }))]),
+    ]),
+  ],
 })
-export class Suggestions implements OnInit{
-  // Variable para controlar la visibilidad del panel en móvil
-  // Visibility of the mobile panel
-  isMobilePanelOpen = false;
-
-  // Lógica para las categorías
-  // Logic for categories
-  allCategoryIds: number[] = [];
-  suggestedCategoryIds: number[] = [];
-  showAllCategories = false; 
-
-
+export class Suggestions implements OnInit {
   private categoryStateService = inject(CategoryState);
   private categoryService = inject(Category);
 
+  isMobilePanelOpen = false;
+  showAllCategories = false;
+
+  // --- ARQUITECTURA DE SIGNALS ---
+
+  // 1. Guardamos la lista completa de IDs
+  private allCategoryIds = signal<number[]>([]);
+
+  // 2. Creamos una señal COMPUTADA que ordena automáticamente la lista
+  public sortedCategoryIds: Signal<number[]> = computed(() => {
+    const ids = this.allCategoryIds();
+    // Obtenemos los datos de las señales para poder ordenar
+    const categoriesData = ids.map((id) => this.categoryStateService.getCategorySignal(id)!());
+
+    return categoriesData
+      .sort((a, b) => {
+        // Si el estado de seguimiento es el mismo (ambos seguidos o no seguidos), ordena alfabéticamente.
+        if (a.isFollowedByCurrentUser === b.isFollowedByCurrentUser) {
+          return a.name.localeCompare(b.name);
+        }
+        // Si 'a' no está seguido y 'b' sí, 'a' va primero (devuelve -1).
+        // Si 'a' está seguido y 'b' no, 'b' va primero (devuelve 1).
+        return a.isFollowedByCurrentUser ? 1 : -1;
+      })
+      .map((c) => c.id); // Devolvemos solo los IDs ya ordenados
+  });
+
+  // 3. La lista de sugerencias ahora también es una señal computada
+  public suggestedCategoryIds: Signal<number[]> = computed(() => {
+    // Tomamos las 3 primeras categorías de la lista ya ordenada (que serán las no seguidas)
+    return this.sortedCategoryIds().slice(0, 3);
+  });
+
   constructor() {}
 
-  // ngOnInit se ejecuta cuando el componente se inicializa
-  // ngOnInit is executed when the component is initialized
   ngOnInit(): void {
     this.loadCategories();
   }
 
-  /**
-   * Selecciona 3 categorías aleatorias de la lista completa.
-   * Selects 3 random categories from the full list.
-   */
   loadCategories(): void {
     this.categoryService.getAllCategories().subscribe({
       next: (categories) => {
-        const validCategories = categories.filter(cat => cat.name !== "Ninguna");
-
-        // CARGAMOS LAS CATEGORÍAS EN EL NUEVO STORE
+        const validCategories = categories.filter((cat) => cat.name !== 'Ninguna');
         this.categoryStateService.loadCategories(validCategories);
-        
-        this.allCategoryIds = validCategories.map(c => c.id);
-        this.selectRandomSuggestions();
 
+        // Actualizamos la señal con los IDs
+        this.allCategoryIds.set(validCategories.map((c) => c.id));
       },
-      error: (err) => {
-        console.error('Error al cargar las categorías de sugerencias', err);
-      }
+      error: (err) => console.error('Error al cargar las categorías de sugerencias', err),
     });
   }
 
-   /**
-   * Selecciona 3 categorías aleatorias de la lista completa.
-   * Selects 3 random categories from the full list.
-   */
-   selectRandomSuggestions(): void {
-    const shuffled = [...this.allCategoryIds].sort(() => 0.5 - Math.random());
-    this.suggestedCategoryIds = shuffled.slice(0, 3);
-  }
-
-  /**
-   * Cambia el estado para mostrar/ocultar la lista completa de categorías.
-   * Toggles the state to show/hide the full list of categories.
-   */
   toggleShowAllCategories(): void {
     this.showAllCategories = !this.showAllCategories;
   }
 
-  /**
-   * Cambia el estado de visibilidad del panel móvil.
-   * Toggles the visibility state of the mobile panel.
-   */
   toggleMobilePanel(): void {
     this.isMobilePanelOpen = !this.isMobilePanelOpen;
   }
-
 }
