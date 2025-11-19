@@ -36,6 +36,7 @@ import { ViewTracking } from '../../services/viewTracking/view-tracking';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { UserSearch } from '../../interfaces/UserSearch';
 import { Search } from '../../services/search/search';
+import { MentionLinkerPipe } from "../../pipes/mention-linker-pipe";
 
 @Component({
   selector: 'app-thread',
@@ -48,7 +49,8 @@ import { Search } from '../../services/search/search';
     FollowButton,
     MatMenuModule,
     TimeAgoPipe,
-  ],
+    MentionLinkerPipe
+],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
 })

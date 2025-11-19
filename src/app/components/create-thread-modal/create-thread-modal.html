@@ -20,7 +20,12 @@
 
   <!-- Contenedor derecho para las acciones principales -->
   <div class="modal-header__right">
-    <button mat-icon-button class="modal-header__button" (click)="showScheduler = !showScheduler" aria-label="Programar publicación">
+    <button
+      mat-icon-button
+      class="modal-header__button"
+      (click)="showScheduler = !showScheduler"
+      aria-label="Programar publicación"
+    >
       <mat-icon [class.active]="showScheduler">schedule</mat-icon>
     </button>
     <button
@@ -36,183 +41,216 @@
 
 <!-- Contenido Principal de la Modal (sin cambios) -->
 <div class="modal-content" mat-dialog-content>
-
   @if (showScheduler) {
-    <div class="scheduler-panel">
-      <h4>Programar Publicación</h4>
-      <div class="scheduler-inputs">
-        
-        <!-- Selector de Fecha (sin cambios) -->
-        <mat-form-field appearance="outline" class="scheduler-inputs__datepicker">
-          <mat-label>Fecha</mat-label>
-          <input matInput [matDatepicker]="picker" [(ngModel)]="scheduledDate">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
+  <div class="scheduler-panel">
+    <h4>Programar Publicación</h4>
+    <div class="scheduler-inputs">
+      <!-- Selector de Fecha (sin cambios) -->
+      <mat-form-field appearance="outline" class="scheduler-inputs__datepicker">
+        <mat-label>Fecha</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="scheduledDate" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
 
-        <!-- --- ¡CAMBIOS AQUÍ! SELECTORES PARA HORA Y MINUTOS --- -->
-        <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
-          <mat-label>Hora</mat-label>
-          <mat-select [(ngModel)]="scheduledHour">
-            @for (hour of hours; track hour) {
-              <mat-option [value]="hour">{{ hour < 10 ? '0' + hour : hour }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        
-        <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
-          <mat-label>Min</mat-label>
-          <mat-select [(ngModel)]="scheduledMinute">
-            @for (minute of minutes; track minute) {
-              <mat-option [value]="minute">{{ minute < 10 ? '0' + minute : minute }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+      <!-- --- ¡CAMBIOS AQUÍ! SELECTORES PARA HORA Y MINUTOS --- -->
+      <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+        <mat-label>Hora</mat-label>
+        <mat-select [(ngModel)]="scheduledHour">
+          @for (hour of hours; track hour) {
+          <mat-option [value]="hour">{{ hour < 10 ? '0' + hour : hour }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
-      </div>
-      @if (scheduledDate && scheduledHour !== null && scheduledMinute !== null) {
-        <p class="scheduler-info">
-          Se publicará aproximadamente el 
-          {{ scheduledDate | date:'fullDate' }} a las 
-          {{ (scheduledHour < 10 ? '0' : '') + scheduledHour }}:{{ (scheduledMinute < 10 ? '0' : '') + scheduledMinute }}
-        </p>
-      }
+      <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+        <mat-label>Min</mat-label>
+        <mat-select [(ngModel)]="scheduledMinute">
+          @for (minute of minutes; track minute) {
+          <mat-option [value]="minute">{{ minute < 10 ? '0' + minute : minute }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
     </div>
+    @if (scheduledDate && scheduledHour !== null && scheduledMinute !== null) {
+    <p class="scheduler-info">
+      Se publicará aproximadamente el
+      {{ scheduledDate | date : 'fullDate' }} a las
+      {{ (scheduledHour < 10 ? '0' : '') + scheduledHour }}:{{
+        (scheduledMinute < 10 ? '0' : '') + scheduledMinute
+      }}
+    </p>
+    }
+  </div>
   }
 
-
   <!-- === VERSIÓN DESKTOP: TODOS LOS HILOS VISIBLES === -->
-  <div class="modal-content__desktop-view">
-    <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Post 1</mat-label>
-      <textarea
-        #textarea
-        matInput
-        [(ngModel)]="threads[0]"
-        [maxlength]="charLimits.step1"
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="3"
-      ></textarea>
-      <!-- Contador de caracteres para escritorio -->
-      <mat-hint align="end">{{ threads[0].length }} / {{ charLimits.step1 }}</mat-hint>
-    </mat-form-field>
+  <!-- Envolvemos todo en la etiqueta form -->
+  <form [formGroup]="threadForm">
+    <!-- El FormArray se llamará 'posts' -->
+    <div formArrayName="posts">
+      <!-- === VERSIÓN DESKTOP: TODOS LOS HILOS VISIBLES === -->
+      <div class="modal-content__desktop-view">
+        <!-- Bucle para los 3 posts -->
+        @for (control of postsArray.controls; track $index) {
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>Post {{ $index + 1 }}</mat-label>
+          <textarea
+            #postTextarea
+            matInput
+            [formControlName]="$index"
+            [maxlength]="
+              $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3
+            "
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="3"
+            #autocompleteTrigger="matAutocompleteTrigger"
+            [matAutocomplete]="mentionAutocomplete"
+            (focus)="onTextareaFocus($index, postTextarea)"
+          >
+          </textarea>
+          <mat-hint align="end"
+            >{{ control.value.length }} /
+            {{
+              $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3
+            }}</mat-hint
+          >
+        </mat-form-field>
+        }
+      </div>
 
-    <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Post 2</mat-label>
-      <textarea
-        #textarea
-        matInput
-        [(ngModel)]="threads[1]"
-        [maxlength]="charLimits.step2"
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="3"
-      ></textarea>
-      <mat-hint align="end">{{ threads[1].length }} / {{ charLimits.step2 }}</mat-hint>
-    </mat-form-field>
+      <!-- === VERSIÓN MÓVIL: HILOS POR PASOS === -->
+      <div class="modal-content__mobile-view">
+        @switch (currentStep) { @case (1) {
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>Post 1 de 3</mat-label>
+          <textarea
+            #postTextareaMobile1
+            matInput
+            formControlName="0"
+            [maxlength]="charLimits.step1"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="5"
+            [matAutocomplete]="mentionAutocomplete"
+            #autocompleteTrigger="matAutocompleteTrigger"
+            (focus)="onTextareaFocus(0, postTextareaMobile1)"
+          >
+          </textarea>
+          <mat-hint align="end"
+            >{{ postsArray.controls[0].value.length }} / {{ charLimits.step1 }}</mat-hint
+          >
+        </mat-form-field>
+        } @case (2) {
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>Post 2 de 3</mat-label>
+          <textarea
+            #postTextareaMobile2
+            matInput
+            formControlName="0"
+            [maxlength]="charLimits.step2"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="5"
+            [matAutocomplete]="mentionAutocomplete"
+            #autocompleteTrigger="matAutocompleteTrigger"
+            (focus)="onTextareaFocus(0, postTextareaMobile2)"
+          >
+          </textarea>
+          <mat-hint align="end"
+            >{{ postsArray.controls[1].value.length }} / {{ charLimits.step2 }}</mat-hint
+          >
+        </mat-form-field>
+        } @case (3) {
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>Post 3 de 3</mat-label>
+          <textarea
+            #postTextareaMobile3
+            matInput
+            formControlName="0"
+            [maxlength]="charLimits.step3"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="5"
+            [matAutocomplete]="mentionAutocomplete"
+            #autocompleteTrigger="matAutocompleteTrigger"
+            (focus)="onTextareaFocus(0, postTextareaMobile3)"
+          >
+          </textarea>
+          <mat-hint align="end"
+            >{{ postsArray.controls[2].value.length }} / {{ charLimits.step3 }}</mat-hint
+          >
+        </mat-form-field>
+        } }
+      </div>
 
-    <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Post 3</mat-label>
-      <textarea
-        #textarea
-        matInput
-        [(ngModel)]="threads[2]"
-        [maxlength]="charLimits.step3"
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="3"
-      ></textarea>
-      <mat-hint align="end">{{ threads[2].length }} / {{ charLimits.step3 }}</mat-hint>
-    </mat-form-field>
-  </div>
+      <!-- UN ÚNICO PANEL DE AUTOCOMPLETADO PARA TODOS LOS TEXTAREAS -->
+      <mat-autocomplete
+        #mentionAutocomplete="matAutocomplete"
+        (optionSelected)="onUserMentionSelected($event)"
+        [displayWith]="displayWithFn">
+      >
+        @for (user of mentionResults$ | async; track user.username) {
+        <mat-option [value]="user">
+          <div class="user-option">
+            <img [src]="user.avatarUrl" class="user-option__avatar" alt="Avatar" />
+            <div class="user-option__info">
+              <span class="user-option__display-name">{{ user.displayName }}</span>
+              <span class="user-option__username">@{{ user.username }}</span>
+            </div>
+          </div>
+        </mat-option>
+        }
+      </mat-autocomplete>
+    </div>
 
-  <!-- === VERSIÓN MÓVIL: HILOS POR PASOS === -->
-  <div class="modal-content__mobile-view">
-    @switch (currentStep) { @case (1) {
-    <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Post 1 de 3</mat-label>
-      <textarea
-        #textarea
-        matInput
-        [(ngModel)]="threads[0]"
-        [maxlength]="charLimits.step1"
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="5"
-      ></textarea>
-      <!-- Contador de caracteres para móvil -->
-      <mat-hint align="end">{{ threads[0].length }} / {{ charLimits.step1 }}</mat-hint>
-    </mat-form-field>
-    } @case (2) {
-    <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Post 2 de 3</mat-label>
-      <textarea
-        #textarea
-        matInput
-        [(ngModel)]="threads[1]"
-        [maxlength]="charLimits.step2"
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="5"
-      ></textarea>
-      <mat-hint align="end">{{ threads[1].length }} / {{ charLimits.step2 }}</mat-hint>
-    </mat-form-field>
-    } @case (3) {
-    <mat-form-field appearance="fill" class="thread-input">
-      <mat-label>Post 3 de 3</mat-label>
-      <textarea
-        #textarea
-        matInput
-        [(ngModel)]="threads[2]"
-        [maxlength]="charLimits.step3"
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="5"
-      ></textarea>
-      <mat-hint align="end">{{ threads[2].length }} / {{ charLimits.step3 }}</mat-hint>
-    </mat-form-field>
-    } }
-  </div>
-</div>
-
-<!-- Footer de la Modal (con la sección de categoría modificada) -->
-<footer class="modal-footer" mat-dialog-actions>
-  <!-- 
+    <!-- Footer de la Modal (con la sección de categoría modificada) -->
+    <footer class="modal-footer" mat-dialog-actions>
+      <!-- 
       --- CAMBIOS AQUÍ ---
       Selector de Categoría modificado para ser opcional.
     -->
-  <mat-form-field appearance="outline" class="category-selector">
-    <!-- 1. Etiqueta actualizada para indicar que es opcional. -->
-    <mat-label>Categoría (Opcional)</mat-label>
-    <mat-select [(ngModel)]="selectedCategory" name="category">
-      <!-- 
+      <mat-form-field appearance="outline" class="category-selector">
+        <!-- 1. Etiqueta actualizada para indicar que es opcional. -->
+        <mat-label>Categoría (Opcional)</mat-label>
+        <mat-select [(ngModel)]="selectedCategory" name="category">
+          <!-- 
           2. Se añade esta mat-option SIN [value]. 
              Esto crea la opción "en blanco" cuyo valor es 'null', 
              permitiendo al usuario no seleccionar ninguna categoría.
         -->
-      <mat-option>Ninguna</mat-option>
+          <mat-option>Ninguna</mat-option>
 
-      <!-- El resto de las categorías se renderizan normalmente. -->
-      @for (category of categories; track category.value) {
-      <mat-option [value]="category.value">{{ category.viewValue }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+          <!-- El resto de las categorías se renderizan normalmente. -->
+          @for (category of categories; track category.value) {
+          <mat-option [value]="category.value">{{ category.viewValue }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
-  <!-- Botones de Acción (sin cambios) -->
-  <div
-    class="modal-footer__actions"
-    [class.step-1]="currentStep === 1"
-    [class.step-2]="currentStep === 2"
-    [class.step-3]="currentStep === 3"
-  >
-    <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">
-      Avanzar
-    </button>
-    <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="publish()">
-      Publicar
-    </button>
-  </div>
-</footer>
+      <!-- Botones de Acción (sin cambios) -->
+      <div
+        class="modal-footer__actions"
+        [class.step-1]="currentStep === 1"
+        [class.step-2]="currentStep === 2"
+        [class.step-3]="currentStep === 3"
+      >
+        <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">
+          Avanzar
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          class="modal-footer__publish-btn"
+          (click)="publish()"
+        >
+          Publicar
+        </button>
+      </div>
+    </footer>
 
-<!-- Mensaje de Error (sin cambios) -->
-@if (errorMessage) {
-<div class="modal-error-message">
-  {{ errorMessage }}
+    <!-- Mensaje de Error (sin cambios) -->
+    @if (errorMessage) {
+    <div class="modal-error-message">
+      {{ errorMessage }}
+    </div>
+    }
+  </form>
 </div>
-}

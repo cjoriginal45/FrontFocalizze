@@ -55,7 +55,7 @@
     <div class="thread__content">
       <div class="thread__post">
         <h3 class="thread__post-title">1° post</h3>
-        <p class="thread__post-text">{{ thread.posts[0] }}</p>
+        <p class="thread__post-text" [innerHTML]="thread.posts[0] | mentionLinker"></p>
       </div>
       <div class="thread__expand-wrapper" [class.expanded]="isExpanded">
         <div class="thread__expanded-content">
