@@ -86,6 +86,7 @@
     <mat-form-field appearance="fill" class="thread-input">
       <mat-label>Post 1</mat-label>
       <textarea
+        #textarea
         matInput
         [(ngModel)]="threads[0]"
         [maxlength]="charLimits.step1"
@@ -99,6 +100,7 @@
     <mat-form-field appearance="fill" class="thread-input">
       <mat-label>Post 2</mat-label>
       <textarea
+        #textarea
         matInput
         [(ngModel)]="threads[1]"
         [maxlength]="charLimits.step2"
@@ -111,6 +113,7 @@
     <mat-form-field appearance="fill" class="thread-input">
       <mat-label>Post 3</mat-label>
       <textarea
+        #textarea
         matInput
         [(ngModel)]="threads[2]"
         [maxlength]="charLimits.step3"
@@ -127,6 +130,7 @@
     <mat-form-field appearance="fill" class="thread-input">
       <mat-label>Post 1 de 3</mat-label>
       <textarea
+        #textarea
         matInput
         [(ngModel)]="threads[0]"
         [maxlength]="charLimits.step1"
@@ -140,6 +144,7 @@
     <mat-form-field appearance="fill" class="thread-input">
       <mat-label>Post 2 de 3</mat-label>
       <textarea
+        #textarea
         matInput
         [(ngModel)]="threads[1]"
         [maxlength]="charLimits.step2"
@@ -152,6 +157,7 @@
     <mat-form-field appearance="fill" class="thread-input">
       <mat-label>Post 3 de 3</mat-label>
       <textarea
+        #textarea
         matInput
         [(ngModel)]="threads[2]"
         [maxlength]="charLimits.step3"

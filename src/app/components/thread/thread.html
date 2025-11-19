@@ -64,7 +64,7 @@
           } @else { @for (post of thread.posts.slice(1); track $index) {
           <div class="thread__post">
             <h3 class="thread__post-title">{{ $index + 2 }}° post</h3>
-            <p class="thread__post-text">{{ post }}</p>
+            <p class="thread__post-text" [innerHTML]="post | mentionLinker"></p>
           </div>
           } }
         </div>
