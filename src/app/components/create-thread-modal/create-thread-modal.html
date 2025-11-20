@@ -188,7 +188,7 @@
         [displayWith]="displayWithFn">
       >
         @for (user of mentionResults$ | async; track user.username) {
-        <mat-option [value]="user">
+        <mat-option [value]="user" [disabled]="true">
           <div class="user-option">
             <img [src]="user.avatarUrl" class="user-option__avatar" alt="Avatar" />
             <div class="user-option__info">
