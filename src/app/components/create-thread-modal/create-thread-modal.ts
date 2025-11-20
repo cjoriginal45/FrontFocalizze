@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, ElementRef, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,7 +12,10 @@ import { ThreadRequest } from '../../interfaces/ThreadRequest';
 import { Category } from '../../services/category/category';
 import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatTimepicker } from '@angular/material/timepicker';
+import { fromEvent, debounceTime, map, distinctUntilChanged, switchMap, of, Observable, startWith, Subject, filter } from 'rxjs';
+import { UserSearch } from '../../interfaces/UserSearch';
+import { Search } from '../../services/search/search';
+import { MatAutocompleteSelectedEvent, MatAutocomplete, MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 // Interfaz para el formato que necesita el <mat-select>
 // Interface for the format needed by <mat-select>
@@ -34,13 +37,16 @@ interface SelectCategory {
     MatInputModule,
     MatDatepicker,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    MatAutocomplete,
+    MatAutocompleteModule
 ],
   templateUrl: './create-thread-modal.html',
   styleUrl: './create-thread-modal.css',
 })
 export class CreateThreadModal implements OnInit {
-  threads: string[] = ['', '', ''];
+  //threads: string[] = ['', '', ''];
   errorMessage: string | null = null;
 
   // --- PROPIEDADES NUEVAS PARA LA PROGRAMACIÓN ---
@@ -55,6 +61,21 @@ export class CreateThreadModal implements OnInit {
   hours: number[] = Array.from({ length: 24 }, (_, i) => i); // [0, 1, ..., 23]
   minutes: number[] = Array.from({ length: 60 }, (_, i) => i); // [0, 1, ..., 59]
 
+  threadForm: FormGroup;
+  mentionResults$!: Observable<UserSearch[]>;
+  private activeTextareaIndex = 0; 
+
+  // Usamos un Subject para tener control explícito sobre la búsqueda
+  private mentionQuery$ = new Subject<string | null>();
+
+  // Almacenamos el índice Y la referencia al elemento del textarea activo
+  private activeTextarea: { index: number; element: HTMLTextAreaElement | null } = {
+    index: 0,
+    element: null,
+  };
+
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger!: MatAutocompleteTrigger;
+  private isSelectingMention = false;
 
   //limite de caracteres por paso
   //character limit per step
@@ -72,16 +93,63 @@ export class CreateThreadModal implements OnInit {
   categories: SelectCategory[] = [];
   selectedCategory: string | null = null;
 
+
   constructor(
     public dialogRef: MatDialogRef<CreateThreadModal>,
     private threadService: threadService,
-    private categoryService: Category
-  ) {}
+    private categoryService: Category,
+    private searchService: Search,
+    private fb: FormBuilder
+  ){
+    // Inicializa el formulario reactivo
+    this.threadForm = this.fb.group({
+      posts: this.fb.array([
+        new FormControl(''),
+        new FormControl(''),
+        new FormControl(''),
+      ]),
+    });
+  }
 
   //on init load categories
   ngOnInit(): void {
     this.loadCategories();
+
+    this.mentionResults$ = this.postsArray.valueChanges.pipe(
+      // CAMBIO CLAVE 2: Ignoramos cualquier emisión si estamos en proceso de seleccionar una mención.
+      // Esto rompe el ciclo que reabría el panel.
+      filter(() => !this.isSelectingMention),
+      map((posts: string[]) => {
+        if (!this.activeTextarea.element) return null;
+        const activeText = posts[this.activeTextarea.index] || '';
+        return this.extractMentionQuery(activeText, this.activeTextarea.element.selectionStart);
+      }),
+      distinctUntilChanged(),
+      debounceTime(300),
+      switchMap(query => {
+        if (query) {
+          return this.searchService.searchUsers(query);
+        }
+        return of([]);
+      })
+    );
   }
+
+  get postsArray(): FormArray {
+    return this.threadForm.get('posts') as FormArray;
+  }
+  
+  // Función para rastrear qué textarea está activo
+  onTextareaFocus(index: number, element: HTMLTextAreaElement): void {
+    this.activeTextarea = { index, element };
+  }
+
+    // Extrae la consulta de mención (texto después de '@')
+    private extractMentionQuery(text: string, cursorPos: number): string | null {
+      const textBeforeCursor = text.substring(0, cursorPos);
+      const mentionMatch = textBeforeCursor.match(/@(\w+)$/);
+      return mentionMatch ? mentionMatch[1] : null; // Devolvemos solo el nombre de usuario, sin la @
+    }
 
   //load categories from API
   loadCategories(): void {
@@ -150,10 +218,11 @@ export class CreateThreadModal implements OnInit {
 
     // 2. Crear el objeto de datos
     // 2. Create the data object
+    const posts = this.postsArray.value;
     const threadData: ThreadRequest = {
-      post1: this.threads[0],
-      post2: this.threads[1],
-      post3: this.threads[2],
+      post1: posts[0],
+      post2: posts[1],
+      post3: posts[2],
       category: this.selectedCategory || 'Ninguna',
       scheduledTime: finalScheduledTime,
     };
@@ -193,4 +262,50 @@ export class CreateThreadModal implements OnInit {
       },
     });
   }
+
+ 
+
+  // --- LÓGICA DE DETECCIÓN Y MANEJO DE MENCIONES ---
+
+  
+
+   // Reemplaza la mención parcial con la seleccionada
+   onUserMentionSelected(event: MatAutocompleteSelectedEvent): void {
+    // CAMBIO CLAVE 3: Activamos el cerrojo al iniciar la selección.
+    this.isSelectingMention = true;
+
+    const selectedUser: UserSearch = event.option.value;
+    const activeControl = this.postsArray.at(this.activeTextarea.index);
+    const textarea = this.activeTextarea.element;
+
+    if (!activeControl || !textarea) {
+        this.isSelectingMention = false; // Asegurarse de desactivar el cerrojo si algo falla
+        return;
+    }
+
+    const currentText = activeControl.value as string;
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = currentText.substring(0, cursorPos);
+
+    const newTextBeforeCursor = textBeforeCursor.replace(/@(\w+)$/, `@${selectedUser.username} `);
+    const textAfterCursor = currentText.substring(cursorPos);
+    
+    activeControl.setValue(newTextBeforeCursor + textAfterCursor, { emitEvent: false });
+    
+    const newCursorPos = newTextBeforeCursor.length;
+    
+    // Usamos setTimeout para asegurar que todas las actualizaciones del DOM se completen.
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+      
+      // CAMBIO CLAVE 4: Desactivamos el cerrojo para permitir futuras búsquedas.
+      this.isSelectingMention = false;
+      this.autocompleteTrigger.closePanel(); // Forzamos el cierre por si acaso.
+    }, 0);
+  }
+
+  // Función necesaria para MatAutocomplete para que no muestre [Object object]
+  displayWithFn = () => '';
+
 }

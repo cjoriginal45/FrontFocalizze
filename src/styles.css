@@ -95,3 +95,35 @@ body {
 .mat-mdc-autocomplete-panel .mat-mdc-option:focus {
   background-color: #e8f0fe !important;
 }
+
+
+/* styles.css o thread.css */
+.mention-link {
+  color: var(--primary-color); /* O el color que uses para los enlaces */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.mention-link:hover {
+  text-decoration: underline;
+}
+
+.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] {
+  /* Forzamos opacidad y color del texto base. */
+  opacity: 1 !important;
+  color: currentColor !important;
+}
+
+/*
+  Selector para el contenido principal DENTRO de la opción.
+  Angular Material anida varios divs y spans.
+*/
+.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .mdc-list-item__content,
+.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .mdc-list-item__primary-text,
+.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .user-option,
+.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .user-option__display-name,
+.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .user-option__username {
+  /* Nos aseguramos de que el texto interno también sea completamente opaco y herede el color. */
+  opacity: 1 !important;
+  color: inherit !important;
+}

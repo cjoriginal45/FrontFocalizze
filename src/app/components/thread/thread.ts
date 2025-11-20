@@ -2,11 +2,15 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   effect,
+  ElementRef,
   EventEmitter,
   inject,
   Input,
   Output,
   signal,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
   WritableSignal,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,6 +33,10 @@ import { ThreadUpdateRequest } from '../../interfaces/ThreadUpdateRequest';
 import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 import { TimeAgoPipe } from '../../pipes/time-ago/time-ago-pipe';
 import { ViewTracking } from '../../services/viewTracking/view-tracking';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { UserSearch } from '../../interfaces/UserSearch';
+import { Search } from '../../services/search/search';
+import { MentionLinkerPipe } from "../../pipes/mention-linker-pipe";
 
 @Component({
   selector: 'app-thread',
@@ -41,7 +49,8 @@ import { ViewTracking } from '../../services/viewTracking/view-tracking';
     FollowButton,
     MatMenuModule,
     TimeAgoPipe,
-  ],
+    MentionLinkerPipe
+],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
 })
@@ -56,6 +65,14 @@ export class Thread {
   public authService = inject(Auth);
   private dialog = inject(MatDialog);
   private viewTrackingService = inject(ViewTracking);
+
+    // --- NUEVAS PROPIEDADES PARA MENCIONES ---
+    @ViewChild('textarea', { read: ElementRef }) textareaRef!: ElementRef<HTMLTextAreaElement>;
+    @ViewChild('mentionsPanel') mentionsPanel!: TemplateRef<any>;
+
+  private overlayRef: OverlayRef | null = null;
+  mentionResults: UserSearch[] = [];
+  isMentionPanelOpen = false;
 
   // --- INPUT CON SETTER (sin cambios) ---
   @Input({ required: true })
@@ -78,6 +95,12 @@ export class Thread {
   isExpanded = false;
   isLoadingDetails = false;
   isFullyLoaded = false;
+
+  constructor(
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef,
+    private searchService: Search
+  ) {}
 
   private connectToState(): void {
     const signalFromState = this.threadStateService.getThreadSignal(this.threadId);
