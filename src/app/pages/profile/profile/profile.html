@@ -1,94 +1,91 @@
 <app-header></app-header>
 
 <div class="profile-page">
-
   @if (isLoading && !profile) {
-    <p class="profile-page__loading">Cargando perfil...</p> <!-- O un spinner de Material -->
-  }
+  <p class="profile-page__loading">Cargando perfil...</p>
+  <!-- O un spinner de Material -->
+  } @if (profile) {
+  <!-- Contenedor superior con la información del usuario -->
+  <header class="profile-header">
+    <!-- Sección Izquierda: Avatar e Info Básica -->
+    <div class="profile-header__left">
+      <img
+        [src]="profile.avatarUrl"
+        [alt]="'Avatar de ' + profile.displayName"
+        class="profile-header__avatar"
+      />
+      <div class="profile-header__user-identity">
+        <h1 class="profile-header__display-name">{{ profile.displayName }}</h1>
+        <p class="profile-header__username">@{{ profile.username }}</p>
+      </div>
+    </div>
 
-  @if (profile) {
-    <!-- Contenedor superior con la información del usuario -->
-    <header class="profile-header">
+    <!-- Sección Derecha: Bio, Estadísticas y Acciones -->
+    <div class="profile-header__right">
+      <h2 class="biography-title">Biografía</h2>
+      <p class="profile-header__biography">
+        {{ profile.biography || 'Este usuario aún no tiene una biografía.' }}
+      </p>
 
-      <!-- Sección Izquierda: Avatar e Info Básica -->
-      <div class="profile-header__left">
-        <img [src]="profile.avatarUrl" [alt]="'Avatar de ' + profile.displayName" class="profile-header__avatar">
-        <div class="profile-header__user-identity">
-          <h1 class="profile-header__display-name">{{ profile.displayName }}</h1>
-          <p class="profile-header__username">@{{ profile.username }}</p>
+      <div class="profile-header__stats">
+        <div class="stat">
+          <span class="stat__value">{{ profile.follow }}</span>
+          <span class="stat__label">Siguiendo</span>
         </div>
+        <div class="stat">
+          <span class="stat__value">{{ profile.followers }}</span>
+          <span class="stat__label">Seguidores</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">{{ profile.threadCount }}</span>
+          <span class="stat__label">Hilos Publicados</span>
+        </div>
+        <!-- Solo muestra los hilos disponibles si es nuestro propio perfil -->
+        @if (isOwnProfile && profile.threadsAvailableToday !== null) {
+        <div class="stat">
+          <span class="stat__value">{{ profile.threadsAvailableToday }}</span>
+          <span class="stat__label">Hilos Disponibles Hoy</span>
+        </div>
+        }
       </div>
 
-      <!-- Sección Derecha: Bio, Estadísticas y Acciones -->
-      <div class="profile-header__right">
-        <h2 class="biography-title">Biografía</h2>
-        <p class="profile-header__biography">{{ profile.biography || 'Este usuario aún no tiene una biografía.' }}</p>
-
-        <div class="profile-header__stats">
-          <div class="stat">
-            <span class="stat__value">{{ profile.follow }}</span>
-            <span class="stat__label">Siguiendo</span>
-          </div>
-          <div class="stat">
-            <span class="stat__value">{{ profile.followers }}</span>
-            <span class="stat__label">Seguidores</span>
-          </div>
-          <div class="stat">
-            <span class="stat__value">{{ profile.threadCount }}</span>
-            <span class="stat__label">Hilos Publicados</span>
-          </div>
-          <!-- Solo muestra los hilos disponibles si es nuestro propio perfil -->
-          @if (isOwnProfile && profile.threadsAvailableToday !== null) {
-            <div class="stat">
-              <span class="stat__value">{{ profile.threadsAvailableToday }}</span>
-              <span class="stat__label">Hilos Disponibles Hoy</span>
-            </div>
-          }
-        </div>
-        
-        <div class="profile-header__meta">
-          <mat-icon class="meta__icon">calendar_today</mat-icon>
-          <span class="meta__text">Se unió en {{ profile.registerDate | date: 'MMMM yyyy' }}</span>
-        </div>
-
+      <div class="profile-header__meta">
+        <mat-icon class="meta__icon">calendar_today</mat-icon>
+        <span class="meta__text">Se unió en {{ profile.registerDate | date : 'MMMM yyyy' }}</span>
       </div>
+    </div>
 
-      @if (isOwnProfile) {
-        <button mat-stroked-button class="profile-header__edit-btn" (click)="editProfile()">
-          Editar Perfil
-        </button>
-      } @else {
-        <div class="profile-header__action-btn">
-          <app-follow-button 
-            type="user" 
-            [identifier]="profile.username"
-            (followStateChanged)="onFollowChange($event)">
-          </app-follow-button>
-        </div>
-      }
-      
-      
+    @if (isOwnProfile) {
+    <button mat-stroked-button class="profile-header__edit-btn" (click)="editProfile()">
+      Editar Perfil
+    </button>
+    } @else {
+    <div class="profile-header__action-btn">
+      <app-follow-button
+        type="user"
+        [identifier]="profile.username"
+        (followStateChanged)="onFollowChange($event)"
+      >
+      </app-follow-button>
+    </div>
+    }
+  </header>
 
-    </header>
+  <!-- Contenedor de Hilos Publicados -->
+  <div class="profile-threads">
+    <h2 class="profile-threads__title">Hilos Publicados</h2>
 
-    <!-- Contenedor de Hilos Publicados -->
-    <div class="profile-threads">
-      <h2 class="profile-threads__title">Hilos Publicados</h2>
-
-      @if (threadIds.length > 0) {
-        <div class="profile-threads__list">
-          @for (threadId of threadIds; track threadId) {
-            <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
-          }
-        </div>
-      } @else if (!isLoading) { 
-        <p class="profile-threads__no-results">Este usuario aún no ha publicado ningún hilo.</p>
-      }
-
-      @if (isLoading && profile) {
-        <p>Cargando más hilos...</p>
+    @if (threadIds.length > 0) {
+    <div class="profile-threads__list">
+      @for (threadId of threadIds; track threadId) {
+      <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
       }
     </div>
+    } @else if (!isLoading) {
+    <p class="profile-threads__no-results">Este usuario aún no ha publicado ningún hilo.</p>
+    } @if (isLoading && profile) {
+    <p>Cargando más hilos...</p>
+    }
+  </div>
   }
-
 </div>
