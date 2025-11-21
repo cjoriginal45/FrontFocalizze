@@ -18,6 +18,7 @@ import { CategoryDetailsInterface } from '../../interfaces/CategoryDetailsInterf
 import { CategoryInterface } from '../../interfaces/CategoryInterface';
 import { UserState } from '../../services/user-state/user-state';
 import { BottonNav } from '../../components/botton-nav/botton-nav';
+import { CreateThreadButton } from "../../components/create-thread-button/create-thread-button";
 
 interface CategoryPageState {
   category: CategoryDetailsInterface | null;
@@ -38,7 +39,8 @@ interface CategoryPageState {
     Thread,
     FollowButton,
     BottonNav,
-  ],
+    CreateThreadButton
+],
   templateUrl: './category-page.html',
   styleUrl: './category-page.css',
 })
