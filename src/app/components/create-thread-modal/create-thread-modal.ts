@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, NgZone, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { FormsModule } from '@angular/forms'; // <-- Mantenemos FormsModule
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,13 +12,18 @@ import { ThreadRequest } from '../../interfaces/ThreadRequest';
 import { Category } from '../../services/category/category';
 import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { fromEvent, debounceTime, map, distinctUntilChanged, switchMap, of, Observable, startWith, Subject, filter } from 'rxjs';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
 import { UserSearch } from '../../interfaces/UserSearch';
 import { Search } from '../../services/search/search';
-import { MatAutocompleteSelectedEvent, MatAutocomplete, MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+  MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
-// Interfaz para el formato que necesita el <mat-select>
-// Interface for the format needed by <mat-select>
 interface SelectCategory {
   value: string;
   viewValue: string;
@@ -26,6 +31,7 @@ interface SelectCategory {
 
 @Component({
   selector: 'app-create-thread-modal',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -35,277 +41,160 @@ interface SelectCategory {
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    MatDatepicker,
     MatDatepickerModule,
     MatNativeDateModule,
-    ReactiveFormsModule,
-    MatAutocomplete,
-    MatAutocompleteModule
-],
+    MatAutocompleteModule,
+  ],
   templateUrl: './create-thread-modal.html',
   styleUrl: './create-thread-modal.css',
 })
-export class CreateThreadModal implements OnInit {
-  //threads: string[] = ['', '', ''];
+export class CreateThreadModal implements OnInit, OnDestroy {
   errorMessage: string | null = null;
-
-  // --- PROPIEDADES NUEVAS PARA LA PROGRAMACIÓN ---
   showScheduler = false;
   scheduledDate: Date | null = null;
-  
-  // Propiedades para los selectores de hora y minutos
   scheduledHour: number | null = null;
   scheduledMinute: number | null = null;
-  
-  // Arrays para rellenar los <mat-select>
-  hours: number[] = Array.from({ length: 24 }, (_, i) => i); // [0, 1, ..., 23]
-  minutes: number[] = Array.from({ length: 60 }, (_, i) => i); // [0, 1, ..., 59]
-
-  threadForm: FormGroup;
-  mentionResults$!: Observable<UserSearch[]>;
-  private activeTextareaIndex = 0; 
-
-  // Usamos un Subject para tener control explícito sobre la búsqueda
-  private mentionQuery$ = new Subject<string | null>();
-
-  // Almacenamos el índice Y la referencia al elemento del textarea activo
-  private activeTextarea: { index: number; element: HTMLTextAreaElement | null } = {
-    index: 0,
-    element: null,
-  };
-
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger!: MatAutocompleteTrigger;
-  private isSelectingMention = false;
-
-  //limite de caracteres por paso
-  //character limit per step
-  readonly charLimits = {
-    step1: 280,
-    step2: 140,
-    step3: 70,
-  };
-
-  // Lógica para el flujo multi-paso en móvil
-  // Logic for multi-step flow on mobile
-  currentStep = 1;
-
-  //categories logic
+  hours: number[] = Array.from({ length: 24 }, (_, i) => i);
+  minutes: number[] = Array.from({ length: 60 }, (_, i) => i);
+  threads: string[] = ['', '', ''];
   categories: SelectCategory[] = [];
   selectedCategory: string | null = null;
+  currentStep = 1;
+  readonly charLimits = { step1: 280, step2: 140, step3: 70 };
 
+  mentionResults$!: Observable<UserSearch[]>;
+  private mentionQuery$ = new Subject<string | null>();
+  private activeTextarea: HTMLTextAreaElement | null = null;
+
+  isMobileView = true;
+  private breakpointSubscription!: Subscription;
+
+  @ViewChildren(CdkTextareaAutosize) cdkTextareas!: QueryList<CdkTextareaAutosize>;
 
   constructor(
     public dialogRef: MatDialogRef<CreateThreadModal>,
     private threadService: threadService,
     private categoryService: Category,
     private searchService: Search,
-    private fb: FormBuilder
-  ){
-    // Inicializa el formulario reactivo
-    this.threadForm = this.fb.group({
-      posts: this.fb.array([
-        new FormControl(''),
-        new FormControl(''),
-        new FormControl(''),
-      ]),
-    });
-  }
+    private breakpointObserver: BreakpointObserver,
+    private _ngZone: NgZone
+  ) {}
 
-  //on init load categories
   ngOnInit(): void {
     this.loadCategories();
-
-    this.mentionResults$ = this.postsArray.valueChanges.pipe(
-      // CAMBIO CLAVE 2: Ignoramos cualquier emisión si estamos en proceso de seleccionar una mención.
-      // Esto rompe el ciclo que reabría el panel.
-      filter(() => !this.isSelectingMention),
-      map((posts: string[]) => {
-        if (!this.activeTextarea.element) return null;
-        const activeText = posts[this.activeTextarea.index] || '';
-        return this.extractMentionQuery(activeText, this.activeTextarea.element.selectionStart);
-      }),
-      distinctUntilChanged(),
+    this.breakpointSubscription = this.breakpointObserver
+      .observe(['(max-width: 767px)'])
+      .subscribe(result => {
+        this.isMobileView = result.matches;
+        this.triggerResize();
+      });
+    this.mentionResults$ = this.mentionQuery$.pipe(
       debounceTime(300),
-      switchMap(query => {
-        if (query) {
-          return this.searchService.searchUsers(query);
-        }
-        return of([]);
-      })
+      distinctUntilChanged(),
+      switchMap(query => query ? this.searchService.searchUsers(query) : of([]))
     );
   }
 
-  get postsArray(): FormArray {
-    return this.threadForm.get('posts') as FormArray;
-  }
-  
-  // Función para rastrear qué textarea está activo
-  onTextareaFocus(index: number, element: HTMLTextAreaElement): void {
-    this.activeTextarea = { index, element };
+  ngAfterViewInit(): void {
+    // Forzamos un redibujado inicial cuando la vista se ha renderizado por primera vez
+    this.triggerResize();
   }
 
-    // Extrae la consulta de mención (texto después de '@')
-    private extractMentionQuery(text: string, cursorPos: number): string | null {
-      const textBeforeCursor = text.substring(0, cursorPos);
-      const mentionMatch = textBeforeCursor.match(/@(\w+)$/);
-      return mentionMatch ? mentionMatch[1] : null; // Devolvemos solo el nombre de usuario, sin la @
+  ngOnDestroy(): void {
+    if (this.breakpointSubscription) {
+      this.breakpointSubscription.unsubscribe();
     }
+  }
 
-  //load categories from API
+  onTextareaEvent(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    this.activeTextarea = textarea;
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = textarea.value.substring(0, cursorPos);
+    const mentionMatch = textBeforeCursor.match(/@(\w+)$/);
+    this.mentionQuery$.next(mentionMatch ? mentionMatch[1] : null);
+  }
+
+  onUserMentionSelected(event: MatAutocompleteSelectedEvent): void {
+    if (!this.activeTextarea) return;
+    const selectedUser: UserSearch = event.option.value;
+    const textarea = this.activeTextarea;
+    const [text, cursorPos] = [textarea.value, textarea.selectionStart];
+    const textBeforeCursor = text.substring(0, cursorPos);
+    const textAfterCursor = text.substring(cursorPos);
+    const newTextBefore = textBeforeCursor.replace(/@(\w+)$/, `@${selectedUser.username} `);
+    const newFullText = newTextBefore + textAfterCursor;
+    const index = parseInt(textarea.dataset['index'] || '', 10);
+    if (!isNaN(index)) {
+      this.threads[index] = newFullText;
+    }
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = newTextBefore.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
+  }
+
+  displayWithFn = () => '';
+
   loadCategories(): void {
     this.categoryService.getAllCategories().subscribe({
-      next: (apiCategories) => {
-        const mappedCategories = apiCategories.map((cat) => ({
-          value: cat.name,
-          viewValue: cat.name,
-        }));
-        this.categories = mappedCategories;
-      },
-      error: (err) => {
-        console.error('Error al cargar las categorías:', err);
-        // Si hay un error, simplemente dejamos la lista de categorías vacía.
-        // La opción estática "Ninguna" en el HTML seguirá funcionando.
-        this.categories = [];
-      },
+      next: (apiCategories) => { this.categories = apiCategories.map((cat) => ({ value: cat.name, viewValue: cat.name })); },
+      error: (err) => { console.error('Error al cargar las categorías:', err); this.categories = []; },
     });
   }
 
-  //modal logic
-
-  closeModal(): void {
-    this.dialogRef.close();
-  }
-
+  closeModal(): void { this.dialogRef.close(); }
   nextStep(): void {
     if (this.currentStep < 3) {
       this.currentStep++;
+      this.triggerResize();
     }
   }
-
   previousStep(): void {
     if (this.currentStep > 1) {
       this.currentStep--;
+      this.triggerResize();
     }
   }
 
-  //publish logic with character validation
+  triggerResize(): void {
+    this._ngZone.onStable.pipe(take(1)).subscribe(() => {
+      this.cdkTextareas?.forEach(textarea => textarea.resizeToFitContent(true));
+    });
+  }
+
   publish(): void {
-    // 1. Reiniciar cualquier mensaje de error anterior
-    // 1. Reset any previous error message
     this.errorMessage = null;
-
-
     let finalScheduledTime: string | null = null;
     if (this.showScheduler && this.scheduledDate && this.scheduledHour !== null && this.scheduledMinute !== null) {
       const date = new Date(this.scheduledDate);
       date.setHours(this.scheduledHour, this.scheduledMinute, 0, 0);
-  
-      // --- ¡CAMBIO CLAVE AQUÍ! ---
-      // En lugar de toISOString(), construimos el string manualmente
-      // para evitar la conversión a UTC.
-  
-      // Obtenemos los componentes de la fecha en la zona horaria LOCAL.
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Meses son 0-11
-      const day = date.getDate().toString().padStart(2, '0');
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      const seconds = date.getSeconds().toString().padStart(2, '0');
-  
-      // Formato "yyyy-MM-ddTHH:mm:ss" que LocalDateTime parsea directamente.
+      const year = date.getFullYear(), month = (date.getMonth() + 1).toString().padStart(2, '0'), day = date.getDate().toString().padStart(2, '0');
+      const hours = date.getHours().toString().padStart(2, '0'), minutes = date.getMinutes().toString().padStart(2, '0'), seconds = date.getSeconds().toString().padStart(2, '0');
       finalScheduledTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     }
-
-    // 2. Crear el objeto de datos
-    // 2. Create the data object
-    const posts = this.postsArray.value;
     const threadData: ThreadRequest = {
-      post1: posts[0],
-      post2: posts[1],
-      post3: posts[2],
+      post1: this.threads[0],
+      post2: this.threads[1],
+      post3: this.threads[2],
       category: this.selectedCategory || 'Ninguna',
-      scheduledTime: finalScheduledTime,
+      scheduledTime: finalScheduledTime || undefined,
     };
-
-    // 3. Validar los límites de caracteres
-    // 3. Validate character limits
-    if (threadData.post1.length > this.charLimits.step1) {
-      this.errorMessage = `El primer hilo excede el límite de ${this.charLimits.step1} caracteres.`;
+    if (threadData.post1.length > this.charLimits.step1 || threadData.post2.length > this.charLimits.step2 || threadData.post3.length > this.charLimits.step3) {
+      this.errorMessage = `Un post excede el límite de caracteres.`;
       return;
     }
-    if (threadData.post2.length > this.charLimits.step2) {
-      this.errorMessage = `El segundo hilo excede el límite de ${this.charLimits.step2} caracteres.`;
-      return;
-    }
-    if (threadData.post3.length > this.charLimits.step3) {
-      this.errorMessage = `El tercer hilo excede el límite de ${this.charLimits.step3} caracteres.`;
-      return;
-    }
-    if (threadData.post1.trim() === '' 
-    || threadData.post2.trim() === '' 
-    || threadData.post3.trim() === '') {
+    if (threadData.post1.trim() === '' || threadData.post2.trim() === '' || threadData.post3.trim() === '') {
       this.errorMessage = 'Los post no pueden estar vacios.';
       return;
     }
-  
-
-    // 4. Si todas las validaciones pasan, se llama al servicio
-    // 4. If all validations pass, call the service
     this.threadService.createThread(threadData).subscribe({
-      next: (response) => {
-        console.log('Hilo creado con éxito!', response);
-        this.closeModal();
-      },
+      next: () => this.closeModal(),
       error: (err) => {
         console.error('Error al crear el hilo:', err);
         this.errorMessage = 'Ocurrió un error al publicar el hilo. Inténtalo de nuevo.';
       },
     });
   }
-
- 
-
-  // --- LÓGICA DE DETECCIÓN Y MANEJO DE MENCIONES ---
-
-  
-
-   // Reemplaza la mención parcial con la seleccionada
-   onUserMentionSelected(event: MatAutocompleteSelectedEvent): void {
-    // CAMBIO CLAVE 3: Activamos el cerrojo al iniciar la selección.
-    this.isSelectingMention = true;
-
-    const selectedUser: UserSearch = event.option.value;
-    const activeControl = this.postsArray.at(this.activeTextarea.index);
-    const textarea = this.activeTextarea.element;
-
-    if (!activeControl || !textarea) {
-        this.isSelectingMention = false; // Asegurarse de desactivar el cerrojo si algo falla
-        return;
-    }
-
-    const currentText = activeControl.value as string;
-    const cursorPos = textarea.selectionStart;
-    const textBeforeCursor = currentText.substring(0, cursorPos);
-
-    const newTextBeforeCursor = textBeforeCursor.replace(/@(\w+)$/, `@${selectedUser.username} `);
-    const textAfterCursor = currentText.substring(cursorPos);
-    
-    activeControl.setValue(newTextBeforeCursor + textAfterCursor, { emitEvent: false });
-    
-    const newCursorPos = newTextBeforeCursor.length;
-    
-    // Usamos setTimeout para asegurar que todas las actualizaciones del DOM se completen.
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
-      
-      // CAMBIO CLAVE 4: Desactivamos el cerrojo para permitir futuras búsquedas.
-      this.isSelectingMention = false;
-      this.autocompleteTrigger.closePanel(); // Forzamos el cierre por si acaso.
-    }, 0);
-  }
-
-  // Función necesaria para MatAutocomplete para que no muestre [Object object]
-  displayWithFn = () => '';
-
 }

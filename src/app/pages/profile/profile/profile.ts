@@ -18,6 +18,7 @@ import { Comments } from '../../../components/comments/comments';
 import { FollowButton } from "../../../components/follow-button/follow-button/follow-button";
 import { UserInterface } from '../../../interfaces/UserInterface';
 import { UserState } from '../../../services/user-state/user-state';
+import { CreateThreadButton } from '../../../components/create-thread-button/create-thread-button';
 
 @Component({
   selector: 'app-profile',
@@ -25,7 +26,7 @@ import { UserState } from '../../../services/user-state/user-state';
     RouterLink,
     MatIconModule,
     MatButtonModule,
-    Thread, Header, FollowButton],
+    Thread, Header, FollowButton, CreateThreadButton],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })

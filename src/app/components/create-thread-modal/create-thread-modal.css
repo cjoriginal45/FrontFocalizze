@@ -1,4 +1,4 @@
-/* --- Mini Header (Actualizado) --- */
+/* --- Estilos Generales de la Modal --- */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -7,43 +7,28 @@
   color: rgba(1, 52, 74, 0.7);
   border-bottom: 1px solid rgba(51, 51, 51, 0.3);
 }
-/* Contenedores para el layout de 3 columnas del header */
 .modal-header__left,
 .modal-header__right {
   display: flex;
   align-items: center;
-  flex: 0 0 80px; /* Ancho fijo (no crece, no se encoge, base de 80px) */
+  flex: 0 0 80px;
 }
 .modal-header__right {
-  justify-content: flex-end; /* Alinea los iconos a la derecha */
+  justify-content: flex-end;
 }
 .modal-header__title {
-  flex-grow: 1; /* El título ocupa todo el espacio central */
+  flex-grow: 1;
   text-align: center;
   font-size: 1.2rem;
   font-weight: bold;
   margin: 0;
 }
-.modal-header__button {
-  color: rgba(1, 52, 74, 0.7);
-}
-/* Por defecto, el botón de atrás está visible (si el @if lo permite) */
-.modal-header__back-btn {
-  display: inline-flex;
-}
-
-/* --- Contenido Principal (Sin cambios) --- */
 .modal-content {
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-.thread-input {
-  width: 100%;
-}
-
-/* --- Footer (Sin cambios en el layout principal) --- */
 .modal-footer {
   display: flex;
   justify-content: space-between;
@@ -51,57 +36,52 @@
   padding: 8px 16px;
   border-top: 1px solid #e0e0e0;
 }
-.category-selector {
-  width: 150px;
-}
 .modal-footer__actions {
   display: flex;
 }
-.modal-footer__next-btn {
-  display: block;
-  background-color: var(--primary-color);
+.category-selector {
+  width: 150px;
 }
+.modal-footer__next-btn,
 .modal-footer__publish-btn {
-  display: none;
   background-color: var(--primary-color);
 }
 
-/* --- LÓGICA DE VISIBILIDAD (MÓVIL vs ESCRITORIO) --- */
+/* ==================================================================== */
+/* LÓGICA DE CSS PARA "UNIFIED DOM STRATEGY" */
+/* ==================================================================== */
 
-/* Por defecto (Móvil), mostramos la vista por pasos y ocultamos la de escritorio */
-.modal-content__desktop-view {
-  display: none;
+.unified-threads-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
-.modal-content__mobile-view {
+
+/* Por defecto, los textareas están ocultos */
+.thread-input {
+  display: none;
+  width: 100%;
+}
+
+/* En vista de escritorio, mostramos todos */
+.unified-threads-container.desktop-view .thread-input {
   display: block;
 }
 
-.modal-footer__actions.step-3 .modal-footer__next-btn {
-  display: none;
-}
-.modal-footer__actions.step-3 .modal-footer__publish-btn {
+/* En vista móvil, mostramos solo el que corresponda al paso actual */
+.unified-threads-container.mobile-view.step-1 .thread-input-0,
+.unified-threads-container.mobile-view.step-2 .thread-input-1,
+.unified-threads-container.mobile-view.step-3 .thread-input-2 {
   display: block;
 }
 
-/* --- ESTILOS PARA EL CONTADOR DE CARACTERES --- */
-
-/* Estilo por defecto para el contador */
-.mat-mdc-form-field-hint {
-  color: #6c757d; /* Un color gris suave */
-}
-
-/* Estilo que se aplica cuando el textarea está enfocado */
-.mat-form-field-appearance-fill.mat-focused .mat-mdc-form-field-hint {
-  color: var(--primary-color); /* Cambia al color primario cuando se escribe */
-}
-
+/* --- Estilos Varios (sin cambios) --- */
 .modal-error-message {
-  color: #f44336; /* Color de 'warn' de Material */
-  padding: 0 16px 8px; /* Espaciado */
+  color: #f44336;
+  padding: 0 16px 8px;
   font-size: 0.9rem;
   text-align: right;
 }
-
 .user-option {
   display: flex;
   align-items: center;
@@ -123,40 +103,9 @@
   font-size: 0.8rem;
   color: #555;
 }
-
-/* --- MEDIA QUERY PARA ESCRITORIO (A PARTIR DE 768px) --- */
-@media (min-width: 768px) {
-  /* Invertimos la visibilidad de las vistas de contenido */
-  .modal-content__desktop-view {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .modal-content__mobile-view {
-    display: none;
-  }
-
-  /* En escritorio, ocultamos el botón de 'Atrás' del header */
-  .modal-header__back-btn {
-    display: none;
-  }
-  /* Y también el de 'Avanzar' del footer */
-  .modal-footer__next-btn {
-    display: none !important;
-  }
-
-  /* Mostramos SIEMPRE el botón 'Publicar' */
-  .modal-footer__publish-btn {
-    display: block !important;
-    background-color: var(--primary-color);
-  }
-}
-
 .modal-header__button mat-icon.active {
   color: var(--secondary-color);
 }
-
-/* Panel de Programación */
 .scheduler-panel {
   border: 1px solid #ccc;
   border-radius: 8px;
