@@ -127,3 +127,12 @@ body {
   opacity: 1 !important;
   color: inherit !important;
 }
+
+
+  /* --- Estilos para input deshabilitado --- */
+  :host::ng-deep .mat-mdc-form-field.mat-form-field-disabled .mat-mdc-floating-label.mdc-floating-label {
+    color: rgba(1, 52, 74, 0.7);
+  }
+  :host::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field--disabled {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
