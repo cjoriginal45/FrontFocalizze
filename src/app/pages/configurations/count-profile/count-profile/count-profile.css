@@ -185,6 +185,21 @@
     margin: 0;
 }
 
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(1, 52, 74, 0.04); /* Muy sutil */
+    pointer-events: none; /* Click through */
+    user-select: none;
+    z-index: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
 /* ========================================================================
    MEDIA QUERY DESKTOP (Tablet/PC > 768px)
    Replica la imagen horizontal

@@ -5,7 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
-import { Header } from "../../../../components/header/header"; 
+import { Header } from "../../../../components/header/header";
+import { BottonNav } from "../../../../components/botton-nav/botton-nav"; 
 
 interface UserProfile {
   username: string;
@@ -23,7 +24,8 @@ interface UserProfile {
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    Header
+    Header,
+    BottonNav
 ],
   templateUrl: './count-profile.html',
   styleUrl: './count-profile.css',
