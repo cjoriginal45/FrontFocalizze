@@ -9,13 +9,17 @@ import { Header } from './components/header/header';
 import { PasswordRecovery } from './pages/password-recovery/password-recovery';
 import { Profile } from './pages/profile/profile/profile';
 import { Discover } from './pages/discover/discover';
-import { ConfigurationPage } from './pages/configuration-page/configuration-page';
+import { ConfigurationPage } from './pages/configurations/configuration-page/configuration-page';
 import { SearchResults } from './pages/search-results/search-results/search-results';
 import { SavedThreads } from './pages/saved-threads/saved-threads/saved-threads';
 import { SearchMobile } from './pages/search-mobile/search-mobile';
 import { Notifications } from './pages/notifications/notifications/notifications';
 import { CategoryPage } from './pages/category-page/category-page';
 import { authReadyGuard } from './services/guards/auth-ready-guard';
+import { CountProfile } from './pages/configurations/count-profile/count-profile/count-profile';
+import { NotificationSettings } from './pages/configurations/notification-settings/notification-settings/notification-settings';
+import { PrivacyBlocking } from './pages/configurations/privacy-blocking/privacy-blocking/privacy-blocking';
+import { LanguageSettings } from './pages/configurations/language-settings/language-settings/language-settings';
 
 export const routes: Routes = [
   // ... (rutas públicas como login, register)
@@ -39,7 +43,11 @@ export const routes: Routes = [
       { path: 'saved', component: SavedThreads },
       { path: 'search-mobile', component: SearchMobile },
       { path: 'category/:name', component: CategoryPage },
-      {path: 'notifications', component: Notifications}
+      {path: 'notifications', component: Notifications},
+      {path: 'count-profile', component: CountProfile},
+      {path: 'notifications-settings', component: NotificationSettings},
+      {path: 'privacy-blocking', component: PrivacyBlocking},
+      {path: 'language-settings', component: LanguageSettings},
     ],
   },
 ];

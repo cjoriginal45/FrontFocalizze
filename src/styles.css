@@ -127,3 +127,39 @@ body {
   opacity: 1 !important;
   color: inherit !important;
 }
+
+
+  /* --- Estilos para input deshabilitado --- */
+  :host::ng-deep .mat-mdc-form-field.mat-form-field-disabled .mat-mdc-floating-label.mdc-floating-label {
+    color: rgba(1, 52, 74, 0.7);
+  }
+  :host::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field--disabled {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+
+    /* --- Estilos Slide Toggle (mismos que usaste en notificaciones) --- */
+    :host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__track {
+      background-color: var(--primary-dark) !important;
+      opacity: 0.5;
+  }
+  :host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__handle::after {
+      background-color: var(--primary-dark) !important;
+  }
+  :host ::ng-deep .mat-mdc-slide-toggle .mdc-switch__handle::after {
+      background-color: #fff !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  :host ::ng-deep .mat-mdc-slide-toggle.mat-primary:active .mdc-switch__icon {
+    display: none; /* Limpieza visual */
+}
+
+ /* Ajustes profundos para redondear el input como en la imagen */
+ :host ::ng-deep .custom-select-field .mat-mdc-text-field-wrapper {
+  background-color: white !important;
+  border-radius: 12px !important;
+}
+
+:host ::ng-deep .custom-select-field .mat-mdc-form-field-subscript-wrapper {
+  display: none; /* Ocultar espacio de error/hint si no se usa */
+}
