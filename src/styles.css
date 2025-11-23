@@ -136,3 +136,20 @@ body {
   :host::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field--disabled {
     background-color: rgba(0, 0, 0, 0.02);
   }
+
+    /* --- Estilos Slide Toggle (mismos que usaste en notificaciones) --- */
+    :host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__track {
+      background-color: var(--primary-dark) !important;
+      opacity: 0.5;
+  }
+  :host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__handle::after {
+      background-color: var(--primary-dark) !important;
+  }
+  :host ::ng-deep .mat-mdc-slide-toggle .mdc-switch__handle::after {
+      background-color: #fff !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  :host ::ng-deep .mat-mdc-slide-toggle.mat-primary:active .mdc-switch__icon {
+    display: none; /* Limpieza visual */
+}

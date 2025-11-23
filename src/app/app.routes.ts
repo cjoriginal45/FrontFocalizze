@@ -18,6 +18,7 @@ import { CategoryPage } from './pages/category-page/category-page';
 import { authReadyGuard } from './services/guards/auth-ready-guard';
 import { CountProfile } from './pages/configurations/count-profile/count-profile/count-profile';
 import { NotificationSettings } from './pages/configurations/notification-settings/notification-settings/notification-settings';
+import { PrivacyBlocking } from './pages/configurations/privacy-blocking/privacy-blocking/privacy-blocking';
 
 export const routes: Routes = [
   // ... (rutas públicas como login, register)
@@ -44,6 +45,7 @@ export const routes: Routes = [
       {path: 'notifications', component: Notifications},
       {path: 'count-profile', component: CountProfile},
       {path: 'notifications-settings', component: NotificationSettings},
+      {path: 'privacy-blocking', component: PrivacyBlocking},
     ],
   },
 ];

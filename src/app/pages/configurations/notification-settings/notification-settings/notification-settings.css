@@ -113,30 +113,7 @@
     color: #4a6572; /* Un gris azulado similar a la imagen */
   }
   
-  /* --- Personalización de Material Toggle --- 
-     Forzamos el color primario (#01344a) en el switch activo 
-  */
   
-  :host ::ng-deep .mat-mdc-slide-toggle.mat-primary:active .mdc-switch__icon {
-      display: none; /* Limpieza visual */
-  }
-  
-  /* Color del "track" (la barra) cuando está activo */
-  :host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__track {
-      background-color: var(--primary-color, #01344a) !important;
-      opacity: 0.5;
-  }
-  
-  /* Color del "thumb" (el círculo) cuando está activo */
-  :host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__handle::after {
-      background-color: var(--primary-color, #01344a) !important;
-  }
-  
-  /* Color del "thumb" cuando está inactivo (borde grisaceo) */
-  :host ::ng-deep .mat-mdc-slide-toggle .mdc-switch__handle::after {
-      background-color: #fff !important;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
   
   /* --- Responsive Desktop --- */
   @media (min-width: 768px) {
