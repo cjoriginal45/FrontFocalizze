@@ -13,22 +13,27 @@ import { FeedThreadDto } from '../../../interfaces/FeedThread';
 import { MatDialog } from '@angular/material/dialog';
 import { EditProfileModal } from '../../../components/edit-profile/edit-profile-modal/edit-profile-modal';
 import { ThreadState } from '../../../services/thread-state/thread-state';
-import { Header } from "../../../components/header/header";
+import { Header } from '../../../components/header/header';
 import { Comments } from '../../../components/comments/comments';
-import { FollowButton } from "../../../components/follow-button/follow-button/follow-button";
+import { FollowButton } from '../../../components/follow-button/follow-button/follow-button';
 import { UserInterface } from '../../../interfaces/UserInterface';
 import { UserState } from '../../../services/user-state/user-state';
 import { CreateThreadButton } from '../../../components/create-thread-button/create-thread-button';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     RouterLink,
     MatIconModule,
     MatButtonModule,
-    Thread, Header, FollowButton, CreateThreadButton],
+    Thread,
+    Header,
+    FollowButton,
+    CreateThreadButton,
+  ],
   templateUrl: './profile.html',
-  styleUrl: './profile.css'
+  styleUrl: './profile.css',
 })
 export class Profile implements OnInit {
   // --- Inyección de Dependencias ---
@@ -53,56 +58,71 @@ export class Profile implements OnInit {
   @Input({ required: true }) userSignal!: WritableSignal<UserInterface>;
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(
-      tap(() => { 
-        this.isLoading = true;
-        this.profile = null;
-        this.threadIds = [];
-       }),
-      switchMap(params => {
-        const username = params.get('username');
-        if (!username) throw new Error('Username no encontrado');
+    this.route.paramMap
+      .pipe(
+        tap(() => {
+          this.isLoading = true;
+          this.profile = null;
+          this.threadIds = [];
+        }),
+        switchMap((params) => {
+          const username = params.get('username');
+          if (!username) throw new Error('Username no encontrado');
 
-        this.isOwnProfile = this.authService.getCurrentUser()?.username === username;
+          this.isOwnProfile = this.authService.getCurrentUser()?.username === username;
 
-        // forkJoin ahora espera que getThreadsForUser devuelva Page<FeedThreadDto>
-        return forkJoin({
-          profile: this.profileService.getProfile(username),
-          threads: this.profileService.getThreadsForUser(username, this.currentPage, this.pageSize),
-          userForButton: this.profileService.getUserForFollowButton(username)
-        });
-      })
-    ).subscribe({
-      next: ({ profile, threads: threadPage }) => { // 'threadPage' ahora es de tipo Page<FeedThreadDto>
-        this.profile = profile;
+          // forkJoin ahora espera que getThreadsForUser devuelva Page<FeedThreadDto>
+          return forkJoin({
+            profile: this.profileService.getProfile(username),
+            threads: this.profileService.getThreadsForUser(
+              username,
+              this.currentPage,
+              this.pageSize
+            ),
+            userForButton: this.profileService.getUserForFollowButton(username),
+          });
+        })
+      )
+      .subscribe({
+        next: ({ profile, threads: threadPage }) => {
+          // 'threadPage' ahora es de tipo Page<FeedThreadDto>
+          this.profile = profile;
 
-        const userForState: UserInterface = {
-          id: profile.id,
-          username: profile.username,
-          displayName: profile.displayName,
-          avatarUrl: profile.avatarUrl,
-          isFollowing: profile.isFollowing,
-          followersCount: profile.followers,
-          followingCount: profile.followingCount,
-        };
-        this.userStateService.loadUsers([userForState]);
+          const userForState: UserInterface = {
+            id: profile.id,
+            username: profile.username,
+            displayName: profile.displayName,
+            avatarUrl: profile.avatarUrl,
+            isFollowing: profile.isFollowing,
+            followersCount: profile.followers,
+            followingCount: profile.followingCount,
+          };
+          this.userStateService.loadUsers([userForState]);
 
-        // --- LÓGICA RESTAURADA ---
-        const newThreads: FeedThreadDto[] = threadPage.content; // <-- Ahora .content existe
-        this.threadStateService.loadThreads(newThreads);
-        this.threadIds = newThreads.map(t => t.id);
-        // ------------------------
+          // --- LÓGICA RESTAURADA ---
+          const newThreads: FeedThreadDto[] = threadPage.content; // <-- Ahora .content existe
+          this.threadStateService.loadThreads(newThreads);
+          this.threadIds = newThreads.map((t) => t.id);
+          // ------------------------
 
-        this.isLoading = false;
-        this.allThreadsLoaded = threadPage.last; // <-- Usamos la propiedad 'last' de la página
-      },
-      // ...
-    });
+          this.isLoading = false;
+          this.allThreadsLoaded = threadPage.last; // <-- Usamos la propiedad 'last' de la página
+        },
+        // ...
+      });
 
-    this.threadStateService.threadDeleted$.subscribe(deletedThreadId => {
-      console.log(`[FeedComponent] Recibida notificación para eliminar el hilo ID: ${deletedThreadId}`);
+    this.threadStateService.threadDeleted$.subscribe((deletedThreadId) => {
+      console.log(
+        `[FeedComponent] Recibida notificación para eliminar el hilo ID: ${deletedThreadId}`
+      );
       // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
-      this.threadIds = this.threadIds.filter(id => id !== deletedThreadId);
+      this.threadIds = this.threadIds.filter((id) => id !== deletedThreadId);
+
+      // 2. Actualizar el contador de hilos publicados (LO NUEVO)
+      if (this.profile) {
+        // Restamos 1, asegurándonos de que no sea negativo
+        this.profile.threadCount = Math.max(0, this.profile.threadCount - 1);
+      }
     });
   }
 
@@ -110,24 +130,24 @@ export class Profile implements OnInit {
     if (this.isLoading || this.allThreadsLoaded || !this.profile) return;
     this.isLoading = true;
     this.currentPage++;
-    
-    this.profileService.getThreadsForUser(this.profile.username, this.currentPage, this.pageSize)
+
+    this.profileService
+      .getThreadsForUser(this.profile.username, this.currentPage, this.pageSize)
       .subscribe({
         next: (threadPage) => {
-          
           const newThreads: FeedThreadDto[] = threadPage.content;
           this.threadStateService.loadThreads(newThreads);
-          const newThreadIds = newThreads.map(t => t.id);
+          const newThreadIds = newThreads.map((t) => t.id);
           this.threadIds.push(...newThreadIds);
           // ------------------------
-          
+
           this.allThreadsLoaded = threadPage.last;
           this.isLoading = false;
         },
         error: (err) => {
           console.error('Error al cargar más hilos del usuario', err);
           this.isLoading = false;
-         }
+        },
       });
   }
 
@@ -136,34 +156,35 @@ export class Profile implements OnInit {
 
     const dialogRef = this.dialog.open(EditProfileModal, {
       width: '500px',
-      data: { profile: this.profile }
+      data: { profile: this.profile },
     });
 
-    dialogRef.afterClosed().pipe(
-      filter(result => !!result)
-    ).subscribe(result => {
-      const { formData, file } = result;
+    dialogRef
+      .afterClosed()
+      .pipe(filter((result) => !!result))
+      .subscribe((result) => {
+        const { formData, file } = result;
 
-      // 1. Si se seleccionó un nuevo archivo de avatar, lo subimos primero
-      // 1. if a new avatar file is selected, upload it first
-      if (file) {
-        this.profileService.uploadAvatar(this.profile!.username, file).subscribe({
-          next: (response) => {
-            console.log('Avatar actualizado con éxito');
-            this.profile!.avatarUrl = response.avatarUrl; 
-            this.updateProfileText(formData);
-          },
-          error: (err) => console.error('Error al subir el avatar', err)
-        });
-      } else {
-        // 2. Si no hay archivo nuevo, solo actualizamos los datos de texto
-        // 2. If no new file, just update the text data
-        this.updateProfileText(formData);
-      }
-    });
+        // 1. Si se seleccionó un nuevo archivo de avatar, lo subimos primero
+        // 1. if a new avatar file is selected, upload it first
+        if (file) {
+          this.profileService.uploadAvatar(this.profile!.username, file).subscribe({
+            next: (response) => {
+              console.log('Avatar actualizado con éxito');
+              this.profile!.avatarUrl = response.avatarUrl;
+              this.updateProfileText(formData);
+            },
+            error: (err) => console.error('Error al subir el avatar', err),
+          });
+        } else {
+          // 2. Si no hay archivo nuevo, solo actualizamos los datos de texto
+          // 2. If no new file, just update the text data
+          this.updateProfileText(formData);
+        }
+      });
   }
 
-  private updateProfileText(data: { displayName: string, biography: string }): void {
+  private updateProfileText(data: { displayName: string; biography: string }): void {
     if (!this.profile) return;
 
     this.profileService.updateProfile(this.profile.username, data).subscribe({
@@ -171,10 +192,9 @@ export class Profile implements OnInit {
         console.log('Perfil actualizado con éxito');
         this.profile = updatedProfile;
       },
-      error: (err) => console.error('Error al actualizar el perfil', err)
+      error: (err) => console.error('Error al actualizar el perfil', err),
     });
   }
-
 
   openCommentsModal(threadId: number): void {
     this.dialog.open(Comments, {
@@ -198,11 +218,4 @@ export class Profile implements OnInit {
       this.userStateService.updateFollowingState(this.profile.username, isNowFollowing);
     }
   }
-
-
-
 }
-
-
-
-
