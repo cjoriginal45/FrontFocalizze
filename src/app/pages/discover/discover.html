@@ -4,21 +4,55 @@
 <div class="discover-layout">
   <main class="discover-layout__content">
     <div class="discover-layout__threads-list">
-      @for (threadId of threadIds; track threadId) {
-        <!-- --- AÑADE (openComments) AQUÍ --- -->
-        <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
+      <!-- Iteramos sobre la señal 'discoverItems' -->
+      @for (item of discoverItems(); track item.thread.id) {
+      <div class="discover-item">
+        <!-- UI ESPECIAL PARA HILOS RECOMENDADOS -->
+        @if (item.isRecommended) {
+        <div class="recommendation-header">
+          <mat-icon class="recommendation-header__icon">auto_awesome</mat-icon>
+          <span>Recomendado para ti</span>
+          <button mat-icon-button [matMenuTriggerFor]="reasonMenu" aria-label="¿Por qué veo esto?">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #reasonMenu="matMenu">
+            <!-- Contenido del menú desplegable -->
+            <div class="recommendation-reason">
+              <div class="reason-title">
+                <mat-icon>info_outline</mat-icon>
+                <h3>¿Por qué veo esto?</h3>
+              </div>
+              <p>{{ item.recommendationReason }}</p>
+              <button mat-menu-item (click)="onSeeLess(item)">
+                <mat-icon>visibility_off</mat-icon>
+                <span>Ver menos de este tipo</span>
+              </button>
+            </div>
+          </mat-menu>
+        </div>
+        }
+
+        <!-- El componente de hilo se renderiza siempre -->
+        <app-thread
+          [threadId]="item.thread.id"
+          (openComments)="openCommentsModal($event)"
+        ></app-thread>
+      </div>
       }
     </div>
 
-   
-    @if (isLoading) {
-      <div class="loading-indicator">Cargando...</div>
+    <!-- Indicador de Carga -->
+    @if (isLoading()) {
+    <div class="loading-indicator">Cargando más hilos...</div>
     }
-    @if (!isLastPage && threadIds.length > 0 && !isLoading) {
-      <button (click)="loadMoreThreads()" class="load-more-button">Cargar más</button>
+
+    <!-- Botón para cargar más -->
+    @if (!isLastPage() && discoverItems().length > 0 && !isLoading()) {
+    <button (click)="loadMoreItems()" class="load-more-button">Cargar más</button>
     }
   </main>
-  <aside class="feed-layout__sidebar">
+
+  <aside class="discover-layout__sidebar">
     <app-suggestions></app-suggestions>
   </aside>
 </div>
