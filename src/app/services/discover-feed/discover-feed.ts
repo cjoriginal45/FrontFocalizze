@@ -17,4 +17,15 @@ export class DiscoverFeed {
 
     return this.http.get<Page<DiscoverItemDto>>(this.apiUrl, { params });
   }
+
+  // Método para enviar feedback negativo
+  hideThread(threadId: number, reasonType: string): Observable<void> {
+    return this.http.post<void>(
+      `${environment.apiBaseUrl}/feed/feedback/hide`,
+      {},
+      {
+        params: { threadId, reasonType },
+      }
+    );
+  }
 }

@@ -4,5 +4,5 @@ export interface DiscoverItemDto {
   thread: FeedThreadDto;
   isRecommended: boolean;
   recommendationReason: string;
-  recommendationType: 'CATEGORY_INTEREST' | 'SOCIAL_PROOF' | string;
+  recommendationType: string;
 }

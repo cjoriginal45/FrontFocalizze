@@ -87,21 +87,123 @@
   transform: scale(1.03);
 }
 
+/* --- ESTILOS ESPECÍFICOS PARA LA RECOMENDACIÓN --- */
+.discover-item {
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.discover-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Agrega un pequeño retraso progresivo entre hilos (efecto cascada) */
+/* Adds a small progressive delay between threads (cascade effect) */
+.discover-item:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.discover-item:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.discover-item:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.ddiscover-item:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.discover-item:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.recommendation-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(1, 52, 74, 0.7);
+  padding: 6px 16px;
+  background-color: #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+}
+.recommendation-header span {
+  flex-grow: 1;
+}
+.recommendation-header__icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--primary-color);
+}
+
+/* Estilos para el contenido del menú desplegable */
+.recommendation-reason {
+  padding: 12px 16px;
+  max-width: 280px;
+  outline: none;
+}
+.reason-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.reason-title h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.recommendation-reason p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  color: #333;
+}
+.recommendation-reason button {
+  width: 100%;
+}
+
 /* --- MEDIA QUERY PARA ESCRITORIO --- */
-/* --- DESKTOP MEDIA QUERY --- */
 @media (min-width: 992px) {
   .discover-layout {
     display: grid;
-    grid-template-columns: 1fr minmax(500px, 600px) 1fr;
+    grid-template-columns: 1fr minmax(500px, 600px) 350px;
+    gap: 30px;
     width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
-    min-height: calc(100vh - var(--header-height));
+    align-items: start;
   }
 
   .discover-layout__content {
     grid-column: 2 / 3;
+  }
+
+  .discover-layout__sidebar {
+    grid-column: 3 / 4;
+    position: sticky;
+    top: 110px;
+    height: calc(100vh - (60px + 40px + 40px));
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+
+  .discover-layout__sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .discover-layout__sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  .discover-layout__sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -112,26 +214,4 @@
     width: 100%;
     max-width: 300px;
   }
-}
-
-.feed-layout__sidebar {
-  grid-column: 3 / 4;
-  position: sticky;
-  top: 10px;
-  height: calc(100vh - (60px + 40px + 40px));
-  overflow-y: auto;
-  padding-right: 5px;
-}
-
-.feed-layout__sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.feed-layout__sidebar::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-
-.feed-layout__sidebar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.3);
 }
