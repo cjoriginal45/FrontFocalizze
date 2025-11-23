@@ -153,3 +153,13 @@ body {
   :host ::ng-deep .mat-mdc-slide-toggle.mat-primary:active .mdc-switch__icon {
     display: none; /* Limpieza visual */
 }
+
+ /* Ajustes profundos para redondear el input como en la imagen */
+ :host ::ng-deep .custom-select-field .mat-mdc-text-field-wrapper {
+  background-color: white !important;
+  border-radius: 12px !important;
+}
+
+:host ::ng-deep .custom-select-field .mat-mdc-form-field-subscript-wrapper {
+  display: none; /* Ocultar espacio de error/hint si no se usa */
+}
