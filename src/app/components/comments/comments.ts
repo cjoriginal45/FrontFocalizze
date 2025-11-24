@@ -126,25 +126,50 @@ export class Comments {
     });
   }
 
-  // --- NUEVO MÉTODO ---
   private deleteComment(commentId: number): void {
-    const originalComments = [...this.comments]; // Guardamos el estado original
+    // 1. Buscar el comentario antes de borrarlo
+    const commentToDelete = this.comments.find((c) => c.id === commentId);
 
-    // 1. Actualización optimista: eliminamos el comentario de la UI al instante.
+    const originalComments = [...this.comments];
+
+    // Actualización optimista (borrado visual de la lista)
     this.comments = this.comments.filter((comment) => comment.id !== commentId);
 
-    // 2. Llamamos al servicio para eliminar el comentario en el backend.
     this.commentService.deleteComment(commentId).subscribe({
       next: () => {
-        // 3. Si tiene éxito, notificamos al resto de la app.
         this.interactionService.notifyCommentDeleted(this.data.threadId);
+
+        // --- LÓGICA DE REEMBOLSO DE INTERACCIÓN ---
+        if (commentToDelete) {
+          // Convertimos la fecha del comentario
+          const commentDate = new Date(commentToDelete.createdAt);
+          const today = new Date();
+
+          // LOGS DE DEPURACIÓN (Míralos en la consola del navegador F12)
+          console.log('Fecha Comentario:', commentDate.toDateString());
+          console.log('Fecha Hoy:', today.toDateString());
+
+          // Comparamos día, mes y año
+          const isSameDay =
+            commentDate.getDate() === today.getDate() &&
+            commentDate.getMonth() === today.getMonth() &&
+            commentDate.getFullYear() === today.getFullYear();
+
+          console.log('¿Es el mismo día?:', isSameDay);
+
+          if (isSameDay) {
+            console.log('¡Reembolsando interacción visualmente!');
+            this.authService.refundInteraction();
+          } else {
+            console.warn('No se reembolsó: Las fechas no coinciden.');
+          }
+        }
+
         console.log(`Comentario ${commentId} eliminado con éxito.`);
       },
       error: (err) => {
-        // 4. Si falla, revertimos la UI a su estado original.
         console.error('Error al eliminar el comentario', err);
         this.comments = originalComments;
-        // Opcional: Mostrar un mensaje de error (toast).
       },
     });
   }

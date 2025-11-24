@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { firstValueFrom, Observable, tap } from 'rxjs';
+import { firstValueFrom, forkJoin, map, Observable, switchMap, tap } from 'rxjs';
 import { LoginResponse } from '../../interfaces/LoginResponse';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
@@ -11,6 +11,7 @@ import { ThreadState } from '../thread-state/thread-state';
 import { UserState } from '../user-state/user-state';
 import { CategoryState } from '../category-state/category-state';
 import { NotificationState } from '../notification-state/notification-state';
+import { InteractionCounter } from '../interactionCounter/interaction-counter';
 
 export interface AuthUser {
   id: number;
@@ -19,6 +20,7 @@ export interface AuthUser {
   avatarUrl?: string; // Opcional, lo cargaremos después
   followingCount: number;
   followersCount: number;
+  dailyInteractionsRemaining: number; // Ahora este dato vendrá del endpoint separado
 }
 
 interface UserTokenData {
@@ -33,7 +35,6 @@ export class Auth {
 
   private http = inject(HttpClient);
   private router = inject(Router);
-  currentUser = signal<AuthUser | null>(null);
   private userService = inject(UserService);
   private viewTrackingService = inject(ViewTracking);
 
@@ -42,21 +43,21 @@ export class Auth {
   private categoryState = inject(CategoryState);
   private notificationStateService = inject(NotificationState);
 
-  // SIGNAL: This is the "source of truth" for the session state.
-  isLoggedIn = computed(() => !!this.currentUser());
+  private interactionCounter = inject(InteractionCounter);
 
+  currentUser = signal<AuthUser | null>(null);
+  isLoggedIn = computed(() => !!this.currentUser());
   authReady = signal<boolean>(false);
 
   constructor() {
     effect(() => {
-      // Si el usuario se convierte en 'null' (logout o inicio sin token)...
       if (this.currentUser() === null) {
-        // ...limpiamos el estado de toda la aplicación.
         this.clearAllAppState();
       }
     });
   }
 
+  // --- CARGA INICIAL DESDE EL TOKEN ---
   async loadUserFromToken(): Promise<void> {
     const token = localStorage.getItem('jwt_token');
     if (token) {
@@ -64,27 +65,39 @@ export class Auth {
         const decodedToken: { exp: number } = jwtDecode(token);
         if (Date.now() >= decodedToken.exp * 1000) {
           localStorage.removeItem('jwt_token');
-          // No hacemos nada más, currentUser ya es null.
         } else {
           // Usamos 'await' para esperar la respuesta de la API
           const user = await firstValueFrom(this.userService.getMe());
           this.currentUser.set(user);
           this.notificationStateService.initialize();
+          // --- CAMBIO CLAVE: Usamos forkJoin para pedir User + Interacciones ---
+          const combinedData$ = forkJoin({
+            user: this.userService.getMe(),
+            interactions: this.userService.getInteractionStatus(),
+          }).pipe(
+            map(({ user, interactions }) => {
+              // Mezclamos los dos objetos en uno solo del tipo AuthUser
+              return {
+                ...user,
+                dailyInteractionsRemaining: interactions.remaining,
+              } as unknown as AuthUser;
+            })
+          );
+
+          const authUser = await firstValueFrom(combinedData$);
+          this.currentUser.set(authUser);
+          // -----------------------------------------------------------------
         }
       } catch (error) {
-        console.error('Fallo al inicializar el estado de autenticación:', error);
+        console.error('Fallo al inicializar auth:', error);
         localStorage.removeItem('jwt_token');
       }
     }
-    // Marcamos que la autenticación está lista.
     this.authReady.set(true);
   }
 
-  private hasToken(): boolean {
-    return !!localStorage.getItem('jwt_token');
-  }
-
-  login(credentials: any): Observable<LoginResponse> {
+  // --- LOGIN ---
+  login(credentials: any): Observable<AuthUser> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
         if (response.token) {
@@ -104,6 +117,24 @@ export class Auth {
 
           this.notificationStateService.initialize();
         }
+      }),
+      // Una vez logueado, pedimos los datos completos
+      switchMap(() =>
+        forkJoin({
+          user: this.userService.getMe(),
+          interactions: this.userService.getInteractionStatus(),
+        })
+      ),
+      // Combinamos los datos
+      map(({ user, interactions }) => {
+        return {
+          ...user,
+          dailyInteractionsRemaining: interactions.remaining,
+        } as unknown as AuthUser;
+      }),
+      // Actualizamos la señal
+      tap((authUser) => {
+        this.currentUser.set(authUser);
       })
     );
   }
@@ -143,5 +174,10 @@ export class Auth {
     this.threadStateService.clearState();
     this.userStateService.clearState();
     this.categoryState.clearState();
+  }
+
+  refundInteraction(): void {
+    console.log('[AuthService] Delegando reembolso a InteractionCounter...');
+    this.interactionCounter.incrementCount();
   }
 }
