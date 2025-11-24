@@ -35,7 +35,11 @@
         routerLinkActive="mobile-nav__link--active"
         aria-label="Ver notificaciones"
       >
+        <!-- El ícono de notificación -->
         <mat-icon class="mobile-nav__icon">notifications</mat-icon>
+        @if (hasUnreadNotifications()) {
+          <span class="notification-dot"></span>
+        }
       </a>
     </li>
 

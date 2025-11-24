@@ -57,6 +57,7 @@
 
 /* --- Element: Link --- */
 .mobile-nav__link {
+  position: relative; /* Contexto para el punto de notificación */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,6 +83,21 @@
   font-size: 28px;
   height: 28px;
   width: 28px;
+}
+
+.notification-dot {
+  position: absolute;
+  /* Posicionamos el punto relativo al centro del ícono */
+  top: 50%;
+  left: 50%;
+  /* Movemos el punto hacia arriba y a la derecha */
+  transform: translate(5px, -10px);
+  width: 9px;
+  height: 9px;
+  background-color: var(--warn-color, #f44336);
+  border-radius: 50%;
+  border: 2px solid #01344a; /* Borde del color del nav para crear un espacio */
+  pointer-events: none;
 }
 
 /* --- Media Query para Escritorio (Desktop) --- */
