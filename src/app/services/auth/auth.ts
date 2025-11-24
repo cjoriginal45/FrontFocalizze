@@ -10,6 +10,7 @@ import { ViewTracking } from '../viewTracking/view-tracking';
 import { ThreadState } from '../thread-state/thread-state';
 import { UserState } from '../user-state/user-state';
 import { CategoryState } from '../category-state/category-state';
+import { NotificationState } from '../notification-state/notification-state';
 import { InteractionCounter } from '../interactionCounter/interaction-counter';
 
 export interface AuthUser {
@@ -40,6 +41,7 @@ export class Auth {
   private threadStateService = inject(ThreadState);
   private userStateService = inject(UserState);
   private categoryState = inject(CategoryState);
+  private notificationStateService = inject(NotificationState);
 
   private interactionCounter = inject(InteractionCounter);
 
@@ -64,6 +66,10 @@ export class Auth {
         if (Date.now() >= decodedToken.exp * 1000) {
           localStorage.removeItem('jwt_token');
         } else {
+          // Usamos 'await' para esperar la respuesta de la API
+          const user = await firstValueFrom(this.userService.getMe());
+          this.currentUser.set(user);
+          this.notificationStateService.initialize();
           // --- CAMBIO CLAVE: Usamos forkJoin para pedir User + Interacciones ---
           const combinedData$ = forkJoin({
             user: this.userService.getMe(),
@@ -96,6 +102,20 @@ export class Auth {
       tap((response) => {
         if (response.token) {
           localStorage.setItem('jwt_token', response.token);
+          const decodedToken: UserTokenData = jwtDecode(response.token);
+
+          // Al hacer login, construimos el objeto AuthUser con los datos del login.
+          const user: AuthUser = {
+            id: response.userId,
+            username: decodedToken.sub,
+            displayName: response.displayName,
+            avatarUrl: response.avatarUrl || undefined,
+            followingCount: response.followingCount,
+            followersCount: response.followersCount,
+          };
+          this.currentUser.set(user);
+
+          this.notificationStateService.initialize();
         }
       }),
       // Una vez logueado, pedimos los datos completos
@@ -128,6 +148,7 @@ export class Auth {
     this.threadStateService.clearState();
     this.userStateService.clearState();
     this.categoryState.clearState();
+    this.notificationStateService.clear();
     this.router.navigate(['/login']);
   }
 

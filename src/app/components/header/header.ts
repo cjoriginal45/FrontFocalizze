@@ -1,4 +1,4 @@
-import { Component, inject, Signal, ViewChild } from '@angular/core';
+import { Component, inject, Signal, ViewChild, effect  } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 import { Menu } from '../menu/menu';
@@ -7,10 +7,14 @@ import { Responsive } from '../../services/responsive/responsive';
 import { SearchBar } from '../search-bar/search-bar';
 import { Auth, AuthUser } from '../../services/auth/auth';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { NotificationState } from '../../services/notification-state/notification-state';
+
 
 @Component({
   selector: 'app-header',
-  imports: [SearchBar, Menu, MatToolbar, MatIcon, RouterModule],
+  standalone: true,
+  imports: [SearchBar, Menu, MatToolbar, MatIcon, RouterModule, CommonModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
@@ -19,11 +23,15 @@ export class Header {
   public isMobile$: Observable<boolean>;
 
   private authService = inject(Auth);
+  private notificationStateService = inject(NotificationState);
+
   public currentUser: Signal<AuthUser | null>;
+  public hasUnreadNotifications: Signal<boolean>;
 
   constructor(private responsiveService: Responsive) {
     this.isMobile$ = this.responsiveService.isMobile$;
     this.currentUser = this.authService.currentUser;
+    this.hasUnreadNotifications = this.notificationStateService.hasUnreadNotifications;
   }
 
   onMenuClick(): void {
