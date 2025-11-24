@@ -8,6 +8,7 @@ import { MatIcon } from "@angular/material/icon";
 import { Notification } from '../../../services/notification/notification';
 import { TimeAgoPipe } from "../../../pipes/time-ago/time-ago-pipe";
 import { RouterLink } from "@angular/router";
+import { NotificationState } from '../../../services/notification-state/notification-state';
 
 @Component({
   selector: 'app-notifications',
@@ -20,6 +21,7 @@ export class Notifications implements OnInit, OnDestroy {
   private notificationSubscription!: Subscription;
   private webSocketService = inject(WebSockets);
   private notificationService = inject(Notification);
+  private notificationStateService = inject(NotificationState);
 
   notifications: NotificationInterface[] = [];
   isLoading = false;
@@ -34,17 +36,19 @@ export class Notifications implements OnInit, OnDestroy {
 
   
   ngOnInit(): void {
-    // 1. Conectamos al WebSocket para recibir notificaciones en tiempo real.
+    this.notificationStateService.markAllAsRead();
+
+    // Conectamos al WebSocket para recibir notificaciones en tiempo real.
     this.webSocketService.connect();
     
-    // 2. Nos suscribimos a las nuevas notificaciones que lleguen.
+    // Nos suscribimos a las nuevas notificaciones que lleguen.
     this.notificationSubscription = this.webSocketService.notification$
       .subscribe(newNotification => {
         // Añadimos la nueva notificación al PRINCIPIO de la lista.
         this.notifications.unshift(newNotification);
       });
       
-    // 3. Cargamos la primera página del historial de notificaciones.
+    // Cargamos la primera página del historial de notificaciones.
     this.loadMoreNotifications();
   }
 

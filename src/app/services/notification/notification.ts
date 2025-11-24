@@ -6,20 +6,32 @@ import { NotificationInterface } from '../../interfaces/NotificationInterface';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Notification {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiBaseUrl+'/notifications';
+  private apiUrl = environment.apiBaseUrl + '/notifications';
 
   /**
    * Obtiene una página del historial de notificaciones desde el backend.
    */
   getNotifications(page: number, size: number): Observable<Page<NotificationInterface>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-      
+    const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+
     return this.http.get<Page<NotificationInterface>>(this.apiUrl, { params });
+  }
+
+  /**
+   * Comprueba si el usuario tiene notificaciones sin leer.
+   */
+  checkUnread(): Observable<{ hasUnread: boolean }> {
+    return this.http.get<{ hasUnread: boolean }>(`${this.apiUrl}/unread-status`);
+  }
+
+  /**
+   * Marca todas las notificaciones del usuario como leídas.
+   */
+  markAllAsRead(): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/mark-all-as-read`, {});
   }
 }

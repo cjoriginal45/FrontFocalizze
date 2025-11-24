@@ -22,9 +22,18 @@
     </a>
   </div>
   <div class="header__section header__section--right">
-    <button mat-icon-button class="header__button hide-on-mobile" aria-label="Ver notificaciones">
-      <mat-icon>notifications</mat-icon>
-    </button>
+    <a 
+      mat-icon-button
+      routerLink="/notifications"
+      class="header__button hide-on-mobile"
+      aria-label="Ver notificaciones">
+      
+      <!-- Usamos mat-badge para el punto rojo. Es más semántico. -->
+      <mat-icon [matBadge]="hasUnreadNotifications() ? '•' : ''" matBadgeColor="warn" matBadgeSize="small">
+        notifications
+      </mat-icon>
+    </a>
+
 
     @if (currentUser(); as user) {
     <!-- El enlace apunta al perfil del usuario -->
