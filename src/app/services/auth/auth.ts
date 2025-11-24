@@ -68,7 +68,7 @@ export class Auth {
         } else {
           // Usamos 'await' para esperar la respuesta de la API
           const user = await firstValueFrom(this.userService.getMe());
-          this.currentUser.set(user);
+          this.currentUser.set(user as unknown as AuthUser);
           this.notificationStateService.initialize();
           // --- CAMBIO CLAVE: Usamos forkJoin para pedir User + Interacciones ---
           const combinedData$ = forkJoin({
@@ -112,6 +112,7 @@ export class Auth {
             avatarUrl: response.avatarUrl || undefined,
             followingCount: response.followingCount,
             followersCount: response.followersCount,
+            dailyInteractionsRemaining: 0,
           };
           this.currentUser.set(user);
 
