@@ -1,0 +1,51 @@
+<app-header></app-header>
+
+<div class="page-wrapper">
+    <div class="settings-container">
+  
+      <div class="settings-header">
+        <button mat-icon-button class="back-button" aria-label="Volver">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h2 class="header-title">Configuración</h2>
+      </div>
+  
+      <main class="content-area">
+        
+        <h3 class="section-title">Idioma</h3>
+  
+        <div class="watermark-container">
+          <div class="watermark">Focalizze</div>
+        </div>
+  
+        <div class="language-card">
+          
+          <div class="form-container">
+            <label class="input-label">Selecciona tu idioma:</label>
+            
+            <mat-form-field appearance="outline" class="custom-select-field">
+              <mat-select [(value)]="selectedLanguage" panelClass="custom-select-panel">
+                <mat-option *ngFor="let lang of languages" [value]="lang.code">
+                  {{ lang.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+  
+            <p class="helper-text">
+              La aplicación se reiniciará para aplicar el nuevo idioma.
+            </p>
+          </div>
+  
+          <div class="actions-container">
+            <button mat-flat-button class="btn-confirm" (click)="saveLanguage()">
+              Confirmar cambios
+            </button>
+          </div>
+  
+        </div>
+  
+      </main>
+    </div>
+  </div>
+
+  <app-botton-nav></app-botton-nav>

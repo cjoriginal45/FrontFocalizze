@@ -1,0 +1,57 @@
+<app-header></app-header>
+
+<div class="page-wrapper">
+    <div class="settings-container">
+        
+        <div class="settings-header">
+            <button mat-icon-button class="back-button">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <h2 class="header-title">Cuenta y Perfil</h2>
+        </div>
+
+
+        <main class="profile-content">
+            <mat-card class="profile-card">
+                <mat-card-content>
+                    
+                    <div class="top-section">
+                        <div class="avatar-wrapper">
+                            <div class="avatar-circle">
+                                <img [src]="user.avatarUrl" class="profile-img" alt="Avatar">
+                            </div>
+                        </div>
+
+                        <div class="username-wrapper">
+                            <label class="field-label">Nombre de usuario:</label>
+                            <div class="custom-input-box">
+                                {{ user.username }}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="bio-section">
+                        <label class="field-label">Biografía:</label>
+                        <div class="bio-box">
+                            {{ user.biography }}
+                        </div>
+                    </div>
+
+                    <div class="action-section">
+                        <button class="btn-export">
+                            Exportar mis datos personales
+                            <mat-icon class="icon-right">download</mat-icon>
+                        </button>
+                        <p class="disclaimer-text">
+                            Descarga un archivo con toda la información asociada a tu cuenta, conforme al reglamento GDPR.
+                        </p>
+                    </div>
+
+                </mat-card-content>
+            </mat-card>
+        </main>
+    </div>
+</div>
+
+<app-botton-nav></app-botton-nav>
