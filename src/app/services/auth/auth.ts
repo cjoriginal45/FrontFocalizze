@@ -10,6 +10,7 @@ import { ViewTracking } from '../viewTracking/view-tracking';
 import { ThreadState } from '../thread-state/thread-state';
 import { UserState } from '../user-state/user-state';
 import { CategoryState } from '../category-state/category-state';
+import { NotificationState } from '../notification-state/notification-state';
 
 export interface AuthUser {
   id: number;
@@ -39,6 +40,7 @@ export class Auth {
   private threadStateService = inject(ThreadState);
   private userStateService = inject(UserState);
   private categoryState = inject(CategoryState);
+  private notificationStateService = inject(NotificationState);
 
   // SIGNAL: This is the "source of truth" for the session state.
   isLoggedIn = computed(() => !!this.currentUser());
@@ -67,6 +69,7 @@ export class Auth {
           // Usamos 'await' para esperar la respuesta de la API
           const user = await firstValueFrom(this.userService.getMe());
           this.currentUser.set(user);
+          this.notificationStateService.initialize();
         }
       } catch (error) {
         console.error('Fallo al inicializar el estado de autenticación:', error);
@@ -98,6 +101,8 @@ export class Auth {
             followersCount: response.followersCount,
           };
           this.currentUser.set(user);
+
+          this.notificationStateService.initialize();
         }
       })
     );
@@ -112,6 +117,7 @@ export class Auth {
     this.threadStateService.clearState();
     this.userStateService.clearState();
     this.categoryState.clearState();
+    this.notificationStateService.clear();
     this.router.navigate(['/login']);
   }
 

@@ -25,13 +25,13 @@ export class Notification {
    * Comprueba si el usuario tiene notificaciones sin leer.
    */
   checkUnread(): Observable<{ hasUnread: boolean }> {
-    return this.http.get<{ hasUnread: boolean }>(`${this.apiUrl}/unread-status`);
+    return this.http.get<{ hasUnread: boolean }>(`${this.apiUrl}/unread`);
   }
 
   /**
    * Marca todas las notificaciones del usuario como leídas.
    */
   markAllAsRead(): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/mark-all-as-read`, {});
+    return this.http.post<void>(`${this.apiUrl}/mark-as-read`, {});
   }
 }

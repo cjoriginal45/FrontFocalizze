@@ -12,7 +12,7 @@ import { NotificationState } from '../../../services/notification-state/notifica
 
 @Component({
   selector: 'app-notifications',
-  imports: [Header, Suggestions, MatIcon, TimeAgoPipe, RouterLink],
+  imports: [Header, MatIcon, TimeAgoPipe, RouterLink],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css'
 })

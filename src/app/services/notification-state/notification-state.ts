@@ -20,6 +20,7 @@ export class NotificationState {
    * Inicializa el servicio. Se llama cuando el usuario se loguea.
    */
   initialize(): void {
+
     // 1. Conectamos al WebSocket
     this.webSocketService.connect();
 

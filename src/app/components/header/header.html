@@ -11,28 +11,29 @@
     >
       <mat-icon>menu</mat-icon>
     </button>
-    <a href="/" class="header__logo-container hide-on-mobile"
+    <a href="/feed" class="header__logo-container hide-on-mobile"
       ><img class="header__logo" src="/assets/images/focalizze-logo.webp" alt="Focalizze logo"
     /></a>
   </div>
   <div class="header__section header__section--center">
     <app-search-bar class="header__section hide-on-mobile"></app-search-bar>
-    <a href="/" class="header__logo-container show-on-mobile">
+    <a href="/feed" class="header__logo-container show-on-mobile">
       <img class="header__logo" src="/assets/images/focalizze-logo-short.webp" alt="" />
     </a>
   </div>
   <div class="header__section header__section--right">
     <a 
-      mat-icon-button
-      routerLink="/notifications"
-      class="header__button hide-on-mobile"
-      aria-label="Ver notificaciones">
-      
-      <!-- Usamos mat-badge para el punto rojo. Es más semántico. -->
-      <mat-icon [matBadge]="hasUnreadNotifications() ? '•' : ''" matBadgeColor="warn" matBadgeSize="small">
-        notifications
-      </mat-icon>
-    </a>
+    routerLink="/notifications"
+    mat-icon-button
+    class="header__button notification-button hide-on-mobile"
+    aria-label="Ver notificaciones">
+    
+    <!-- El ícono de notificación -->
+    <mat-icon>notifications</mat-icon>
+    @if (hasUnreadNotifications()) {
+      <span class="notification-dot"></span>
+    }
+  </a>
 
 
     @if (currentUser(); as user) {

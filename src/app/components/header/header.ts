@@ -1,4 +1,4 @@
-import { Component, inject, Signal, ViewChild } from '@angular/core';
+import { Component, inject, Signal, ViewChild, effect  } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 import { Menu } from '../menu/menu';
@@ -9,13 +9,12 @@ import { Auth, AuthUser } from '../../services/auth/auth';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NotificationState } from '../../services/notification-state/notification-state';
-import { MatBadgeModule } from '@angular/material/badge';
 
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [SearchBar, Menu, MatToolbar, MatIcon, RouterModule, CommonModule,MatBadgeModule],
+  imports: [SearchBar, Menu, MatToolbar, MatIcon, RouterModule, CommonModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
