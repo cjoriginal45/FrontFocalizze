@@ -5,12 +5,12 @@
     <a href="#" class="f-d-container__option" routerLink="/discover">Descubrir</a>
   </div>
   @if (authService.isLoggedIn()) {
-    <div class="f-d-container__interactions">
-      <span>
-        Interacciones disponibles: 
-        {{ interactionCounterService.remainingInteractions() ?? '...' }} / 
-        {{ interactionCounterService.interactionLimit() ?? '...' }}
-      </span>
-    </div>
+  <div class="f-d-container__interactions">
+    <span>
+      Interacciones disponibles:
+      {{ interactionCounterService.remainingInteractions() ?? '...' }} /
+      {{ interactionCounterService.interactionLimit() ?? '...' }}
+    </span>
+  </div>
   }
 </section>
