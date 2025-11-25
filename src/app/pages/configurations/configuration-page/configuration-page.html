@@ -9,7 +9,7 @@
     Page header using MatToolbar for a consistent structure.
   -->
   <mat-toolbar class="settings-toolbar">
-    <button mat-icon-button class="back-button" aria-label="Volver">
+    <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Volver">
       <mat-icon class="arrow-icon">arrow_back</mat-icon>
     </button>
     <span>Configuración</span>
