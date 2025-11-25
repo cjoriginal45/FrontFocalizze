@@ -1,0 +1,115 @@
+:host {
+  display: block;
+  background-color: var(--background-color, #fdfdfd);
+  min-height: 100vh;
+}
+
+.page-container {
+  padding-top: 60px; /* Header */
+  padding-bottom: 80px; /* Bottom Nav */
+  position: relative;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* --- MARCA DE AGUA --- */
+.watermark-container {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.watermark-text {
+  font-size: clamp(3rem, 18vw, 8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.04);
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* --- Cabecera --- */
+.page-header {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.page-header h1 {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #5f6368;
+  margin: 0;
+  margin-right: 40px; /* Compensación visual */
+}
+
+.page-header mat-icon {
+  color: #01344a; /* Azul Focalizze */
+}
+
+/* --- Contenido --- */
+.content-wrapper {
+  width: 100%;
+  max-width: 700px;
+  padding: 0 16px;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.section-title {
+  color: #01344a; /* Azul Focalizze */
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 20px 0 16px 4px;
+}
+
+/* --- Tarjeta --- */
+.settings-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+/* --- Items --- */
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 20px; /* Un poco más de padding vertical para este ítem único */
+  border-bottom: none; /* Al ser único, no lleva borde abajo */
+  gap: 16px; /* Espacio entre texto y toggle */
+}
+
+.item-text {
+  font-size: 0.95rem;
+  color: #4a5568; /* Gris azulado suave, similar a tu imagen */
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Ajustes Responsive */
+@media (min-width: 768px) {
+  .page-container {
+    padding-bottom: 40px;
+  }
+}

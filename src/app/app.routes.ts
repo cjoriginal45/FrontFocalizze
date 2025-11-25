@@ -21,6 +21,7 @@ import { NotificationSettings } from './pages/configurations/notification-settin
 import { PrivacyBlocking } from './pages/configurations/privacy-blocking/privacy-blocking/privacy-blocking';
 import { LanguageSettings } from './pages/configurations/language-settings/language-settings/language-settings';
 import { SecurityAccess } from './pages/configurations/security-access/security-access';
+import { FocusMode } from './pages/configurations/focus-mode/focus-mode';
 
 export const routes: Routes = [
   // ... (rutas públicas como login, register)
@@ -50,6 +51,7 @@ export const routes: Routes = [
       { path: 'privacy-blocking', component: PrivacyBlocking },
       { path: 'language-settings', component: LanguageSettings },
       { path: 'security-access', component: SecurityAccess },
+      { path: 'focus-mode', component: FocusMode },
     ],
   },
 ];
