@@ -22,6 +22,7 @@ import { PrivacyBlocking } from './pages/configurations/privacy-blocking/privacy
 import { LanguageSettings } from './pages/configurations/language-settings/language-settings/language-settings';
 import { SecurityAccess } from './pages/configurations/security-access/security-access';
 import { FocusMode } from './pages/configurations/focus-mode/focus-mode';
+import { ThemePage } from './pages/configurations/theme-page/theme-page';
 
 export const routes: Routes = [
   // ... (rutas públicas como login, register)
@@ -52,6 +53,7 @@ export const routes: Routes = [
       { path: 'language-settings', component: LanguageSettings },
       { path: 'security-access', component: SecurityAccess },
       { path: 'focus-mode', component: FocusMode },
+      { path: 'theme', component: ThemePage },
     ],
   },
 ];
