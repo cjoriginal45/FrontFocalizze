@@ -20,6 +20,7 @@ import { CountProfile } from './pages/configurations/count-profile/count-profile
 import { NotificationSettings } from './pages/configurations/notification-settings/notification-settings/notification-settings';
 import { PrivacyBlocking } from './pages/configurations/privacy-blocking/privacy-blocking/privacy-blocking';
 import { LanguageSettings } from './pages/configurations/language-settings/language-settings/language-settings';
+import { SecurityAccess } from './pages/configurations/security-access/security-access';
 
 export const routes: Routes = [
   // ... (rutas públicas como login, register)
@@ -43,11 +44,12 @@ export const routes: Routes = [
       { path: 'saved', component: SavedThreads },
       { path: 'search-mobile', component: SearchMobile },
       { path: 'category/:name', component: CategoryPage },
-      {path: 'notifications', component: Notifications},
-      {path: 'count-profile', component: CountProfile},
-      {path: 'notifications-settings', component: NotificationSettings},
-      {path: 'privacy-blocking', component: PrivacyBlocking},
-      {path: 'language-settings', component: LanguageSettings},
+      { path: 'notifications', component: Notifications },
+      { path: 'count-profile', component: CountProfile },
+      { path: 'notifications-settings', component: NotificationSettings },
+      { path: 'privacy-blocking', component: PrivacyBlocking },
+      { path: 'language-settings', component: LanguageSettings },
+      { path: 'security-access', component: SecurityAccess },
     ],
   },
 ];

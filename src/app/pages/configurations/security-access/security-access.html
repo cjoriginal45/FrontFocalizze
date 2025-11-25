@@ -1,0 +1,58 @@
+<app-header></app-header>
+
+<div class="page-container">
+  <!-- Marca de agua de fondo (Focalizze) -->
+  <div class="watermark-container">
+    <span class="watermark-text">FOCALIZZE</span>
+  </div>
+
+  <!-- Cabecera de navegación -->
+  <header class="page-header">
+    <button mat-icon-button (click)="goBack()" aria-label="Volver atrás">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Configuración</h1>
+  </header>
+
+  <main class="content-wrapper">
+    <!-- Título de la sección -->
+    <h2 class="section-title">Seguridad y Acceso</h2>
+
+    <!-- Tarjeta de configuración -->
+    <div class="settings-card">
+      <!-- Item 1: Cambiar contraseña -->
+      <div class="setting-item clickable" (click)="changePassword()" matRipple>
+        <div class="item-left">
+          <mat-icon class="item-icon">vpn_key</mat-icon>
+          <span class="item-text">Cambiar contraseña</span>
+        </div>
+        <mat-icon class="chevron-icon">chevron_right</mat-icon>
+      </div>
+
+      <!-- Item 2: Verificación en 2 pasos -->
+      <div class="setting-item">
+        <div class="item-left">
+          <mat-icon class="item-icon">security</mat-icon>
+          <!-- O verified_user -->
+          <span class="item-text">Verificación en 2 pasos</span>
+        </div>
+        <mat-slide-toggle
+          color="primary"
+          [checked]="isTwoFactorEnabled"
+          (change)="toggleTwoFactor()"
+        >
+        </mat-slide-toggle>
+      </div>
+
+      <!-- Item 3: Botón grande de cerrar sesión -->
+      <div class="action-container">
+        <button class="logout-all-btn" (click)="logoutAllDevices()">
+          Cerrar sesión en todos los dispositivos
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Barra de navegación inferior -->
+<app-botton-nav></app-botton-nav>
