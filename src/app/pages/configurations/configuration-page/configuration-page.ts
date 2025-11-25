@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
 import { MatNavList } from '@angular/material/list';
 import { Header } from '../../../components/header/header';
 import { RouterLink } from '@angular/router';
 import { BottonNav } from '../../../components/botton-nav/botton-nav';
+import { CommonModule, Location as AngularLocation } from '@angular/common';
 
 @Component({
   selector: 'app-configuration-page',
@@ -12,4 +13,10 @@ import { BottonNav } from '../../../components/botton-nav/botton-nav';
   templateUrl: './configuration-page.html',
   styleUrl: './configuration-page.css',
 })
-export class ConfigurationPage {}
+export class ConfigurationPage {
+  private location = inject(AngularLocation);
+
+  goBack(): void {
+    this.location.back();
+  }
+}
