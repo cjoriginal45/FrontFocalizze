@@ -15,6 +15,7 @@
   flex-direction: column;
   min-height: calc(100vh - 100px);
   background-color: var(--background-color);
+  padding-bottom: 80px;
 }
 
 .settings-toolbar {
@@ -153,6 +154,7 @@ mat-nav-list {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    padding-bottom: 0;
   }
 
   .settings-toolbar span {

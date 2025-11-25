@@ -15,10 +15,19 @@ import { UserState } from '../../../services/user-state/user-state';
 import { MatDialog } from '@angular/material/dialog';
 import { Comments } from '../../../components/comments/comments';
 import { threadService } from '../../../services/thread/thread';
+import { BottonNav } from '../../../components/botton-nav/botton-nav';
 
 @Component({
   selector: 'app-search-results',
-  imports: [CommonModule, MatIconModule, MatButtonModule, Thread, Header, FollowingDiscovering],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    Thread,
+    Header,
+    FollowingDiscovering,
+    BottonNav,
+  ],
   templateUrl: './search-results.html',
   styleUrl: './search-results.css',
 })
@@ -31,7 +40,7 @@ export class SearchResults implements OnInit {
   private userStateService = inject(UserState);
   public dialog = inject(MatDialog);
   private location = inject(Location);
-  private threadService = inject(threadService); 
+  private threadService = inject(threadService);
 
   // --- Propiedades de Estado ---
   threadIds: number[] = [];
@@ -45,7 +54,7 @@ export class SearchResults implements OnInit {
         switchMap((params) => {
           this.isLoading = true;
           this.threadIds = [];
-          
+
           const searchQuery = params.get('q');
           const threadIdStr = params.get('threadId');
 
@@ -53,14 +62,13 @@ export class SearchResults implements OnInit {
             // Devuelve Observable<FeedThreadDto>
             const threadId = Number(threadIdStr);
             return this.threadService.getThreadById(threadId).pipe(
-              map(thread => [thread]) // Lo convierte en Observable<FeedThreadDto[]>
+              map((thread) => [thread]) // Lo convierte en Observable<FeedThreadDto[]>
             );
-          } 
-          else if (searchQuery) {
+          } else if (searchQuery) {
             // Devuelve Observable<ThreadResponse[]>
             return this.searchService.searchContent(searchQuery);
           }
-          
+
           // Devuelve un Observable de array vacío
           return of([]);
         })
@@ -75,12 +83,12 @@ export class SearchResults implements OnInit {
           if (results.length > 0 && 'author' in results[0]) {
             // Si el primer elemento tiene 'author', es un array de ThreadResponse[]
             // y necesita ser mapeado.
-            mappedThreads = (results as ThreadResponse[]).map(dto => this.mapDtoToViewModel(dto));
+            mappedThreads = (results as ThreadResponse[]).map((dto) => this.mapDtoToViewModel(dto));
           } else {
             // Si no, ya es un array de FeedThreadDto[] (o está vacío) y no necesita mapeo.
             mappedThreads = results as FeedThreadDto[];
           }
-          
+
           // --- El resto de la lógica es la misma ---
           if (mappedThreads.length > 0) {
             const usersFromThreads = mappedThreads.map((t) => t.user);
@@ -88,13 +96,13 @@ export class SearchResults implements OnInit {
             this.threadStateService.loadThreads(mappedThreads);
             this.threadIds = mappedThreads.map((t) => t.id);
           }
-          
+
           this.isLoading = false;
         },
         error: (err) => {
           console.error('Error en la página de búsqueda', err);
           this.isLoading = false;
-        }
+        },
       });
 
     this.threadStateService.threadDeleted$.subscribe((deletedThreadId) => {

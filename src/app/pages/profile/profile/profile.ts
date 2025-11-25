@@ -19,6 +19,7 @@ import { FollowButton } from '../../../components/follow-button/follow-button/fo
 import { UserInterface } from '../../../interfaces/UserInterface';
 import { UserState } from '../../../services/user-state/user-state';
 import { CreateThreadButton } from '../../../components/create-thread-button/create-thread-button';
+import { BottonNav } from '../../../components/botton-nav/botton-nav';
 
 @Component({
   selector: 'app-profile',
@@ -31,6 +32,7 @@ import { CreateThreadButton } from '../../../components/create-thread-button/cre
     Header,
     FollowButton,
     CreateThreadButton,
+    BottonNav,
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
