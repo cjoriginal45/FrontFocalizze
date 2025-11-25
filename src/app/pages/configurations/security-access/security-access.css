@@ -1,0 +1,186 @@
+:host {
+  display: block;
+  background-color: var(--background-color, #fdfdfd); /* Fondo gris muy claro */
+  min-height: 100vh;
+}
+
+/* --- Layout Principal --- */
+.page-container {
+  /* Padding top para compensar el header fijo de 60px */
+  padding-top: 60px;
+  padding-bottom: 80px; /* Espacio para el nav inferior */
+  position: relative;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra todo horizontalmente */
+  overflow: hidden;
+}
+
+/* --- Marca de Agua --- */
+/* --- NUEVA MARCA DE AGUA (TEXTO) --- */
+.watermark-container {
+  position: absolute;
+  top: 40%; /* Ajustado para que quede detrás de la tarjeta */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+  pointer-events: none; /* Crucial para poder hacer click encima */
+}
+
+.watermark-text {
+  /* 
+     Truco responsive: 
+     Mínimo 3rem, Ideal 18% del ancho de pantalla, Máximo 8rem 
+  */
+  font-size: clamp(3rem, 18vw, 8rem);
+  font-weight: 900; /* Extra bold, muy grueso */
+  text-transform: uppercase;
+  color: rgba(1, 52, 74, 0.04); /* Muy sutil */
+  letter-spacing: 4px; /* Espaciado entre letras */
+  font-family: 'Roboto', sans-serif; /* O la fuente de tu marca */
+  white-space: nowrap; /* Que no se rompa en dos líneas */
+  user-select: none;
+}
+
+/* --- Cabecera con flecha --- */
+.page-header {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.page-header h1 {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #5f6368;
+  margin: 0;
+  /* Compensamos visualmente el ancho del botón back para centrar perfecto */
+  margin-right: 40px;
+}
+
+.page-header mat-icon {
+  color: #01344a;
+}
+
+/* --- Contenido --- */
+.content-wrapper {
+  width: 100%;
+  max-width: 700px;
+  padding: 0 16px;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.section-title {
+  color: #01344a;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 20px 0 16px 4px;
+}
+
+/* --- Tarjeta Blanca --- */
+.settings-card {
+  background-color: rgba(255, 255, 255, 0.5); /* Ligeramente transparente para el watermark */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  overflow: hidden; /* Para que el ripple no se salga */
+}
+
+/* --- Items de la lista --- */
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  min-height: 24px;
+  transition: background-color 0.2s;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background-color: #f9f9f9;
+}
+
+/* Parte izquierda del item (Icono + Texto) */
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.item-icon {
+  color: #01344a; /* Color de marca oscuro */
+}
+
+.item-text {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 400;
+}
+
+.chevron-icon {
+  color: #ccc;
+}
+
+/* --- Botón Cerrar Sesión --- */
+.action-container {
+  padding: 24px 20px;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #f0f0f0; /* Separador sutil */
+}
+
+.logout-all-btn {
+  background-color: #01344a; /* Azul oscuro de Focalizze */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(1, 52, 74, 0.2);
+  transition: all 0.2s ease;
+}
+
+.logout-all-btn:hover {
+  background-color: #024b6a;
+  transform: translateY(-1px);
+}
+
+.logout-all-btn:active {
+  transform: translateY(0);
+}
+
+/* --- Desktop Adjustments --- */
+@media (min-width: 768px) {
+  .page-container {
+    padding-bottom: 40px; /* Menos espacio abajo porque no hay nav bar */
+  }
+
+  .logout-all-btn {
+    width: auto; /* Botón no ocupa todo el ancho en PC */
+    min-width: 300px;
+  }
+}

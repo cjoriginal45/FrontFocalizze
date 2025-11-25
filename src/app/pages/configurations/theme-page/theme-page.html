@@ -1,0 +1,67 @@
+<app-header></app-header>
+
+<div class="page-container">
+  <!-- MARCA DE AGUA (TEXTO GIGANTE) -->
+  <div class="watermark-container">
+    <span class="watermark-text">FOCALIZZE</span>
+  </div>
+
+  <!-- Cabecera -->
+  <header class="page-header">
+    <button mat-icon-button (click)="goBack()" aria-label="Volver atrás">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Configuración</h1>
+  </header>
+
+  <main class="content-wrapper">
+    <h2 class="section-title">Tema</h2>
+
+    <!-- Tarjeta de configuración -->
+    <div class="settings-card">
+      <!-- Opción: CLARO -->
+      <div
+        class="theme-item clickable"
+        [class.active-theme]="selectedTheme === 'light'"
+        (click)="setTheme('light')"
+        matRipple
+      >
+        <div class="item-left">
+          <!-- Icono de sol -->
+          <mat-icon class="item-icon">light_mode</mat-icon>
+          <span class="item-text">Claro</span>
+        </div>
+
+        <!-- Mostramos el check solo si está seleccionado -->
+        @if (selectedTheme === 'light') {
+        <mat-icon class="check-icon">check_circle</mat-icon>
+        } @else {
+        <!-- Círculo vacío para indicar que es seleccionable (radio behavior) -->
+        <mat-icon class="radio-unchecked">radio_button_unchecked</mat-icon>
+        }
+      </div>
+
+      <!-- Opción: OSCURO -->
+      <div
+        class="theme-item clickable"
+        [class.active-theme]="selectedTheme === 'dark'"
+        (click)="setTheme('dark')"
+        matRipple
+      >
+        <div class="item-left">
+          <!-- Icono de luna -->
+          <mat-icon class="item-icon">dark_mode</mat-icon>
+          <span class="item-text">Oscuro</span>
+        </div>
+
+        @if (selectedTheme === 'dark') {
+        <mat-icon class="check-icon">check_circle</mat-icon>
+        } @else {
+        <mat-icon class="radio-unchecked">radio_button_unchecked</mat-icon>
+        }
+      </div>
+    </div>
+  </main>
+</div>
+
+<app-botton-nav></app-botton-nav>
