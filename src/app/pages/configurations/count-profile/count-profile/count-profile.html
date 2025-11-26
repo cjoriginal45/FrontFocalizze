@@ -2,7 +2,6 @@
 
 <div class="page-wrapper">
     <div class="settings-container">
-        
         <div class="settings-header">
             <button mat-icon-button class="back-button">
                 <mat-icon>arrow_back</mat-icon>
@@ -10,36 +9,31 @@
             <h2 class="header-title">Cuenta y Perfil</h2>
         </div>
 
-
         <main class="profile-content">
-            <mat-card class="profile-card">
+            @if (user(); as userData) {
+              <mat-card class="profile-card" #profileCard>
                 <mat-card-content>
-                    
                     <div class="top-section">
                         <div class="avatar-wrapper">
                             <div class="avatar-circle">
-                                <img [src]="user.avatarUrl" class="profile-img" alt="Avatar">
+                                <img [src]="userData.avatarUrl" class="profile-img" alt="Avatar" crossOrigin="anonymous">
                             </div>
                         </div>
-
                         <div class="username-wrapper">
                             <label class="field-label">Nombre de usuario:</label>
                             <div class="custom-input-box">
-                                {{ user.username }}
+                                {{ userData.username }}
                             </div>
                         </div>
                     </div>
-
-
                     <div class="bio-section">
                         <label class="field-label">Biografía:</label>
                         <div class="bio-box">
-                            {{ user.biography }}
+                            {{ userData.biography }}
                         </div>
                     </div>
-
                     <div class="action-section">
-                        <button class="btn-export">
+                        <button class="btn-export" (click)="downloadProfileAsPDF()">
                             Exportar mis datos personales
                             <mat-icon class="icon-right">download</mat-icon>
                         </button>
@@ -47,9 +41,13 @@
                             Descarga un archivo con toda la información asociada a tu cuenta, conforme al reglamento GDPR.
                         </p>
                     </div>
-
                 </mat-card-content>
             </mat-card>
+            } @else if (isLoading()) {
+              <p>Cargando perfil...</p> <!-- Opcional: un indicador de carga -->
+            } @else {
+              <p>No se pudieron cargar los datos del perfil.</p> <!-- Mensaje de error -->
+            }
         </main>
     </div>
 </div>
