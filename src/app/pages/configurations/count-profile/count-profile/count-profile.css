@@ -243,3 +243,7 @@
         font-size: 0.9rem;
     }
 }
+
+.hide-for-pdf {
+    display: none !important;
+  }

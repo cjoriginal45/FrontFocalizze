@@ -7,6 +7,7 @@ import { ProfileInterface } from '../../interfaces/ProfileInterface';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { Page } from '../../interfaces/PageInterface';
 import { UserInterface } from '../../interfaces/UserInterface';
+import { UserProfileDownload } from '../../interfaces/UserProfileDownload';
 
 export interface ProfileUpdateData {
   displayName: string;
@@ -64,5 +65,12 @@ export class ProfileService {
 
   getUserForFollowButton(username: string): Observable<UserInterface> {
     return this.http.get<UserInterface>(`${this.usersApiUrl}/${username}`);
+  }
+
+   /**
+   * Obtiene los datos de un perfil para la página de "Cuenta y Perfil".
+   */
+   getProfileForDownload(username: string): Observable<UserProfileDownload> {
+    return this.http.get<UserProfileDownload>(`${this.apiUrl}/${username}/download`);
   }
 }
