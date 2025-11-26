@@ -24,6 +24,7 @@ import { SecurityAccess } from './pages/configurations/security-access/security-
 import { FocusMode } from './pages/configurations/focus-mode/focus-mode';
 import { ThemePage } from './pages/configurations/theme-page/theme-page';
 
+
 export const routes: Routes = [
   // ... (rutas públicas como login, register)
   {
@@ -54,6 +55,8 @@ export const routes: Routes = [
       { path: 'security-access', component: SecurityAccess },
       { path: 'focus-mode', component: FocusMode },
       { path: 'theme', component: ThemePage },
+      { path: 'password-recovery', component: PasswordRecovery },
+      { path: 'reset-password', component: PasswordRecovery },
     ],
   },
 ];
