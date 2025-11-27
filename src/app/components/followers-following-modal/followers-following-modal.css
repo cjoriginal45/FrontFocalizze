@@ -22,14 +22,14 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: bold;
+  color: var(--primary-color);
 }
 
 .close-btn {
   position: absolute;
   right: 8px;
-  color: #666;
+  color: rgba(1, 52, 74, 0.7);
 }
-
 /* Tab Group Ajustes */
 ::ng-deep .mat-mdc-tab-body-wrapper {
   flex-grow: 1;
