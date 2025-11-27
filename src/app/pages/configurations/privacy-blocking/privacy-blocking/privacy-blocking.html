@@ -31,41 +31,6 @@
           </div>
         </div>
   
-        <div class="subsection">
-          <h4 class="subsection-label">Quien puede seguirme?</h4>
-          
-          <div class="privacy-options-container">
-            
-            <div class="privacy-row">
-              <span class="privacy-label">Cualquier usuario</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="privacySettings.anyUser"
-                (change)="onPrivacyChange('any')">
-              </mat-slide-toggle>
-            </div>
-  
-            <div class="privacy-row">
-              <span class="privacy-label">Solo los que acepte</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="privacySettings.onlyAccepted"
-                (change)="onPrivacyChange('accepted')">
-              </mat-slide-toggle>
-            </div>
-  
-            <div class="privacy-row">
-              <span class="privacy-label">Niguno</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="privacySettings.none"
-                (change)="onPrivacyChange('none')">
-              </mat-slide-toggle>
-            </div>
-  
-          </div>
-        </div>
-  
       </main>
     </div>
   </div>

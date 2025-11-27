@@ -263,4 +263,9 @@ export class Thread {
       }
     });
   }
+
+  openReportModal(): void{
+    // Implementar lógica para abrir el modal de reporte
+    console.log('Abrir modal de reporte para el hilo:', this.threadId);
+  }
 }
