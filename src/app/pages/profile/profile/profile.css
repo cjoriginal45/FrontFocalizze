@@ -146,6 +146,17 @@
   right: 24px;
 }
 
+.clickable {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.clickable:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 /* --- RESPONSIVE PARA MÓVIL (VERSIÓN MEJORADA) --- */
 @media (max-width: 768px) {
   .profile-page {
