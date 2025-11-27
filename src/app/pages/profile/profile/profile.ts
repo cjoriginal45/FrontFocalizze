@@ -23,6 +23,7 @@ import { BottonNav } from '../../../components/botton-nav/botton-nav';
 import { MatMenu, MatMenuModule } from "@angular/material/menu";
 import { Block } from '../../../services/block/block';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmMatDialog } from '../../../components/mat-dialog/mat-dialog/mat-dialog';
 
 @Component({
   selector: 'app-profile',
@@ -236,8 +237,15 @@ export class Profile implements OnInit {
     if (!this.profile) return;
 
     // Opcional: Modal de confirmación
-    // const dialogRef = this.dialog.open(ConfirmMatDialog, { ... });
-    // dialogRef.afterClosed().subscribe(result => { if (result) { ... } });
+    /*const dialogRef = this.dialog.open(ConfirmMatDialog, { 
+      data: {
+        title: '¿Bloquear Usuario?',
+        message: `¿Estás seguro de que deseas bloquear a @${this.profile.username}? No podrás ver su perfil ni interactuar con él.`,
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => { if (result) { 
+      
+    }*/
 
     const usernameToBlock = this.profile.username;
 

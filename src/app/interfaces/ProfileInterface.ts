@@ -12,4 +12,5 @@ export interface ProfileInterface {
   isFollowing: boolean;
   followingCount: number;
   followersCount: number;
+  isBlocked?: boolean;
 }

@@ -6,4 +6,5 @@ export interface UserInterface {
   isFollowing: boolean;
   followingCount: number;
   followersCount: number;
+  isBlocked?: boolean; 
 }
