@@ -67,7 +67,17 @@
         (followStateChanged)="onFollowChange($event)"
       >
       </app-follow-button>
+      <button mat-icon-button [matMenuTriggerFor]="reportMenu" aria-label="Reportar hilo">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #reportMenu="matMenu">
+        <button mat-menu-item (click)="blockUser()">
+          <mat-icon>block</mat-icon>
+          <span>Bloquear Usuario</span>
+        </button>
+      </mat-menu>
     </div>
+    
     }
   </header>
 

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnInit, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Thread } from '../../../components/thread/thread';
 import { Auth } from '../../../services/auth/auth';
 import { ThreadResponse } from '../../../interfaces/ThreadResponseDto';
@@ -20,6 +20,9 @@ import { UserInterface } from '../../../interfaces/UserInterface';
 import { UserState } from '../../../services/user-state/user-state';
 import { CreateThreadButton } from '../../../components/create-thread-button/create-thread-button';
 import { BottonNav } from '../../../components/botton-nav/botton-nav';
+import { MatMenu, MatMenuModule } from "@angular/material/menu";
+import { Block } from '../../../services/block/block';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile',
@@ -33,7 +36,8 @@ import { BottonNav } from '../../../components/botton-nav/botton-nav';
     FollowButton,
     CreateThreadButton,
     BottonNav,
-  ],
+    MatMenuModule
+],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
@@ -45,7 +49,9 @@ export class Profile implements OnInit {
   private dialog = inject(MatDialog);
   private threadStateService = inject(ThreadState);
   private userStateService = inject(UserState);
-
+  private blockService = inject(Block); // <-- INYECTAR SERVICIO
+  private router = inject(Router);             // <-- INYECTAR ROUTER
+  private snackBar = inject(MatSnackBar); 
   // --- Propiedades de Estado ---
   profile: ProfileInterface | null = null;
   threadIds: number[] = [];
@@ -219,5 +225,39 @@ export class Profile implements OnInit {
       // También actualizamos el estado en el UserStateService por si acaso
       this.userStateService.updateFollowingState(this.profile.username, isNowFollowing);
     }
+  }
+
+  openReportModal(): void {
+    // Lógica para abrir el modal de reporte
+    console.log('Abrir modal de reporte');
+  }
+
+  blockUser(): void {
+    if (!this.profile) return;
+
+    // Opcional: Modal de confirmación
+    // const dialogRef = this.dialog.open(ConfirmMatDialog, { ... });
+    // dialogRef.afterClosed().subscribe(result => { if (result) { ... } });
+
+    const usernameToBlock = this.profile.username;
+
+    this.blockService.toggleBlock(usernameToBlock).subscribe({
+      next: (response) => {
+        if (response.isBlocked) {
+          // Si el bloqueo fue exitoso, el perfil ya no es accesible.
+          // Redirigimos al usuario a la página de inicio.
+          this.snackBar.open(`Has bloqueado a @${usernameToBlock}.`, 'Cerrar', { duration: 3000 });
+          this.router.navigate(['/home']); // O '/feed'
+        } else {
+          // En teoría, no deberías poder desbloquear desde un perfil que no puedes ver,
+          // pero manejamos el caso por si acaso.
+          this.snackBar.open(`Has desbloqueado a @${usernameToBlock}.`, 'Cerrar', { duration: 3000 });
+        }
+      },
+      error: (err) => {
+        console.error("Error al bloquear al usuario", err);
+        this.snackBar.open('No se pudo completar la acción.', 'Cerrar', { duration: 3000 });
+      }
+    });
   }
 }

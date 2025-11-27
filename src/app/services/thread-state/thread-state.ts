@@ -18,7 +18,9 @@ export class ThreadState {
   private saveToggledSubscription: Subscription;
 
   private threadDeletedSource = new Subject<number>();
-  threadDeleted$ = this.threadDeletedSource.asObservable();
+  public threadDeleted$ = new Subject<number>();
+
+  private threads = new Map<number, WritableSignal<FeedThreadDto>>();
 
   constructor() {
     this.commentAddedSubscription = this.interactionService.commentAdded$.subscribe((event) => {
@@ -155,5 +157,29 @@ export class ThreadState {
         stats: { ...thread.stats, comments: Math.max(0, thread.stats.comments - 1) },
       }));
     }
+  }
+
+  /**
+   * Elimina todos los hilos de un autor específico del estado.
+   * @param username El nombre de usuario del autor cuyos hilos se eliminarán.
+   */
+  removeThreadsByAuthor(username: string): void {
+    const idsToDelete: number[] = [];
+    
+    // Iteramos sobre el mapa de hilos
+    this.threads.forEach((signal, id) => {
+      if (signal().user.username === username) {
+        idsToDelete.push(id);
+      }
+    });
+
+    // Eliminamos los hilos encontrados
+    idsToDelete.forEach(id => {
+      this.threads.delete(id);
+      // Notificamos a los componentes contenedores que estos hilos ya no existen
+      this.threadDeleted$.next(id); 
+    });
+
+    console.log(`[ThreadState] Se eliminaron ${idsToDelete.length} hilos del autor @${username}`);
   }
 }

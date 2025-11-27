@@ -37,6 +37,8 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { UserSearch } from '../../interfaces/UserSearch';
 import { Search } from '../../services/search/search';
 import { MentionLinkerPipe } from "../../pipes/mention-linker-pipe";
+import { Block } from '../../services/block/block';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-thread',
@@ -65,6 +67,8 @@ export class Thread {
   public authService = inject(Auth);
   private dialog = inject(MatDialog);
   private viewTrackingService = inject(ViewTracking);
+  private blockService = inject(Block); // <-- INYECTAR SERVICIO
+  private snackBar = inject(MatSnackBar); 
 
     // --- NUEVAS PROPIEDADES PARA MENCIONES ---
     @ViewChild('textarea', { read: ElementRef }) textareaRef!: ElementRef<HTMLTextAreaElement>;
@@ -267,5 +271,9 @@ export class Thread {
   openReportModal(): void{
     // Implementar lógica para abrir el modal de reporte
     console.log('Abrir modal de reporte para el hilo:', this.threadId);
+  }
+
+  blockUser():void{
+
   }
 }
