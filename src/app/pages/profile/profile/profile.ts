@@ -299,7 +299,7 @@ export class Profile implements OnInit {
         console.error("Error en la acción de bloqueo", err);
         this.snackBar.open('No se pudo completar la acción.', 'Cerrar', { duration: 3000 });
       }
-    }
+    });
   }  
   
   // Agregamos este método
@@ -320,7 +320,7 @@ export class Profile implements OnInit {
     // pero la lógica reactiva en UserState y handleFollowStateChange
     // debería manejar los contadores automáticamente.
     dialogRef.afterClosed().subscribe(() => {
-      // Opcional: Si quieres forzar recarga del perfil para asegurar consistencia
+      
       // this.loadProfileData(this.profile!.username);
     });
   }
