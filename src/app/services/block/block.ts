@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { BlockedUser } from '../../interfaces/BlockedUser';
 
 export interface BlockResponse {
   isBlocked: boolean;
@@ -21,5 +22,13 @@ export class Block {
    */
   toggleBlock(username: string): Observable<BlockResponse> {
     return this.http.post<BlockResponse>(`${this.apiUrl}/${username}/block`, {});
+  }
+
+  /**
+   * Obtiene la lista de usuarios bloqueados.
+   * @returns Un observable con la lista de usuarios bloqueados.
+   */
+  getBlockedUsers(): Observable<BlockedUser[]> {
+    return this.http.get<BlockedUser[]>(`${environment.apiBaseUrl}/users/blocked`);
   }
 }
