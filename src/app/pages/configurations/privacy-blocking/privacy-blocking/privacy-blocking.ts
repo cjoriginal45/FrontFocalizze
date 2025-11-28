@@ -3,7 +3,6 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BottonNav } from '../../../../components/botton-nav/botton-nav';
 import { Header } from '../../../../components/header/header';
 import { Block } from '../../../../services/block/block';
@@ -12,11 +11,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmMatDialog } from '../../../../components/mat-dialog/mat-dialog/mat-dialog';
 import { BlockedUser } from '../../../../interfaces/BlockedUser';
 import { catchError, forkJoin, of } from 'rxjs';
+import { MatToolbar } from "@angular/material/toolbar";
+import {Location as AngularLocation } from '@angular/common';
 
 @Component({
   selector: 'app-privacy-blocking',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, BottonNav, Header],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, BottonNav, Header, MatToolbar],
   templateUrl: './privacy-blocking.html',
   styleUrl: './privacy-blocking.css',
 })
@@ -24,6 +25,7 @@ export class PrivacyBlocking implements OnInit {
   private blockService = inject(Block);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private location = inject(AngularLocation);
 
   isLoading = signal(true);
   blockedUsers = signal<BlockedUser[]>([]);
@@ -121,5 +123,9 @@ export class PrivacyBlocking implements OnInit {
         this.snackBar.open('Ocurrió un error inesperado.', 'Cerrar', { duration: 3000 });
       }
     });
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

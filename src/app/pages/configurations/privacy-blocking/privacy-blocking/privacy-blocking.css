@@ -47,6 +47,7 @@
     font-weight: 500;
     color: var(--primary-dark);
     opacity: 0.8;
+    text-align: center;
   }
   
   /* --- Contenido --- */
@@ -234,7 +235,7 @@
   margin-top: 20px;
 }
 .btn-unblock {
-  background-color: var(--warn-color, #f44336);
+  background-color: var(--warn-color, var(--primary-color, #01344a));
   color: white;
   border: none;
   padding: 12px 32px;
@@ -245,7 +246,7 @@
   transition: background-color 0.2s ease;
 }
 .btn-unblock:hover {
-  background-color: #d32f2f;
+  background-color: var(--hover-color);
 }
   
   /* --- Responsive Desktop --- */
