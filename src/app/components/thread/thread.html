@@ -55,10 +55,6 @@
             <mat-icon>flag_circle</mat-icon>
             <span>Reportar Hilo</span>
           </button>
-          <button mat-menu-item (click)="openReportModal()">
-            <mat-icon>flag</mat-icon>
-            <span>Reportar Usuario</span>
-          </button>
           <button mat-menu-item (click)="blockUser()" [class.text-warn]="thread.user.isBlocked">
             <mat-icon>{{ thread.user.isBlocked ? 'lock_open' : 'block' }}</mat-icon>
             <span>{{ thread.user.isBlocked ? 'Desbloquear' : 'Bloquear' }} a @{{ thread.user.username }}</span>

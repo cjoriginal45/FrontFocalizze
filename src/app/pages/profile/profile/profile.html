@@ -4,7 +4,7 @@
   @if (isLoading && !profile) {
   <p class="profile-page__loading">Cargando perfil...</p>
   <!-- O un spinner de Material -->
-  } @if (profileSignal(); as profile) {
+  } @if (profile) {
   <!-- Contenedor superior con la información del usuario -->
   <header class="profile-header">
     <!-- Sección Izquierda: Avatar e Info Básica -->
