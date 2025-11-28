@@ -79,7 +79,10 @@ export class UserState {
    updateBlockedState(username: string, isBlocked: boolean): void {
     const userSignal = this.users.get(username);
     if (userSignal) {
-      userSignal.update(user => ({ ...user, isBlocked }));
+      userSignal.update(user => {
+        // Creamos un nuevo objeto para disparar la detección de cambios de la señal
+        return { ...user, isBlocked: isBlocked };
+      });
     }
   }
 }

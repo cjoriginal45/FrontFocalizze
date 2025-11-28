@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnInit, WritableSignal } from '@angular/core';
+import { Component, effect, inject, Input, OnInit, signal, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -27,6 +27,7 @@ import { ConfirmMatDialog } from '../../../components/mat-dialog/mat-dialog/mat-
 
 @Component({
   selector: 'app-profile',
+  standalone: true,
   imports: [
     CommonModule,
     RouterLink,
@@ -50,8 +51,8 @@ export class Profile implements OnInit {
   private dialog = inject(MatDialog);
   private threadStateService = inject(ThreadState);
   private userStateService = inject(UserState);
-  private blockService = inject(Block); // <-- INYECTAR SERVICIO
-  private router = inject(Router);             // <-- INYECTAR ROUTER
+  private blockService = inject(Block); 
+  private router = inject(Router);             
   private snackBar = inject(MatSnackBar); 
   // --- Propiedades de Estado ---
   profile: ProfileInterface | null = null;
@@ -64,14 +65,28 @@ export class Profile implements OnInit {
   private allThreadsLoaded = false;
   // --- Inicialización del objeto de usuario ---
 
+  profileSignal: WritableSignal<ProfileInterface | null> = signal(null);
+
   @Input({ required: true }) userSignal!: WritableSignal<UserInterface>;
+
+  constructor() {
+    // Reaccionamos a los cambios en la señal del perfil
+    effect(() => {
+      const profile = this.profileSignal();
+      if (profile) {
+        // Mantenemos el estado 'isOwnProfile' sincronizado
+        this.isOwnProfile = this.authService.getCurrentUser()?.username === profile.username;
+      }
+    });
+  }
+
 
   ngOnInit(): void {
     this.route.paramMap
       .pipe(
         tap(() => {
           this.isLoading = true;
-          this.profile = null;
+          this.profileSignal.set(null);
           this.threadIds = [];
         }),
         switchMap((params) => {
@@ -79,6 +94,12 @@ export class Profile implements OnInit {
           if (!username) throw new Error('Username no encontrado');
 
           this.isOwnProfile = this.authService.getCurrentUser()?.username === username;
+
+          const userSignalFromState = this.userStateService.getUserSignal(username);
+          if (userSignalFromState) {
+            // Si ya existe, podemos usar sus datos para una carga más rápida (opcional)
+            const user = userSignalFromState();
+          }
 
           // forkJoin ahora espera que getThreadsForUser devuelva Page<FeedThreadDto>
           return forkJoin({
@@ -95,7 +116,7 @@ export class Profile implements OnInit {
       .subscribe({
         next: ({ profile, threads: threadPage }) => {
           // 'threadPage' ahora es de tipo Page<FeedThreadDto>
-          this.profile = profile;
+          this.profileSignal.set(profile);
 
           const userForState: UserInterface = {
             id: profile.id,
@@ -105,6 +126,7 @@ export class Profile implements OnInit {
             isFollowing: profile.isFollowing,
             followersCount: profile.followers,
             followingCount: profile.followingCount,
+            isBlocked: profile.isBlocked,
           };
           this.userStateService.loadUsers([userForState]);
 
@@ -234,37 +256,45 @@ export class Profile implements OnInit {
   }
 
   blockUser(): void {
-    if (!this.profile) return;
+    const profile = this.profileSignal(); // <-- Leer de la señal
+    if (!profile) return; // <-- Condición correcta
 
-    // Opcional: Modal de confirmación
-    /*const dialogRef = this.dialog.open(ConfirmMatDialog, { 
+    const isBlocking = !profile.isBlocked;
+    const username = profile.username;
+    const dialogRef = this.dialog.open(ConfirmMatDialog, { 
       data: {
-        title: '¿Bloquear Usuario?',
-        message: `¿Estás seguro de que deseas bloquear a @${this.profile.username}? No podrás ver su perfil ni interactuar con él.`,
+        title: isBlocking ? `¿Bloquear a @${username}?` : `¿Desbloquear a @${username}?`,
+        message: isBlocking 
+          ? `No podrán seguirte ni ver tus publicaciones, y tú tampoco podrás ver las suyas.`
+          : `Podrás volver a ver el perfil y las publicaciones de @${username}, y viceversa.`,
+        confirmButtonText: isBlocking ? 'Bloquear' : 'Desbloquear',
+        confirmButtonColor: 'warn'
       },
     });
-    dialogRef.afterClosed().subscribe(result => { if (result) { 
-      
-    }*/
+    dialogRef.afterClosed().subscribe(result => { 
+      if (result) {
+        this.executeToggleBlock(username, isBlocking);
+      }
+    });
+  }
 
-    const usernameToBlock = this.profile.username;
-
-    this.blockService.toggleBlock(usernameToBlock).subscribe({
+  private executeToggleBlock(username: string, isBlocking: boolean): void {
+    this.userStateService.updateBlockedState(username, isBlocking);
+    this.profileSignal.update(p => p ? { ...p, isBlocked: isBlocking } : null);
+    this.blockService.toggleBlock(username).subscribe({
       next: (response) => {
         if (response.isBlocked) {
-          // Si el bloqueo fue exitoso, el perfil ya no es accesible.
-          // Redirigimos al usuario a la página de inicio.
-          this.snackBar.open(`Has bloqueado a @${usernameToBlock}.`, 'Cerrar', { duration: 3000 });
-          this.router.navigate(['/home']); // O '/feed'
+          this.snackBar.open(`Has bloqueado a @${username}.`, 'Cerrar', { duration: 3000 });
+          setTimeout(() => this.router.navigate(['/home']), 1000);
         } else {
-          // En teoría, no deberías poder desbloquear desde un perfil que no puedes ver,
-          // pero manejamos el caso por si acaso.
-          this.snackBar.open(`Has desbloqueado a @${usernameToBlock}.`, 'Cerrar', { duration: 3000 });
+          this.snackBar.open(`Has desbloqueado a @${username}.`, 'Cerrar', { duration: 3000 });
         }
       },
       error: (err) => {
-        console.error("Error al bloquear al usuario", err);
+        console.error("Error en la acción de bloqueo", err);
         this.snackBar.open('No se pudo completar la acción.', 'Cerrar', { duration: 3000 });
+        this.userStateService.updateBlockedState(username, !isBlocking);
+        this.profileSignal.update(p => p ? { ...p, isBlocked: !isBlocking } : null);
       }
     });
   }

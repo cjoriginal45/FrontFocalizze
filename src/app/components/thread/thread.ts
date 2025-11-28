@@ -278,14 +278,14 @@ export class Thread {
     if (!threadData) return;
 
     const userToToggle = threadData.user;
-    const isBlocking = !userToToggle.isBlocked;
+    const isBlocking = !userToToggle.isBlocked; // La acción que vamos a realizar
 
     const dialogRef = this.dialog.open(ConfirmMatDialog, {
       data: {
         title: isBlocking ? `¿Bloquear a @${userToToggle.username}?` : `¿Desbloquear a @${userToToggle.username}?`,
         message: isBlocking
           ? `No volverás a ver su contenido y esta persona no podrá interactuar contigo.`
-          : `Volverás a ver el contenido de @${userToToggle.username}. Si quieres volver a seguirle, deberás hacerlo desde su perfil.`,
+          : `Volverás a ver el contenido de @${userToToggle.username}.`,
         confirmButtonText: isBlocking ? 'Bloquear' : 'Desbloquear',
         confirmButtonColor: 'warn'
       },
@@ -299,23 +299,25 @@ export class Thread {
   }
 
   private executeToggleBlock(username: string, isBlocking: boolean): void {
+    // Actualización optimista: Actualizamos el estado global INMEDIATAMENTE
+    this.userStateService.updateBlockedState(username, isBlocking);
+
     this.blockService.toggleBlock(username).subscribe({
       next: (response) => {
         if (response.isBlocked) {
-          // Si el resultado final es 'bloqueado', ocultamos todo su contenido.
+          // Si la API confirma el bloqueo, eliminamos todos los hilos de este autor de la vista.
           this.threadStateService.removeThreadsByAuthor(username);
-          this.userStateService.updateBlockedState(username, true);
           this.snackBar.open(`Has bloqueado a @${username}. Su contenido ha sido ocultado.`, 'Cerrar', { duration: 5000 });
         } else {
-          // Si desbloqueamos, solo actualizamos el estado para que el botón cambie.
-          // No volvemos a cargar su contenido automáticamente, el usuario tendrá que recargar o navegar.
-          this.userStateService.updateBlockedState(username, false);
+          // Si desbloqueamos, la UI ya está actualizada. El usuario tendrá que recargar para ver el contenido.
           this.snackBar.open(`Has desbloqueado a @${username}.`, 'Cerrar', { duration: 3000 });
         }
       },
       error: (err) => {
         console.error("Error en la acción de bloqueo", err);
         this.snackBar.open('No se pudo completar la acción.', 'Cerrar', { duration: 3000 });
+        // Revertimos la actualización optimista si la API falla
+        this.userStateService.updateBlockedState(username, !isBlocking);
       }
     });
   }
