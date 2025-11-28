@@ -64,14 +64,23 @@
       Editar Perfil
     </button>
     } @else {
-    <div class="profile-header__action-btn">
-      <app-follow-button
-        type="user"
-        [identifier]="profile.username"
-        (followStateChanged)="onFollowChange($event)"
-      >
-      </app-follow-button>
-    </div>
+      <div class="profile-header__action-btn">
+        <app-follow-button
+          type="user"
+          [identifier]="profile.username"
+          (followStateChanged)="onFollowChange($event)"
+        >
+        </app-follow-button>
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Más opciones"> <!-- Cambiado de reportMenu -->
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #profileMenu="matMenu">
+          <button mat-menu-item (click)="blockUser()" [class.text-warn]="profile.isBlocked">
+            <mat-icon>{{ profile.isBlocked ? 'lock_open' : 'block' }}</mat-icon>
+            <span>{{ profile.isBlocked ? 'Desbloquear Usuario' : 'Bloquear Usuario' }}</span>
+          </button>
+        </mat-menu>
+      </div>
     }
   </header>
 

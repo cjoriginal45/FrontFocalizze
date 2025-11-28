@@ -1,65 +1,131 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { BottonNav } from "../../../../components/botton-nav/botton-nav";
-import { Header } from "../../../../components/header/header";
-
-interface BlockedUser {
-  id: number;
-  username: string;
-}
+import { BottonNav } from '../../../../components/botton-nav/botton-nav';
+import { Header } from '../../../../components/header/header';
+import { Block } from '../../../../services/block/block';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmMatDialog } from '../../../../components/mat-dialog/mat-dialog/mat-dialog';
+import { BlockedUser } from '../../../../interfaces/BlockedUser';
+import { catchError, forkJoin, of } from 'rxjs';
+import { MatToolbar } from "@angular/material/toolbar";
+import {Location as AngularLocation } from '@angular/common';
 
 @Component({
   selector: 'app-privacy-blocking',
   standalone: true,
-  imports: [CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSlideToggleModule, BottonNav, Header],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, BottonNav, Header, MatToolbar],
   templateUrl: './privacy-blocking.html',
   styleUrl: './privacy-blocking.css',
 })
-export class PrivacyBlocking {
-// Datos Hardcodeados de usuarios bloqueados
-blockedUsers: BlockedUser[] = [
-  { id: 1, username: '@user44' },
-  { id: 2, username: '@user777' },
-  { id: 3, username: '@user99' },
-  { id: 4, username: '@user101' }, // Extra para probar scroll
-  { id: 5, username: '@spammer01' } // Extra para probar scroll
-];
+export class PrivacyBlocking implements OnInit {
+  private blockService = inject(Block);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+  private location = inject(AngularLocation);
 
-// Configuración de privacidad
-privacySettings = {
-  anyUser: true,
-  onlyAccepted: false,
-  none: false
-};
+  isLoading = signal(true);
+  blockedUsers = signal<BlockedUser[]>([]);
 
-constructor() {}
+  // Mantiene los usernames de los usuarios seleccionados para desbloquear
+  selectedUsernames = new Set<string>();
 
-// Lógica para que los toggles funcionen como Radio Buttons (mutuamente excluyentes)
-onPrivacyChange(type: 'any' | 'accepted' | 'none') {
-  if (type === 'any' && this.privacySettings.anyUser) {
-    this.privacySettings.onlyAccepted = false;
-    this.privacySettings.none = false;
-  } else if (type === 'accepted' && this.privacySettings.onlyAccepted) {
-    this.privacySettings.anyUser = false;
-    this.privacySettings.none = false;
-  } else if (type === 'none' && this.privacySettings.none) {
-    this.privacySettings.anyUser = false;
-    this.privacySettings.onlyAccepted = false;
-  } else {
-    // Evitar que se queden todos apagados (opcional, fuerza a que uno esté activo)
-    // Si el usuario apaga el que está activo, lo volvemos a encender o ponemos uno por defecto
-    if (!this.privacySettings.anyUser && !this.privacySettings.onlyAccepted && !this.privacySettings.none) {
-       // Volver a activar el que se acaba de desactivar o dejarlo así según preferencia
-       // this.privacySettings[type === 'any' ? 'anyUser' : type === 'accepted' ? 'onlyAccepted' : 'none'] = true;
+  constructor() {}
+
+  ngOnInit(): void {
+    this.loadBlockedUsers();
+  }
+
+  loadBlockedUsers(): void {
+    this.isLoading.set(true);
+    this.blockService.getBlockedUsers().subscribe({
+      next: (users) => {
+        this.blockedUsers.set(users);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Error al cargar usuarios bloqueados', err);
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  /**
+   * Maneja la selección/deselección de un usuario en la lista.
+   */
+  toggleSelection(username: string): void {
+    if (this.selectedUsernames.has(username)) {
+      this.selectedUsernames.delete(username);
+    } else {
+      this.selectedUsernames.add(username);
     }
   }
-}
+
+  /**
+   * Abre la modal de confirmación y desbloquea a los usuarios seleccionados.
+   */
+  unblockSelectedUsers(): void {
+    const usersToUnblock = Array.from(this.selectedUsernames);
+    if (usersToUnblock.length === 0) return;
+
+    const dialogRef = this.dialog.open(ConfirmMatDialog, {
+      data: {
+        title: `¿Desbloquear ${usersToUnblock.length} usuario(s)?`,
+        message: 'Podrán volver a ver tu perfil e interactuar contigo.',
+        confirmButtonText: 'Desbloquear',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.executeUnblock(usersToUnblock);
+      }
+    });
+  }
+
+  private executeUnblock(usernames: string[]): void {
+    // Creamos un array de observables, uno por cada solicitud de desbloqueo.
+    const unblockObservables = usernames.map(username =>
+      this.blockService.toggleBlock(username).pipe(
+        catchError(error => {
+          console.error(`Error al desbloquear a ${username}`, error);
+          return of(null); // Devuelve un observable que emite null
+        })
+      )
+    );
+
+    // forkJoin espera a que TODOS los observables del array se completen.
+    forkJoin(unblockObservables).subscribe({
+      next: (results) => {
+        // 'results' es un array con las respuestas de cada llamada.
+        const successfulUnblocks = usernames.filter((_, index) => results[index] !== null);
+
+        if (successfulUnblocks.length > 0) {
+          // Actualizamos la UI solo con los que se desbloquearon con éxito.
+          this.blockedUsers.update(currentUsers =>
+            currentUsers.filter(user => !successfulUnblocks.includes(user.username))
+          );
+          this.selectedUsernames.clear();
+          this.snackBar.open(`${successfulUnblocks.length} usuario(s) desbloqueado(s).`, 'Cerrar', { duration: 3000 });
+        }
+        
+        if (successfulUnblocks.length < usernames.length) {
+          this.snackBar.open('Algunos usuarios no pudieron ser desbloqueados.', 'Cerrar', { duration: 3000 });
+        }
+      },
+      error: (err) => {
+        // Este bloque de error general es un fallback, pero el catchError individual
+        // debería prevenir que se llegue aquí a menos que haya un problema mayor.
+        console.error("Error mayor durante el proceso de desbloqueo", err);
+        this.snackBar.open('Ocurrió un error inesperado.', 'Cerrar', { duration: 3000 });
+      }
+    });
+  }
+
+  goBack(): void {
+    this.location.back();
+  }
 }

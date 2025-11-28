@@ -37,6 +37,8 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { UserSearch } from '../../interfaces/UserSearch';
 import { Search } from '../../services/search/search';
 import { MentionLinkerPipe } from "../../pipes/mention-linker-pipe";
+import { Block } from '../../services/block/block';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-thread',
@@ -65,6 +67,8 @@ export class Thread {
   public authService = inject(Auth);
   private dialog = inject(MatDialog);
   private viewTrackingService = inject(ViewTracking);
+  private blockService = inject(Block); 
+  private snackBar = inject(MatSnackBar); 
 
     // --- NUEVAS PROPIEDADES PARA MENCIONES ---
     @ViewChild('textarea', { read: ElementRef }) textareaRef!: ElementRef<HTMLTextAreaElement>;
@@ -260,6 +264,58 @@ export class Thread {
           },
           error: (err) => console.error('Error al eliminar el hilo', err),
         });
+      }
+    });
+  }
+
+  openReportModal(): void{
+    // Implementar lógica para abrir el modal de reporte
+    console.log('Abrir modal de reporte para el hilo:', this.threadId);
+  }
+
+  blockUser(): void {
+    const threadData = this.threadSignal();
+    if (!threadData) return;
+
+    const userToToggle = threadData.user;
+    const isBlocking = !userToToggle.isBlocked;
+
+    const dialogRef = this.dialog.open(ConfirmMatDialog, {
+      data: {
+        title: isBlocking ? `¿Bloquear a @${userToToggle.username}?` : `¿Desbloquear a @${userToToggle.username}?`,
+        message: isBlocking
+          ? `No volverás a ver su contenido y esta persona no podrá interactuar contigo.`
+          : `Volverás a ver el contenido de @${userToToggle.username}. Si quieres volver a seguirle, deberás hacerlo desde su perfil.`,
+        confirmButtonText: isBlocking ? 'Bloquear' : 'Desbloquear',
+        confirmButtonColor: 'warn'
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.executeToggleBlock(userToToggle.username, isBlocking);
+      }
+    });
+  }
+
+  private executeToggleBlock(username: string, isBlocking: boolean): void {
+    this.blockService.toggleBlock(username).subscribe({
+      next: (response) => {
+        if (response.isBlocked) {
+          // Si el resultado final es 'bloqueado', ocultamos todo su contenido.
+          this.threadStateService.removeThreadsByAuthor(username);
+          this.userStateService.updateBlockedState(username, true);
+          this.snackBar.open(`Has bloqueado a @${username}. Su contenido ha sido ocultado.`, 'Cerrar', { duration: 5000 });
+        } else {
+          // Si desbloqueamos, solo actualizamos el estado para que el botón cambie.
+          // No volvemos a cargar su contenido automáticamente, el usuario tendrá que recargar o navegar.
+          this.userStateService.updateBlockedState(username, false);
+          this.snackBar.open(`Has desbloqueado a @${username}.`, 'Cerrar', { duration: 3000 });
+        }
+      },
+      error: (err) => {
+        console.error("Error en la acción de bloqueo", err);
+        this.snackBar.open('No se pudo completar la acción.', 'Cerrar', { duration: 3000 });
       }
     });
   }

@@ -46,7 +46,23 @@
           <span>Eliminar Hilo</span>
         </button>
       </mat-menu>
+      } @else {
+        <button mat-icon-button [matMenuTriggerFor]="threadMenu" aria-label="Más opciones">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #threadMenu="matMenu">
+          <button mat-menu-item (click)="openReportModal()">
+            <mat-icon>flag_circle</mat-icon>
+            <span>Reportar Hilo</span>
+          </button>
+          <button mat-menu-item (click)="blockUser()" [class.text-warn]="thread.user.isBlocked">
+            <mat-icon>{{ thread.user.isBlocked ? 'lock_open' : 'block' }}</mat-icon>
+            <span>{{ thread.user.isBlocked ? 'Desbloquear' : 'Bloquear' }} a @{{ thread.user.username }}</span>
+          </button>
+        </mat-menu>
       }
+
+
     </div>
   </header>
 

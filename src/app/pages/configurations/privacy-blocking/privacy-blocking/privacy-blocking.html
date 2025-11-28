@@ -1,73 +1,51 @@
 <app-header></app-header>
 
 <div class="page-wrapper">
-    <div class="settings-container">
-  
-      <div class="settings-header">
-        <button mat-icon-button class="back-button" aria-label="Volver">
-          <mat-icon>arrow_back</mat-icon>
+  <div class="settings-container">
+    <div class="settings-header">
+        <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Volver">
+          <mat-icon class="arrow-icon">arrow_back</mat-icon>
         </button>
-        <h2 class="header-title">Bloqueo y Privacidad</h2>
-      </div>
-  
-      <main class="content-area">
-  
-        <div class="watermark-container">
-          <div class="watermark">Focalizze</div>
-        </div>
-  
-        <div class="subsection">
-          <h4 class="subsection-label">Usuarios bloqueados:</h4>
-          
-          <div class="blocked-list-container">
-            <div class="custom-scroll-box">
-              
-              <div class="blocked-user-row" *ngFor="let user of blockedUsers">
-                <mat-icon class="user-avatar-icon">account_circle</mat-icon>
-                <span class="username">{{ user.username }}</span>
-              </div>
-  
-            </div>
-          </div>
-        </div>
-  
-        <div class="subsection">
-          <h4 class="subsection-label">Quien puede seguirme?</h4>
-          
-          <div class="privacy-options-container">
-            
-            <div class="privacy-row">
-              <span class="privacy-label">Cualquier usuario</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="privacySettings.anyUser"
-                (change)="onPrivacyChange('any')">
-              </mat-slide-toggle>
-            </div>
-  
-            <div class="privacy-row">
-              <span class="privacy-label">Solo los que acepte</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="privacySettings.onlyAccepted"
-                (change)="onPrivacyChange('accepted')">
-              </mat-slide-toggle>
-            </div>
-  
-            <div class="privacy-row">
-              <span class="privacy-label">Niguno</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="privacySettings.none"
-                (change)="onPrivacyChange('none')">
-              </mat-slide-toggle>
-            </div>
-  
-          </div>
-        </div>
-  
-      </main>
+      <h2 class="header-title">Bloqueo y Privacidad</h2>
     </div>
-  </div>
 
-  <app-botton-nav></app-botton-nav>
+    <main class="content-area">
+      <div class="subsection">
+        <h4 class="subsection-label">Usuarios bloqueados:</h4>
+
+        <div class="blocked-list-container">
+          <div class="custom-scroll-box">
+            @for (user of blockedUsers(); track user.id) {
+            <div
+              class="blocked-user-row"
+              [class.selected]="selectedUsernames.has(user.username)"
+              (click)="toggleSelection(user.username)"
+            >
+              <img [src]="user.avatarUrl" class="user-avatar" alt="Avatar" />
+              <div class="user-info">
+                <span class="display-name">{{ user.displayName }}</span>
+                <span class="username">@{{ user.username }}</span>
+              </div>
+            </div>
+            } @empty { @if (!isLoading()) {
+            <p class="empty-list-message">No tienes usuarios bloqueados.</p>
+            } } @if (isLoading()) {
+            <p class="loading-message">Cargando...</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón de desbloqueo que aparece solo si hay usuarios seleccionados -->
+      @if (selectedUsernames.size > 0) {
+      <div class="unblock-action-bar">
+        <button class="btn-unblock" (click)="unblockSelectedUsers()">
+          Desbloquear ({{ selectedUsernames.size }})
+        </button>
+      </div>
+      }
+    </main>
+  </div>
+</div>
+
+<app-botton-nav></app-botton-nav>

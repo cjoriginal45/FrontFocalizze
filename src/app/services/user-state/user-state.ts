@@ -6,7 +6,7 @@ import { UserInterface } from '../../interfaces/UserInterface';
 })
 export class UserState {
   private userMap = new Map<string, WritableSignal<UserInterface>>(); // Clave: username
-
+  private users = new Map<string, WritableSignal<UserInterface>>();
   constructor() {}
 
   /**
@@ -69,5 +69,20 @@ export class UserState {
 
   clearState(): void {
     this.userMap.clear();
+  }
+
+   /**
+   * Actualiza el estado de bloqueo de un usuario en el store.
+   * @param username El nombre de usuario.
+   * @param isBlocked El nuevo estado de bloqueo.
+   */
+   updateBlockedState(username: string, isBlocked: boolean): void {
+    const userSignal = this.users.get(username);
+    if (userSignal) {
+      userSignal.update(user => {
+        // Creamos un nuevo objeto para disparar la detección de cambios de la señal
+        return { ...user, isBlocked: isBlocked };
+      });
+    }
   }
 }
