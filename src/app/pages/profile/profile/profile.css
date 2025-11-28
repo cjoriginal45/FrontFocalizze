@@ -1,8 +1,10 @@
-/* --- ESTILOS BASE (DESKTOP FIRST, YA QUE ES TU BASE ACTUAL) --- */
+/* --- ESTILOS BASE (DESKTOP) --- */
 .profile-page {
   max-width: 980px;
   margin: 0 auto;
   padding: 20px;
+  /* Espacio base para el footer en desktop */
+  padding-bottom: 40px;
 }
 
 /* Header del Perfil */
@@ -15,6 +17,7 @@
   border-radius: 16px;
   position: relative;
   margin-bottom: 40px;
+  background-color: white; /* Aseguramos fondo blanco */
 }
 
 .profile-header__left {
@@ -28,6 +31,7 @@
   border: 4px solid white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 12px;
+  object-fit: cover; /* Evita que la imagen se deforme */
 }
 
 .profile-header__display-name {
@@ -35,6 +39,7 @@
   font-weight: bold;
   margin-bottom: 5px;
   color: var(--primary-color);
+  line-height: 1.2;
 }
 
 .profile-header__username {
@@ -52,7 +57,7 @@
   font-size: 1rem;
   line-height: 1.6;
   margin: 24px 0;
-  min-height: 40px; /* Espacio reservado para la bio */
+  min-height: 40px;
   margin-top: 3px;
   color: #444;
 }
@@ -65,8 +70,8 @@
 
 .profile-header__stats {
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente línea */
-  gap: 15px 30px; /* Espacio vertical y horizontal */
+  flex-wrap: wrap;
+  gap: 15px 30px;
   margin-bottom: 24px;
 }
 
@@ -90,33 +95,32 @@
 .profile-header__meta {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 6px; /* Un poco más de espacio */
   color: #777;
   font-size: 0.9rem;
 }
 
 .meta__icon {
   font-size: 18px;
+  width: 18px; /* Forzar ancho para alineación */
+  height: 18px;
   color: var(--primary-color);
-  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.meta__text {
-  color: #444;
-  align-self: center;
+/* Botones de acción (Editar / Seguir) */
+.profile-header__edit-btn,
+.profile-header__action-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
 }
 
 .profile-header__edit-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   color: var(--primary-color) !important;
   transition: all 0.3s ease;
-}
-
-.profile-header__edit-btn:hover {
-  background-color: var(--primary-color);
-  color: #fff !important;
 }
 
 /* Hilos del Perfil */
@@ -134,89 +138,118 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-
-  /* --- AÑADIDO: Limitamos el ancho y centramos la lista de hilos --- */
-  max-width: 600px; /* El mismo ancho que en el feed */
+  max-width: 600px;
   margin: 0 auto;
 }
 
-.profile-header__action-btn {
-  position: absolute;
-  top: 24px;
-  right: 24px;
+/* Utilidad para items clickeables (stats) */
+.clickable {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  user-select: none; /* Evita que se seleccione el texto al hacer click rápido */
 }
 
-/* --- RESPONSIVE PARA MÓVIL (VERSIÓN MEJORADA) --- */
+.clickable:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* --- RESPONSIVE PARA MÓVIL (CORREGIDO) --- */
 @media (max-width: 768px) {
+  /* 1. SOLUCIÓN AL BOTTON NAV TAPANDO CONTENIDO */
   .profile-page {
-    padding: 10px; /* Menos padding en pantallas pequeñas */
+    padding: 10px;
+    /* Sumamos altura nav (65px) + espacio extra (35px) = 100px */
+    padding-bottom: 100px !important;
   }
 
+  /* 2. AJUSTES DEL HEADER */
   .profile-header {
-    grid-template-columns: 1fr; /* Una sola columna */
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 16px;
     padding: 16px;
-    margin-bottom: 30px;
+    padding-top: 20px; /* Un poco más de aire arriba */
+    margin-bottom: 24px;
   }
 
+  /* Sección Avatar + Nombre */
   .profile-header__left {
     display: flex;
     align-items: center;
     gap: 16px;
     text-align: left;
+
+    /* Importante: para que el texto no se encime al botón absoluto */
+    padding-right: 40px;
   }
 
   .profile-header__avatar {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 0; /* Reseteamos el margen inferior */
+    width: 70px; /* Un poco más chico para móviles */
+    height: 70px;
+    border-width: 2px;
+    margin-bottom: 0;
+    flex-shrink: 0; /* Evita que el avatar se aplaste */
   }
 
-  /* Contenedor para el nombre y username en móvil */
   .profile-header__user-identity {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    min-width: 0; /* Permite que el texto se corte si es muy largo */
   }
 
   .profile-header__display-name {
-    font-size: 1.5rem; /* Reducimos el tamaño de la fuente */
+    font-size: 1.3rem;
+    margin-bottom: 2px;
+    white-space: nowrap; /* Evita salto de línea */
+    overflow: hidden; /* Corta el texto */
+    text-overflow: ellipsis; /* Pone '...' */
+    max-width: 100%;
   }
 
   .profile-header__username {
-    font-size: 0.9rem; /* Reducimos el tamaño de la fuente */
-  }
-
-  .profile-header__right {
-    /* El orden ya es correcto, no necesita cambios */
-  }
-
-  .profile-header__biography {
-    font-size: 0.95rem; /* Hacemos la bio un poco más pequeña */
-    margin-bottom: 20px;
-  }
-
-  .profile-header__stats {
-    gap: 10px 20px; /* Reducimos el espaciado entre stats */
-    margin-bottom: 20px;
-  }
-
-  .stat__value {
-    font-size: 1rem;
-  }
-
-  .stat__label {
     font-size: 0.9rem;
   }
 
-  .profile-header__edit-btn {
-    top: 16px;
-    right: 16px;
-    /* Hacemos el botón más pequeño en móvil */
-    transform: scale(0.9);
-    transform-origin: top right;
+  /* Botones de acción en móvil */
+  .profile-header__edit-btn,
+  .profile-header__action-btn {
+    top: 16px; /* Más arriba */
+    right: 16px; /* Más a la derecha */
+    transform: scale(0.9); /* Ligeramente más pequeños */
+  }
+
+  /* Resto del contenido */
+  .profile-header__biography {
+    font-size: 0.95rem;
+    margin: 12px 0;
+    line-height: 1.4;
+  }
+
+  .profile-header__stats {
+    gap: 12px 24px;
+    justify-content: flex-start; /* Alineación a la izquierda */
+    margin-bottom: 16px;
+  }
+
+  .stat {
+    flex-direction: column; /* Poner número arriba y texto abajo ahorra espacio */
+    align-items: center;
+    gap: 0;
+  }
+
+  .stat__value {
+    font-size: 1.1rem;
+  }
+
+  .stat__label {
+    font-size: 0.8rem;
+    color: #666;
   }
 
   .profile-threads__title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    margin-bottom: 16px;
   }
 }

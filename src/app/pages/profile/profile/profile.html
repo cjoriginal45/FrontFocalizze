@@ -28,14 +28,18 @@
       </p>
 
       <div class="profile-header__stats">
-        <div class="stat">
+        <!-- SIGUIENDO (Clickable) -->
+        <div class="stat clickable" (click)="openFollowModal('following')" matRipple>
           <span class="stat__value">{{ profile.follow }}</span>
           <span class="stat__label">Siguiendo</span>
         </div>
-        <div class="stat">
+
+        <!-- SEGUIDORES (Clickable) -->
+        <div class="stat clickable" (click)="openFollowModal('followers')" matRipple>
           <span class="stat__value">{{ profile.followers }}</span>
           <span class="stat__label">Seguidores</span>
         </div>
+
         <div class="stat">
           <span class="stat__value">{{ profile.threadCount }}</span>
           <span class="stat__label">Hilos Publicados</span>

@@ -8,6 +8,7 @@ import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { Page } from '../../interfaces/PageInterface';
 import { UserInterface } from '../../interfaces/UserInterface';
 import { UserProfileDownload } from '../../interfaces/UserProfileDownload';
+import { UserSummary } from '../../interfaces/UserSummary';
 
 export interface ProfileUpdateData {
   displayName: string;
@@ -15,13 +16,13 @@ export interface ProfileUpdateData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProfileService {
   private apiUrl = environment.apiBaseUrl + '/profiles';
   private usersApiUrl = environment.apiBaseUrl + '/users';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Obtiene los datos de un perfil de usuario.
@@ -36,10 +37,8 @@ export class ProfileService {
    * Gets the threads of a user in a paginated way.
    */
   getThreadsForUser(username: string, page: number, size: number): Observable<Page<FeedThreadDto>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-    
+    const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+
     return this.http.get<Page<FeedThreadDto>>(`${this.apiUrl}/${username}/threads`, { params });
   }
 
@@ -59,18 +58,25 @@ export class ProfileService {
     const formData = new FormData();
     formData.append('avatar', file, file.name);
 
-    return this.http.post<{ avatarUrl:string }>(`${this.apiUrl}/${username}/avatar`, formData);
+    return this.http.post<{ avatarUrl: string }>(`${this.apiUrl}/${username}/avatar`, formData);
   }
-
 
   getUserForFollowButton(username: string): Observable<UserInterface> {
     return this.http.get<UserInterface>(`${this.usersApiUrl}/${username}`);
   }
 
-   /**
+  /**
    * Obtiene los datos de un perfil para la página de "Cuenta y Perfil".
    */
-   getProfileForDownload(username: string): Observable<UserProfileDownload> {
+  getProfileForDownload(username: string): Observable<UserProfileDownload> {
     return this.http.get<UserProfileDownload>(`${this.apiUrl}/${username}/download`);
+  }
+
+  getFollowers(username: string): Observable<UserSummary[]> {
+    return this.http.get<UserSummary[]>(`${this.usersApiUrl}/${username}/followers`);
+  }
+
+  getFollowing(username: string): Observable<UserSummary[]> {
+    return this.http.get<UserSummary[]>(`${this.usersApiUrl}/${username}/following`);
   }
 }

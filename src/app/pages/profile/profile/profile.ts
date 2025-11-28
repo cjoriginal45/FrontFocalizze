@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnInit, WritableSignal } from '@angular/core';
+import { Component, effect, inject, Injector, Input, OnInit, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -24,6 +24,7 @@ import { MatMenu, MatMenuModule } from "@angular/material/menu";
 import { Block } from '../../../services/block/block';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmMatDialog } from '../../../components/mat-dialog/mat-dialog/mat-dialog';
+import { FollowersFollowingModal } from '../../../components/followers-following-modal/followers-following-modal';
 
 @Component({
   selector: 'app-profile',
@@ -53,6 +54,9 @@ export class Profile implements OnInit {
   private blockService = inject(Block); // <-- INYECTAR SERVICIO
   private router = inject(Router);             // <-- INYECTAR ROUTER
   private snackBar = inject(MatSnackBar); 
+
+  private injector = inject(Injector);
+
   // --- Propiedades de Estado ---
   profile: ProfileInterface | null = null;
   threadIds: number[] = [];
@@ -78,9 +82,30 @@ export class Profile implements OnInit {
           const username = params.get('username');
           if (!username) throw new Error('Username no encontrado');
 
-          this.isOwnProfile = this.authService.getCurrentUser()?.username === username;
+          // 1. Verificamos si es el perfil propio
+          const currentUser = this.authService.getCurrentUser();
+          this.isOwnProfile = currentUser?.username === username;
 
-          // forkJoin ahora espera que getThreadsForUser devuelva Page<FeedThreadDto>
+          // 2. CONFIGURACIÓN DE REACTIVIDAD (El código que pediste)
+          if (this.isOwnProfile) {
+            // Creamos un efecto vinculado al inyector de este componente.
+            // Esto asegura que se destruya cuando el componente se destruya.
+            effect(
+              () => {
+                // Leemos la señal del usuario actual (reactivo)
+                const currentUserSignal = this.authService.currentUser();
+
+                // Si tenemos perfil cargado y usuario, sincronizamos el contador "Siguiendo"
+                if (currentUserSignal && this.profile) {
+                  this.profile.follow = currentUserSignal.followingCount;
+                  // Nota: 'followers' no cambia automáticamente aquí porque depende de que otros me sigan.
+                }
+              },
+              { injector: this.injector }
+            );
+          }
+
+          // 3. Peticiones API (forkJoin)
           return forkJoin({
             profile: this.profileService.getProfile(username),
             threads: this.profileService.getThreadsForUser(
@@ -94,9 +119,9 @@ export class Profile implements OnInit {
       )
       .subscribe({
         next: ({ profile, threads: threadPage }) => {
-          // 'threadPage' ahora es de tipo Page<FeedThreadDto>
           this.profile = profile;
 
+          // Cargar usuario en el estado global para el botón de seguir
           const userForState: UserInterface = {
             id: profile.id,
             username: profile.username,
@@ -108,28 +133,24 @@ export class Profile implements OnInit {
           };
           this.userStateService.loadUsers([userForState]);
 
-          // --- LÓGICA RESTAURADA ---
-          const newThreads: FeedThreadDto[] = threadPage.content; // <-- Ahora .content existe
+          // Cargar hilos
+          const newThreads: FeedThreadDto[] = threadPage.content;
           this.threadStateService.loadThreads(newThreads);
           this.threadIds = newThreads.map((t) => t.id);
-          // ------------------------
 
           this.isLoading = false;
-          this.allThreadsLoaded = threadPage.last; // <-- Usamos la propiedad 'last' de la página
+          this.allThreadsLoaded = threadPage.last;
         },
-        // ...
+        error: (err) => {
+          console.error('Error cargando perfil:', err);
+          this.isLoading = false;
+        },
       });
 
+    // Suscripción para eliminar hilos visualmente si se borran
     this.threadStateService.threadDeleted$.subscribe((deletedThreadId) => {
-      console.log(
-        `[FeedComponent] Recibida notificación para eliminar el hilo ID: ${deletedThreadId}`
-      );
-      // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
       this.threadIds = this.threadIds.filter((id) => id !== deletedThreadId);
-
-      // 2. Actualizar el contador de hilos publicados (LO NUEVO)
       if (this.profile) {
-        // Restamos 1, asegurándonos de que no sea negativo
         this.profile.threadCount = Math.max(0, this.profile.threadCount - 1);
       }
     });
@@ -259,7 +280,7 @@ export class Profile implements OnInit {
     });
   }
 
-  private executeToggleBlock(username: string): void {
+ private executeToggleBlock(username: string): void {
     this.blockService.toggleBlock(username).subscribe({
       next: (response) => {
         // Si la acción fue bloquear, el backend nos denegará el acceso, así que redirigimos.
@@ -278,6 +299,29 @@ export class Profile implements OnInit {
         console.error("Error en la acción de bloqueo", err);
         this.snackBar.open('No se pudo completar la acción.', 'Cerrar', { duration: 3000 });
       }
+    }
+  }  
+  
+  // Agregamos este método
+  openFollowModal(initialTab: 'followers' | 'following'): void {
+    if (!this.profile) return;
+
+    const dialogRef = this.dialog.open(FollowersFollowingModal, {
+      width: '450px',
+      maxWidth: '95vw',
+      panelClass: 'custom-modal-radius', // Opcional para estilos globales
+      data: {
+        username: this.profile.username,
+        initialTab: initialTab,
+      },
+    });
+
+    // Suscribirse al cierre si necesitas recargar algo específico,
+    // pero la lógica reactiva en UserState y handleFollowStateChange
+    // debería manejar los contadores automáticamente.
+    dialogRef.afterClosed().subscribe(() => {
+      // Opcional: Si quieres forzar recarga del perfil para asegurar consistencia
+      // this.loadProfileData(this.profile!.username);
     });
   }
 }
