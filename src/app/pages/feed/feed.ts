@@ -43,6 +43,14 @@ export class Feed implements OnInit {
       // Eliminamos el ID de nuestra lista local para que deje de renderizarse.
       this.threadIds = this.threadIds.filter((id) => id !== deletedThreadId);
     });
+
+    this.threadStateService.threadCreated$.subscribe((newThread) => {
+      // Cargar usuarios al user state si es necesario
+      this.userStateService.loadUsers([newThread.user]);
+
+      // Agregar al inicio de la lista visual
+      this.threadIds.unshift(newThread.id);
+    });
   }
 
   /**

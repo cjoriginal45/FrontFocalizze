@@ -1,6 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // <-- Mantenemos FormsModule
+import {
+  Component,
+  inject,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,6 +32,9 @@ import {
 } from '@angular/material/autocomplete';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { ThreadState } from '../../services/thread-state/thread-state';
+import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
+import { FeedThreadDto } from '../../interfaces/FeedThread';
 
 interface SelectCategory {
   value: string;
@@ -49,6 +61,8 @@ interface SelectCategory {
   styleUrl: './create-thread-modal.css',
 })
 export class CreateThreadModal implements OnInit, OnDestroy {
+  private threadState = inject(ThreadState);
+
   errorMessage: string | null = null;
   showScheduler = false;
   scheduledDate: Date | null = null;
@@ -84,19 +98,18 @@ export class CreateThreadModal implements OnInit, OnDestroy {
     this.loadCategories();
     this.breakpointSubscription = this.breakpointObserver
       .observe(['(max-width: 767px)'])
-      .subscribe(result => {
+      .subscribe((result) => {
         this.isMobileView = result.matches;
         this.triggerResize();
       });
     this.mentionResults$ = this.mentionQuery$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(query => query ? this.searchService.searchUsers(query) : of([]))
+      switchMap((query) => (query ? this.searchService.searchUsers(query) : of([])))
     );
   }
 
   ngAfterViewInit(): void {
-    // Forzamos un redibujado inicial cuando la vista se ha renderizado por primera vez
     this.triggerResize();
   }
 
@@ -139,12 +152,19 @@ export class CreateThreadModal implements OnInit, OnDestroy {
 
   loadCategories(): void {
     this.categoryService.getAllCategories().subscribe({
-      next: (apiCategories) => { this.categories = apiCategories.map((cat) => ({ value: cat.name, viewValue: cat.name })); },
-      error: (err) => { console.error('Error al cargar las categorías:', err); this.categories = []; },
+      next: (apiCategories) => {
+        this.categories = apiCategories.map((cat) => ({ value: cat.name, viewValue: cat.name }));
+      },
+      error: (err) => {
+        console.error('Error al cargar las categorías:', err);
+        this.categories = [];
+      },
     });
   }
 
-  closeModal(): void { this.dialogRef.close(); }
+  closeModal(): void {
+    this.dialogRef.close();
+  }
   nextStep(): void {
     if (this.currentStep < 3) {
       this.currentStep++;
@@ -160,18 +180,27 @@ export class CreateThreadModal implements OnInit, OnDestroy {
 
   triggerResize(): void {
     this._ngZone.onStable.pipe(take(1)).subscribe(() => {
-      this.cdkTextareas?.forEach(textarea => textarea.resizeToFitContent(true));
+      this.cdkTextareas?.forEach((textarea) => textarea.resizeToFitContent(true));
     });
   }
 
   publish(): void {
     this.errorMessage = null;
     let finalScheduledTime: string | null = null;
-    if (this.showScheduler && this.scheduledDate && this.scheduledHour !== null && this.scheduledMinute !== null) {
+    if (
+      this.showScheduler &&
+      this.scheduledDate &&
+      this.scheduledHour !== null &&
+      this.scheduledMinute !== null
+    ) {
       const date = new Date(this.scheduledDate);
       date.setHours(this.scheduledHour, this.scheduledMinute, 0, 0);
-      const year = date.getFullYear(), month = (date.getMonth() + 1).toString().padStart(2, '0'), day = date.getDate().toString().padStart(2, '0');
-      const hours = date.getHours().toString().padStart(2, '0'), minutes = date.getMinutes().toString().padStart(2, '0'), seconds = date.getSeconds().toString().padStart(2, '0');
+      const year = date.getFullYear(),
+        month = (date.getMonth() + 1).toString().padStart(2, '0'),
+        day = date.getDate().toString().padStart(2, '0');
+      const hours = date.getHours().toString().padStart(2, '0'),
+        minutes = date.getMinutes().toString().padStart(2, '0'),
+        seconds = date.getSeconds().toString().padStart(2, '0');
       finalScheduledTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     }
     const threadData: ThreadRequest = {
@@ -181,19 +210,62 @@ export class CreateThreadModal implements OnInit, OnDestroy {
       category: this.selectedCategory || 'Ninguna',
       scheduledTime: finalScheduledTime || undefined,
     };
-    if (threadData.post1.length > this.charLimits.step1 || threadData.post2.length > this.charLimits.step2 || threadData.post3.length > this.charLimits.step3) {
+    if (
+      threadData.post1.length > this.charLimits.step1 ||
+      threadData.post2.length > this.charLimits.step2 ||
+      threadData.post3.length > this.charLimits.step3
+    ) {
       this.errorMessage = `Un post excede el límite de caracteres.`;
       return;
     }
-    if (threadData.post1.trim() === '' || threadData.post2.trim() === '' || threadData.post3.trim() === '') {
+    if (
+      threadData.post1.trim() === '' ||
+      threadData.post2.trim() === '' ||
+      threadData.post3.trim() === ''
+    ) {
       this.errorMessage = 'Los post no pueden estar vacios.';
       return;
     }
+
     this.threadService.createThread(threadData).subscribe({
-      next: () => this.closeModal(),
+      next: (responseDto: ThreadResponse) => {
+        // --- CONVERTIR ThreadResponse a FeedThreadDto ---
+        // Esto es necesario porque el store usa FeedThreadDto para renderizar.
+        // Hacemos una conversión manual con los datos que tenemos.
+        const newFeedThread: FeedThreadDto = {
+          id: responseDto.id,
+          user: {
+            id: responseDto.author!.id,
+            username: responseDto.author!.username,
+            displayName: responseDto.author!.displayName,
+            avatarUrl: responseDto.author!.avatarUrl || 'assets/images/default-avatar.png',
+            isFollowing: false, // Es mi propio hilo
+            followersCount: responseDto.author!.followersCount || 0,
+            followingCount: responseDto.author!.followingCount || 0,
+          },
+          publicationDate: responseDto.createdAt,
+          posts: responseDto.posts,
+          stats: responseDto.stats,
+          isLiked: false,
+          isSaved: false,
+          categoryName: responseDto.categoryName || 'Ninguna',
+        };
+
+        // --- NOTIFICAR AL ESTADO GLOBAL ---
+        // Esto disparará threadCreated$ en ThreadState, y Feed.ts lo escuchará
+        // para agregarlo arriba de todo sin F5.
+        this.threadState.notifyThreadCreated(newFeedThread);
+
+        this.closeModal();
+      },
       error: (err) => {
         console.error('Error al crear el hilo:', err);
-        this.errorMessage = 'Ocurrió un error al publicar el hilo. Inténtalo de nuevo.';
+        // Si el error es por límite diario, mostramos mensaje amigable
+        if (err.error && err.error.message && err.error.message.includes('Límite diario')) {
+          this.errorMessage = err.error.message;
+        } else {
+          this.errorMessage = 'Ocurrió un error al publicar el hilo. Inténtalo de nuevo.';
+        }
       },
     });
   }

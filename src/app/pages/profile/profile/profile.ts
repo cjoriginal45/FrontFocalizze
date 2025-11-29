@@ -20,7 +20,7 @@ import { UserInterface } from '../../../interfaces/UserInterface';
 import { UserState } from '../../../services/user-state/user-state';
 import { CreateThreadButton } from '../../../components/create-thread-button/create-thread-button';
 import { BottonNav } from '../../../components/botton-nav/botton-nav';
-import { MatMenu, MatMenuModule } from "@angular/material/menu";
+import { MatMenu, MatMenuModule } from '@angular/material/menu';
 import { Block } from '../../../services/block/block';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmMatDialog } from '../../../components/mat-dialog/mat-dialog/mat-dialog';
@@ -38,8 +38,8 @@ import { FollowersFollowingModal } from '../../../components/followers-following
     FollowButton,
     CreateThreadButton,
     BottonNav,
-    MatMenuModule
-],
+    MatMenuModule,
+  ],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
@@ -51,13 +51,12 @@ export class Profile implements OnInit {
   private dialog = inject(MatDialog);
   private threadStateService = inject(ThreadState);
   private userStateService = inject(UserState);
-  private blockService = inject(Block); // <-- INYECTAR SERVICIO
-  private router = inject(Router);             // <-- INYECTAR ROUTER
-  private snackBar = inject(MatSnackBar); 
+  private blockService = inject(Block);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   private injector = inject(Injector);
 
-  // --- Propiedades de Estado ---
   profile: ProfileInterface | null = null;
   threadIds: number[] = [];
   isLoading = true;
@@ -66,11 +65,12 @@ export class Profile implements OnInit {
   private currentPage = 0;
   private readonly pageSize = 10;
   private allThreadsLoaded = false;
-  // --- Inicialización del objeto de usuario ---
 
+  // --- Inicialización del objeto de usuario ---
   @Input({ required: true }) userSignal!: WritableSignal<UserInterface>;
 
   ngOnInit(): void {
+    // 1. Carga inicial del perfil (Igual que antes)
     this.route.paramMap
       .pipe(
         tap(() => {
@@ -82,30 +82,21 @@ export class Profile implements OnInit {
           const username = params.get('username');
           if (!username) throw new Error('Username no encontrado');
 
-          // 1. Verificamos si es el perfil propio
           const currentUser = this.authService.getCurrentUser();
           this.isOwnProfile = currentUser?.username === username;
 
-          // 2. CONFIGURACIÓN DE REACTIVIDAD (El código que pediste)
           if (this.isOwnProfile) {
-            // Creamos un efecto vinculado al inyector de este componente.
-            // Esto asegura que se destruya cuando el componente se destruya.
             effect(
               () => {
-                // Leemos la señal del usuario actual (reactivo)
                 const currentUserSignal = this.authService.currentUser();
-
-                // Si tenemos perfil cargado y usuario, sincronizamos el contador "Siguiendo"
                 if (currentUserSignal && this.profile) {
                   this.profile.follow = currentUserSignal.followingCount;
-                  // Nota: 'followers' no cambia automáticamente aquí porque depende de que otros me sigan.
                 }
               },
               { injector: this.injector }
             );
           }
 
-          // 3. Peticiones API (forkJoin)
           return forkJoin({
             profile: this.profileService.getProfile(username),
             threads: this.profileService.getThreadsForUser(
@@ -120,8 +111,6 @@ export class Profile implements OnInit {
       .subscribe({
         next: ({ profile, threads: threadPage }) => {
           this.profile = profile;
-
-          // Cargar usuario en el estado global para el botón de seguir
           const userForState: UserInterface = {
             id: profile.id,
             username: profile.username,
@@ -132,12 +121,9 @@ export class Profile implements OnInit {
             followingCount: profile.followingCount,
           };
           this.userStateService.loadUsers([userForState]);
-
-          // Cargar hilos
           const newThreads: FeedThreadDto[] = threadPage.content;
           this.threadStateService.loadThreads(newThreads);
           this.threadIds = newThreads.map((t) => t.id);
-
           this.isLoading = false;
           this.allThreadsLoaded = threadPage.last;
         },
@@ -147,11 +133,42 @@ export class Profile implements OnInit {
         },
       });
 
-    // Suscripción para eliminar hilos visualmente si se borran
+    // --- NUEVO: ESCUCHAR CREACIÓN DE HILOS (Soluciona Problema 1 y 2) ---
+    this.threadStateService.threadCreated$.subscribe((newThread) => {
+      // Solo nos importa si estamos viendo NUESTRO propio perfil
+      if (this.isOwnProfile && this.profile) {
+        // A. Agregar el hilo a la lista visual (arriba de todo)
+        this.threadIds.unshift(newThread.id);
+        // Aseguramos que el hilo esté en el store (por si acaso)
+        this.threadStateService.loadThreads([newThread]);
+
+        // B. Actualizar contadores
+        this.profile.threadCount++; // Subimos el total histórico
+
+        // Bajamos el disponible diario (sin bajar de 0)
+        if (this.profile.threadsAvailableToday !== null) {
+          this.profile.threadsAvailableToday = Math.max(0, this.profile.threadsAvailableToday - 1);
+        }
+      }
+    });
+
+    // --- ESCUCHAR BORRADO DE HILOS (Soluciona Problema 3 y 1) ---
     this.threadStateService.threadDeleted$.subscribe((deletedThreadId) => {
+      const threadSignal = this.threadStateService.getThreadSignal(deletedThreadId);
+      const threadData = threadSignal ? threadSignal() : null;
+
       this.threadIds = this.threadIds.filter((id) => id !== deletedThreadId);
+
       if (this.profile) {
         this.profile.threadCount = Math.max(0, this.profile.threadCount - 1);
+
+        if (this.isOwnProfile && threadData) {
+          if (this.isThreadFromToday(threadData.publicationDate)) {
+            const DAILY_LIMIT = 3;
+            const currentAvailable = this.profile.threadsAvailableToday || 0;
+            this.profile.threadsAvailableToday = Math.min(DAILY_LIMIT, currentAvailable + 1);
+          }
+        }
       }
     });
   }
@@ -169,7 +186,6 @@ export class Profile implements OnInit {
           this.threadStateService.loadThreads(newThreads);
           const newThreadIds = newThreads.map((t) => t.id);
           this.threadIds.push(...newThreadIds);
-          // ------------------------
 
           this.allThreadsLoaded = threadPage.last;
           this.isLoading = false;
@@ -195,8 +211,6 @@ export class Profile implements OnInit {
       .subscribe((result) => {
         const { formData, file } = result;
 
-        // 1. Si se seleccionó un nuevo archivo de avatar, lo subimos primero
-        // 1. if a new avatar file is selected, upload it first
         if (file) {
           this.profileService.uploadAvatar(this.profile!.username, file).subscribe({
             next: (response) => {
@@ -207,8 +221,6 @@ export class Profile implements OnInit {
             error: (err) => console.error('Error al subir el avatar', err),
           });
         } else {
-          // 2. Si no hay archivo nuevo, solo actualizamos los datos de texto
-          // 2. If no new file, just update the text data
           this.updateProfileText(formData);
         }
       });
@@ -231,64 +243,57 @@ export class Profile implements OnInit {
       width: '700px',
       maxWidth: '95vw',
       maxHeight: '90vh',
-      data: { threadId: threadId }, // Pasamos el ID del hilo
+      data: { threadId: threadId },
       panelClass: 'comments-dialog-container',
     });
   }
 
   onFollowChange(isNowFollowing: boolean): void {
     if (this.profile) {
-      // Actualizamos el contador local del perfil de forma optimista.
       if (isNowFollowing) {
         this.profile.followers++;
       } else {
         this.profile.followers--;
       }
-      // También actualizamos el estado en el UserStateService por si acaso
       this.userStateService.updateFollowingState(this.profile.username, isNowFollowing);
     }
   }
 
   openReportModal(): void {
-    // Lógica para abrir el modal de reporte
     console.log('Abrir modal de reporte');
   }
 
   blockUser(): void {
     if (!this.profile) return;
 
-    // --- LÓGICA DE LA MODAL DE CONFIRMACIÓN ---
-    const isBlocking = !this.profile.isBlocked; // La acción que vamos a realizar
+    const isBlocking = !this.profile.isBlocked;
     const username = this.profile.username;
 
-    const dialogRef = this.dialog.open(ConfirmMatDialog, { 
+    const dialogRef = this.dialog.open(ConfirmMatDialog, {
       data: {
         title: isBlocking ? `¿Bloquear a @${username}?` : `¿Desbloquear a @${username}?`,
-        message: isBlocking 
+        message: isBlocking
           ? `No podrán seguirte ni ver tus publicaciones, y tú tampoco podrás ver las suyas.`
           : `Podrás volver a ver el perfil y las publicaciones de @${username}, y viceversa.`,
         confirmButtonText: isBlocking ? 'Bloquear' : 'Desbloquear',
-        confirmButtonColor: 'warn' // 'warn' para acciones destructivas como bloquear
+        confirmButtonColor: 'warn',
       },
     });
 
-    dialogRef.afterClosed().subscribe(result => { 
-      if (result) { 
-        // Si el usuario confirma, ejecutamos la lógica de la API
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
         this.executeToggleBlock(username);
       }
     });
   }
 
- private executeToggleBlock(username: string): void {
+  private executeToggleBlock(username: string): void {
     this.blockService.toggleBlock(username).subscribe({
       next: (response) => {
-        // Si la acción fue bloquear, el backend nos denegará el acceso, así que redirigimos.
         if (response.isBlocked) {
           this.snackBar.open(`Has bloqueado a @${username}.`, 'Cerrar', { duration: 3000 });
           this.router.navigate(['/home']);
         } else {
-          // Si desbloqueamos, actualizamos el estado local para que el botón cambie.
           if (this.profile) {
             this.profile.isBlocked = false;
           }
@@ -296,32 +301,57 @@ export class Profile implements OnInit {
         }
       },
       error: (err) => {
-        console.error("Error en la acción de bloqueo", err);
+        console.error('Error en la acción de bloqueo', err);
         this.snackBar.open('No se pudo completar la acción.', 'Cerrar', { duration: 3000 });
-      }
+      },
     });
-  }  
-  
-  // Agregamos este método
+  }
+
   openFollowModal(initialTab: 'followers' | 'following'): void {
     if (!this.profile) return;
 
     const dialogRef = this.dialog.open(FollowersFollowingModal, {
       width: '450px',
       maxWidth: '95vw',
-      panelClass: 'custom-modal-radius', // Opcional para estilos globales
+      panelClass: 'custom-modal-radius',
       data: {
         username: this.profile.username,
         initialTab: initialTab,
       },
     });
 
-    // Suscribirse al cierre si necesitas recargar algo específico,
-    // pero la lógica reactiva en UserState y handleFollowStateChange
-    // debería manejar los contadores automáticamente.
     dialogRef.afterClosed().subscribe(() => {
-      
-      // this.loadProfileData(this.profile!.username);
+      // Opcional: recargar perfil si fuera necesario,
+      // pero la reactividad del userState debería cubrir la mayoría de casos.
     });
+  }
+
+  /**
+   * Helper para verificar si una fecha corresponde al día de hoy local.
+   * Maneja String, Date object o Array de Java [yyyy, mm, dd...]
+   */
+  private isThreadFromToday(dateInput: string | Date | number[]): boolean {
+    const today = new Date();
+    let threadDate: Date;
+
+    if (Array.isArray(dateInput)) {
+      // Array Java: [2023, 11, 28, 14, 30] -> Mes 1-based (Nov=11)
+      // JS Date: Mes 0-based (Nov=10). Restamos 1 al mes.
+      threadDate = new Date(
+        dateInput[0],
+        dateInput[1] - 1,
+        dateInput[2],
+        dateInput[3] || 0,
+        dateInput[4] || 0
+      );
+    } else {
+      threadDate = new Date(dateInput);
+    }
+
+    return (
+      threadDate.getDate() === today.getDate() &&
+      threadDate.getMonth() === today.getMonth() &&
+      threadDate.getFullYear() === today.getFullYear()
+    );
   }
 }
