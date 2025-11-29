@@ -1,3 +1,31 @@
+/* --- Variables por defecto (Tema Claro) --- */
+
+:root {
+  --primary-color: #01344a; /* Azul oscuro */
+  --secondary-color: #80d8ff; /* Azul claro */
+  --background-color: #f4f6f8; /* Gris muy claro */
+  --hover-color: #316478; /* Color para hover */
+  --text-color: #333; /* Gris oscuro para texto */
+  --card-background: #ffffff;
+  --border-color: #e0e0e0;
+  --icon-color: #5f6368;
+  --watermark-color: rgba(0, 0, 0, 0.04);
+  --header-height: 60px;
+  --footer-height: 40px;
+}
+
+/* --- Variables Tema Oscuro --- */
+body.dark-theme {
+  --background-color: #121212; /* Fondo muy oscuro */
+  --text-color: #e0e0e0; /* Texto claro */
+  --primary-color: #80d8ff; /* Azul más brillante para resaltar en oscuro */
+  --card-background: #1e1e1e; /* Fondo de tarjetas (Material Dark) */
+  --border-color: #333333;
+  --hover-color: #2c2c2c;
+  --icon-color: #b0b0b0;
+  --watermark-color: rgba(255, 255, 255, 0.05); /* Marca de agua blanca sutil */
+}
+
 * {
   margin: 0;
   box-sizing: border-box;
@@ -17,25 +45,18 @@ html {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-:root {
-  --primary-color: #01344a; /* Azul oscuro */
-  --secondary-color: #80d8ff; /* Azul claro */
-  --background-color: #f4f6f8; /* Gris muy claro */
-  --hover-color: #316478; /* Color para hover */
-  --text-color: #333; /* Gris oscuro para texto */
-  --header-height: 60px;
-  --footer-height: 40px;
-}
-
-.create-thread-modal-panel .mat-dialog-container{
+.create-thread-modal-panel .mat-dialog-container {
   padding: 0 !important;
   border-radius: 15px;
   overflow: hidden;
 }
 
-.edit-thread-modal-panel .mat-dialog-container{
+.edit-thread-modal-panel .mat-dialog-container {
   padding: 0 !important;
   border-radius: 15px;
   overflow: hidden;
@@ -96,7 +117,6 @@ body {
   background-color: #e8f0fe !important;
 }
 
-
 /* styles.css o thread.css */
 .mention-link {
   color: var(--primary-color); /* O el color que uses para los enlaces */
@@ -108,7 +128,7 @@ body {
   text-decoration: underline;
 }
 
-.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] {
+.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] {
   /* Forzamos opacidad y color del texto base. */
   opacity: 1 !important;
   color: currentColor !important;
@@ -118,44 +138,45 @@ body {
   Selector para el contenido principal DENTRO de la opción.
   Angular Material anida varios divs y spans.
 */
-.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .mdc-list-item__content,
-.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .mdc-list-item__primary-text,
-.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .user-option,
-.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .user-option__display-name,
-.mat-mdc-autocomplete-panel mat-option[aria-disabled="true"] .user-option__username {
+.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .mdc-list-item__content,
+.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .mdc-list-item__primary-text,
+.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .user-option,
+.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .user-option__display-name,
+.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .user-option__username {
   /* Nos aseguramos de que el texto interno también sea completamente opaco y herede el color. */
   opacity: 1 !important;
   color: inherit !important;
 }
 
-
-  /* --- Estilos para input deshabilitado --- */
-  :host::ng-deep .mat-mdc-form-field.mat-form-field-disabled .mat-mdc-floating-label.mdc-floating-label {
-    color: rgba(1, 52, 74, 0.7);
-  }
-  :host::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field--disabled {
-    background-color: rgba(0, 0, 0, 0.02);
-  }
-
-    /* --- Estilos Slide Toggle (mismos que usaste en notificaciones) --- */
-    :host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__track {
-      background-color: var(--primary-dark) !important;
-      opacity: 0.5;
-  }
-  :host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__handle::after {
-      background-color: var(--primary-dark) !important;
-  }
-  :host ::ng-deep .mat-mdc-slide-toggle .mdc-switch__handle::after {
-      background-color: #fff !important;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
-
-  :host ::ng-deep .mat-mdc-slide-toggle.mat-primary:active .mdc-switch__icon {
-    display: none; /* Limpieza visual */
+/* --- Estilos para input deshabilitado --- */
+:host::ng-deep
+  .mat-mdc-form-field.mat-form-field-disabled
+  .mat-mdc-floating-label.mdc-floating-label {
+  color: rgba(1, 52, 74, 0.7);
+}
+:host::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field--disabled {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
- /* Ajustes profundos para redondear el input como en la imagen */
- :host ::ng-deep .custom-select-field .mat-mdc-text-field-wrapper {
+/* --- Estilos Slide Toggle (mismos que usaste en notificaciones) --- */
+:host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__track {
+  background-color: var(--primary-dark) !important;
+  opacity: 0.5;
+}
+:host ::ng-deep .mat-mdc-slide-toggle.mat-primary .mdc-switch--selected .mdc-switch__handle::after {
+  background-color: var(--primary-dark) !important;
+}
+:host ::ng-deep .mat-mdc-slide-toggle .mdc-switch__handle::after {
+  background-color: #fff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+:host ::ng-deep .mat-mdc-slide-toggle.mat-primary:active .mdc-switch__icon {
+  display: none; /* Limpieza visual */
+}
+
+/* Ajustes profundos para redondear el input como en la imagen */
+:host ::ng-deep .custom-select-field .mat-mdc-text-field-wrapper {
   background-color: white !important;
   border-radius: 12px !important;
 }

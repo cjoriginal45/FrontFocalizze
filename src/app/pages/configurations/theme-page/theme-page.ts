@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { BottonNav } from '../../../components/botton-nav/botton-nav';
 import { Header } from '../../../components/header/header';
+import { Theme, ThemeMode } from '../../../services/themeService/theme';
 
 @Component({
   selector: 'app-theme-page',
@@ -22,16 +23,20 @@ import { Header } from '../../../components/header/header';
 export class ThemePage {
   private location = inject(AngularLocation);
 
-  // 'light' o 'dark'. Podrías cargar esto de un servicio al iniciar.
-  selectedTheme: string = 'light';
+  // Inyectamos el servicio (que se llama Theme)
+  public themeService = inject(Theme);
+
+  // Usamos el tipo 'ThemeMode'
+  get selectedTheme(): ThemeMode {
+    return this.themeService.currentTheme();
+  }
 
   goBack(): void {
     this.location.back();
   }
 
-  setTheme(theme: string): void {
-    this.selectedTheme = theme;
-    console.log('Tema cambiado a:', theme);
-    // Aquí llamarías a tu ThemeService para aplicar los cambios globales
+  // Usamos el tipo 'ThemeMode'
+  setTheme(theme: ThemeMode): void {
+    this.themeService.setTheme(theme);
   }
 }
