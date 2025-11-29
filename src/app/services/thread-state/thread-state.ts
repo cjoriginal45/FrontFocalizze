@@ -18,6 +18,7 @@ export class ThreadState {
   private saveToggledSubscription: Subscription;
 
   private threadDeletedSource = new Subject<number>();
+  public threadCreated$ = new Subject<FeedThreadDto>();
   public threadDeleted$ = new Subject<number>();
 
   private threads = new Map<number, WritableSignal<FeedThreadDto>>();
@@ -137,12 +138,24 @@ export class ThreadState {
   }
 
   removeThread(threadId: number): void {
-    const wasDeleted = this.threadsMap.delete(threadId);
-    if (wasDeleted) {
-      // Si se borró del mapa, notificamos a los contenedores.
-      console.log(`[Store] Hilo ID ${threadId} eliminado. Notificando...`);
-      this.threadDeletedSource.next(threadId);
+    // 1. Verificamos si existe antes de hacer nada
+    if (this.threadsMap.has(threadId)) {
+      // 2. PRIMERO NOTIFICAMOS: Así el componente Profile puede leer la fecha del hilo
+      //    usando getThreadSignal() antes de que lo borremos.
+      this.threadDeleted$.next(threadId);
+
+      // 3. DESPUÉS ELIMINAMOS del mapa.
+      this.threadsMap.delete(threadId);
+
+      console.log(`[Store] Hilo ID ${threadId} eliminado correctamente.`);
     }
+  }
+
+  notifyThreadCreated(thread: FeedThreadDto): void {
+    // 1. Guardar en el mapa
+    this.threadsMap.set(thread.id, signal(thread));
+    // 2. Avisar a Feed.ts
+    this.threadCreated$.next(thread);
   }
 
   clearState(): void {
@@ -165,7 +178,7 @@ export class ThreadState {
    */
   removeThreadsByAuthor(username: string): void {
     const idsToDelete: number[] = [];
-    
+
     // Iteramos sobre el mapa de hilos
     this.threads.forEach((signal, id) => {
       if (signal().user.username === username) {
@@ -174,10 +187,10 @@ export class ThreadState {
     });
 
     // Eliminamos los hilos encontrados
-    idsToDelete.forEach(id => {
-      this.threads.delete(id);
+    idsToDelete.forEach((id) => {
       // Notificamos a los componentes contenedores que estos hilos ya no existen
-      this.threadDeleted$.next(id); 
+      this.threadDeleted$.next(id);
+      this.threads.delete(id);
     });
 
     console.log(`[ThreadState] Se eliminaron ${idsToDelete.length} hilos del autor @${username}`);
