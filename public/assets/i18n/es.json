@@ -96,6 +96,44 @@
     "FOLLOWING": "Siguiendo",
     "DISCOVER": "Descubrir",
     "INTERACTIONS": "Interacciones disponibles:"
+  },
+  "SUGGESTIONS": {
+    "ARIA_TOGGLE": "Abrir/Cerrar sugerencias",
+    "TITLE": "Tal vez te guste",
+    "SHOW_MORE": "Otras categorías...",
+    "SHOW_LESS": "Mostrar menos..."
+  },
+  "SEARCH": {
+    "PLACEHOLDER": "Buscar...",
+    "ARIA_SUBMIT": "Realizar búsqueda"
+  },
+  "CATEGORY": {
+    "LOADING": "Cargando categoría...",
+    "FOLLOWERS": "Seguidores",
+    "THREADS_COUNT": "Hilos Publicados",
+    "THREADS_TITLE": "Hilos en esta Categoría",
+    "NO_THREADS": "Aún no hay hilos en esta categoría.",
+    "LOADING_MORE": "Cargando más hilos..."
+  },
+  "SETTINGS": {
+    "TITLE": "Configuración",
+    "MENU": {
+      "ACCOUNT": "Cuenta y perfil",
+      "SECURITY": "Seguridad y acceso",
+      "NOTIFICATIONS": "Notificaciones",
+      "FOCUS": "Modo enfoque",
+      "PRIVACY": "Bloqueo y privacidad",
+      "THEME": "Tema",
+      "LANGUAGE": "Idioma"
+    }
+  },
+  "FOOTER": {
+    "TERMS": "Condiciones de Servicio",
+    "PRIVACY": "Política de Privacidad",
+    "COOKIES": "Política de cookies",
+    "ACCESSIBILITY": "Accesibilidad",
+    "MORE": "Más opciones",
+    "COPYRIGHT": "© 2025 Focalizze."
   }
     
   }

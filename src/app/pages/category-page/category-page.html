@@ -2,7 +2,7 @@
 
 <div class="category-page">
   @if (isLoading() && !category()) {
-  <p class="category-page__loading">Cargando categoría...</p>
+    <p class="category-page__loading">{{ 'CATEGORY.LOADING' | translate }}</p>
   } @if (category(); as cat) {
   <header
     class="category-banner"
@@ -28,16 +28,16 @@
   <div class="category-stats">
     <div class="stat">
       <span class="stat__value">{{ cat.followersCount | number }}</span>
-      <span class="stat__label">Seguidores</span>
+      <span class="stat__label">{{ 'CATEGORY.FOLLOWERS' | translate }}</span>
     </div>
     <div class="stat">
       <span class="stat__value">{{ cat.threadsCount | number }}</span>
-      <span class="stat__label">Hilos Publicados</span>
+      <span class="stat__label">{{ 'CATEGORY.THREADS_COUNT' | translate }}</span>
     </div>
   </div>
 
   <div class="category-threads">
-    <h2 class="category-threads__title">Hilos en esta Categoría</h2>
+    <h2 class="category-threads__title">{{ 'CATEGORY.THREADS_TITLE' | translate }}</h2>
     @if (threadIds().length > 0) {
     <div class="category-threads__list">
       @for (threadId of threadIds(); track threadId) {
@@ -45,9 +45,9 @@
       }
     </div>
     } @else if (!isLoading()) {
-    <p class="category-threads__no-results">Aún no hay hilos en esta categoría.</p>
+      <p class="category-threads__no-results">{{ 'CATEGORY.NO_THREADS' | translate }}</p>
     } @if (isLoading() && category()) {
-    <p>Cargando más hilos...</p>
+      <p>{{ 'CATEGORY.LOADING_MORE' | translate }}</p>
     }
   </div>
   }
