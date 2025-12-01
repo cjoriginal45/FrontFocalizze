@@ -39,6 +39,7 @@ import { Search } from '../../services/search/search';
 import { MentionLinkerPipe } from "../../pipes/mention-linker-pipe";
 import { Block } from '../../services/block/block';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-thread',
@@ -51,7 +52,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     FollowButton,
     MatMenuModule,
     TimeAgoPipe,
-    MentionLinkerPipe
+    MentionLinkerPipe,
+    TranslateModule
 ],
   templateUrl: './thread.html',
   styleUrl: './thread.css',

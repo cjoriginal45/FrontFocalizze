@@ -25,5 +25,19 @@
     "WELCOME": {
       "TITLE": "Welcome to Focalizze!",
       "SUBTITLE": "Where less is more. Join the conversation."
+    },
+      "THREAD": {
+      "AVATAR_ALT": "Avatar of {{name}}",
+      "OPTIONS_LABEL": "Thread options",
+      "MORE_OPTIONS": "More options",
+      "EDIT": "Edit Thread",
+      "DELETE": "Delete Thread",
+      "REPORT": "Report Thread",
+      "BLOCK_USER": "Block @{{username}}",
+      "UNBLOCK_USER": "Unblock @{{username}}",
+      "POST_NUMBER": "Post {{number}}",
+      "LOADING": "Loading...",
+      "HIDE": "Hide -",
+      "EXPAND": "Expand +"
     }
   }

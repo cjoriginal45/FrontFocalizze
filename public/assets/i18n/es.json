@@ -25,5 +25,20 @@
     "WELCOME": {
       "TITLE": "¡Bienvenido a Focalizze!",
       "SUBTITLE": "Donde menos es más. Únete a la conversación."
-    }
+    },
+      "THREAD": {
+        "AVATAR_ALT": "Avatar de {{name}}",
+        "OPTIONS_LABEL": "Opciones del hilo",
+        "MORE_OPTIONS": "Más opciones",
+        "EDIT": "Editar Hilo",
+        "DELETE": "Eliminar Hilo",
+        "REPORT": "Reportar Hilo",
+        "BLOCK_USER": "Bloquear a @{{username}}",
+        "UNBLOCK_USER": "Desbloquear a @{{username}}",
+        "POST_NUMBER": "{{number}}° post",
+        "LOADING": "Cargando...",
+        "HIDE": "Ocultar -",
+        "EXPAND": "Ampliar +"
+      }
+    
   }
