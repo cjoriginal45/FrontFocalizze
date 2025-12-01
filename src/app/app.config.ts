@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
@@ -7,7 +7,11 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideTranslateService, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { provideTranslateHttpLoader, TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { Language } from './services/language/language';
 
+export function languageInitializer(languageService: Language) {
+  return () => languageService.init();
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,7 +33,13 @@ export const appConfig: ApplicationConfig = {
         provide: TranslateLoader,
         useClass: TranslateHttpLoader 
       }
-    })
+    }),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: languageInitializer,
+      deps: [Language],
+      multi: true
+    }
   ]
 };
 

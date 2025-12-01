@@ -30,6 +30,7 @@ export interface DialogData {
 
 @Component({
   selector: 'app-comments',
+  standalone: true,
   imports: [
     MatIcon,
     MatDialogContent,

@@ -9,27 +9,46 @@ export class Language {
   private readonly LANG_KEY = 'selected_language';
 
   constructor() {
-    this.initializeLanguage();
+    // Configuramos los idiomas disponibles
+    this.translate.addLangs(['es', 'en', 'pt', 'fr']);
+    this.translate.setDefaultLang('es');
   }
 
-  private initializeLanguage() {
-    // Idiomas disponibles
-    this.translate.addLangs(['es', 'en', 'pt', 'fr']);
-    
-    // Idioma por defecto si no hay traducción
-    this.translate.setDefaultLang('es');
+  /**
+   * Método de inicialización que devuelve una Promesa.
+   * Angular esperará a que esto termine antes de mostrar la app.
+   */
+  public init(): Promise<any> {
+    return new Promise((resolve) => {
+      // 1. Determinar qué idioma usar
+      let langToUse = 'es';
+      const savedLang = localStorage.getItem(this.LANG_KEY);
 
-    // Recuperar del localStorage o usar el del navegador
-    const savedLang = localStorage.getItem(this.LANG_KEY);
-    
-    if (savedLang) {
-      this.translate.use(savedLang);
-    } else {
-      // Detectar idioma del navegador
-      const browserLang = this.translate.getBrowserLang();
-      const langToUse = browserLang?.match(/es|en|pt|fr/) ? browserLang : 'es';
-      this.translate.use(langToUse);
-    }
+      if (savedLang) {
+        langToUse = savedLang;
+      } else {
+        const browserLang = this.translate.getBrowserLang();
+        if (browserLang && browserLang.match(/es|en|pt|fr/)) {
+          langToUse = browserLang;
+        }
+      }
+
+      console.log(`[LanguageService] Inicializando idioma: ${langToUse}`);
+
+      // 2. Usar el idioma y ESPERAR a que cargue
+      // translate.use() devuelve un Observable que se completa cuando carga el JSON
+      this.translate.use(langToUse).subscribe({
+        next: () => {
+          console.log(`[LanguageService] Idioma ${langToUse} cargado correctamente.`);
+          resolve(true); // Liberamos la carga de la app
+        },
+        error: () => {
+          console.error(`[LanguageService] Error cargando idioma ${langToUse}. Usando defecto.`);
+          // Si falla, intentamos cargar el por defecto para no romper la app
+          this.translate.use('es').subscribe(() => resolve(true));
+        }
+      });
+    });
   }
 
   changeLanguage(lang: string) {
