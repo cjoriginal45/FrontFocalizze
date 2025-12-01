@@ -13,6 +13,7 @@ import { FollowButton } from '../follow-button/follow-button/follow-button';
 import { UserState } from '../../services/user-state/user-state';
 import { Auth } from '../../services/auth/auth';
 import { UserInterface } from '../../interfaces/UserInterface';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface FollowersModalData {
   username: string;
@@ -21,6 +22,7 @@ export interface FollowersModalData {
 
 @Component({
   selector: 'app-followers-following-modal',
+  standalone: true,
   imports: [
     CommonModule,
     MatDialogModule,
@@ -30,6 +32,7 @@ export interface FollowersModalData {
     MatProgressSpinnerModule,
     FollowButton,
     RouterModule,
+    TranslateModule,
   ],
   templateUrl: './followers-following-modal.html',
   styleUrl: './followers-following-modal.css',

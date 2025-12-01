@@ -65,5 +65,37 @@
     "CATEGORY_NONE": "None",
     "NEXT": "Next",
     "PUBLISH": "Publish"
+  },
+  "EDIT_PROFILE": {
+    "TITLE": "Edit Profile",
+    "CLOSE_ARIA": "Close",
+    "AVATAR_PREVIEW": "Avatar preview",
+    "NAME_LABEL": "Name",
+    "BIO_LABEL": "Bio",
+    "CANCEL": "Cancel",
+    "SAVE": "Save"
+  },
+  "EDIT_THREAD": {
+    "TITLE": "Edit Thread",
+    "BACK_ARIA": "Go back",
+    "CLOSE_ARIA": "Close modal",
+    "POST_LABEL": "Post {{number}}",
+    "POST_STEP_LABEL": "Post {{current}} of {{total}}",
+    "CATEGORY_LABEL": "Category (Optional)",
+    "CATEGORY_NONE": "None",
+    "NEXT": "Next",
+    "SAVE_CHANGES": "Save Changes"
+  },
+  "FOLLOW_MODAL": {
+    "FOLLOWERS_TAB": "Followers",
+    "FOLLOWING_TAB": "Following",
+    "NO_FOLLOWERS": "No followers yet.",
+    "NO_FOLLOWING": "Not following anyone yet."
+  },
+  "FEED_OPTIONS": {
+    "FOLLOWING": "Following",
+    "DISCOVER": "Discover",
+    "INTERACTIONS": "Available interactions:"
   }
+
   }

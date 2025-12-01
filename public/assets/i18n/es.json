@@ -39,6 +39,63 @@
         "LOADING": "Cargando...",
         "HIDE": "Ocultar -",
         "EXPAND": "Ampliar +"
-      }
+      },
+      "COMMENTS": {
+        "TITLE": "Comentarios",
+        "CLOSE": "Cerrar",
+        "PLACEHOLDER": "Escribe un comentario...",
+        "BUTTON": "Comentar",
+        "LOADING": "Cargando comentarios...",
+        "DELETE": "Eliminar",
+        "YOUR_AVATAR": "Tu avatar",
+        "DEFAULT_AVATAR": "Avatar por defecto"
+      },
+      "CREATE_THREAD": {
+        "TITLE": "Crear Hilo",
+        "CLOSE": "Cerrar modal",
+        "SCHEDULE": {
+          "TITLE": "Programar Publicación",
+          "DATE": "Fecha",
+          "HOUR": "Hora",
+          "MINUTE": "Min",
+          "INFO": "Se publicará aproximadamente el {{date}} a las {{time}}"
+        },
+        "POST_LABEL": "Post {{number}}",
+        "CATEGORY_LABEL": "Categoría (Opcional)",
+        "CATEGORY_NONE": "Ninguna",
+        "NEXT": "Avanzar",
+        "PUBLISH": "Publicar"
+      },
+      "EDIT_PROFILE": {
+    "TITLE": "Editar Perfil",
+    "CLOSE_ARIA": "Cerrar",
+    "AVATAR_PREVIEW": "Vista previa del avatar",
+    "NAME_LABEL": "Nombre",
+    "BIO_LABEL": "Biografía",
+    "CANCEL": "Cancelar",
+    "SAVE": "Guardar"
+  },
+  "EDIT_THREAD": {
+    "TITLE": "Editar Hilo",
+    "BACK_ARIA": "Volver al paso anterior",
+    "CLOSE_ARIA": "Cerrar modal",
+    "POST_LABEL": "Post {{number}}",
+    "POST_STEP_LABEL": "Post {{current}} de {{total}}",
+    "CATEGORY_LABEL": "Categoría (Opcional)",
+    "CATEGORY_NONE": "Ninguna",
+    "NEXT": "Avanzar",
+    "SAVE_CHANGES": "Guardar Cambios"
+  },
+  "FOLLOW_MODAL": {
+    "FOLLOWERS_TAB": "Seguidores",
+    "FOLLOWING_TAB": "Seguidos",
+    "NO_FOLLOWERS": "Aún no hay seguidores.",
+    "NO_FOLLOWING": "No sigue a nadie aún."
+  },
+  "FEED_OPTIONS": {
+    "FOLLOWING": "Siguiendo",
+    "DISCOVER": "Descubrir",
+    "INTERACTIONS": "Interacciones disponibles:"
+  }
     
   }

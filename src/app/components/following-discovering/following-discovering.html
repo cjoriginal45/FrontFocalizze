@@ -1,13 +1,13 @@
 <section class="f-d-container">
   <div class="f-d-container__options">
-    <a href="#" class="f-d-container__option" routerLink="/feed">Siguiendo</a>
+    <a href="#" class="f-d-container__option" routerLink="/feed">{{ 'FEED_OPTIONS.FOLLOWING' | translate }}</a>
     <div class="f-d-container__line"></div>
-    <a href="#" class="f-d-container__option" routerLink="/discover">Descubrir</a>
+    <a href="#" class="f-d-container__option" routerLink="/discover">{{ 'FEED_OPTIONS.DISCOVER' | translate }}</a>
   </div>
   @if (authService.isLoggedIn()) {
   <div class="f-d-container__interactions">
     <span>
-      Interacciones disponibles:
+      {{ 'FEED_OPTIONS.INTERACTIONS' | translate }}
       {{ interactionCounterService.remainingInteractions() ?? '...' }} /
       {{ interactionCounterService.interactionLimit() ?? '...' }}
     </span>
