@@ -134,6 +134,30 @@
     "ACCESSIBILITY": "Accesibilidad",
     "MORE": "Más opciones",
     "COPYRIGHT": "© 2025 Focalizze."
+  },
+  "DISCOVER": {
+    "RECOMMENDED": "Recomendado para ti",
+    "WHY_THIS": "¿Por qué veo esto?",
+    "SEE_LESS": "Ver menos de este tipo",
+    "LOADING": "Cargando más hilos...",
+    "LOAD_MORE": "Cargar más"
+  },
+  "FEED": {
+    "LOADING": "Cargando más hilos...",
+    "LOAD_MORE": "Cargar más"
+  },
+  "LOGIN": {
+    "TITLE": "Iniciar Sesión",
+    "PLACEHOLDER_ID": "Correo/Nombre de usuario",
+    "PLACEHOLDER_PASS": "Contraseña",
+    "BUTTON": "Ingresar",
+    "REGISTER_LINK": "¿No tienes cuenta? Registrate"
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "Notificaciones",
+    "EMPTY": "No tienes notificaciones.",
+    "LOADING": "Cargando...",
+    "LOAD_MORE": "Cargar más antiguas"
   }
     
   }

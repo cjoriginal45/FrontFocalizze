@@ -134,6 +134,30 @@
     "ACCESSIBILITY": "Accessibility",
     "MORE": "More options",
     "COPYRIGHT": "© 2025 Focalizze."
+  },
+  "DISCOVER": {
+    "RECOMMENDED": "Recommended for you",
+    "WHY_THIS": "Why am I seeing this?",
+    "SEE_LESS": "See less like this",
+    "LOADING": "Loading more threads...",
+    "LOAD_MORE": "Load more"
+  },
+  "FEED": {
+    "LOADING": "Loading more threads...",
+    "LOAD_MORE": "Load more"
+  },
+  "LOGIN": {
+    "TITLE": "Log In",
+    "PLACEHOLDER_ID": "Email/Username",
+    "PLACEHOLDER_PASS": "Password",
+    "BUTTON": "Enter",
+    "REGISTER_LINK": "Don't have an account? Sign up"
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "Notifications",
+    "EMPTY": "You have no notifications.",
+    "LOADING": "Loading...",
+    "LOAD_MORE": "Load older notifications"
   }
 
   }
