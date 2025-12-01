@@ -1,0 +1,13 @@
+{
+    "COMMON": {
+      "BACK": "Volver",
+      "CONFIRM": "Confirmar cambios"
+    },
+    "SETTINGS": {
+      "TITLE": "Configuración",
+      "LANGUAGE_TITLE": "Idioma",
+      "SELECT_LABEL": "Selecciona tu idioma:",
+      "HELPER_TEXT": "El idioma cambiará inmediatamente.",
+      "WATERMARK": "Focalizze"
+    }
+  }
