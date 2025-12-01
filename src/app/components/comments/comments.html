@@ -1,5 +1,5 @@
 <header class="comments-header" mat-dialog-title>
-  <h2>Comentarios</h2>
+  <h2>{{ 'COMMENTS.TITLE' | translate }}</h2>
   <button mat-icon-button (click)="onClose()" aria-label="Cerrar">
     <mat-icon>close</mat-icon>
   </button>
@@ -9,14 +9,14 @@
   <!-- Sección para añadir comentario -->
   <div class="add-comment-section">
     @if (authService.currentUser(); as user) {
-    <img class="avatar" [src]="user.avatarUrl || defaultAvatar" alt="Tu avatar" />
+    <img class="avatar" [src]="user.avatarUrl || defaultAvatar" [alt]="'COMMENTS.YOUR_AVATAR' | translate" />
     } @else {
-    <img class="avatar" [src]="defaultAvatar" alt="Avatar por defecto" />
+    <img class="avatar" [src]="defaultAvatar"  [alt]="'COMMENTS.DEFAULT_AVATAR' | translate" />
     }
     <mat-form-field appearance="outline" class="comment-input">
       <textarea
         matInput
-        placeholder="Escribe un comentario..."
+        [placeholder]="'COMMENTS.PLACEHOLDER' | translate"
         cdkTextareaAutosize
         [formControl]="commentControl"
         maxlength="280"
@@ -29,13 +29,13 @@
       (click)="postComment()"
       [disabled]="commentControl.invalid"
     >
-      Comentar
+    {{ 'COMMENTS.BUTTON' | translate }}
     </button>
   </div>
 
   <!-- Indicador de carga -->
   @if (isLoading) {
-  <p>Cargando comentarios...</p>
+    <p>{{ 'COMMENTS.LOADING' | translate }}</p>
   }
 
   <!-- Lista de comentarios -->
@@ -58,7 +58,7 @@
           <mat-menu #commentMenu="matMenu">
             <button mat-menu-item (click)="openDeleteConfirm(comment.id)">
               <mat-icon color="warn">delete</mat-icon>
-              <span>Eliminar</span>
+              <span>{{ 'COMMENTS.DELETE' | translate }}</span>
             </button>
           </mat-menu>
           }

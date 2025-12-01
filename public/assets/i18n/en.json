@@ -39,5 +39,31 @@
       "LOADING": "Loading...",
       "HIDE": "Hide -",
       "EXPAND": "Expand +"
-    }
+    },
+    "COMMENTS": {
+    "TITLE": "Comments",
+    "CLOSE": "Close",
+    "PLACEHOLDER": "Write a comment...",
+    "BUTTON": "Comment",
+    "LOADING": "Loading comments...",
+    "DELETE": "Delete",
+    "YOUR_AVATAR": "Your avatar",
+    "DEFAULT_AVATAR": "Default avatar"
+  },
+  "CREATE_THREAD": {
+    "TITLE": "Create Thread",
+    "CLOSE": "Close modal",
+    "SCHEDULE": {
+      "TITLE": "Schedule Post",
+      "DATE": "Date",
+      "HOUR": "Hour",
+      "MINUTE": "Min",
+      "INFO": "It will be published approximately on {{date}} at {{time}}"
+    },
+    "POST_LABEL": "Post {{number}}",
+    "CATEGORY_LABEL": "Category (Optional)",
+    "CATEGORY_NONE": "None",
+    "NEXT": "Next",
+    "PUBLISH": "Publish"
+  }
   }

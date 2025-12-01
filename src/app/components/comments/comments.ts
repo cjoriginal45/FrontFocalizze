@@ -20,6 +20,7 @@ import { TimeAgoPipe } from '../../pipes/time-ago/time-ago-pipe';
 import { Auth } from '../../services/auth/auth';
 import { MatMenuModule } from '@angular/material/menu';
 import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
@@ -43,6 +44,7 @@ export interface DialogData {
     ReactiveFormsModule,
     TimeAgoPipe,
     MatMenuModule,
+    TranslateModule,
   ],
   templateUrl: './comments.html',
   styleUrl: './comments.css',

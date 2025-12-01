@@ -35,6 +35,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { ThreadState } from '../../services/thread-state/thread-state';
 import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface SelectCategory {
   value: string;
@@ -56,6 +57,7 @@ interface SelectCategory {
     MatDatepickerModule,
     MatNativeDateModule,
     MatAutocompleteModule,
+    TranslateModule,
   ],
   templateUrl: './create-thread-modal.html',
   styleUrl: './create-thread-modal.css',
