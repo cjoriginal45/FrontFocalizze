@@ -9,5 +9,21 @@
       "SELECT_LABEL": "Selecciona tu idioma:",
       "HELPER_TEXT": "El idioma cambiará inmediatamente.",
       "WATERMARK": "Focalizze"
+    },
+    "MENU": {
+    "HOME": "Inicio",
+    "NOTIFICATIONS": "Notificaciones",
+    "SAVED": "Guardados",
+    "SETTINGS": "Configuración",
+    "LOGOUT": "Cerrar Sesión"
+    },
+    "PROFILE": {
+      "FOLLOWING": "siguiendo",
+      "FOLLOWERS": "seguidores",
+      "AVATAR_ALT": "Avatar de {{name}}"
+    },
+    "WELCOME": {
+      "TITLE": "¡Bienvenido a Focalizze!",
+      "SUBTITLE": "Donde menos es más. Únete a la conversación."
     }
   }
