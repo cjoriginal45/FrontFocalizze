@@ -2,7 +2,11 @@
 <header class="modal-header">
   <div class="modal-header__left">
     @if (currentStep > 1 && isMobileView) {
-    <button mat-icon-button class="modal-header__button modal-header__back-btn" (click)="previousStep()">
+    <button
+      mat-icon-button
+      class="modal-header__button modal-header__back-btn"
+      (click)="previousStep()"
+    >
       <mat-icon>arrow_back</mat-icon>
     </button>
     }
@@ -22,44 +26,86 @@
 <div class="modal-content" mat-dialog-content>
   @if (showScheduler) {
   <div class="scheduler-panel">
-    <!-- ... Contenido del scheduler no cambia ... -->
+    <h4>Programar Publicación</h4>
+    <div class="scheduler-inputs">
+      <!-- Selector de Fecha (sin cambios) -->
+      <mat-form-field appearance="outline" class="scheduler-inputs__datepicker">
+        <mat-label>Fecha</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="scheduledDate" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <!-- --- ¡CAMBIOS AQUÍ! SELECTORES PARA HORA Y MINUTOS --- -->
+      <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+        <mat-label>Hora</mat-label>
+        <mat-select [(ngModel)]="scheduledHour">
+          @for (hour of hours; track hour) {
+          <mat-option [value]="hour">{{ hour < 10 ? '0' + hour : hour }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+        <mat-label>Min</mat-label>
+        <mat-select [(ngModel)]="scheduledMinute">
+          @for (minute of minutes; track minute) {
+          <mat-option [value]="minute">{{ minute < 10 ? '0' + minute : minute }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    @if (scheduledDate && scheduledHour !== null && scheduledMinute !== null) {
+    <p class="scheduler-info">
+      Se publicará aproximadamente el
+      {{ scheduledDate | date : 'fullDate' }} a las
+      {{ (scheduledHour < 10 ? '0' : '') + scheduledHour }}:{{
+        (scheduledMinute < 10 ? '0' : '') + scheduledMinute
+      }}
+    </p>
+    }
   </div>
   }
 
-  <!-- ==================================================================== -->
-  <!-- INICIO DE LA "UNIFIED DOM STRATEGY" -->
-  <!-- 
-    Contenedor principal que cambiará de clase para controlar la visibilidad 
-    de sus hijos con CSS, sin destruirlos.
-  -->
-  <!-- ==================================================================== -->
-  <div class="unified-threads-container"
-       [class.desktop-view]="!isMobileView"
-       [class.mobile-view]="isMobileView"
-       [class.step-1]="isMobileView && currentStep === 1"
-       [class.step-2]="isMobileView && currentStep === 2"
-       [class.step-3]="isMobileView && currentStep === 3">
 
+  <div
+    class="unified-threads-container"
+    [class.desktop-view]="!isMobileView"
+    [class.mobile-view]="isMobileView"
+    [class.step-1]="isMobileView && currentStep === 1"
+    [class.step-2]="isMobileView && currentStep === 2"
+    [class.step-3]="isMobileView && currentStep === 3"
+  >
     <!-- UN ÚNICO BUCLE @for crea los 3 textareas una sola vez -->
     @for (thread of threads; track $index) {
-      <mat-form-field appearance="fill" class="thread-input thread-input-{{$index}}">
-        <mat-label>Post {{ $index + 1 }}</mat-label>
-        <textarea
-          matInput
-          [(ngModel)]="threads[$index]"
-          (input)="onTextareaEvent($event)"
-          [attr.data-index]="$index"
-          [matAutocomplete]="mentionAutocomplete"
-          [maxlength]="$index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3"
-          cdkTextareaAutosize
-          [cdkAutosizeMinRows]="$index === 0 ? 3 : 3"
-        ></textarea>
-        <mat-hint align="end">{{ threads[$index].length }} / {{ $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3 }}</mat-hint>
-      </mat-form-field>
+    <mat-form-field appearance="fill" class="thread-input thread-input-{{ $index }}">
+      <mat-label>Post {{ $index + 1 }}</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="threads[$index]"
+        (input)="onTextareaEvent($event)"
+        [attr.data-index]="$index"
+        [matAutocomplete]="mentionAutocomplete"
+        [maxlength]="
+          $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3
+        "
+        cdkTextareaAutosize
+        [cdkAutosizeMinRows]="$index === 0 ? 3 : 3"
+      ></textarea>
+      <mat-hint align="end"
+        >{{ threads[$index].length }} /
+        {{
+          $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3
+        }}</mat-hint
+      >
+    </mat-form-field>
     }
   </div>
 
-  <mat-autocomplete #mentionAutocomplete="matAutocomplete" (optionSelected)="onUserMentionSelected($event)" [displayWith]="displayWithFn">
+  <mat-autocomplete
+    #mentionAutocomplete="matAutocomplete"
+    (optionSelected)="onUserMentionSelected($event)"
+    [displayWith]="displayWithFn"
+  >
     @for (user of mentionResults$ | async; track user.username) {
     <mat-option [value]="user" [disabled]="true">
       <div class="user-option">
@@ -80,17 +126,22 @@
     <mat-label>Categoría (Opcional)</mat-label>
     <mat-select [(ngModel)]="selectedCategory" name="category">
       <mat-option [value]="null">Ninguna</mat-option>
-      @for (category of categories; track category.value) { <mat-option [value]="category.value">{{ category.viewValue }}</mat-option> }
+      @for (category of categories; track category.value) {
+      <mat-option [value]="category.value">{{ category.viewValue }}</mat-option> }
     </mat-select>
   </mat-form-field>
   <div class="modal-footer__actions">
     <!-- El botón "Avanzar" solo aparece en móvil y antes del último paso -->
     @if(isMobileView && currentStep < 3){
-      <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">Avanzar</button>
+    <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">
+      Avanzar
+    </button>
     }
     <!-- El botón "Publicar" aparece en desktop, O en móvil en el último paso -->
     @if(!isMobileView || currentStep === 3){
-      <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="publish()">Publicar</button>
+    <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="publish()">
+      Publicar
+    </button>
     }
   </div>
 </footer>
