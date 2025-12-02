@@ -28,21 +28,8 @@
   background-color: var(--primary-color);
 }
 
-.create-thread-btn__button:hover {
-  background-color: rgba(21, 72, 94, 1) !important;
-}
-
-.create-thread-btn__button:hover {
-  background-color: var(--hover-color);
-  color: var(--text-color);
-}
-
 .create-thread-btn__icon {
-  color: var(--text-color);
-}
-
-.create-thread-btn__icon:hover {
-  color: var(--shadow-color);
+  color: #fff;
 }
 
 @media (min-width: 1024px) {

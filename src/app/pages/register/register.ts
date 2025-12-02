@@ -6,11 +6,8 @@ import { RegisterService } from '../../services/registerService/register';
 import { CommonModule } from '@angular/common';
 import { RegisterRequest } from '../../interfaces/RegisterRequest';
 import { RegisterResponse } from '../../interfaces/RegisterResponse';
-<<<<<<< HEAD
 import { Theme } from '../../services/themeService/theme';
-=======
 import { TranslateModule } from '@ngx-translate/core';
->>>>>>> d0beb9e411ae4e5d7a86fa188c586ede3ff9e307
 
 @Component({
   selector: 'app-register',

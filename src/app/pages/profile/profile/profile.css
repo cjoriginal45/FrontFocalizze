@@ -246,7 +246,7 @@
 
   .stat__label {
     font-size: 0.8rem;
-    color: #666;
+    color: var(--text-color);
   }
 
   .profile-threads__title {

@@ -6,7 +6,7 @@
   --background-color: #f4f6f8; /* Gris muy claro */
   --shadow-color: rgba(0, 0, 0, 0.2);
   --panel-color: #e0f1f3;
-  --hover-color: #316478; /* Color para hover */
+  --hover-color: #31647874; /* Color para hover */
   --text-color: #333; /* Gris oscuro para texto */
   --card-background: #ffffff;
   --border-color: #e0e0e0;
@@ -22,7 +22,7 @@ body.dark-theme {
   --background-color: #121212; /* Fondo muy oscuro */
   --shadow-color: rgb(255, 255, 255, 0.7);
   --panel-color: #1e1e1e;
-  --hover-color: #2c2c2c;
+  --hover-color: #2c2c2c85;
   --text-color: #e0e0e0; /* Texto claro */
   --card-background: #1e1e1e; /* Fondo de tarjetas (Material Dark) */
   --border-color: #333333;

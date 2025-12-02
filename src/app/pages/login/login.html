@@ -7,11 +7,10 @@
     <div class="login-panel">
       <h1 class="login-panel__title">{{ 'LOGIN.TITLE' | translate }}</h1>
       <form class="login-panel__form" (ngSubmit)="onSubmit()">
-<<<<<<< HEAD
         <input
           class="login-panel__input"
           type="text"
-          placeholder="Correo/Nombre de usuario"
+          [placeholder]="'LOGIN.PLACEHOLDER_ID' | translate"
           name="identifier"
           [(ngModel)]="loginData.identifier"
           required
@@ -20,28 +19,11 @@
           <input
             class="login-panel__input"
             [type]="passwordInputType"
-            placeholder="Contraseña"
+            [placeholder]="'LOGIN.PLACEHOLDER_PASS' | translate"
             name="password"
             [(ngModel)]="loginData.password"
             required
           />
-=======
-        <input 
-        class="login-panel__input" 
-        type="text"
-        [placeholder]="'LOGIN.PLACEHOLDER_ID' | translate"
-        name="identifier"
-        [(ngModel)]="loginData.identifier"
-        required />
-        <div class="login-panel__password-field-wrapper">
-          <input 
-          class="login-panel__input" 
-          [type]="passwordInputType" 
-          [placeholder]="'LOGIN.PLACEHOLDER_PASS' | translate"
-          name="password"
-          [(ngModel)]="loginData.password"
-          required />
->>>>>>> d0beb9e411ae4e5d7a86fa188c586ede3ff9e307
 
           <span class="login-panel__toggle-btn" (click)="togglePasswordVisibility()">
             <mat-icon>{{ showPasswordIcon }}</mat-icon>
@@ -53,18 +35,13 @@
         <div class="login-panel__error-message">
           {{ errorMessage }}
         </div>
-<<<<<<< HEAD
         }
 
-        <button class="login-panel__button" type="submit">Ingresar</button>
-=======
-       }
-       
-        
-       <button class="login-panel__button" type="submit">{{ 'LOGIN.BUTTON' | translate }}</button>
->>>>>>> d0beb9e411ae4e5d7a86fa188c586ede3ff9e307
+        <button class="login-panel__button" type="submit">{{ 'LOGIN.BUTTON' | translate }}</button>
       </form>
-      <a class="login-panel__link" routerLink="/register">{{ 'LOGIN.REGISTER_LINK' | translate }}</a>
+      <a class="login-panel__link" routerLink="/register">{{
+        'LOGIN.REGISTER_LINK' | translate
+      }}</a>
 
       <p class="login-panel__copyright-text">{{ 'FOOTER.COPYRIGHT' | translate }}</p>
     </div>
