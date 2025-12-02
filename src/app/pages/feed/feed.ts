@@ -14,11 +14,12 @@ import { Subscription } from 'rxjs';
 import { ThreadState } from '../../services/thread-state/thread-state';
 import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 import { UserState } from '../../services/user-state/user-state';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [Header, FollowingDiscovering, Thread, Suggestions, BottonNav, CreateThreadButton],
+  imports: [Header, FollowingDiscovering, Thread, Suggestions, BottonNav, CreateThreadButton, TranslateModule],
   templateUrl: './feed.html',
   styleUrls: ['./feed.css'],
 })

@@ -7,13 +7,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ProfileInterface } from '../../../interfaces/ProfileInterface';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-profile-modal',
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatDialogModule, MatIconModule,
-    MatButtonModule, MatFormFieldModule, MatInputModule
+    MatButtonModule, MatFormFieldModule, MatInputModule, TranslateModule
   ],
   templateUrl: './edit-profile-modal.html',
   styleUrls: ['./edit-profile-modal.css']

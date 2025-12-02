@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface SelectCategory {
   value: string;
@@ -18,6 +19,7 @@ interface SelectCategory {
 
 @Component({
   selector: 'app-edit-thread-modal',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -27,7 +29,8 @@ interface SelectCategory {
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    TextFieldModule
+    TextFieldModule,
+    TranslateModule
   ],
   templateUrl: './edit-thread-modal.html',
   styleUrl: './edit-thread-modal.css'

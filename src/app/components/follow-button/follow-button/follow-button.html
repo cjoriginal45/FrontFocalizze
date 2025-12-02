@@ -10,12 +10,12 @@
   
   @if (entity.isFollowing) {
     @if (isHovering) {
-      <span>Dejar de Seguir</span>
+      <span>{{ 'FOLLOW_BUTTON.UNFOLLOW' | translate }}</span>
     } @else {
-      <span>Siguiendo</span>
+      <span>{{ 'FOLLOW_BUTTON.FOLLOWING' | translate }}</span>
     }
   } @else {
-    <span>Seguir</span>
+    <span>{{ 'FOLLOW_BUTTON.FOLLOW' | translate }}</span>
   }
   
 </button>

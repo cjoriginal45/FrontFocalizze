@@ -1,0 +1,222 @@
+{
+    "COMMON": {
+      "BACK": "Back",
+      "CONFIRM": "Confirm changes"
+    },
+    "SETTINGS": {
+      "TITLE": "Settings",
+      "LANGUAGE_TITLE": "Language",
+      "SELECT_LABEL": "Select your language:",
+      "HELPER_TEXT": "The language will change immediately.",
+      "WATERMARK": "Focalizze"
+    },
+    "MENU": {
+      "HOME": "Home",
+      "NOTIFICATIONS": "Notifications",
+      "SAVED": "Saved",
+      "SETTINGS": "Settings",
+      "LOGOUT": "Log out"
+    },
+    "PROFILE": {
+      "FOLLOWING": "Following",
+      "FOLLOWERS": "Followers",
+      "AVATAR_ALT": "Avatar of {{name}}",
+      "NO_BIO": "This user has no biography yet.",
+      "THREADS_PUBLISHED": "Threads Published",
+      "THREADS_AVAILABLE": "Threads Available Today",
+      "JOINED": "Joined in",
+      "NO_THREADS": "This user hasn't published any threads yet."
+    },
+    "WELCOME": {
+      "TITLE": "Welcome to Focalizze!",
+      "SUBTITLE": "Where less is more. Join the conversation."
+    },
+      "THREAD": {
+      "AVATAR_ALT": "Avatar of {{name}}",
+      "OPTIONS_LABEL": "Thread options",
+      "MORE_OPTIONS": "More options",
+      "EDIT": "Edit Thread",
+      "DELETE": "Delete Thread",
+      "REPORT": "Report Thread",
+      "BLOCK_USER": "Block @{{username}}",
+      "UNBLOCK_USER": "Unblock @{{username}}",
+      "POST_NUMBER": "Post {{number}}",
+      "LOADING": "Loading...",
+      "HIDE": "Hide -",
+      "EXPAND": "Expand +"
+    },
+    "COMMENTS": {
+    "TITLE": "Comments",
+    "CLOSE": "Close",
+    "PLACEHOLDER": "Write a comment...",
+    "BUTTON": "Comment",
+    "LOADING": "Loading comments...",
+    "DELETE": "Delete",
+    "YOUR_AVATAR": "Your avatar",
+    "DEFAULT_AVATAR": "Default avatar"
+  },
+  "CREATE_THREAD": {
+    "TITLE": "Create Thread",
+    "CLOSE": "Close modal",
+    "SCHEDULE": {
+      "TITLE": "Schedule Post",
+      "DATE": "Date",
+      "HOUR": "Hour",
+      "MINUTE": "Min",
+      "INFO": "It will be published approximately on {{date}} at {{time}}"
+    },
+    "POST_LABEL": "Post {{number}}",
+    "CATEGORY_LABEL": "Category (Optional)",
+    "CATEGORY_NONE": "None",
+    "NEXT": "Next",
+    "PUBLISH": "Publish"
+  },
+  "EDIT_PROFILE": {
+    "TITLE": "Edit Profile",
+    "CLOSE_ARIA": "Close",
+    "AVATAR_PREVIEW": "Avatar preview",
+    "NAME_LABEL": "Name",
+    "BIO_LABEL": "Bio",
+    "CANCEL": "Cancel",
+    "SAVE": "Save"
+  },
+  "EDIT_THREAD": {
+    "TITLE": "Edit Thread",
+    "BACK_ARIA": "Go back",
+    "CLOSE_ARIA": "Close modal",
+    "POST_LABEL": "Post {{number}}",
+    "POST_STEP_LABEL": "Post {{current}} of {{total}}",
+    "CATEGORY_LABEL": "Category (Optional)",
+    "CATEGORY_NONE": "None",
+    "NEXT": "Next",
+    "SAVE_CHANGES": "Save Changes"
+  },
+  "FOLLOW_MODAL": {
+    "FOLLOWERS_TAB": "Followers",
+    "FOLLOWING_TAB": "Following",
+    "NO_FOLLOWERS": "No followers yet.",
+    "NO_FOLLOWING": "Not following anyone yet."
+  },
+  "FEED_OPTIONS": {
+    "FOLLOWING": "Following",
+    "DISCOVER": "Discover",
+    "INTERACTIONS": "Available interactions:"
+  },
+  "SUGGESTIONS": {
+    "ARIA_TOGGLE": "Toggle suggestions",
+    "TITLE": "You might like",
+    "SHOW_MORE": "More categories...",
+    "SHOW_LESS": "Show less..."
+  },
+  "SEARCH": {
+    "PLACEHOLDER": "Search...",
+    "ARIA_SUBMIT": "Submit search"
+  },
+  "CATEGORY": {
+    "LOADING": "Loading category...",
+    "FOLLOWERS": "Followers",
+    "THREADS_COUNT": "Threads Published",
+    "THREADS_TITLE": "Threads in this Category",
+    "NO_THREADS": "No threads in this category yet.",
+    "LOADING_MORE": "Loading more threads..."
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "MENU": {
+      "ACCOUNT": "Account & Profile",
+      "SECURITY": "Security & Access",
+      "NOTIFICATIONS": "Notifications",
+      "FOCUS": "Focus Mode",
+      "PRIVACY": "Blocking & Privacy",
+      "THEME": "Theme",
+      "LANGUAGE": "Language"
+    }
+  },
+  "FOOTER": {
+    "TERMS": "Terms of Service",
+    "PRIVACY": "Privacy Policy",
+    "COOKIES": "Cookie Policy",
+    "ACCESSIBILITY": "Accessibility",
+    "MORE": "More options",
+    "COPYRIGHT": "© 2025 Focalizze."
+  },
+  "DISCOVER": {
+    "RECOMMENDED": "Recommended for you",
+    "WHY_THIS": "Why am I seeing this?",
+    "SEE_LESS": "See less like this",
+    "LOADING": "Loading more threads...",
+    "LOAD_MORE": "Load more"
+  },
+  "FEED": {
+    "LOADING": "Loading more threads...",
+    "LOAD_MORE": "Load more"
+  },
+  "LOGIN": {
+    "TITLE": "Log In",
+    "PLACEHOLDER_ID": "Email/Username",
+    "PLACEHOLDER_PASS": "Password",
+    "BUTTON": "Enter",
+    "REGISTER_LINK": "Don't have an account? Sign up"
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "Notifications",
+    "EMPTY": "You have no notifications.",
+    "LOADING": "Loading...",
+    "LOAD_MORE": "Load older notifications"
+  },
+  "PASSWORD_RECOVERY": {
+    "TITLE_REQUEST": "Password Recovery",
+    "SUBTITLE_REQUEST": "Enter your email address and we'll send you a link to reset your password.",
+    "PLACEHOLDER_EMAIL": "Enter your email",
+    "BUTTON_SEND": "Send",
+    "BUTTON_SENDING": "Sending...",
+    "LINK_BACK": "Remember your password?",
+    "LINK_CLICK_HERE": "Click here",
+    "TITLE_RESET": "Create new password",
+    "PLACEHOLDER_NEW_PASS": "Enter new password",
+    "PLACEHOLDER_CONFIRM_PASS": "Confirm new password",
+    "BUTTON_RESET": "Reset password",
+    "BUTTON_RESETTING": "Resetting...",
+    "EMAIL_SENT_TITLE": "Check your email!",
+    "EMAIL_SENT_MSG": "We've sent a link to {{email}} to reset your password. Please check your inbox and spam folder.",
+    "INVALID_TITLE": "Invalid link",
+    "INVALID_MSG": "The recovery link is invalid or has expired. Please request a new one.",
+    "SUCCESS_TITLE": "Success!",
+    "SUCCESS_MSG": "Your password has been updated successfully. Redirecting to login in a few seconds."
+  },
+  "REGISTER": {
+    "TITLE": "Sign Up",
+    "PLACEHOLDER_USER": "Username",
+    "PLACEHOLDER_EMAIL": "Email",
+    "PLACEHOLDER_PASS": "Password",
+    "PLACEHOLDER_CONFIRM": "Confirm Password",
+    "BUTTON": "Sign Up",
+    "LOGIN_LINK": "Log In"
+  },
+  "SAVED_THREADS": {
+    "TITLE": "Saved Threads",
+    "LOADING": "Loading...",
+    "LOAD_MORE": "Load more",
+    "EMPTY": "You haven't saved any threads yet.",
+    "ARIA_BACK": "Go back"
+  },
+  "SEARCH_MOBILE": {
+    "BACK_ARIA": "Go back",
+    "TITLE": "Recent Searches",
+    "REMOVE_ARIA": "Remove from history",
+    "EMPTY": "No recent searches."
+  },
+  "SEARCH_RESULTS": {
+    "BACK_ARIA": "Go back",
+    "TITLE": "Search Results",
+    "SUBTITLE": "for: \"{{query}}\"",
+    "LOADING": "Loading results...",
+    "NO_RESULTS": "No threads found matching your search."
+  },
+  "FOLLOW_BUTTON": {
+    "FOLLOW": "Follow",
+    "FOLLOWING": "Following",
+    "UNFOLLOW": "Unfollow"
+  }
+
+  }

@@ -12,13 +12,13 @@
     <!-- Mostramos un mensaje de carga mientras se obtienen los datos -->
     <!-- We show a loading message while the data is being fetched -->
     @if (isLoading) {
-      <div class="loading-indicator">Cargando más hilos...</div>
+      <div class="loading-indicator">{{ 'FEED.LOADING' | translate }}</div>
     }
 
     <!-- Mostramos un botón para cargar más si no hemos llegado al final -->
     <!-- We show a button to load more if we haven't reached the end -->
     @if (!isLastPage && threadIds.length > 0 && !isLoading) {
-      <button (click)="loadMoreThreads()" class="load-more-button">Cargar más</button>
+      <button (click)="loadMoreThreads()" class="load-more-button">{{ 'FEED.LOAD_MORE' | translate }}</button>
     }
   </main>
 

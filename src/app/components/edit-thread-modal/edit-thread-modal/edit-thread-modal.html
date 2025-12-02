@@ -7,7 +7,7 @@
     mat-icon-button
     class="modal-header__button modal-header__back-btn"
     (click)="previousStep()"
-    aria-label="Volver al paso anterior"
+    [attr.aria-label]="'EDIT_THREAD.BACK_ARIA' | translate"
    >
     <mat-icon>arrow_back</mat-icon>
    </button>
@@ -15,7 +15,7 @@
   </div>
  
   <!-- Título central -->
-  <h2 class="modal-header__title">Editar Hilo</h2>
+  <h2 class="modal-header__title">{{ 'EDIT_THREAD.TITLE' | translate }}</h2>
  
   <!-- Contenedor derecho para las acciones principales -->
   <div class="modal-header__right">
@@ -23,7 +23,7 @@
     mat-icon-button
     class="modal-header__button"
     (click)="closeModal()"
-    aria-label="Cerrar modal"
+    [attr.aria-label]="'EDIT_THREAD.CLOSE_ARIA' | translate"
    >
     <mat-icon>close</mat-icon>
    </button>
@@ -35,7 +35,7 @@
   <!-- ¡CAMBIO AQUÍ! Se usa appearance="fill" para coincidir con el segundo ejemplo -->
  <div class="modal-content__desktop-view">
   <mat-form-field appearance="fill" class="thread-input">
-   <mat-label>Post 1</mat-label>
+    <mat-label>{{ 'EDIT_THREAD.POST_LABEL' | translate:{number: 1} }}</mat-label>
    <textarea
     matInput
     [(ngModel)]="threads[0]" [maxlength]="charLimits.step1"
@@ -47,7 +47,7 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="thread-input">
-   <mat-label>Post 2</mat-label>
+    <mat-label>{{ 'EDIT_THREAD.POST_LABEL' | translate:{number: 2} }}</mat-label>
    <textarea
     matInput
     [(ngModel)]="threads[1]" [maxlength]="charLimits.step2"
@@ -58,7 +58,7 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="thread-input">
-   <mat-label>Post 3</mat-label>
+    <mat-label>{{ 'EDIT_THREAD.POST_LABEL' | translate:{number: 3} }}</mat-label>
    <textarea
     matInput
     [(ngModel)]="threads[2]" [maxlength]="charLimits.step3"
@@ -74,7 +74,7 @@
  <div class="modal-content__mobile-view">
   @switch (currentStep) { @case (1) {
   <mat-form-field appearance="fill" class="thread-input">
-   <mat-label>Post 1 de 3</mat-label>
+    <mat-label>{{ 'EDIT_THREAD.POST_STEP_LABEL' | translate:{current: 1, total: 3} }}</mat-label>
    <textarea
     matInput
     [(ngModel)]="threads[0]" [maxlength]="charLimits.step1"
@@ -86,7 +86,7 @@
   </mat-form-field>
   } @case (2) {
   <mat-form-field appearance="fill" class="thread-input">
-   <mat-label>Post 2 de 3</mat-label>
+    <mat-label>{{ 'EDIT_THREAD.POST_STEP_LABEL' | translate:{current: 2, total: 3} }}</mat-label>
    <textarea
     matInput
     [(ngModel)]="threads[1]" [maxlength]="charLimits.step1"
@@ -97,7 +97,7 @@
   </mat-form-field>
   } @case (3) {
   <mat-form-field appearance="fill" class="thread-input">
-   <mat-label>Post 3 de 3</mat-label>
+    <mat-label>{{ 'EDIT_THREAD.POST_STEP_LABEL' | translate:{current: 3, total: 3} }}</mat-label>
    <textarea
     matInput
     [(ngModel)]="threads[2]" [maxlength]="charLimits.step3"
@@ -114,9 +114,9 @@
 
   <mat-form-field appearance="outline" class="category-selector">
    <!-- 1. Etiqueta actualizada para indicar que es opcional. -->
-   <mat-label>Categoría (Opcional)</mat-label>
+   <mat-label>{{ 'EDIT_THREAD.CATEGORY_LABEL' | translate }}</mat-label>
    <mat-select [(ngModel)]="selectedCategory" name="category">
-    <mat-option>Ninguna</mat-option>
+    <mat-option>{{ 'EDIT_THREAD.CATEGORY_NONE' | translate }}</mat-option>
  
     <!-- El resto de las categorías se renderizan normalmente. -->
     @for (category of categories; track category.value) {
@@ -133,10 +133,10 @@
    [class.step-3]="currentStep === 3"
   >
    <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">
-    Avanzar
+    {{ 'EDIT_THREAD.NEXT' | translate }}
    </button>
    <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="onSave()">
-    Guardar Cambios
+    {{ 'EDIT_THREAD.SAVE_CHANGES' | translate }}
    </button>
   </div>
  </footer>

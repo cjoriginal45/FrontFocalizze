@@ -14,9 +14,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-bar',
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -25,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatButtonModule,
     MatAutocompleteModule,
+    TranslateModule,
   ],
   templateUrl: './search-bar.html',
   styleUrl: './search-bar.css',

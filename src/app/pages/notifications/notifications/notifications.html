@@ -2,7 +2,7 @@
 
 <div class="notification-page-container">
   <header class="notification-page__header">
-    <h1>Notificaciones</h1>
+    <h1>{{ 'NOTIFICATIONS.TITLE' | translate }}</h1>
   </header>
 
   <div class="notification-list-container">
@@ -58,17 +58,17 @@
       </div>
     </a>
     } @empty { @if (!isLoading) {
-    <p class="no-notifications">No tienes notificaciones.</p>
+      <p class="no-notifications">{{ 'NOTIFICATIONS.EMPTY' | translate }}</p>
     } }
   </div>
 
   @if (isLoading) {
-  <p class="loading-indicator">Cargando...</p>
+    <p class="loading-indicator">{{ 'NOTIFICATIONS.LOADING' | translate }}</p>
   }
 
   <!-- En el futuro, esto se puede reemplazar con una directiva de scroll infinito -->
   @if (!isLastPage && notifications.length > 0 && !isLoading) {
-  <button (click)="loadMoreNotifications()" class="load-more-button">Cargar más antiguas</button>
+    <button (click)="loadMoreNotifications()" class="load-more-button">{{ 'NOTIFICATIONS.LOAD_MORE' | translate }}</button>
   }
 </div>
 <app-botton-nav></app-botton-nav>

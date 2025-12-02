@@ -7,10 +7,12 @@ import { SearchBar } from '../../components/search-bar/search-bar';
 import { BottonNav } from '../../components/botton-nav/botton-nav';
 import { Router } from '@angular/router';
 import { ThreadState } from '../../services/thread-state/thread-state';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-mobile',
-  imports: [CommonModule, MatIconModule, MatButtonModule, SearchBar, BottonNav],
+  standalone: true,
+  imports: [CommonModule, MatIconModule, MatButtonModule, SearchBar, BottonNav, TranslateModule],
   templateUrl: './search-mobile.html',
   styleUrl: './search-mobile.css',
 })

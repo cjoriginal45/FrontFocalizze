@@ -16,9 +16,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { Comments } from '../../../components/comments/comments';
 import { threadService } from '../../../services/thread/thread';
 import { BottonNav } from '../../../components/botton-nav/botton-nav';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-results',
+  standalone: true,
   imports: [
     CommonModule,
     MatIconModule,
@@ -27,6 +29,7 @@ import { BottonNav } from '../../../components/botton-nav/botton-nav';
     Header,
     FollowingDiscovering,
     BottonNav,
+    TranslateModule,
   ],
   templateUrl: './search-results.html',
   styleUrl: './search-results.css',

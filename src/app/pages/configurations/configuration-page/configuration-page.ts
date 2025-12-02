@@ -6,10 +6,12 @@ import { Header } from '../../../components/header/header';
 import { RouterLink } from '@angular/router';
 import { BottonNav } from '../../../components/botton-nav/botton-nav';
 import { CommonModule, Location as AngularLocation } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-configuration-page',
-  imports: [MatToolbar, MatIcon, MatNavList, Header, RouterLink, BottonNav],
+  standalone: true,
+  imports: [MatToolbar, MatIcon, MatNavList, Header, RouterLink, BottonNav, CommonModule, TranslateModule],
   templateUrl: './configuration-page.html',
   styleUrl: './configuration-page.css',
 })

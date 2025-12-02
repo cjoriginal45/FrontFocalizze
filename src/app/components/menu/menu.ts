@@ -6,6 +6,7 @@ import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth/auth';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-menu',
@@ -17,6 +18,7 @@ import { Auth } from '../../services/auth/auth';
     MatIcon,
     CommonModule,
     RouterLink,
+    TranslateModule
   ],
   templateUrl: './menu.html',
   styleUrl: './menu.css',

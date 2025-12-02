@@ -12,6 +12,7 @@ import { UserState } from '../user-state/user-state';
 import { CategoryState } from '../category-state/category-state';
 import { NotificationState } from '../notification-state/notification-state';
 import { InteractionCounter } from '../interactionCounter/interaction-counter';
+import { Language } from '../language/language';
 
 export interface AuthUser {
   id: number;

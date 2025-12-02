@@ -3,11 +3,11 @@
     <input
       matInput
       type="search"
-      placeholder="Buscar..."
+      [placeholder]="'SEARCH.PLACEHOLDER' | translate"
       [formControl]="searchControl"
       [matAutocomplete]="userAutocomplete"
     />
-    <button mat-icon-button matSuffix type="submit" aria-label="Realizar búsqueda">
+    <button mat-icon-button matSuffix type="submit" [attr.aria-label]="'SEARCH.ARIA_SUBMIT' | translate">
       <mat-icon>search</mat-icon>
     </button>
   </mat-form-field>

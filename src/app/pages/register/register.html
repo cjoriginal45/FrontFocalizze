@@ -9,12 +9,12 @@
   </div>
   <div class="register-page__panel-box">
     <div class="register-panel">
-      <h1 class="register-panel__title">Registro</h1>
+      <h1 class="register-panel__title">{{ 'REGISTER.TITLE' | translate }}</h1>
       <form class="register-panel__form" (ngSubmit)="onSubmit()">
         <input
           class="register-panel__input"
           type="text"
-          placeholder="Nombre de usuario"
+          [placeholder]="'REGISTER.PLACEHOLDER_USER' | translate"
           [(ngModel)]="registerData.username"
           name="username"
           required
@@ -22,7 +22,7 @@
         <input
           class="register-panel__input"
           type="email"
-          placeholder="Correo Electrónico"
+          [placeholder]="'REGISTER.PLACEHOLDER_EMAIL' | translate"
           [(ngModel)]="registerData.email"
           name="email"
           required
@@ -31,7 +31,7 @@
           <input
             class="register-panel__input"
             [type]="passwordInputType"
-            placeholder="Contraseña"
+            [placeholder]="'REGISTER.PLACEHOLDER_PASS' | translate"
             name="password"
             [(ngModel)]="registerData.password"
             required
@@ -45,7 +45,7 @@
           <input
             class="register-panel__input"
             [type]="confirmPasswordInputType"
-            placeholder="Repetir Contraseña"
+            [placeholder]="'REGISTER.PLACEHOLDER_CONFIRM' | translate"
             name="confirmPassword"
             [(ngModel)]="registerData.confirmPassword"
             required
@@ -62,10 +62,10 @@
         </div>
         }
 
-        <button class="register-panel__button" type="submit">Registrarse</button>
+        <button class="register-panel__button" type="submit">{{ 'REGISTER.BUTTON' | translate }}</button>
       </form>
-      <a class="register-panel__link" routerLink="/">Iniciar Sesión</a>
-      <p class="register-panel__copyright-text">Copyright 2025</p>
+      <a class="register-panel__link" routerLink="/">{{ 'REGISTER.LOGIN_LINK' | translate }}</a>
+      <p class="register-panel__copyright-text">{{ 'FOOTER.COPYRIGHT' | translate }}</p>
     </div>
   </div>
 </section>

@@ -6,10 +6,12 @@ import { RegisterService } from '../../services/registerService/register';
 import { CommonModule } from '@angular/common';
 import { RegisterRequest } from '../../interfaces/RegisterRequest';
 import { RegisterResponse } from '../../interfaces/RegisterResponse';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
-  imports: [MatIconModule, RouterLink, FormsModule, CommonModule],
+  standalone: true,
+  imports: [MatIconModule, RouterLink, FormsModule, CommonModule, TranslateModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
