@@ -83,7 +83,6 @@
 }
 
 .load-more-button:hover {
-  background-color: var(--primary-color-hover, #0055cc);
   transform: scale(1.03);
 }
 
@@ -145,6 +144,10 @@
   max-width: 280px;
   outline: none;
 }
+
+.recommendation-reason mat-icon {
+  color: var(--primary-color);
+}
 .reason-title {
   display: flex;
   align-items: center;
@@ -155,15 +158,17 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
+  color: var(--primary-color) !important;
 }
 .recommendation-reason p {
   font-size: 0.9rem;
   line-height: 1.4;
   margin-bottom: 12px;
-  color: #333;
+  color: var(--primary-color) !important;
 }
 .recommendation-reason button {
   width: 100%;
+  color: var(--primary-color) !important;
 }
 
 /* --- MEDIA QUERY PARA ESCRITORIO --- */
@@ -191,14 +196,22 @@
     height: calc(100vh - (60px + 40px + 40px));
     overflow-y: auto;
     padding-right: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+  }
+
+  .discover-layout__sidebar:hover {
+    box-shadow: 0 0 6px var(--shadow-color);
   }
 
   .discover-layout__sidebar::-webkit-scrollbar {
     width: 6px;
+    border-radius: 4px;
+    background-color: var(--primary-color);
   }
 
   .discover-layout__sidebar::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--primary-color);
     border-radius: 4px;
   }
 

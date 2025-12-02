@@ -3,14 +3,15 @@
 }
 
 .thread {
-  background-color: white;
-  border: 1px solid #e0e0e0;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
+  color: var(--text-color);
 }
 
 .thread:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 /* --- Header --- */
@@ -19,7 +20,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid var(--border-color);
   gap: 12px;
 }
 
@@ -35,7 +36,7 @@
   display: flex;
   align-items: center;
   white-space: nowrap;
-  color: #777;
+  color: var(--icon-color);
   font-size: 0.8rem;
   flex-shrink: 0;
   margin-left: 4px;
@@ -59,6 +60,7 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+  background-color: #fff;
 }
 
 .thread__user-info {
@@ -76,7 +78,7 @@
 }
 
 .thread__username {
-  color: #555;
+  color: var(--text-color);
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
@@ -85,7 +87,7 @@
 
 .thread__date {
   font-size: 0.8rem;
-  color: #777;
+  color: var(--text-color);
 }
 
 /* --- Botón Seguir (SELECTOR CORREGIDO) --- */
@@ -150,7 +152,7 @@ app-follow-button {
   flex-direction: column;
   gap: 13px;
   margin-bottom: 5px;
-  border-bottom: 0.4px solid #ddd;
+  border-bottom: 0.4px solid var(--border-color);
 }
 
 .thread__post-title {
@@ -242,14 +244,14 @@ app-follow-button {
   justify-content: space-around;
   align-items: center;
   padding: 12px 16px;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid var(--border-color);
 }
 
 .thread__action {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #555;
+  color: var(--text-color);
   cursor: pointer;
   text-decoration: none;
   transition: color 0.2s ease-in-out;
@@ -282,7 +284,7 @@ app-follow-button {
   cursor: default;
 }
 .thread__action--views:hover {
-  color: #555;
+  color: var(--hover-color);
 }
 
 @media (max-width: 380px) {

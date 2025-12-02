@@ -1,190 +1,188 @@
 /* --- Variables y Layout General --- */
 :host {
-    display: block;
-    background-color: var(--background-color, #f4f6f8);
-    min-height: 100vh;
-    --card-border: 1px solid rgba(1, 52, 74, 0.15);
-    --box-bg: rgba(255, 255, 255, 0.6); /* Fondo semi-transparente */
-    --text-dark: #37474f;
-    --primary-dark: #01344a;
-  }
-  
-  .page-wrapper {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: 20px;
-  }
-  
-  .settings-container {
-    width: 100%;
-    max-width: 600px; /* Ancho desktop */
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
-  
-  /* --- Header --- */
-  .settings-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 0 20px 0;
-    position: relative;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    margin-bottom: 20px;
-  }
-  
-  .back-button {
-    position: absolute;
-    left: 0;
-    color: var(--primary-dark);
-  }
-  
-  .header-title {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: var(--primary-dark);
-    opacity: 0.8;
-    text-align: center;
-  }
-  
-  /* --- Contenido --- */
-  .content-area {
-    position: relative;
-  }
-  
-  .section-title {
-    color: #455a64;
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .subsection {
-    margin-bottom: 25px;
-    position: relative; 
-    z-index: 2; /* Para que esté por encima de la marca de agua */
-  }
-  
-  .subsection-label {
-    color: #546e7a;
-    font-size: 1rem;
-    font-weight: 500;
-    margin-bottom: 10px;
-  }
-  
-  /* --- Caja de Lista de Bloqueados --- */
-  .blocked-list-container {
-    border: var(--card-border);
-    background-color: #f0f7fa; /* Un tono ligeramente más azulado/gris según imagen */
-    border-radius: 16px;
-    padding: 8px; /* Espacio para que el scroll no toque el borde */
-    height: 160px; /* Altura fija para forzar scroll */
-  }
-  
-  .custom-scroll-box {
-    height: 100%;
-    overflow-y: auto;
-    padding-right: 5px;
-  }
-  
-  /* Items de usuario */
-  .blocked-user-row {
-    display: flex;
-    align-items: center;
-    padding: 8px 10px;
-    /* border-bottom: 1px solid rgba(0,0,0,0.03); Opcional */
-  }
-  
-  .user-avatar-icon {
-    font-size: 40px;
-    height: 40px;
-    width: 40px;
-    color: #546e7a; /* Color gris azulado del icono */
-    margin-right: 12px;
-  }
-  
-  .username {
-    color: #455a64;
-    font-weight: 500;
-    font-size: 1rem;
-  }
-  
-  /* --- PERSONALIZACIÓN DEL SCROLLBAR (Webkit) --- */
-  .custom-scroll-box::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .custom-scroll-box::-webkit-scrollbar-track {
-    background: transparent; 
-    margin-top: 5px;
-    margin-bottom: 5px;
-  }
-  
-  .custom-scroll-box::-webkit-scrollbar-thumb {
-    background-color: #cfd8dc; /* Color gris claro de la barra */
-    border-radius: 10px;
-    border: 2px solid #f0f7fa; /* Borde del mismo color del fondo para efecto "flotante" */
-  }
-  
-  .custom-scroll-box::-webkit-scrollbar-thumb:hover {
-    background-color: #b0bec5;
-  }
-  
-  /* --- Caja de Privacidad (Toggles) --- */
-  .privacy-options-container {
-    border: var(--card-border);
-    background-color: var(--box-bg); /* Fondo semi-transparente */
-    border-radius: 16px;
-    padding: 10px 20px;
-    backdrop-filter: blur(2px); /* Efecto sutil si hay algo complejo detrás */
-  }
-  
-  .privacy-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-  }
-  
-  .privacy-row:not(:last-child) {
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-  }
-  
-  .privacy-label {
-    color: #455a64;
-    font-weight: 500;
-    font-size: 0.95rem;
-  }
-  
-  /* --- Marca de agua --- */
-  .watermark-container {
-    position: absolute;
-    top: 150px; /* Ajustado para que caiga detrás de las cajas */
-    left: 0;
-    width: 100%;
-    height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 0;
-    pointer-events: none;
-  }
-  
-  .watermark {
-    font-size: 4rem;
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.4); /* Blanco semitransparente o gris muy claro */
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    /* Opcion alternativa si el fondo es claro: */
-    color: rgba(1, 52, 74, 0.05); 
-  }
-  
-  /* Estilos para la fila de usuario */
+  display: block;
+  background-color: var(--background-color, #f4f6f8);
+  min-height: 100vh;
+  --card-border: 1px solid rgba(1, 52, 74, 0.15);
+  --box-bg: rgba(255, 255, 255, 0.6); /* Fondo semi-transparente */
+  --text-dark: #37474f;
+  --primary-dark: #01344a;
+}
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.settings-container {
+  width: 100%;
+  max-width: 600px; /* Ancho desktop */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* --- Header --- */
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 20px 0;
+  position: relative;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  opacity: 0.8;
+  text-align: center;
+}
+
+/* --- Contenido --- */
+.content-area {
+  position: relative;
+}
+
+.section-title {
+  color: var(--text-color) !important;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.subsection {
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 2; /* Para que esté por encima de la marca de agua */
+}
+
+.subsection-label {
+  color: var(--text-color) !important;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+/* --- Caja de Lista de Bloqueados --- */
+.blocked-list-container {
+  border: 1px solid var(--card-border);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 8px; /* Espacio para que el scroll no toque el borde */
+  height: 160px; /* Altura fija para forzar scroll */
+}
+
+.custom-scroll-box {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Items de usuario */
+.blocked-user-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  /* border-bottom: 1px solid rgba(0,0,0,0.03); Opcional */
+}
+
+.user-avatar-icon {
+  font-size: 40px;
+  height: 40px;
+  width: 40px;
+  color: #546e7a; /* Color gris azulado del icono */
+  margin-right: 12px;
+}
+
+.username {
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* --- PERSONALIZACIÓN DEL SCROLLBAR (Webkit) --- */
+.custom-scroll-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scroll-box::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.custom-scroll-box::-webkit-scrollbar-thumb {
+  background-color: #cfd8dc; /* Color gris claro de la barra */
+  border-radius: 10px;
+  border: 2px solid #f0f7fa; /* Borde del mismo color del fondo para efecto "flotante" */
+}
+
+.custom-scroll-box::-webkit-scrollbar-thumb:hover {
+  background-color: #b0bec5;
+}
+
+/* --- Caja de Privacidad (Toggles) --- */
+.privacy-options-container {
+  border: var(--card-border);
+  background-color: var(--box-bg); /* Fondo semi-transparente */
+  border-radius: 16px;
+  padding: 10px 20px;
+  backdrop-filter: blur(2px); /* Efecto sutil si hay algo complejo detrás */
+}
+
+.privacy-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.privacy-row:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.privacy-label {
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* --- Marca de agua --- */
+.watermark-container {
+  position: absolute;
+  top: 150px; /* Ajustado para que caiga detrás de las cajas */
+  left: 0;
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.watermark {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Estilos para la fila de usuario */
 .blocked-user-row {
   display: flex;
   align-items: center;
@@ -197,8 +195,8 @@
   background-color: rgba(0, 0, 0, 0.04);
 }
 .blocked-user-row.selected {
-  background-color: var(--primary-light, #e3f2fd); /* Un azul claro */
-  border: 1px solid var(--primary-color, #01344a);
+  background-color: rgb(0, 153, 255, 0.3);
+  color: white;
 }
 
 .user-avatar {
@@ -207,25 +205,27 @@
   border-radius: 50%;
   margin-right: 12px;
   object-fit: cover;
+  background-color: #fff;
 }
 .user-info {
   display: flex;
   flex-direction: column;
 }
 .display-name {
-  color: #37474f;
+  color: var(--text-color);
   font-weight: 500;
 }
 .username {
-  color: #6c757d;
+  color: var(--text-color);
   font-size: 0.9rem;
 }
 
 /* Mensajes de estado */
-.empty-list-message, .loading-message {
+.empty-list-message,
+.loading-message {
   text-align: center;
   padding-top: 40px;
-  color: #6c757d;
+  color: var(--text-color);
 }
 
 /* Barra de acción para desbloquear */
@@ -236,6 +236,7 @@
 }
 .btn-unblock {
   background-color: var(--warn-color, var(--primary-color, #01344a));
+  box-shadow: 0 0 6px var(--shadow-color);
   color: white;
   border: none;
   padding: 12px 32px;
@@ -248,20 +249,20 @@
 .btn-unblock:hover {
   background-color: var(--hover-color);
 }
-  
-  /* --- Responsive Desktop --- */
-  @media (min-width: 768px) {
-    
-    .settings-container {
-      max-width: 700px;
-    }
-  
-    /* Ajustar altura scroll en desktop si se ve mejor */
-    .blocked-list-container {
-      height: 180px; 
-    }
-    
-    .watermark {
-      font-size: 6rem;
-    }
+
+/* --- Responsive Desktop --- */
+@media (min-width: 768px) {
+  .settings-container {
+    max-width: 700px;
   }
+
+  /* Ajustar altura scroll en desktop si se ve mejor */
+  .blocked-list-container {
+    height: 180px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+  }
+
+  .watermark {
+    font-size: 6rem;
+  }
+}

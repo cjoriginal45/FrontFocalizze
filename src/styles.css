@@ -4,6 +4,8 @@
   --primary-color: #01344a; /* Azul oscuro */
   --secondary-color: #80d8ff; /* Azul claro */
   --background-color: #f4f6f8; /* Gris muy claro */
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --panel-color: #e0f1f3;
   --hover-color: #316478; /* Color para hover */
   --text-color: #333; /* Gris oscuro para texto */
   --card-background: #ffffff;
@@ -16,12 +18,14 @@
 
 /* --- Variables Tema Oscuro --- */
 body.dark-theme {
+  --primary-color: #33667c; /* Azul más brillante para resaltar en oscuro */
   --background-color: #121212; /* Fondo muy oscuro */
+  --shadow-color: rgb(255, 255, 255, 0.7);
+  --panel-color: #1e1e1e;
+  --hover-color: #2c2c2c;
   --text-color: #e0e0e0; /* Texto claro */
-  --primary-color: #80d8ff; /* Azul más brillante para resaltar en oscuro */
   --card-background: #1e1e1e; /* Fondo de tarjetas (Material Dark) */
   --border-color: #333333;
-  --hover-color: #2c2c2c;
   --icon-color: #b0b0b0;
   --watermark-color: rgba(255, 255, 255, 0.05); /* Marca de agua blanca sutil */
 }
@@ -56,6 +60,25 @@ body {
   overflow: hidden;
 }
 
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: var(--card-background) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-color);
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input {
+  color: var(--text-color) !important;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input:hover {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-select-value {
+  color: var(--text-color) !important;
+  background-color: var(--card-background);
+}
+
 .edit-thread-modal-panel .mat-dialog-container {
   padding: 0 !important;
   border-radius: 15px;
@@ -65,6 +88,12 @@ body {
 .comments-dialog-container .mdc-dialog__container .mdc-dialog__surface {
   padding: 0;
   border-radius: 16px;
+}
+
+/* followers-following-modal*/
+
+.mdc-tab__text-label {
+  color: var(--text-color) !important;
 }
 
 /* ====================================================== */

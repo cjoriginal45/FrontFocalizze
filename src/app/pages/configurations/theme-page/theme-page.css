@@ -59,7 +59,7 @@
   font-size: 1.1rem;
   font-weight: 500;
   /* Usamos variable de texto, quizás con opacidad para el gris */
-  color: var(--text-color);
+  color: var(--primary-color);
   opacity: 0.8;
   margin: 0;
   margin-right: 40px;
@@ -80,7 +80,7 @@
 }
 
 .section-title {
-  color: var(--primary-color);
+  color: var(--text-color);
   font-size: 1.2rem;
   font-weight: 600;
   margin: 20px 0 16px 4px;
@@ -91,7 +91,7 @@
   /* Variable fondo tarjeta */
   background-color: var(--card-background);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px var(--shadow-color);
   /* Variable borde */
   border: 1px solid var(--border-color);
   overflow: hidden;

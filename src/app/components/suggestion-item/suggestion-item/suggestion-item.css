@@ -17,13 +17,13 @@
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: inherit;
+  color: var(--text-color);
   min-width: 0; /* Evita problemas de desbordamiento de texto */
   cursor: pointer;
 }
 
 .suggestion-item__link:hover .suggestion-item__name {
-  color: rgba(1, 52, 74, 0.7);
+  color: var(--primary-color);
 }
 
 .suggestion-item__icon {
@@ -31,12 +31,12 @@
 }
 
 .suggestion-item__icon:hover {
-  color: rgba(1, 52, 74, 0.7);
+  color: var(--hover-color);
 }
 
 .suggestion-item__name {
   font-weight: 500;
-  color: var(--primary-color);
+  color: var(--text-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis; /* Añade "..." si el nombre es muy largo */

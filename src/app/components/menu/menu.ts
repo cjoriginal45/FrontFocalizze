@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { MatNavList } from '@angular/material/list';
@@ -6,6 +6,7 @@ import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth/auth';
+import { Theme } from '../../services/themeService/theme';
 
 @Component({
   selector: 'app-menu',
@@ -22,9 +23,15 @@ import { Auth } from '../../services/auth/auth';
   styleUrl: './menu.css',
 })
 export class Menu {
-
   public authService = inject(Auth);
 
+  private themeService = inject(Theme);
+
+  logoPath = computed(() => {
+    return this.themeService.currentTheme() === 'dark'
+      ? 'assets/images/focalizze-logo-small-dark-theme.webp' // Ruta imagen oscura (letras claras)
+      : 'assets/images/focalizze-logo-small.webp'; // Ruta imagen clara (letras oscuras)
+  });
 
   // @ViewChild nos permite controlar el <mat-sidenav> de nuestra plantilla
   // @ViewChild allows us to control the <mat-sidenav> of our template

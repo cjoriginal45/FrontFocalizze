@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, computed, inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth/auth';
+import { Theme } from '../../services/themeService/theme';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,14 @@ export class Login implements OnDestroy {
 
   passwordInputType: string = 'password';
   showPasswordIcon: string = 'visibility';
+
+  private themeService = inject(Theme);
+
+  logoPath = computed(() => {
+    return this.themeService.currentTheme() === 'dark'
+      ? 'assets/images/focalizze-logo-dark-theme.webp' // Ruta imagen oscura (letras claras)
+      : 'assets/images/focalizze-logo.webp'; // Ruta imagen clara (letras oscuras)
+  });
 
   constructor(private authService: Auth, private router: Router) {}
 

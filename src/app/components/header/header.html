@@ -11,30 +11,29 @@
     >
       <mat-icon>menu</mat-icon>
     </button>
-    <a href="/feed" class="header__logo-container hide-on-mobile"
-      ><img class="header__logo" src="/assets/images/focalizze-logo.webp" alt="Focalizze logo"
-    /></a>
+    <a href="/feed" class="header__logo-container hide-on-mobile">
+      <img class="header__logo" [src]="logoPath()" alt="Focalizze logo" />
+    </a>
   </div>
   <div class="header__section header__section--center">
     <app-search-bar class="header__section hide-on-mobile"></app-search-bar>
     <a href="/feed" class="header__logo-container show-on-mobile">
-      <img class="header__logo" src="/assets/images/focalizze-logo-short.webp" alt="" />
+      <img class="header__logo" [src]="logoPath()" alt="Focalizze logo" />
     </a>
   </div>
   <div class="header__section header__section--right">
-    <a 
-    routerLink="/notifications"
-    mat-icon-button
-    class="header__button notification-button hide-on-mobile"
-    aria-label="Ver notificaciones">
-    
-    <!-- El ícono de notificación -->
-    <mat-icon>notifications</mat-icon>
-    @if (hasUnreadNotifications()) {
+    <a
+      routerLink="/notifications"
+      mat-icon-button
+      class="header__button notification-button hide-on-mobile"
+      aria-label="Ver notificaciones"
+    >
+      <!-- El ícono de notificación -->
+      <mat-icon>notifications</mat-icon>
+      @if (hasUnreadNotifications()) {
       <span class="notification-dot"></span>
-    }
-  </a>
-
+      }
+    </a>
 
     @if (currentUser(); as user) {
     <!-- El enlace apunta al perfil del usuario -->

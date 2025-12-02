@@ -33,17 +33,13 @@
 }
 
 .watermark-text {
-  /* 
-     Truco responsive: 
-     Mínimo 3rem, Ideal 18% del ancho de pantalla, Máximo 8rem 
-  */
   font-size: clamp(3rem, 18vw, 8rem);
-  font-weight: 900; /* Extra bold, muy grueso */
+  font-weight: 900;
   text-transform: uppercase;
-  color: rgba(1, 52, 74, 0.04); /* Muy sutil */
-  letter-spacing: 4px; /* Espaciado entre letras */
-  font-family: 'Roboto', sans-serif; /* O la fuente de tu marca */
-  white-space: nowrap; /* Que no se rompa en dos líneas */
+  color: #333;
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
   user-select: none;
 }
 
@@ -58,12 +54,16 @@
   z-index: 1;
 }
 
+.page-header button mat-icon {
+  color: var(--primary-color);
+}
+
 .page-header h1 {
   flex-grow: 1;
   text-align: center;
   font-size: 1.1rem;
   font-weight: 500;
-  color: #5f6368;
+  color: var(--primary-color);
   margin: 0;
   /* Compensamos visualmente el ancho del botón back para centrar perfecto */
   margin-right: 40px;
@@ -83,7 +83,7 @@
 }
 
 .section-title {
-  color: #01344a;
+  color: var(--text-color);
   font-size: 1.2rem;
   font-weight: 600;
   margin: 20px 0 16px 4px;
@@ -91,10 +91,10 @@
 
 /* --- Tarjeta Blanca --- */
 .settings-card {
-  background-color: rgba(255, 255, 255, 0.5); /* Ligeramente transparente para el watermark */
+  background-color: var(--card-background) !important;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  border: 1px solid var(--border-color);
   overflow: hidden; /* Para que el ripple no se salga */
 }
 
@@ -104,7 +104,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color);
   min-height: 24px;
   transition: background-color 0.2s;
 }
@@ -118,7 +118,7 @@
 }
 
 .clickable:hover {
-  background-color: #f9f9f9;
+  background-color: #333;
 }
 
 /* Parte izquierda del item (Icono + Texto) */
@@ -129,17 +129,17 @@
 }
 
 .item-icon {
-  color: #01344a; /* Color de marca oscuro */
+  color: var(--primary-color); /* Color de marca oscuro */
 }
 
 .item-text {
   font-size: 1rem;
-  color: #333;
+  color: var(--text-color);
   font-weight: 400;
 }
 
 .chevron-icon {
-  color: #ccc;
+  color: var(--icon-color);
 }
 
 /* --- Botón Cerrar Sesión --- */
@@ -147,11 +147,11 @@
   padding: 24px 20px;
   display: flex;
   justify-content: center;
-  border-top: 1px solid #f0f0f0; /* Separador sutil */
+  border-top: 1px solid var(--border-color); /* Separador sutil */
 }
 
 .logout-all-btn {
-  background-color: #01344a; /* Azul oscuro de Focalizze */
+  background-color: var(--primary-color); /* Azul oscuro de Focalizze */
   color: white;
   border: none;
   border-radius: 8px;
@@ -160,12 +160,12 @@
   font-weight: 500;
   width: 100%;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(1, 52, 74, 0.2);
+
   transition: all 0.2s ease;
 }
 
 .logout-all-btn:hover {
-  background-color: #024b6a;
+  box-shadow: 0 0 6px var(--shadow-color);
   transform: translateY(-1px);
 }
 

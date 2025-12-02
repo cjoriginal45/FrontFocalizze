@@ -82,7 +82,6 @@
 }
 
 .load-more-button:hover {
-  background-color: var(--primary-color-hover, #0055cc);
   transform: scale(1.03);
 }
 
@@ -111,14 +110,22 @@
     height: calc(100vh - (60px + 40px + 40px));
     overflow-y: auto;
     padding-right: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+  }
+
+  .feed-layout__sidebar:hover {
+    box-shadow: 0 0 6px var(--shadow-color);
   }
 
   .feed-layout__sidebar::-webkit-scrollbar {
     width: 6px;
+    border-radius: 4px;
+    background-color: var(--primary-color);
   }
 
   .feed-layout__sidebar::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--primary-color);
     border-radius: 4px;
   }
 
