@@ -5,21 +5,22 @@
   justify-content: center; /* Centra el título horizontalmente */
   position: relative; /* Necesario para posicionar el botón de cierre de forma absoluta */
   padding: 16px 24px;
-  border-bottom: 1px solid #e0e0e0; /* Un separador sutil */
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--card-background);
 }
 
 .modal-header__title {
   margin: 0;
   font-size: 1.25rem; /* 20px */
   font-weight: 600;
-  color: rgba(1, 52, 74, 0.7);
+  color: var(--text-color);
 }
 
 .modal-header__button {
   position: absolute; /* Saca el botón del flujo normal del layout */
   right: 16px; /* Lo posiciona a la izquierda con un padding */
   top: 50%;
-  color: rgba(1, 52, 74, 0.7);
+  color: var(--icon-color);
   transform: translateY(-50%); /* Lo centra verticalmente de forma perfecta */
 }
 
@@ -29,9 +30,11 @@
   flex-direction: column;
   gap: 16px;
   padding-top: 24px; /* Añadimos espacio superior para que no se pegue al header */
+  background-color: var(--card-background);
 }
 .modal-footer {
   padding: 8px 24px;
+  background-color: var(--card-background);
 }
 
 .save-button {

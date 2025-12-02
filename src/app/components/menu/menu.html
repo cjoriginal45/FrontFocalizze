@@ -1,75 +1,87 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav class="sidenav" mode="over" [opened]="false">
-
     <!-- Usamos 'authService.currentUser()' para obtener la señal del usuario.
          La sintaxis 'as user' lo desenvuelve en una variable local 'user'. -->
-    @if (authService.currentUser(); as user) {
-      @if (isMobile$ | async) {
-        <div class="sidenav__mobile">
-          <header class="sidenav__header-mobile">
-            <div class="user-profile__info-mobile">
-              <!-- Enlace a la página de perfil con avatar -->
-              <a class="user-profile__avatar-link" routerLink="/profile/{{ user.username }}" (click)="matSidenav.close()">
-                <div class="user-profile_avatar-box-mobile">
-                  @if (user.avatarUrl) {
-                    <img [src]="user.avatarUrl" [alt]="'PROFILE.AVATAR_ALT' | translate:{name: user.displayName}" class="user-profile__avatar-mobile-img">
-                  } @else {
-                    <mat-icon class="user-profile__avatar-mobile">account_circle</mat-icon>
-                  }
-                </div>
-              </a>
-              <!-- Información de nombre y username -->
-              <div class="user-profile__name-handle-mobile">
-                <span class="user-profile__name-mobile">{{ user.displayName || user.username }}</span>
-                <span class="user-profile__handle-mobile">@{{ user.username }}</span>
-              </div>
+    @if (authService.currentUser(); as user) { @if (isMobile$ | async) {
+    <div class="sidenav__mobile">
+      <header class="sidenav__header-mobile">
+        <div class="user-profile__info-mobile">
+          <!-- Enlace a la página de perfil con avatar -->
+          <a
+            class="user-profile__avatar-link"
+            routerLink="/profile/{{ user.username }}"
+            (click)="matSidenav.close()"
+          >
+            <div class="user-profile_avatar-box-mobile">
+              @if (user.avatarUrl) {
+              <img
+                [src]="user.avatarUrl"
+                [alt]="'PROFILE.AVATAR_ALT' | translate : { name: user.displayName }"
+                class="user-profile__avatar-mobile-img"
+              />
+              } @else {
+              <mat-icon class="user-profile__avatar-mobile">account_circle</mat-icon>
+              }
             </div>
-            <!-- Botón de cerrar -->
-            <div class="user-profile__button-box-mobile">
-              <button
-                mat-icon-button
-                class="sidenav__close-button"
-                (click)="matSidenav.close()"
-                [attr.aria-label]="'COMMON.CLOSE_MENU' | translate"
-              >
-                <mat-icon>close</mat-icon>
-        </button>
-            </div>
-          </header>
-          <!-- Contadores de seguidores/seguidos (necesitarás cargarlos en el futuro) -->
-          <div class="mobile-stats-container">
-            <div class="mobile-stats">
-              <span><strong>{{ user.followingCount | number }}</strong> {{ 'PROFILE.FOLLOWING' | translate }}</span>
-              <span><strong>{{ user.followersCount | number }}</strong> {{ 'PROFILE.FOLLOWERS' | translate }}</span>
-            </div>
-          </div>
-          <div class="sidenav__header-line-mobile"></div>
-          <!-- Lista de Navegación -->
-          <mat-nav-list class="sidenav__nav-list">
-            <a mat-list-item routerLink="/saved" (click)="matSidenav.close()">
-              <mat-icon>bookmark</mat-icon> <span>{{ 'MENU.SAVED' | translate }}</span>
-            </a>
-            <a mat-list-item routerLink="/configuration-page" (click)="matSidenav.close()">
-              <mat-icon>settings</mat-icon> <span>{{ 'MENU.SETTINGS' | translate }}</span>
-            </a>
-            <a mat-list-item (click)="logout()">
-              <mat-icon>logout</mat-icon> <span>{{ 'MENU.LOGOUT' | translate }}</span>
-            </a>
-          </mat-nav-list>
-          <div class="sidenav__footer-mobile">
-            <img src="/assets/images/focalizze-logo-short.webp" [alt]="'COMMON.LOGO_ALT' | translate" />
+          </a>
+          <!-- Información de nombre y username -->
+          <div class="user-profile__name-handle-mobile">
+            <span class="user-profile__name-mobile">{{ user.displayName || user.username }}</span>
+            <span class="user-profile__handle-mobile">@{{ user.username }}</span>
           </div>
         </div>
-      } 
-      
-      <!-- === VISTA ESCRITORIO (AUTENTICADO) === -->
-      @else {
-        <div class="sidenav__desktop">
-          <header class="sidenav__header">
-            <div class="sidenav__logo-container">
-              <img src="/assets/images/focalizze-logo.webp" [alt]="'COMMON.LOGO_ALT' | translate" />
-            </div>
-            <button
+        <!-- Botón de cerrar -->
+        <div class="user-profile__button-box-mobile">
+          <button
+            mat-icon-button
+            class="sidenav__close-button"
+            (click)="matSidenav.close()"
+            [attr.aria-label]="'COMMON.CLOSE_MENU' | translate"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </header>
+      <!-- Contadores de seguidores/seguidos (necesitarás cargarlos en el futuro) -->
+      <div class="mobile-stats-container">
+        <div class="mobile-stats">
+          <span
+            ><strong>{{ user.followingCount | number }}</strong>
+            {{ 'PROFILE.FOLLOWING' | translate }}</span
+          >
+          <span
+            ><strong>{{ user.followersCount | number }}</strong>
+            {{ 'PROFILE.FOLLOWERS' | translate }}</span
+          >
+        </div>
+      </div>
+      <div class="sidenav__header-line-mobile"></div>
+      <!-- Lista de Navegación -->
+      <mat-nav-list class="sidenav__nav-list">
+        <a mat-list-item routerLink="/saved" (click)="matSidenav.close()">
+          <mat-icon>bookmark</mat-icon> <span>{{ 'MENU.SAVED' | translate }}</span>
+        </a>
+        <a mat-list-item routerLink="/configuration-page" (click)="matSidenav.close()">
+          <mat-icon>settings</mat-icon> <span>{{ 'MENU.SETTINGS' | translate }}</span>
+        </a>
+        <a mat-list-item (click)="logout()">
+          <mat-icon>logout</mat-icon> <span>{{ 'MENU.LOGOUT' | translate }}</span>
+        </a>
+      </mat-nav-list>
+      <div class="sidenav__footer-mobile">
+        <img class="header__logo" [src]="logoPath()" [alt]="'COMMON.LOGO_ALT' | translate" />
+      </div>
+    </div>
+    }
+
+    <!-- === VISTA ESCRITORIO (AUTENTICADO) === -->
+    @else {
+    <div class="sidenav__desktop">
+      <header class="sidenav__header">
+        <div class="sidenav__logo-container">
+          <img class="header__logo" [src]="logoPath()" [alt]="'COMMON.LOGO_ALT' | translate" />
+        </div>
+        <button
           mat-icon-button
           class="sidenav__close-button"
           (click)="matSidenav.close()"
@@ -77,74 +89,93 @@
         >
           <mat-icon>close</mat-icon>
         </button>
-          </header>
-          <!-- Lista de Navegación -->
-          <mat-nav-list class="sidenav__nav-list">
-            <a mat-list-item routerLink="/home" (click)="matSidenav.close()">
-              <mat-icon>home</mat-icon> <span>{{ 'MENU.HOME' | translate }}</span>
-            </a>
-            <a mat-list-item routerLink="/notifications" (click)="matSidenav.close()">
-              <mat-icon>notifications</mat-icon> <span>{{ 'MENU.NOTIFICATIONS' | translate }}</span>
-            </a>
-            <a mat-list-item routerLink="/saved" (click)="matSidenav.close()">
-              <mat-icon>bookmark</mat-icon> <span>{{ 'MENU.SAVED' | translate }}</span>
-            </a>
-            <a mat-list-item routerLink="/configuration-page" (click)="matSidenav.close()">
-              <mat-icon>settings</mat-icon> <span>{{ 'MENU.SETTINGS' | translate }}</span>
-            </a>
-          </mat-nav-list>
+      </header>
+      <!-- Lista de Navegación -->
+      <mat-nav-list class="sidenav__nav-list">
+        <a mat-list-item routerLink="/home" (click)="matSidenav.close()">
+          <mat-icon>home</mat-icon> <span>{{ 'MENU.HOME' | translate }}</span>
+        </a>
+        <a mat-list-item routerLink="/notifications" (click)="matSidenav.close()">
+          <mat-icon>notifications</mat-icon> <span>{{ 'MENU.NOTIFICATIONS' | translate }}</span>
+        </a>
+        <a mat-list-item routerLink="/saved" (click)="matSidenav.close()">
+          <mat-icon>bookmark</mat-icon> <span>{{ 'MENU.SAVED' | translate }}</span>
+        </a>
+        <a mat-list-item routerLink="/configuration-page" (click)="matSidenav.close()">
+          <mat-icon>settings</mat-icon> <span>{{ 'MENU.SETTINGS' | translate }}</span>
+        </a>
+      </mat-nav-list>
 
-          <!-- Perfil de Usuario en el Footer (ahora dinámico) -->
-          <a class="sidenav__user-profile-link" routerLink="/profile/{{ user.username }}" (click)="matSidenav.close()">
-            <div class="sidenav__user-profile">
-              @if (user.avatarUrl) {
-                <img [src]="user.avatarUrl" [alt]="'PROFILE.AVATAR_ALT' | translate:{name: user.displayName}" class="user-profile__avatar-img">
-              } @else {
-                <mat-icon class="user-profile__avatar">account_circle</mat-icon>
-              }
-              <div class="user-profile__info">
-                <span class="user-profile__name">{{ user.displayName || user.username }}</span>
-                <span class="user-profile__handle">@{{ user.username }}</span>
-              </div>
-              <!-- Contadores (necesitarás cargarlos) -->
-              <div class="user-profile__stats">
-                <span><strong>{{ user.followingCount | number }}</strong> {{ 'PROFILE.FOLLOWING' | translate }}</span>
-                <span><strong>{{ user.followersCount | number }}</strong> {{ 'PROFILE.FOLLOWERS' | translate }}</span>
-              </div>
-            </div>
-          </a>
-          <!-- Botón de Cerrar Sesión -->
-          <button mat-stroked-button class="sidenav__logout-btn" (click)="logout()" 
-          routerLink="/login">
-          {{ 'MENU.LOGOUT' | translate }}
-          </button>
-        </div>
-      }
-
-    } @else {
-      <!-- ========================================================== -->
-      <!-- CONTENIDO A MOSTRAR SI EL USUARIO NO ESTÁ AUTENTICADO -->
-      <!-- ========================================================== -->
-      <div class="sidenav__anonymous-view">
-        <div class="sidenav__header">
-          <div class="sidenav__logo-container">
-            <img src="/assets/images/focalizze-logo.webp" [alt]="'COMMON.LOGO_ALT' | translate" />
+      <!-- Perfil de Usuario en el Footer (ahora dinámico) -->
+      <a
+        class="sidenav__user-profile-link"
+        routerLink="/profile/{{ user.username }}"
+        (click)="matSidenav.close()"
+      >
+        <div class="sidenav__user-profile">
+          @if (user.avatarUrl) {
+          <img
+            [src]="user.avatarUrl"
+            [alt]="'PROFILE.AVATAR_ALT' | translate : { name: user.displayName }"
+            class="user-profile__avatar-img"
+          />
+          } @else {
+          <mat-icon class="user-profile__avatar">account_circle</mat-icon>
+          }
+          <div class="user-profile__info">
+            <span class="user-profile__name">{{ user.displayName || user.username }}</span>
+            <span class="user-profile__handle">@{{ user.username }}</span>
           </div>
-          <button mat-icon-button class="sidenav__close-button" (click)="matSidenav.close()" [attr.aria-label]="'COMMON.CLOSE_MENU' | translate">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <div class="sidenav__anonymous-content">
-          <h2>{{ 'WELCOME.TITLE' | translate }}</h2>
-          <p>{{ 'WELCOME.SUBTITLE' | translate }}</p>
-          <div class="sidenav__anonymous-actions">
-            <a mat-stroked-button routerLink="/login" (click)="matSidenav.close()">{{ 'COMMON.LOGIN' | translate }}</a>
-            <a mat-flat-button color="primary" routerLink="/register" (click)="matSidenav.close()">{{ 'COMMON.REGISTER' | translate }}</a>
+          <!-- Contadores (necesitarás cargarlos) -->
+          <div class="user-profile__stats">
+            <span
+              ><strong>{{ user.followingCount | number }}</strong>
+              {{ 'PROFILE.FOLLOWING' | translate }}</span
+            >
+            <span
+              ><strong>{{ user.followersCount | number }}</strong>
+              {{ 'PROFILE.FOLLOWERS' | translate }}</span
+            >
           </div>
+        </div>
+      </a>
+      <!-- Botón de Cerrar Sesión -->
+      <button mat-stroked-button class="sidenav__logout-btn" (click)="logout()" routerLink="/login">
+        {{ 'MENU.LOGOUT' | translate }}
+      </button>
+    </div>
+    } } @else {
+    <!-- ========================================================== -->
+    <!-- CONTENIDO A MOSTRAR SI EL USUARIO NO ESTÁ AUTENTICADO -->
+    <!-- ========================================================== -->
+    <div class="sidenav__anonymous-view">
+      <div class="sidenav__header">
+        <div class="sidenav__logo-container">
+          <img class="header__logo" [src]="logoPath()" [alt]="'COMMON.LOGO_ALT' | translate" />
+        </div>
+        <button
+          mat-icon-button
+          class="sidenav__close-button"
+          (click)="matSidenav.close()"
+          [attr.aria-label]="'COMMON.CLOSE_MENU' | translate"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="sidenav__anonymous-content">
+        <h2>{{ 'WELCOME.TITLE' | translate }}</h2>
+        <p>{{ 'WELCOME.SUBTITLE' | translate }}</p>
+        <div class="sidenav__anonymous-actions">
+          <a mat-stroked-button routerLink="/login" (click)="matSidenav.close()">{{
+            'COMMON.LOGIN' | translate
+          }}</a>
+          <a mat-flat-button color="primary" routerLink="/register" (click)="matSidenav.close()">{{
+            'COMMON.REGISTER' | translate
+          }}</a>
         </div>
       </div>
+    </div>
     }
-
   </mat-sidenav>
   <mat-sidenav-content></mat-sidenav-content>
 </mat-sidenav-container>

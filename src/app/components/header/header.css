@@ -51,7 +51,7 @@
   height: 40px;
   border-radius: 50%;
   position: relative; /* Contexto para el punto */
-  text-decoration: none; 
+  text-decoration: none;
 
   mat-icon {
     font-size: 28px;
@@ -59,7 +59,6 @@
     width: 28px;
   }
 }
-
 
 .header__button:hover {
   background-color: rgba(255, 255, 255, 0.1);
@@ -105,11 +104,10 @@
   border-radius: 50%;
 }
 
-
 .notification-dot {
   position: absolute;
-  top: 8px;    /* Ajusta para el posicionamiento vertical */
-  right: 8px;  /* Ajusta para el posicionamiento horizontal */
+  top: 8px; /* Ajusta para el posicionamiento vertical */
+  right: 8px; /* Ajusta para el posicionamiento horizontal */
   width: 10px;
   height: 10px;
   background-color: var(--warn-color, #f44336); /* Color de "warning" de Material */
@@ -129,7 +127,6 @@
   font-size: 0.8rem;
   color: #555;
 }
-
 
 :host ::ng-deep .header__search .mdc-notched-outline > * {
   border: none !important;

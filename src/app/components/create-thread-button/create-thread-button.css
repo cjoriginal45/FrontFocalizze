@@ -5,6 +5,8 @@
   bottom: 85px;
   right: 20px;
   z-index: 999;
+  border-radius: 16px;
+  box-shadow: 0 0px 8px var(--shadow-color);
 }
 
 /* --- MEDIA QUERIES PARA ESCRITORIO --- */
@@ -24,20 +26,10 @@
 
 .create-thread-btn__button {
   background-color: var(--primary-color);
-  color: var(--background-color);
-}
-
-.create-thread-btn__button:hover {
-  background-color: var(--hover-color);
-  color: var(--text-color);
 }
 
 .create-thread-btn__icon {
-  color: var(--background-color);
-}
-
-.create-thread-btn__icon:hover {
-  color: white;
+  color: #fff;
 }
 
 @media (min-width: 1024px) {

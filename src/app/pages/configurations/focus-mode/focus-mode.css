@@ -13,6 +13,7 @@
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  background-color: var(--card-background) !important;
 }
 
 /* --- MARCA DE AGUA --- */
@@ -33,7 +34,7 @@
   font-size: clamp(3rem, 18vw, 8rem);
   font-weight: 900;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.04);
+  color: #333;
   letter-spacing: 4px;
   font-family: 'Roboto', sans-serif;
   white-space: nowrap;
@@ -56,13 +57,13 @@
   text-align: center;
   font-size: 1.1rem;
   font-weight: 500;
-  color: #5f6368;
+  color: var(--primary-color);
   margin: 0;
   margin-right: 40px; /* Compensación visual */
 }
 
 .page-header mat-icon {
-  color: #01344a; /* Azul Focalizze */
+  color: var(--primary-color); /* Azul Focalizze */
 }
 
 /* --- Contenido --- */
@@ -75,7 +76,7 @@
 }
 
 .section-title {
-  color: #01344a; /* Azul Focalizze */
+  color: var(--text-color); /* Azul Focalizze */
   font-size: 1.2rem;
   font-weight: 600;
   margin: 20px 0 16px 4px;
@@ -83,9 +84,9 @@
 
 /* --- Tarjeta --- */
 .settings-card {
-  background-color: white;
+  background-color: var(--card-background);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px var(--shadow-color);
   border: 1px solid rgba(0, 0, 0, 0.03);
   overflow: hidden;
 }
@@ -102,7 +103,7 @@
 
 .item-text {
   font-size: 0.95rem;
-  color: #4a5568; /* Gris azulado suave, similar a tu imagen */
+  color: var(--text-color); /* Gris azulado suave, similar a tu imagen */
   font-weight: 500;
   line-height: 1.4;
 }

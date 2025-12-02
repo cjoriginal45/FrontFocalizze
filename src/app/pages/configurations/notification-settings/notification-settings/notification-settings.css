@@ -1,136 +1,133 @@
 /* --- Variables locales y estructura general --- */
 :host {
-    display: block;
-    /* Usamos las variables globales definidas en tu styles.css */
-    background-color: var(--background-color, #f4f6f8); 
-    min-height: 100vh;
-    --card-radius: 16px;
-  }
-  
-  .page-wrapper {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: 20px;
-  }
-  
+  display: block;
+  /* Usamos las variables globales definidas en tu styles.css */
+  background-color: var(--background-color, #f4f6f8);
+  min-height: 100vh;
+  --card-radius: 16px;
+}
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Header Interno --- */
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 20px 0;
+  position: relative;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  opacity: 0.8;
+}
+
+/* --- Área de Contenido --- */
+.content-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-title {
+  color: var(--text-color); /* Azul de las imágenes */
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-left: 4px;
+}
+
+/* --- Tarjeta --- */
+.settings-card {
+  border-radius: var(--card-radius) !important;
+  /* Borde sutil como en la imagen */
+  border: 1px solid rgba(1, 52, 74, 0.15);
+  background-color: var(--card-background); /* Ligeramente transparente para el watermark */
+  position: relative;
+  overflow: hidden; /* Para contener la marca de agua */
+  padding: 10px 0;
+}
+
+/* --- Marca de agua (Focalizze) --- */
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  font-weight: 900;
+  color: #333; /* Muy sutil */
+  pointer-events: none; /* Click through */
+  user-select: none;
+  z-index: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.toggles-container {
+  position: relative;
+  z-index: 1; /* Encima de la marca de agua */
+  padding: 10px 20px !important;
+}
+
+/* --- Filas de Interruptores --- */
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+}
+
+/* Separador sutil entre items (opcional, no muy visible en imagen pero mejora UX) */
+.toggle-row:not(:last-child) {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.toggle-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color); /* Un gris azulado similar a la imagen */
+}
+
+/* --- Responsive Desktop --- */
+@media (min-width: 768px) {
   .settings-container {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
+    max-width: 700px;
   }
-  
-  /* --- Header Interno --- */
-  .settings-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 0 20px 0;
-    position: relative;
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-  }
-  
-  .back-button {
-    position: absolute;
-    left: 0;
-    color: var(--primary-color, #01344a);
-  }
-  
-  .header-title {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: var(--primary-color, #01344a);
-    opacity: 0.8;
-  }
-  
-  /* --- Área de Contenido --- */
-  .content-area {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .section-title {
-    color: var(--primary-color, #01344a); /* Azul de las imágenes */
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 16px;
-    margin-left: 4px;
-  }
-  
-  /* --- Tarjeta --- */
+
   .settings-card {
-    border-radius: var(--card-radius) !important;
-    /* Borde sutil como en la imagen */
-    border: 1px solid rgba(1, 52, 74, 0.15); 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
-    background-color: rgba(255, 255, 255, 0.9); /* Ligeramente transparente para el watermark */
-    position: relative;
-    overflow: hidden; /* Para contener la marca de agua */
-    padding: 10px 0;
+    padding: 20px 10px;
+    box-shadow: 0 4px 10px var(--shadow-color) !important;
   }
-  
-  /* --- Marca de agua (Focalizze) --- */
-  .watermark {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 4rem;
-    font-weight: 900;
-    color: rgba(1, 52, 74, 0.04); /* Muy sutil */
-    pointer-events: none; /* Click through */
-    user-select: none;
-    z-index: 0;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
-  
-  .toggles-container {
-    position: relative;
-    z-index: 1; /* Encima de la marca de agua */
-    padding: 10px 20px !important;
-  }
-  
-  /* --- Filas de Interruptores --- */
-  .toggle-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 0;
-  }
-  
-  /* Separador sutil entre items (opcional, no muy visible en imagen pero mejora UX) */
-  .toggle-row:not(:last-child) {
-    border-bottom: 1px solid rgba(0,0,0,0.03);
-  }
-  
+
   .toggle-label {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #4a6572; /* Un gris azulado similar a la imagen */
+    font-size: 1.05rem;
   }
-  
-  
-  
-  /* --- Responsive Desktop --- */
-  @media (min-width: 768px) {
-    
-    .settings-container {
-      max-width: 700px;
-    }
-  
-    .settings-card {
-      padding: 20px 10px;
-    }
-  
-    .toggle-label {
-      font-size: 1.05rem;
-    }
-    
-    .watermark {
-      font-size: 6rem; /* Más grande en escritorio */
-    }
+
+  .watermark {
+    font-size: 6rem; /* Más grande en escritorio */
   }
+}

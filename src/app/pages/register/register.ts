@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, computed, inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
@@ -6,6 +6,7 @@ import { RegisterService } from '../../services/registerService/register';
 import { CommonModule } from '@angular/common';
 import { RegisterRequest } from '../../interfaces/RegisterRequest';
 import { RegisterResponse } from '../../interfaces/RegisterResponse';
+import { Theme } from '../../services/themeService/theme';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -18,6 +19,14 @@ import { TranslateModule } from '@ngx-translate/core';
 export class Register implements OnDestroy {
   passwordInputType: string = 'password';
   passwordIcon: string = 'visibility';
+
+  private themeService = inject(Theme);
+
+  logoPath = computed(() => {
+    return this.themeService.currentTheme() === 'dark'
+      ? 'assets/images/focalizze-logo-dark-theme.webp' // Ruta imagen oscura (letras claras)
+      : 'assets/images/focalizze-logo.webp'; // Ruta imagen clara (letras oscuras)
+  });
 
   confirmPasswordInputType: string = 'password';
   confirmPasswordIcon: string = 'visibility';

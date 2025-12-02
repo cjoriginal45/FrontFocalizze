@@ -13,11 +13,11 @@
   grid-template-columns: auto 1fr;
   gap: 20px 40px;
   padding: 24px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   position: relative;
   margin-bottom: 40px;
-  background-color: white; /* Aseguramos fondo blanco */
+  background-color: var(--card-background);
 }
 
 .profile-header__left {
@@ -28,8 +28,8 @@
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  border: 4px solid white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  box-shadow: 0 4px 12px var(--shadow-color);
   margin-bottom: 12px;
   object-fit: cover; /* Evita que la imagen se deforme */
 }
@@ -44,7 +44,7 @@
 
 .profile-header__username {
   font-size: 1rem;
-  color: #555;
+  color: var(--primary-color);
   margin: 0;
 }
 
@@ -59,7 +59,7 @@
   margin: 24px 0;
   min-height: 40px;
   margin-top: 3px;
-  color: #444;
+  color: var(--text-color);
 }
 
 .biography-title {
@@ -90,14 +90,14 @@
 
 .stat__label {
   font-size: 1rem;
-  color: #444;
+  color: var(--text-color);
 }
 
 .profile-header__meta {
   display: flex;
   align-items: center;
-  gap: 6px; /* Un poco más de espacio */
-  color: #777;
+  gap: 6px;
+  color: var(--text-color);
   font-size: 0.9rem;
 }
 
@@ -129,7 +129,7 @@
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 20px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 12px;
   color: var(--primary-color);
   text-align: center;
@@ -153,7 +153,7 @@
 }
 
 .clickable:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--hover-color);
 }
 
 /* --- RESPONSIVE PARA MÓVIL (CORREGIDO) --- */
@@ -246,7 +246,7 @@
 
   .stat__label {
     font-size: 0.8rem;
-    color: #666;
+    color: var(--text-color);
   }
 
   .profile-threads__title {

@@ -1,4 +1,4 @@
-import { Component, inject, Signal, ViewChild, effect  } from '@angular/core';
+import { Component, inject, Signal, ViewChild, effect, computed } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 import { Menu } from '../menu/menu';
@@ -9,7 +9,7 @@ import { Auth, AuthUser } from '../../services/auth/auth';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NotificationState } from '../../services/notification-state/notification-state';
-
+import { Theme } from '../../services/themeService/theme';
 
 @Component({
   selector: 'app-header',
@@ -24,7 +24,13 @@ export class Header {
 
   private authService = inject(Auth);
   private notificationStateService = inject(NotificationState);
+  private themeService = inject(Theme);
 
+  logoPath = computed(() => {
+    return this.themeService.currentTheme() === 'dark'
+      ? 'assets/images/focalizze-logo-small-dark-theme.webp' // Ruta imagen oscura (letras claras)
+      : 'assets/images/focalizze-logo-small.webp'; // Ruta imagen clara (letras oscuras)
+  });
   public currentUser: Signal<AuthUser | null>;
   public hasUnreadNotifications: Signal<boolean>;
 

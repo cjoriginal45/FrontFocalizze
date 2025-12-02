@@ -9,13 +9,17 @@
   align-items: center;
   gap: 16px;
   padding: 12px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
 
   /* Hacemos que el header sea pegajoso */
   position: sticky;
   top: var(--header-height); /* Se pega debajo del header principal */
   background-color: var(--background-color); /* Fondo para que no se vea el contenido de atrás */
   z-index: 10;
+}
+
+.search-results-page__header button mat-icon {
+  color: var(--primary-color);
 }
 
 .search-results-page__title-container {
@@ -27,11 +31,12 @@
   font-size: 1.3rem;
   font-weight: bold;
   margin: 0;
+  color: var(--primary-color);
 }
 
 .search-results-page__query {
   font-size: 0.9rem;
-  color: #555;
+  color: var(--text-color);
   margin: 0;
 }
 
@@ -49,6 +54,6 @@
 .search-results-page__no-results {
   text-align: center;
   padding: 40px;
-  color: #777;
+  color: var(--text-color);
   font-size: 1.1rem;
 }

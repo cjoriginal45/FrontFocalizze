@@ -1,6 +1,7 @@
 :host {
   display: block;
-  background-color: var(--background-color, #fdfdfd);
+  /* Usamos la variable global */
+  background-color: var(--background-color);
   min-height: 100vh;
 }
 
@@ -33,7 +34,8 @@
   font-size: clamp(3rem, 18vw, 8rem);
   font-weight: 900;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.04);
+  /* Variable para marca de agua */
+  color: var(--watermark-color);
   letter-spacing: 4px;
   font-family: 'Roboto', sans-serif;
   white-space: nowrap;
@@ -56,13 +58,16 @@
   text-align: center;
   font-size: 1.1rem;
   font-weight: 500;
-  color: #5f6368;
+  /* Usamos variable de texto, quizás con opacidad para el gris */
+  color: var(--primary-color);
+  opacity: 0.8;
   margin: 0;
   margin-right: 40px;
 }
 
 .page-header mat-icon {
-  color: #01344a;
+  /* Variable primaria */
+  color: var(--primary-color);
 }
 
 /* --- Contenido --- */
@@ -75,7 +80,7 @@
 }
 
 .section-title {
-  color: #01344a;
+  color: var(--text-color);
   font-size: 1.2rem;
   font-weight: 600;
   margin: 20px 0 16px 4px;
@@ -83,10 +88,12 @@
 
 /* --- Tarjeta --- */
 .settings-card {
-  background-color: white;
+  /* Variable fondo tarjeta */
+  background-color: var(--card-background);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  /* Variable borde */
+  border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
@@ -96,7 +103,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -106,12 +113,13 @@
 }
 
 .theme-item:hover {
-  background-color: #fcfcfc;
+  background-color: var(--hover-color);
 }
 
 /* Estilos para el estado ACTIVO (Seleccionado) */
 .active-theme {
-  background-color: rgba(1, 52, 74, 0.03); /* Fondo azul muy muy suave */
+  /* Un fondo sutil basado en el color primario pero muy transparente */
+  background-color: color-mix(in srgb, var(--primary-color) 5%, transparent);
 }
 
 .item-left {
@@ -121,13 +129,13 @@
 }
 
 .item-icon {
-  color: #5f6368;
+  color: var(--icon-color);
   transition: color 0.2s;
 }
 
 .item-text {
   font-size: 1rem;
-  color: #333;
+  color: var(--text-color);
   font-weight: 400;
   transition: color 0.2s;
 }
@@ -135,18 +143,18 @@
 /* Cambios de color cuando está activo */
 .active-theme .item-icon,
 .active-theme .item-text {
-  color: #01344a; /* Azul Focalizze */
+  color: var(--primary-color);
   font-weight: 500;
 }
 
-/* Iconos de estado (Check vs Radio vacío) */
+/* Iconos de estado */
 .check-icon {
-  color: #01344a;
+  color: var(--primary-color);
   font-weight: bold;
 }
 
 .radio-unchecked {
-  color: #ccc;
+  color: var(--icon-color);
   font-size: 20px;
   height: 20px;
   width: 20px;
