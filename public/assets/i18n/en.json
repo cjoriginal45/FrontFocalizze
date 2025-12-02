@@ -199,6 +199,24 @@
     "LOAD_MORE": "Load more",
     "EMPTY": "You haven't saved any threads yet.",
     "ARIA_BACK": "Go back"
+  },
+  "SEARCH_MOBILE": {
+    "BACK_ARIA": "Go back",
+    "TITLE": "Recent Searches",
+    "REMOVE_ARIA": "Remove from history",
+    "EMPTY": "No recent searches."
+  },
+  "SEARCH_RESULTS": {
+    "BACK_ARIA": "Go back",
+    "TITLE": "Search Results",
+    "SUBTITLE": "for: \"{{query}}\"",
+    "LOADING": "Loading results...",
+    "NO_RESULTS": "No threads found matching your search."
+  },
+  "FOLLOW_BUTTON": {
+    "FOLLOW": "Follow",
+    "FOLLOWING": "Following",
+    "UNFOLLOW": "Unfollow"
   }
 
   }

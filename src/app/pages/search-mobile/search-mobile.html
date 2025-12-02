@@ -8,7 +8,7 @@
 
   <main class="search-mobile-page__content">
     <div class="search-history">
-      <h2 class="search-history__title">Búsquedas Recientes</h2>
+      <h2 class="search-history__title">{{ 'SEARCH_MOBILE.TITLE' | translate }}</h2>
       @if (searchHistory.length > 0) {
       <ul>
         @for (item of searchHistory; track item.id) {
@@ -33,7 +33,7 @@
             mat-icon-button
             (click)="onRemoveHistoryItem(item.id, $event)"
             class="remove-button"
-            aria-label="Eliminar del historial"
+            [attr.aria-label]="'SEARCH_MOBILE.REMOVE_ARIA' | translate"
           >
             <mat-icon>close</mat-icon>
           </button>
@@ -41,13 +41,10 @@
         }
       </ul>
       } @else {
-      <p class="search-history__empty">No tienes búsquedas recientes.</p>
+        <p class="search-history__empty">{{ 'SEARCH_MOBILE.EMPTY' | translate }}</p>
       }
     </div>
   </main>
-  <!-- 
-    El bottom-nav DEBE estar fuera del <main> para que el padding funcione.
-    The bottom-nav MUST be outside of <main> for the padding to work.
-  -->
+
   <app-botton-nav></app-botton-nav>
 </div>

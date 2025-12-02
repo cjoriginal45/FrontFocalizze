@@ -199,6 +199,24 @@
     "LOAD_MORE": "Cargar más",
     "EMPTY": "Aún no has guardado ningún hilo.",
     "ARIA_BACK": "Volver a la página anterior"
+  },
+  "SEARCH_MOBILE": {
+    "BACK_ARIA": "Volver",
+    "TITLE": "Búsquedas Recientes",
+    "REMOVE_ARIA": "Eliminar del historial",
+    "EMPTY": "No tienes búsquedas recientes."
+  },
+  "SEARCH_RESULTS": {
+    "BACK_ARIA": "Volver a la página anterior",
+    "TITLE": "Resultados de Búsqueda",
+    "SUBTITLE": "para: \"{{query}}\"",
+    "LOADING": "Cargando resultados...",
+    "NO_RESULTS": "No se encontraron hilos para tu búsqueda."
+  },
+  "FOLLOW_BUTTON": {
+    "FOLLOW": "Seguir",
+    "FOLLOWING": "Siguiendo",
+    "UNFOLLOW": "Dejar de Seguir"
   }
     
   }
