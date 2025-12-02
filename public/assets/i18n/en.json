@@ -18,9 +18,14 @@
       "LOGOUT": "Log out"
     },
     "PROFILE": {
-      "FOLLOWING": "following",
-      "FOLLOWERS": "followers",
-      "AVATAR_ALT": "Avatar of {{name}}"
+      "FOLLOWING": "Following",
+      "FOLLOWERS": "Followers",
+      "AVATAR_ALT": "Avatar of {{name}}",
+      "NO_BIO": "This user has no biography yet.",
+      "THREADS_PUBLISHED": "Threads Published",
+      "THREADS_AVAILABLE": "Threads Available Today",
+      "JOINED": "Joined in",
+      "NO_THREADS": "This user hasn't published any threads yet."
     },
     "WELCOME": {
       "TITLE": "Welcome to Focalizze!",
@@ -158,6 +163,42 @@
     "EMPTY": "You have no notifications.",
     "LOADING": "Loading...",
     "LOAD_MORE": "Load older notifications"
+  },
+  "PASSWORD_RECOVERY": {
+    "TITLE_REQUEST": "Password Recovery",
+    "SUBTITLE_REQUEST": "Enter your email address and we'll send you a link to reset your password.",
+    "PLACEHOLDER_EMAIL": "Enter your email",
+    "BUTTON_SEND": "Send",
+    "BUTTON_SENDING": "Sending...",
+    "LINK_BACK": "Remember your password?",
+    "LINK_CLICK_HERE": "Click here",
+    "TITLE_RESET": "Create new password",
+    "PLACEHOLDER_NEW_PASS": "Enter new password",
+    "PLACEHOLDER_CONFIRM_PASS": "Confirm new password",
+    "BUTTON_RESET": "Reset password",
+    "BUTTON_RESETTING": "Resetting...",
+    "EMAIL_SENT_TITLE": "Check your email!",
+    "EMAIL_SENT_MSG": "We've sent a link to {{email}} to reset your password. Please check your inbox and spam folder.",
+    "INVALID_TITLE": "Invalid link",
+    "INVALID_MSG": "The recovery link is invalid or has expired. Please request a new one.",
+    "SUCCESS_TITLE": "Success!",
+    "SUCCESS_MSG": "Your password has been updated successfully. Redirecting to login in a few seconds."
+  },
+  "REGISTER": {
+    "TITLE": "Sign Up",
+    "PLACEHOLDER_USER": "Username",
+    "PLACEHOLDER_EMAIL": "Email",
+    "PLACEHOLDER_PASS": "Password",
+    "PLACEHOLDER_CONFIRM": "Confirm Password",
+    "BUTTON": "Sign Up",
+    "LOGIN_LINK": "Log In"
+  },
+  "SAVED_THREADS": {
+    "TITLE": "Saved Threads",
+    "LOADING": "Loading...",
+    "LOAD_MORE": "Load more",
+    "EMPTY": "You haven't saved any threads yet.",
+    "ARIA_BACK": "Go back"
   }
 
   }

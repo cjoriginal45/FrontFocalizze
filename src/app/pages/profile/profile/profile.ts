@@ -20,14 +20,16 @@ import { UserInterface } from '../../../interfaces/UserInterface';
 import { UserState } from '../../../services/user-state/user-state';
 import { CreateThreadButton } from '../../../components/create-thread-button/create-thread-button';
 import { BottonNav } from '../../../components/botton-nav/botton-nav';
-import { MatMenu, MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { Block } from '../../../services/block/block';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmMatDialog } from '../../../components/mat-dialog/mat-dialog/mat-dialog';
 import { FollowersFollowingModal } from '../../../components/followers-following-modal/followers-following-modal';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
+  standalone: true,
   imports: [
     CommonModule,
     RouterLink,
@@ -39,6 +41,7 @@ import { FollowersFollowingModal } from '../../../components/followers-following
     CreateThreadButton,
     BottonNav,
     MatMenuModule,
+    TranslateModule,
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.css',

@@ -18,9 +18,14 @@
     "LOGOUT": "Cerrar Sesión"
     },
     "PROFILE": {
-      "FOLLOWING": "siguiendo",
-      "FOLLOWERS": "seguidores",
-      "AVATAR_ALT": "Avatar de {{name}}"
+      "FOLLOWING": "Siguiendo",
+      "FOLLOWERS": "Seguidores",
+      "AVATAR_ALT": "Avatar de {{name}}",
+      "NO_BIO": "Este usuario aún no tiene una biografía.",
+      "THREADS_PUBLISHED": "Hilos Publicados",
+      "THREADS_AVAILABLE": "Hilos Disponibles Hoy",
+      "JOINED": "Se unió en",
+      "NO_THREADS": "Este usuario aún no ha publicado ningún hilo."
     },
     "WELCOME": {
       "TITLE": "¡Bienvenido a Focalizze!",
@@ -158,6 +163,42 @@
     "EMPTY": "No tienes notificaciones.",
     "LOADING": "Cargando...",
     "LOAD_MORE": "Cargar más antiguas"
+  },
+  "PASSWORD_RECOVERY": {
+    "TITLE_REQUEST": "Recuperación de contraseña",
+    "SUBTITLE_REQUEST": "Introduce tu correo electrónico y te enviaremos un enlace para restaurar tu contraseña.",
+    "PLACEHOLDER_EMAIL": "Ingrese su Correo Electrónico",
+    "BUTTON_SEND": "Enviar",
+    "BUTTON_SENDING": "Enviando...",
+    "LINK_BACK": "¿Ya recuerdas tu contraseña?",
+    "LINK_CLICK_HERE": "Haz click aquí",
+    "TITLE_RESET": "Crea tu nueva contraseña",
+    "PLACEHOLDER_NEW_PASS": "Ingrese su nueva contraseña",
+    "PLACEHOLDER_CONFIRM_PASS": "Vuelva a ingresar su nueva contraseña",
+    "BUTTON_RESET": "Restablecer contraseña",
+    "BUTTON_RESETTING": "Restableciendo...",
+    "EMAIL_SENT_TITLE": "¡Revisa tu correo!",
+    "EMAIL_SENT_MSG": "Te hemos enviado un enlace a {{email}} para restaurar tu contraseña. Por favor, revisa tu bandeja de entrada y spam.",
+    "INVALID_TITLE": "Enlace inválido",
+    "INVALID_MSG": "El enlace de recuperación es inválido o ha expirado. Por favor, solicita uno nuevo.",
+    "SUCCESS_TITLE": "¡Éxito!",
+    "SUCCESS_MSG": "Tu contraseña ha sido actualizada correctamente. Serás redirigido al login en unos segundos."
+  },
+  "REGISTER": {
+    "TITLE": "Registro",
+    "PLACEHOLDER_USER": "Nombre de usuario",
+    "PLACEHOLDER_EMAIL": "Correo Electrónico",
+    "PLACEHOLDER_PASS": "Contraseña",
+    "PLACEHOLDER_CONFIRM": "Repetir Contraseña",
+    "BUTTON": "Registrarse",
+    "LOGIN_LINK": "Iniciar Sesión"
+  },
+  "SAVED_THREADS": {
+    "TITLE": "Hilos Guardados",
+    "LOADING": "Cargando...",
+    "LOAD_MORE": "Cargar más",
+    "EMPTY": "Aún no has guardado ningún hilo.",
+    "ARIA_BACK": "Volver a la página anterior"
   }
     
   }
