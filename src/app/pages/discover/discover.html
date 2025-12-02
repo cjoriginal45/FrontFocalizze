@@ -11,8 +11,8 @@
         @if (item.isRecommended) {
         <div class="recommendation-header">
           <mat-icon class="recommendation-header__icon">auto_awesome</mat-icon>
-          <span>Recomendado para ti</span>
-          <button mat-icon-button [matMenuTriggerFor]="reasonMenu" aria-label="¿Por qué veo esto?">
+          <span>{{ 'DISCOVER.RECOMMENDED' | translate }}</span>
+          <button mat-icon-button [matMenuTriggerFor]="reasonMenu" [attr.aria-label]="'DISCOVER.WHY_THIS' | translate">
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #reasonMenu="matMenu">
@@ -20,12 +20,12 @@
             <div class="recommendation-reason">
               <div class="reason-title">
                 <mat-icon>info_outline</mat-icon>
-                <h3>¿Por qué veo esto?</h3>
+                <h3>{{ 'DISCOVER.WHY_THIS' | translate }}</h3>
               </div>
               <p>{{ item.recommendationReason }}</p>
               <button mat-menu-item (click)="onSeeLess(item)">
                 <mat-icon>visibility_off</mat-icon>
-                <span>Ver menos de este tipo</span>
+                <span>{{ 'DISCOVER.SEE_LESS' | translate }}</span>
               </button>
             </div>
           </mat-menu>
@@ -43,12 +43,12 @@
 
     <!-- Indicador de Carga -->
     @if (isLoading()) {
-    <div class="loading-indicator">Cargando más hilos...</div>
+      <div class="loading-indicator">{{ 'DISCOVER.LOADING' | translate }}</div>
     }
 
     <!-- Botón para cargar más -->
     @if (!isLastPage() && discoverItems().length > 0 && !isLoading()) {
-    <button (click)="loadMoreItems()" class="load-more-button">Cargar más</button>
+      <button (click)="loadMoreItems()" class="load-more-button">{{ 'DISCOVER.LOAD_MORE' | translate }}</button>
     }
   </main>
 

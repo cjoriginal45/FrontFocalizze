@@ -2,10 +2,15 @@ import { Component, effect, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { InteractionCounter } from '../../services/interactionCounter/interaction-counter';
 import { Auth } from '../../services/auth/auth';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-following-discovering',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [
+    RouterLink,
+    TranslateModule
+  ],
   templateUrl: './following-discovering.html',
   styleUrl: './following-discovering.css',
 })

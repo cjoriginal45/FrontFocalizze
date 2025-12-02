@@ -9,7 +9,7 @@
       <a [routerLink]="['/profile', thread.user.username]" class="thread__user">
         <img
           [src]="thread.user.avatarUrl"
-          alt="Avatar de {{ thread.user.displayName }}"
+          [alt]="'THREAD.AVATAR_ALT' | translate:{name: thread.user.displayName}"
           class="thread__avatar"
         />
         <div class="thread__user-info">
@@ -33,17 +33,17 @@
       <span class="thread__date">{{ thread.publicationDate | timeAgo }}</span>
 
       @if (authService.getCurrentUser()?.username === thread.user.username) {
-      <button mat-icon-button [matMenuTriggerFor]="threadMenu" aria-label="Opciones del hilo">
+        <button mat-icon-button [matMenuTriggerFor]="threadMenu" [attr.aria-label]="'THREAD.OPTIONS_LABEL' | translate">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #threadMenu="matMenu">
         <button mat-menu-item (click)="openEditModal()">
           <mat-icon>edit</mat-icon>
-          <span>Editar Hilo</span>
+          <span>{{ 'THREAD.EDIT' | translate }}</span>
         </button>
         <button mat-menu-item (click)="openDeleteConfirm()">
           <mat-icon>delete</mat-icon>
-          <span>Eliminar Hilo</span>
+          <span>{{ 'THREAD.DELETE' | translate }}</span>
         </button>
       </mat-menu>
       } @else {
@@ -53,11 +53,11 @@
         <mat-menu #threadMenu="matMenu">
           <button mat-menu-item (click)="openReportModal()">
             <mat-icon>flag_circle</mat-icon>
-            <span>Reportar Hilo</span>
+            <span>{{ 'THREAD.REPORT' | translate }}</span>
           </button>
           <button mat-menu-item (click)="blockUser()" [class.text-warn]="thread.user.isBlocked">
             <mat-icon>{{ thread.user.isBlocked ? 'lock_open' : 'block' }}</mat-icon>
-            <span>{{ thread.user.isBlocked ? 'Desbloquear' : 'Bloquear' }} a @{{ thread.user.username }}</span>
+            <span>{{ (thread.user.isBlocked ? 'THREAD.UNBLOCK_USER' : 'THREAD.BLOCK_USER') | translate:{username: thread.user.username} }}</span>
           </button>
         </mat-menu>
       }
@@ -70,16 +70,16 @@
   <div class="thread__body" [class.thread__body--expanded]="isExpanded">
     <div class="thread__content">
       <div class="thread__post">
-        <h3 class="thread__post-title">1° post</h3>
+        <h3 class="thread__post-title">{{ 'THREAD.POST_NUMBER' | translate:{number: 1} }}</h3>
         <p class="thread__post-text" [innerHTML]="thread.posts[0] | mentionLinker"></p>
       </div>
       <div class="thread__expand-wrapper" [class.expanded]="isExpanded">
         <div class="thread__expanded-content">
           @if (isLoadingDetails) {
-          <div class="thread__loading-spinner">Cargando...</div>
+            <div class="thread__loading-spinner">{{ 'THREAD.LOADING' | translate }}</div>
           } @else { @for (post of thread.posts.slice(1); track $index) {
           <div class="thread__post">
-            <h3 class="thread__post-title">{{ $index + 2 }}° post</h3>
+            <h3 class="thread__post-title">{{ 'THREAD.POST_NUMBER' | translate:{number: $index + 2} }}</h3>
             <p class="thread__post-text" [innerHTML]="post | mentionLinker"></p>
           </div>
           } }
@@ -88,7 +88,13 @@
     </div>
     @if (thread.posts.length > 1 || !isFullyLoaded) {
     <a (click)="toggleExpansion()" class="thread__expand-btn">
-      @if (isLoadingDetails) { Cargando... } @else if (isExpanded) { Ocultar - } @else { Ampliar + }
+      @if (isLoadingDetails) { 
+        {{ 'THREAD.LOADING' | translate }} 
+      } @else if (isExpanded) { 
+        {{ 'THREAD.HIDE' | translate }} 
+      } @else { 
+        {{ 'THREAD.EXPAND' | translate }} 
+      }
     </a>
     }
   </div>

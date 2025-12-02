@@ -14,14 +14,14 @@
     mat-align-tabs="center"
   >
     <!-- PESTAÑA SEGUIDORES -->
-    <mat-tab label="Seguidores">
+    <mat-tab [label]="'FOLLOW_MODAL.FOLLOWERS_TAB' | translate">
       <div class="list-container">
         @if (isLoading()) {
         <div class="spinner-wrapper">
           <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
         </div>
         } @else { @if (followersList().length === 0) {
-        <p class="empty-state">Aún no hay seguidores.</p>
+          <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWERS' | translate }}</p>
         } @else { @for (user of followersList(); track user.id) {
         <div class="user-row">
           <a [routerLink]="['/profile', user.username]" (click)="onClose()" class="user-info-link">
@@ -55,7 +55,7 @@
           <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
         </div>
         } @else { @if (followingList().length === 0) {
-        <p class="empty-state">No sigue a nadie aún.</p>
+          <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWING' | translate }}</p>
         } @else { @for (user of followingList(); track user.id) {
         <div class="user-row">
           <a [routerLink]="['/profile', user.username]" (click)="onClose()" class="user-info-link">

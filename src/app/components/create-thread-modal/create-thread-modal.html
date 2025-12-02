@@ -11,7 +11,7 @@
     </button>
     }
   </div>
-  <h2 class="modal-header__title">Crear Hilo</h2>
+  <h2 class="modal-header__title">{{ 'CREATE_THREAD.TITLE' | translate }}</h2>
   <div class="modal-header__right">
     <button mat-icon-button class="modal-header__button" (click)="showScheduler = !showScheduler">
       <mat-icon [class.active]="showScheduler">schedule</mat-icon>
@@ -26,10 +26,46 @@
 <div class="modal-content" mat-dialog-content>
   @if (showScheduler) {
   <div class="scheduler-panel">
-    <!-- ... Contenido del scheduler no cambia ... -->
+    <h4>{{ 'CREATE_THREAD.SCHEDULE.TITLE' | translate }}</h4>
+    <div class="scheduler-inputs">
+      <!-- Selector de Fecha (sin cambios) -->
+      <mat-form-field appearance="outline" class="scheduler-inputs__datepicker">
+        <mat-label>{{ 'CREATE_THREAD.SCHEDULE.DATE' | translate }}</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="scheduledDate" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <!-- --- ¡CAMBIOS AQUÍ! SELECTORES PARA HORA Y MINUTOS --- -->
+      <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+        <mat-label>{{ 'CREATE_THREAD.SCHEDULE.HOUR' | translate }}</mat-label>
+        <mat-select [(ngModel)]="scheduledHour">
+          @for (hour of hours; track hour) {
+          <mat-option [value]="hour">{{ hour < 10 ? '0' + hour : hour }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+        <mat-label>{{ 'CREATE_THREAD.SCHEDULE.MINUTE' | translate }}</mat-label>
+        <mat-select [(ngModel)]="scheduledMinute">
+          @for (minute of minutes; track minute) {
+          <mat-option [value]="minute">{{ minute < 10 ? '0' + minute : minute }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    @if (scheduledDate && scheduledHour !== null && scheduledMinute !== null) {
+    <p class="scheduler-info">
+      {{ 'CREATE_THREAD.SCHEDULE.INFO' | translate:{
+        date: (scheduledDate | date : 'fullDate'), 
+        time: ((scheduledHour < 10 ? '0' : '') + scheduledHour + ':' + (scheduledMinute < 10 ? '0' : '') + scheduledMinute)
+    } }}
+    </p>
+    }
   </div>
   }
 
+<<<<<<< HEAD
   <!-- ==================================================================== -->
   <!-- INICIO DE LA "UNIFIED DOM STRATEGY" -->
   <!-- 
@@ -37,6 +73,9 @@
     de sus hijos con CSS, sin destruirlos.
   -->
   <!-- ==================================================================== -->
+=======
+
+>>>>>>> d0beb9e411ae4e5d7a86fa188c586ede3ff9e307
   <div
     class="unified-threads-container"
     [class.desktop-view]="!isMobileView"
@@ -48,7 +87,11 @@
     <!-- UN ÚNICO BUCLE @for crea los 3 textareas una sola vez -->
     @for (thread of threads; track $index) {
     <mat-form-field appearance="fill" class="thread-input thread-input-{{ $index }}">
+<<<<<<< HEAD
       <mat-label>Post {{ $index + 1 }}</mat-label>
+=======
+      <mat-label>{{ 'CREATE_THREAD.POST_LABEL' | translate:{number: $index + 1} }}</mat-label>
+>>>>>>> d0beb9e411ae4e5d7a86fa188c586ede3ff9e307
       <textarea
         matInput
         [(ngModel)]="threads[$index]"
@@ -93,9 +136,13 @@
 <!-- Footer -->
 <footer class="modal-footer" mat-dialog-actions>
   <mat-form-field appearance="outline" class="category-selector">
-    <mat-label>Categoría (Opcional)</mat-label>
+    <mat-label>{{ 'CREATE_THREAD.CATEGORY_LABEL' | translate }}</mat-label>
     <mat-select [(ngModel)]="selectedCategory" name="category">
+<<<<<<< HEAD
       <mat-option [value]="null">Ninguna</mat-option>
+=======
+      <mat-option [value]="null">{{ 'CREATE_THREAD.CATEGORY_NONE' | translate }}</mat-option>
+>>>>>>> d0beb9e411ae4e5d7a86fa188c586ede3ff9e307
       @for (category of categories; track category.value) {
       <mat-option [value]="category.value">{{ category.viewValue }}</mat-option> }
     </mat-select>
@@ -103,11 +150,23 @@
   <div class="modal-footer__actions">
     <!-- El botón "Avanzar" solo aparece en móvil y antes del último paso -->
     @if(isMobileView && currentStep < 3){
+<<<<<<< HEAD
     <button mat-flat-button class="modal-footer__next-btn" (click)="nextStep()">Avanzar</button>
     }
     <!-- El botón "Publicar" aparece en desktop, O en móvil en el último paso -->
     @if(!isMobileView || currentStep === 3){
     <button mat-flat-button class="modal-footer__publish-btn" (click)="publish()">Publicar</button>
+=======
+    <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">
+      {{ 'CREATE_THREAD.NEXT' | translate }}
+    </button>
+    }
+    <!-- El botón "Publicar" aparece en desktop, O en móvil en el último paso -->
+    @if(!isMobileView || currentStep === 3){
+    <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="publish()">
+      {{ 'CREATE_THREAD.PUBLISH' | translate }}
+    </button>
+>>>>>>> d0beb9e411ae4e5d7a86fa188c586ede3ff9e307
     }
   </div>
 </footer>

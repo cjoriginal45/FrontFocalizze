@@ -8,10 +8,11 @@ import { BottonNav } from "../../../components/botton-nav/botton-nav";
 import { Header } from "../../../components/header/header";
 import { Thread } from "../../../components/thread/thread";
 import { MatIcon } from "@angular/material/icon";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-saved-threads',
-  imports: [BottonNav, Header, Thread, MatIcon],
+  imports: [BottonNav, Header, Thread, MatIcon, TranslateModule],
   templateUrl: './saved-threads.html',
   styleUrl: './saved-threads.css'
 })

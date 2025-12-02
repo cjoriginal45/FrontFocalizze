@@ -8,6 +8,7 @@ import { UserState } from '../../../services/user-state/user-state';
 import { Followable } from '../../../interfaces/Followable';
 import { CategoryState } from '../../../services/category-state/category-state';
 import { Auth } from '../../../services/auth/auth';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface DisplayableFollow {
   name: string;
@@ -17,7 +18,8 @@ interface DisplayableFollow {
 
 @Component({
   selector: 'app-follow-button',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, TranslateModule],
   templateUrl: './follow-button.html',
   styleUrl: './follow-button.css'
 })

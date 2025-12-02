@@ -7,11 +7,12 @@ import { CategoryInterface } from '../../interfaces/CategoryInterface';
 import { Category } from '../../services/category/category';
 import { CategoryState } from '../../services/category-state/category-state';
 import { SuggestionItem } from '../suggestion-item/suggestion-item/suggestion-item';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-suggestions',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatIconModule, SuggestionItem],
+  imports: [CommonModule, RouterLink, MatIconModule, SuggestionItem, TranslateModule],
   templateUrl: './suggestions.html',
   styleUrl: './suggestions.css',
   // --- ELIMINAMOS EL BLOQUE DE 'animations' POR COMPLETO ---

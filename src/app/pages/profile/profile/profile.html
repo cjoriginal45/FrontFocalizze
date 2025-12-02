@@ -2,7 +2,7 @@
 
 <div class="profile-page">
   @if (isLoading && !profile) {
-  <p class="profile-page__loading">Cargando perfil...</p>
+    <p class="profile-page__loading">{{ 'CATEGORY.LOADING' | translate }}</p>
   <!-- O un spinner de Material -->
   } @if (profile) {
   <!-- Contenedor superior con la información del usuario -->
@@ -11,7 +11,7 @@
     <div class="profile-header__left">
       <img
         [src]="profile.avatarUrl"
-        [alt]="'Avatar de ' + profile.displayName"
+        [alt]="'PROFILE.AVATAR_ALT' | translate:{name: profile.displayName}"
         class="profile-header__avatar"
       />
       <div class="profile-header__user-identity">
@@ -22,46 +22,46 @@
 
     <!-- Sección Derecha: Bio, Estadísticas y Acciones -->
     <div class="profile-header__right">
-      <h2 class="biography-title">Biografía</h2>
+      <h2 class="biography-title">{{ 'EDIT_PROFILE.BIO_LABEL' | translate }}</h2>
       <p class="profile-header__biography">
-        {{ profile.biography || 'Este usuario aún no tiene una biografía.' }}
+        {{ profile.biography || ('PROFILE.NO_BIO' | translate) }} <!-- Necesitas añadir NO_BIO al JSON -->
       </p>
 
       <div class="profile-header__stats">
         <!-- SIGUIENDO (Clickable) -->
         <div class="stat clickable" (click)="openFollowModal('following')" matRipple>
           <span class="stat__value">{{ profile.follow }}</span>
-          <span class="stat__label">Siguiendo</span>
+          <span class="stat__label">{{ 'PROFILE.FOLLOWING' | translate }}</span>
         </div>
 
         <!-- SEGUIDORES (Clickable) -->
         <div class="stat clickable" (click)="openFollowModal('followers')" matRipple>
           <span class="stat__value">{{ profile.followers }}</span>
-          <span class="stat__label">Seguidores</span>
+          <span class="stat__label">{{ 'PROFILE.FOLLOWERS' | translate }}</span>
         </div>
 
         <div class="stat">
           <span class="stat__value">{{ profile.threadCount }}</span>
-          <span class="stat__label">Hilos Publicados</span>
+          <span class="stat__label">{{ 'PROFILE.THREADS_PUBLISHED' | translate }}</span>
         </div>
         <!-- Solo muestra los hilos disponibles si es nuestro propio perfil -->
         @if (isOwnProfile && profile.threadsAvailableToday !== null) {
         <div class="stat">
           <span class="stat__value">{{ profile.threadsAvailableToday }}</span>
-          <span class="stat__label">Hilos Disponibles Hoy</span>
+          <span class="stat__label">{{ 'PROFILE.THREADS_AVAILABLE' | translate }}</span> 
         </div>
         }
       </div>
 
       <div class="profile-header__meta">
         <mat-icon class="meta__icon">calendar_today</mat-icon>
-        <span class="meta__text">Se unió en {{ profile.registerDate | date : 'MMMM yyyy' }}</span>
+        <span class="meta__text">{{ 'PROFILE.JOINED' | translate }} {{ profile.registerDate | date : 'MMMM yyyy' }}</span>
       </div>
     </div>
 
     @if (isOwnProfile) {
     <button mat-stroked-button class="profile-header__edit-btn" (click)="editProfile()">
-      Editar Perfil
+      {{ 'EDIT_PROFILE.TITLE' | translate }}
     </button>
     } @else {
       <div class="profile-header__action-btn">
@@ -71,13 +71,13 @@
           (followStateChanged)="onFollowChange($event)"
         >
         </app-follow-button>
-        <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Más opciones"> <!-- Cambiado de reportMenu -->
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu" [attr.aria-label]="'THREAD.MORE_OPTIONS' | translate">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #profileMenu="matMenu">
           <button mat-menu-item (click)="blockUser()" [class.text-warn]="profile.isBlocked">
             <mat-icon>{{ profile.isBlocked ? 'lock_open' : 'block' }}</mat-icon>
-            <span>{{ profile.isBlocked ? 'Desbloquear Usuario' : 'Bloquear Usuario' }}</span>
+            <span>{{ (profile.isBlocked ? 'THREAD.UNBLOCK_USER' : 'THREAD.BLOCK_USER') | translate:{username: profile.username} }}</span>
           </button>
         </mat-menu>
       </div>
@@ -86,7 +86,7 @@
 
   <!-- Contenedor de Hilos Publicados -->
   <div class="profile-threads">
-    <h2 class="profile-threads__title">Hilos Publicados</h2>
+    <h2 class="profile-threads__title">{{ 'PROFILE.THREADS_PUBLISHED' | translate }}</h2>
 
     @if (threadIds.length > 0) {
     <div class="profile-threads__list">
@@ -95,9 +95,9 @@
       }
     </div>
     } @else if (!isLoading) {
-    <p class="profile-threads__no-results">Este usuario aún no ha publicado ningún hilo.</p>
+      <p class="profile-threads__no-results">{{ 'PROFILE.NO_THREADS' | translate }}</p> 
     } @if (isLoading && profile) {
-    <p>Cargando más hilos...</p>
+      <p>{{ 'CATEGORY.LOADING_MORE' | translate }}</p>
     }
   </div>
   }

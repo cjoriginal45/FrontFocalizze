@@ -6,7 +6,7 @@
       <button mat-icon-button (click)="goBack()" href="#" class="title-bar__back-btn" aria-label="Volver a la página anterior" style="cursor: pointer;">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <h1 class="title-bar__title">Hilos Guardados</h1>
+      <h1 class="title-bar__title">{{ 'SAVED_THREADS.TITLE' | translate }}</h1>
     </div>
     <div class="saved-threads-layout__threads-list">
       @for (threadId of threadIds; track threadId) {
@@ -15,13 +15,13 @@
     </div>
 
     @if (isLoading) {
-      <div class="loading-indicator">Cargando...</div>
+      <div class="loading-indicator">{{ 'SAVED_THREADS.LOADING' | translate }}</div>
     }
     @if (!isLastPage && threadIds.length > 0 && !isLoading) {
-      <button (click)="loadMoreThreads()" class="load-more-button">Cargar más</button>
+      <button (click)="loadMoreThreads()" class="load-more-button">{{ 'SAVED_THREADS.LOAD_MORE' | translate }}</button>
     }
     @if (!isLoading && threadIds.length === 0) {
-      <p class="no-results">Aún no has guardado ningún hilo.</p>
+      <p class="no-results">{{ 'SAVED_THREADS.EMPTY' | translate }}</p>
     }
   </main>
 </div>

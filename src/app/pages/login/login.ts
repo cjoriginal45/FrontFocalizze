@@ -4,11 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth/auth';
+<<<<<<< HEAD
 import { Theme } from '../../services/themeService/theme';
+=======
+import { TranslateModule } from '@ngx-translate/core';
+>>>>>>> d0beb9e411ae4e5d7a86fa188c586ede3ff9e307
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, MatIconModule, RouterLink],
+  imports: [CommonModule, FormsModule, MatIconModule, RouterLink, TranslateModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

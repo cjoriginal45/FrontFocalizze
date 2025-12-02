@@ -8,7 +8,7 @@
     <mat-icon>close</mat-icon>
   </button>
   <!-- 2. El título se mantiene como el elemento principal a centrar. -->
-  <h2 class="modal-header__title">Editar Perfil</h2>
+  <h2 class="modal-header__title">{{ 'EDIT_PROFILE.TITLE' | translate }}</h2>
 </header>
 
 <!-- El resto del contenido no necesita cambios -->
@@ -16,7 +16,7 @@
   <!-- Selector de Avatar -->
   <div class="avatar-uploader">
     <label for="avatar-input" class="avatar-uploader__label">
-      <img [src]="imagePreview" alt="Vista previa del avatar" class="avatar-uploader__preview" />
+      <img [src]="imagePreview" [alt]="'EDIT_PROFILE.AVATAR_PREVIEW' | translate" class="avatar-uploader__preview" />
       <div class="avatar-uploader__overlay">
         <mat-icon>photo_camera</mat-icon>
       </div>
@@ -32,14 +32,14 @@
 
   <!-- Campo para Display Name -->
   <mat-form-field appearance="fill">
-    <mat-label>Nombre</mat-label>
+    <mat-label>{{ 'EDIT_PROFILE.NAME_LABEL' | translate }}</mat-label>
     <input matInput formControlName="displayName" [maxlength]="50" />
     <mat-hint align="end">{{ profileForm.get('displayName')?.value?.length || 0 }} / 50</mat-hint>
   </mat-form-field>
 
   <!-- Campo para Biografía -->
   <mat-form-field appearance="fill">
-    <mat-label>Biografía</mat-label>
+    <mat-label>{{ 'EDIT_PROFILE.BIO_LABEL' | translate }}</mat-label>
     <textarea
       matInput
       formControlName="biography"
@@ -52,7 +52,7 @@
 </div>
 
 <footer class="modal-footer" mat-dialog-actions align="end">
-  <button mat-stroked-button class="cancel-button" (click)="closeModal()">Cancelar</button>
+  <button mat-stroked-button class="cancel-button" (click)="closeModal()">{{ 'EDIT_PROFILE.CANCEL' | translate }}</button>
   <button
     mat-flat-button
     color="primary"
@@ -60,6 +60,6 @@
     (click)="onSave()"
     [disabled]="profileForm.invalid"
   >
-    Guardar
+  {{ 'EDIT_PROFILE.SAVE' | translate }}
   </button>
 </footer>

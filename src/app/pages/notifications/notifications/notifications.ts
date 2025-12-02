@@ -10,10 +10,12 @@ import { TimeAgoPipe } from '../../../pipes/time-ago/time-ago-pipe';
 import { RouterLink } from '@angular/router';
 import { NotificationState } from '../../../services/notification-state/notification-state';
 import { BottonNav } from '../../../components/botton-nav/botton-nav';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-notifications',
-  imports: [Header, MatIcon, TimeAgoPipe, RouterLink, BottonNav],
+  standalone: true,
+  imports: [Header, MatIcon, TimeAgoPipe, RouterLink, BottonNav, TranslateModule],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css',
 })

@@ -7,19 +7,19 @@
       mat-icon-button
       (click)="goBack()"
       class="search-results-page__back-btn"
-      aria-label="Volver a la página anterior"
+      [attr.aria-label]="'SEARCH_RESULTS.BACK_ARIA' | translate"
     >
       <mat-icon>arrow_back</mat-icon>
     </button>
     <div class="search-results-page__title-container">
-      <h1 class="search-results-page__title">Resultados de Búsqueda</h1>
-      <p class="search-results-page__query">para: "{{ query }}"</p>
+      <h1 class="search-results-page__title">{{ 'SEARCH_RESULTS.TITLE' | translate }}</h1>
+      <p class="search-results-page__query">{{ 'SEARCH_RESULTS.SUBTITLE' | translate:{query: query} }}</p>
     </div>
   </header>
 
   <main class="search-results-page__content">
     @if (isLoading) {
-    <div class="loading-indicator">Cargando resultados...</div>
+      <div class="loading-indicator">{{ 'SEARCH_RESULTS.LOADING' | translate }}</div>
     } @else { @if (threadIds.length > 0) {
     <div class="search-results-page__threads-list">
       @for (threadId of threadIds; track threadId) {
@@ -27,7 +27,7 @@
       }
     </div>
     } @else {
-    <p class="search-results-page__no-results">No se encontraron hilos para tu búsqueda.</p>
+      <p class="search-results-page__no-results">{{ 'SEARCH_RESULTS.NO_RESULTS' | translate }}</p>
     } }
   </main>
 </div>
