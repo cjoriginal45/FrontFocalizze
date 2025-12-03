@@ -44,7 +44,7 @@ export class SecurityAccess implements OnInit {
     if (user) {
       // Asumimos que el usuario tiene una propiedad 'isTwoFactorEnabled'
       // Si no la tiene en la interfaz, deberías agregarla.
-      // this.isTwoFactorEnabled = user.isTwoFactorEnabled || false;
+      this.isTwoFactorEnabled = user.isTwoFactorEnabled ?? false;
 
       // Por ahora lo simulamos:
       this.isTwoFactorEnabled = false;

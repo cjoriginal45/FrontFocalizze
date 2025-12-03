@@ -22,6 +22,7 @@ export interface AuthUser {
   followingCount: number;
   followersCount: number;
   dailyInteractionsRemaining: number; // Ahora este dato vendrá del endpoint separado
+  isTwoFactorEnabled?: boolean;
 }
 
 interface UserTokenData {
@@ -67,17 +68,18 @@ export class Auth {
         if (Date.now() >= decodedToken.exp * 1000) {
           localStorage.removeItem('jwt_token');
         } else {
-          // Usamos 'await' para esperar la respuesta de la API
-          const user = await firstValueFrom(this.userService.getMe());
-          this.currentUser.set(user as unknown as AuthUser);
+          // Inicializamos notificaciones
           this.notificationStateService.initialize();
-          // --- CAMBIO CLAVE: Usamos forkJoin para pedir User + Interacciones ---
+
+          // Pedimos User + Interacciones
           const combinedData$ = forkJoin({
             user: this.userService.getMe(),
             interactions: this.userService.getInteractionStatus(),
           }).pipe(
             map(({ user, interactions }) => {
-              // Mezclamos los dos objetos en uno solo del tipo AuthUser
+              // Mezclamos los objetos.
+              // Como 'user' viene del backend (UserDto), si allá agregaste 'isTwoFactorEnabled',
+              // aquí se propagará automáticamente gracias al spread operator (...user).
               return {
                 ...user,
                 dailyInteractionsRemaining: interactions.remaining,
@@ -87,7 +89,6 @@ export class Auth {
 
           const authUser = await firstValueFrom(combinedData$);
           this.currentUser.set(authUser);
-          // -----------------------------------------------------------------
         }
       } catch (error) {
         console.error('Fallo al inicializar auth:', error);
@@ -105,7 +106,7 @@ export class Auth {
           localStorage.setItem('jwt_token', response.token);
           const decodedToken: UserTokenData = jwtDecode(response.token);
 
-          // Al hacer login, construimos el objeto AuthUser con los datos del login.
+          // Construimos el usuario temporal con datos del login
           const user: AuthUser = {
             id: response.userId,
             username: decodedToken.sub,
@@ -114,27 +115,26 @@ export class Auth {
             followingCount: response.followingCount,
             followersCount: response.followersCount,
             dailyInteractionsRemaining: 0,
+            isTwoFactorEnabled: false, // Valor por defecto temporal hasta que cargue el perfil completo
           };
           this.currentUser.set(user);
 
           this.notificationStateService.initialize();
         }
       }),
-      // Una vez logueado, pedimos los datos completos
+      // Una vez logueado, pedimos los datos completos (que incluyen el 2FA real)
       switchMap(() =>
         forkJoin({
           user: this.userService.getMe(),
           interactions: this.userService.getInteractionStatus(),
         })
       ),
-      // Combinamos los datos
       map(({ user, interactions }) => {
         return {
-          ...user,
+          ...user, // Aquí vendrá el 'isTwoFactorEnabled' real de la BD
           dailyInteractionsRemaining: interactions.remaining,
         } as unknown as AuthUser;
       }),
-      // Actualizamos la señal
       tap((authUser) => {
         this.currentUser.set(authUser);
       })
