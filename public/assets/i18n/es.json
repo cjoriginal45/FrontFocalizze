@@ -129,7 +129,8 @@
       "FOCUS": "Modo enfoque",
       "PRIVACY": "Bloqueo y privacidad",
       "THEME": "Tema",
-      "LANGUAGE": "Idioma"
+      "LANGUAGE": "Idioma",
+      "ADMIN_PANEL": "Panel de administración"
     }
   },
   "FOOTER": {

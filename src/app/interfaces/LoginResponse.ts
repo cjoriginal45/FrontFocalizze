@@ -5,4 +5,5 @@ export interface LoginResponse {
     avatarUrl?: string;
     followingCount: number;
     followersCount: number;
+    role: string;
   }

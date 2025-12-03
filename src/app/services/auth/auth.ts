@@ -21,6 +21,7 @@ export interface AuthUser {
   avatarUrl?: string; // Opcional, lo cargaremos después
   followingCount: number;
   followersCount: number;
+  role: string;
   dailyInteractionsRemaining: number; // Ahora este dato vendrá del endpoint separado
 }
 
@@ -97,6 +98,11 @@ export class Auth {
     this.authReady.set(true);
   }
 
+  isAdmin = computed(() => {
+    const user = this.currentUser();
+    return user?.role === 'ADMIN'; 
+  });
+
   // --- LOGIN ---
   login(credentials: any): Observable<AuthUser> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
@@ -113,6 +119,7 @@ export class Auth {
             avatarUrl: response.avatarUrl || undefined,
             followingCount: response.followingCount,
             followersCount: response.followersCount,
+            role: response.role,
             dailyInteractionsRemaining: 0,
           };
           this.currentUser.set(user);
@@ -181,5 +188,11 @@ export class Auth {
   refundInteraction(): void {
     console.log('[AuthService] Delegando reembolso a InteractionCounter...');
     this.interactionCounter.incrementCount();
+  }
+
+  userIsAdmin(): boolean {
+    const user = this.currentUser();
+    console.log("USER ROLE:"+user?.role);
+    return user?.role === 'admin' || user?.role === 'ADMIN'; 
   }
 }
