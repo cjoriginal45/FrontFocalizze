@@ -23,6 +23,7 @@ import { LanguageSettings } from './pages/configurations/language-settings/langu
 import { SecurityAccess } from './pages/configurations/security-access/security-access';
 import { FocusMode } from './pages/configurations/focus-mode/focus-mode';
 import { ThemePage } from './pages/configurations/theme-page/theme-page';
+import { AdminPanel } from './pages/admin-pages/admin-panel/admin-panel';
 
 
 export const routes: Routes = [
@@ -57,6 +58,7 @@ export const routes: Routes = [
       { path: 'theme', component: ThemePage },
       { path: 'password-recovery', component: PasswordRecovery },
       { path: 'reset-password', component: PasswordRecovery },
+      {path: 'admin-panel', component: AdminPanel},
     ],
   },
 ];
