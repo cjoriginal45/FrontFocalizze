@@ -98,6 +98,21 @@
   overflow: hidden; /* Para que el ripple no se salga */
 }
 
+/* Estilo adicional para el subtítulo de 2FA */
+.item-subtext {
+  font-size: 0.75rem;
+  color: var(--icon-color);
+  margin-top: 2px;
+}
+
+/* Estado disabled para el botón */
+.logout-all-btn:disabled {
+  background-color: var(--border-color);
+  color: var(--icon-color);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 /* --- Items de la lista --- */
 .setting-item {
   display: flex;
