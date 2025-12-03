@@ -18,9 +18,9 @@ import { Auth } from '../../../services/auth/auth';
 })
 export class ConfigurationPage {
   private location = inject(AngularLocation);
-  private authService = inject(Auth);
+  public authService = inject(Auth);
 
-  userIsAdmin = this.authService.userIsAdmin();
+  isAdmin = this.authService.isAdmin; 
 
   goBack(): void {
     this.location.back();

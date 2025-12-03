@@ -190,9 +190,4 @@ export class Auth {
     this.interactionCounter.incrementCount();
   }
 
-  userIsAdmin(): boolean {
-    const user = this.currentUser();
-    console.log("USER ROLE:"+user?.role);
-    return user?.role === 'admin' || user?.role === 'ADMIN'; 
-  }
 }
