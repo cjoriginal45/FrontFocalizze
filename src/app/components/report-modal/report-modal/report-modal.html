@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>{{ 'REPORT_MODAL.TITLE' | translate:{username: data.username} }}</h2>
+
+<mat-dialog-content class="report-content">
+  <div class="form-container">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'REPORT_MODAL.REASON_LABEL' | translate }}</mat-label>
+      <mat-select [(ngModel)]="selectedReason" required>
+        @for (reason of reasons; track reason) {
+          <mat-option [value]="reason">
+            {{ 'REPORT_MODAL.REASONS.' + reason | translate }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'REPORT_MODAL.DESC_LABEL' | translate }}</mat-label>
+      <textarea 
+        matInput 
+        [(ngModel)]="description" 
+        [placeholder]="'REPORT_MODAL.DESC_PLACEHOLDER' | translate"
+        rows="4"
+        maxlength="500">
+      </textarea>
+      <mat-hint align="end">{{description.length}} / 500</mat-hint>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">{{ 'REPORT_MODAL.CANCEL' | translate }}</button>
+  <button 
+    mat-flat-button 
+    color="warn" 
+    (click)="onSubmit()" 
+    [disabled]="!selectedReason || isSubmitting">
+    {{ 'REPORT_MODAL.SUBMIT' | translate }}
+  </button>
+</mat-dialog-actions>
