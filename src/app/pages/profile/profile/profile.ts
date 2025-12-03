@@ -26,6 +26,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmMatDialog } from '../../../components/mat-dialog/mat-dialog/mat-dialog';
 import { FollowersFollowingModal } from '../../../components/followers-following-modal/followers-following-modal';
 import { TranslateModule } from '@ngx-translate/core';
+import { ReportModal } from '../../../components/report-modal/report-modal/report-modal';
 
 @Component({
   selector: 'app-profile',
@@ -262,7 +263,14 @@ export class Profile implements OnInit {
   }
 
   openReportModal(): void {
-    console.log('Abrir modal de reporte');
+    const username = this.profile?.username;
+
+    if (!username) return;
+
+  this.dialog.open(ReportModal, {
+    width: '500px',
+    data: { username: username }
+  });
   }
 
   blockUser(): void {

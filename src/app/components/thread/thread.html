@@ -59,6 +59,10 @@
             <mat-icon>{{ thread.user.isBlocked ? 'lock_open' : 'block' }}</mat-icon>
             <span>{{ (thread.user.isBlocked ? 'THREAD.UNBLOCK_USER' : 'THREAD.BLOCK_USER') | translate:{username: thread.user.username} }}</span>
           </button>
+          <button mat-menu-item (click)="openReportModal()">
+            <mat-icon>report</mat-icon>
+            <span>{{ ('THREAD.USER_REPORT') | translate:{username: thread.user.username} }}</span>
+          </button>
         </mat-menu>
       }
 

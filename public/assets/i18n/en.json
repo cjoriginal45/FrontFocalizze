@@ -35,7 +35,8 @@
       "THREADS_PUBLISHED": "Threads Published",
       "THREADS_AVAILABLE": "Threads Available Today",
       "JOINED": "Joined in",
-      "NO_THREADS": "This user hasn't published any threads yet."
+      "NO_THREADS": "This user hasn't published any threads yet.",
+      "USER_REPORT": "Report @{{username}}"
     },
     "WELCOME": {
       "TITLE": "Welcome to Focalizze!",
@@ -53,7 +54,8 @@
       "POST_NUMBER": "Post {{number}}",
       "LOADING": "Loading...",
       "HIDE": "Hide -",
-      "EXPAND": "Expand +"
+      "EXPAND": "Expand +",
+      "USER_REPORT": "Report @{{username}}"
     },
     "COMMENTS": {
     "TITLE": "Comments",
@@ -215,6 +217,22 @@
     "FOLLOW": "Follow",
     "FOLLOWING": "Following",
     "UNFOLLOW": "Unfollow"
+  },
+  "REPORT_MODAL": {
+  "TITLE": "Report @{{username}}",
+  "REASON_LABEL": "Reason for reporting",
+  "DESC_LABEL": "Additional details (optional)",
+  "DESC_PLACEHOLDER": "Provide more information about your report...",
+  "CANCEL": "Cancel",
+  "SUBMIT": "Report",
+  "SUCCESS": "Report submitted successfully.",
+  "REASONS": {
+    "SPAM": "Spam",
+    "HARASSMENT_OR_HATE": "Aggression or hate speech",
+    "INAPPROPRIATE_CONTENT": "Inappropriate content",
+    "FAKE_ACCOUNT": "Fake account",
+    "OTHER": "Other reason"
   }
+}
 
   }

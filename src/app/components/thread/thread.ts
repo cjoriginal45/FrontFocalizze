@@ -40,6 +40,7 @@ import { MentionLinkerPipe } from "../../pipes/mention-linker-pipe";
 import { Block } from '../../services/block/block';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
+import { ReportModal } from '../report-modal/report-modal/report-modal';
 
 @Component({
   selector: 'app-thread',
@@ -270,10 +271,16 @@ export class Thread {
     });
   }
 
-  openReportModal(): void{
-    // Implementar lógica para abrir el modal de reporte
-    console.log('Abrir modal de reporte para el hilo:', this.threadId);
-  }
+   openReportModal(): void {
+      const username = this.threadSignal()?.user.username;
+  
+      if (!username) return;
+  
+    this.dialog.open(ReportModal, {
+      width: '500px',
+      data: { username: username }
+    });
+    }
 
   blockUser(): void {
     const threadData = this.threadSignal();

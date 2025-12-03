@@ -8,7 +8,17 @@
       "LANGUAGE_TITLE": "Idioma",
       "SELECT_LABEL": "Selecciona tu idioma:",
       "HELPER_TEXT": "El idioma cambiará inmediatamente.",
-      "WATERMARK": "Focalizze"
+      "WATERMARK": "Focalizze",
+      "MENU": {
+      "ACCOUNT": "Cuenta y perfil",
+      "SECURITY": "Seguridad y acceso",
+      "NOTIFICATIONS": "Notificaciones",
+      "FOCUS": "Modo enfoque",
+      "PRIVACY": "Bloqueo y privacidad",
+      "THEME": "Tema",
+      "LANGUAGE": "Idioma",
+      "ADMIN_PANEL": "Panel de administración"
+      }
     },
     "MENU": {
     "HOME": "Inicio",
@@ -25,7 +35,8 @@
       "THREADS_PUBLISHED": "Hilos Publicados",
       "THREADS_AVAILABLE": "Hilos Disponibles Hoy",
       "JOINED": "Se unió en",
-      "NO_THREADS": "Este usuario aún no ha publicado ningún hilo."
+      "NO_THREADS": "Este usuario aún no ha publicado ningún hilo.",
+      "USER_REPORT": "Reportar a @{{username}}"
     },
     "WELCOME": {
       "TITLE": "¡Bienvenido a Focalizze!",
@@ -43,7 +54,8 @@
         "POST_NUMBER": "{{number}}° post",
         "LOADING": "Cargando...",
         "HIDE": "Ocultar -",
-        "EXPAND": "Ampliar +"
+        "EXPAND": "Ampliar +",
+        "USER_REPORT": "Reportar a @{{username}}"
       },
       "COMMENTS": {
         "TITLE": "Comentarios",
@@ -119,19 +131,6 @@
     "THREADS_TITLE": "Hilos en esta Categoría",
     "NO_THREADS": "Aún no hay hilos en esta categoría.",
     "LOADING_MORE": "Cargando más hilos..."
-  },
-  "SETTINGS": {
-    "TITLE": "Configuración",
-    "MENU": {
-      "ACCOUNT": "Cuenta y perfil",
-      "SECURITY": "Seguridad y acceso",
-      "NOTIFICATIONS": "Notificaciones",
-      "FOCUS": "Modo enfoque",
-      "PRIVACY": "Bloqueo y privacidad",
-      "THEME": "Tema",
-      "LANGUAGE": "Idioma",
-      "ADMIN_PANEL": "Panel de administración"
-    }
   },
   "FOOTER": {
     "TERMS": "Condiciones de Servicio",
@@ -218,6 +217,22 @@
     "FOLLOW": "Seguir",
     "FOLLOWING": "Siguiendo",
     "UNFOLLOW": "Dejar de Seguir"
+  },
+    "REPORT_MODAL": {
+    "TITLE": "Reportar a @{{username}}",
+    "REASON_LABEL": "Motivo del reporte",
+    "DESC_LABEL": "Detalles adicionales (opcional)",
+    "DESC_PLACEHOLDER": "Describe el problema...",
+    "CANCEL": "Cancelar",
+    "SUBMIT": "Reportar",
+    "SUCCESS": "Reporte enviado. Gracias por ayudarnos.",
+    "REASONS": {
+      "SPAM": "Es spam",
+      "HARASSMENT_OR_HATE": "Acoso o incitación al odio",
+      "INAPPROPRIATE_CONTENT": "Contenido inapropiado",
+      "FAKE_ACCOUNT": "Cuenta falsa",
+      "OTHER": "Otro motivo"
+    }
   }
     
   }
