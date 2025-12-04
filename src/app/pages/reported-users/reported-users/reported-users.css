@@ -1,0 +1,124 @@
+/* Variables de color basadas en la imagen */
+:root {
+    --bg-notification: #dbeff5; /* Azul muy claro de fondo */
+    --bg-box: #e6f0f3; /* Fondo de la caja de texto */
+    --border-color: #8faab5; /* Color de las líneas separadoras */
+    --text-dark: #00334e; /* Azul oscuro para títulos */
+    --text-body: #444; /* Color del lorem ipsum */
+  }
+  
+  .notification-page-container {
+    background-color: var(--card-background);
+  }
+  
+  h1 {
+    color: var(--primary-color);
+  }
+  
+  .notification-list-container {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--card-background);
+    width: 100%;
+  }
+  
+  .notification-item {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .notification-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .notification-item-link:hover .notification-item {
+    background-color: var(--hover-color); /* Un ligero hover */
+  }
+  
+  /* Icono a la izquierda */
+  .notif-content {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .notif-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0; /* Evita que el avatar se encoja */
+  }
+  
+  .notif-text-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .notif-trigger-user-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: inherit;
+  }
+  .notif-trigger-user-link:hover {
+    text-decoration: underline;
+  }
+  
+  .notif-box {
+    border-left: 3px solid #ccc;
+    padding-left: 12px;
+    font-style: italic;
+    color: var(--text-color);
+    font-size: 0.9rem;
+  }
+  
+  .notif-date {
+    font-size: 0.8rem;
+    color: var(--text-color);
+  }
+  
+  .feed-layout__sidebar {
+    grid-column: 3 / 4;
+    position: sticky;
+    top: 10px;
+    height: calc(100vh - (60px + 40px + 40px));
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+  
+  .feed-layout__sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .feed-layout__sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+  
+  .feed-layout__sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  
+  .notification-page__header {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Responsive básico para ajustar tamaños en móvil */
+  @media (max-width: 600px) {
+    .notification-item {
+      padding: 12px;
+    }
+    .notif-title {
+      font-size: 0.95rem;
+    }
+    .notif-box {
+      font-size: 0.75rem;
+    }
+    .notif-icon span {
+      font-size: 26px;
+    }
+  }
+  

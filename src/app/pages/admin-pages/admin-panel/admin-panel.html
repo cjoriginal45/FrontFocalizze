@@ -1,0 +1,66 @@
+
+<app-header></app-header>
+<!-- 
+  Contenedor principal de la página de configuración.
+  Main container for the settings page.
+-->
+<div class="settings-container">
+  <!-- 
+    Encabezado de la página usando MatToolbar para una estructura consistente.
+    Page header using MatToolbar for a consistent structure.
+  -->
+  <mat-toolbar class="settings-toolbar">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon class="arrow-icon">arrow_back</mat-icon>
+    </button>
+    <span>Panel de Administración</span>
+  </mat-toolbar>
+
+  <!-- 
+    Contenido principal con el menú de opciones y el logo de fondo.
+    Main content with the options menu and the background logo.
+  -->
+  <main class="settings-content">
+    <!-- 
+      El logo de Focalizze se muestra en el centro, con baja opacidad.
+      The Focalizze logo is displayed in the center with low opacity.
+    -->
+    <div class="logo-placeholder">
+      <img src="assets/images/focalizze-logo.webp" alt="Focalizze Logo" />
+    </div>
+
+    <!-- 
+      Menú de navegación con MatNavList, semánticamente correcto para listas de enlaces.
+      Navigation menu with MatNavList, semantically correct for lists of links.
+    -->
+    <mat-nav-list>
+      <a routerLink="/" mat-list-item>
+        <!-- Más adelante será un [routerLink] -->
+        <mat-icon matListItemIcon>person</mat-icon>
+        <span matListItemTitle>Administrar Cuentas</span>
+      </a>
+      <a routerLink="/" mat-list-item>
+        <mat-icon matListItemIcon>report</mat-icon>
+        <span matListItemTitle>Hilos Reportados</span>
+      </a>
+      <a routerLink="/reported-users" mat-list-item>
+        <mat-icon matListItemIcon>person_4</mat-icon>
+        <span matListItemTitle>Usuarios Reportados</span>
+      </a>
+      <a routerLink="/" mat-list-item>
+        <mat-icon matListItemIcon>block</mat-icon>
+        <span matListItemTitle>Banear Usuario</span>
+      </a>
+      <a routerLink="/" mat-list-item>
+        <mat-icon matListItemIcon>border_color</mat-icon>
+        <span matListItemTitle>Modificar Hilo</span>
+      </a>
+      <a routerLink="/" mat-list-item>
+        <mat-icon matListItemIcon>save</mat-icon>
+        <span matListItemTitle>Respaldo</span>
+      </a>
+    </mat-nav-list>
+  </main>
+
+</div>
+<app-botton-nav></app-botton-nav>

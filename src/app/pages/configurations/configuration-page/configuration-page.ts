@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
 import { BottonNav } from '../../../components/botton-nav/botton-nav';
 import { CommonModule, Location as AngularLocation } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { Auth } from '../../../services/auth/auth';
 
 @Component({
   selector: 'app-configuration-page',
@@ -17,6 +18,9 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class ConfigurationPage {
   private location = inject(AngularLocation);
+  public authService = inject(Auth);
+
+  isAdmin = this.authService.isAdmin; 
 
   goBack(): void {
     this.location.back();

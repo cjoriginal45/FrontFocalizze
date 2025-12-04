@@ -12,7 +12,6 @@ import { UserState } from '../user-state/user-state';
 import { CategoryState } from '../category-state/category-state';
 import { NotificationState } from '../notification-state/notification-state';
 import { InteractionCounter } from '../interactionCounter/interaction-counter';
-import { Language } from '../language/language';
 
 export interface AuthUser {
   id: number;
@@ -21,6 +20,7 @@ export interface AuthUser {
   avatarUrl?: string; // Opcional, lo cargaremos después
   followingCount: number;
   followersCount: number;
+  role: string;
   dailyInteractionsRemaining: number; // Ahora este dato vendrá del endpoint separado
   isTwoFactorEnabled?: boolean;
 }
@@ -87,8 +87,9 @@ export class Auth {
       avatarUrl: response.avatarUrl,
       followingCount: response.followingCount,
       followersCount: response.followersCount,
+      role: response.role,
       dailyInteractionsRemaining: 0,
-      isTwoFactorEnabled: response.isTwoFactorEnabled,
+      isTwoFactorEnabled: decodedToken.isTwoFactorEnabled,
     };
     this.currentUser.set(user);
     this.notificationStateService.initialize();
@@ -157,12 +158,34 @@ export class Auth {
     this.authReady.set(true);
   }
 
+  isAdmin = computed(() => {
+    const user = this.currentUser();
+    return user?.role === 'ADMIN'; 
+  });
+
   // --- LOGIN ---
   login(credentials: { identifier: string; password: string }): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
         // Solo iniciamos sesión si YA nos dieron el token (caso sin 2FA)
         if (response.token) {
+          localStorage.setItem('jwt_token', response.token);
+          const decodedToken: UserTokenData = jwtDecode(response.token);
+
+          // Al hacer login, construimos el objeto AuthUser con los datos del login.
+          const user: AuthUser = {
+            id: response.userId,
+            username: decodedToken.sub,
+            displayName: response.displayName,
+            avatarUrl: response.avatarUrl || undefined,
+            followingCount: response.followingCount,
+            followersCount: response.followersCount,
+            role: response.role,
+            dailyInteractionsRemaining: 0,
+          };
+          this.currentUser.set(user);
+
+          this.notificationStateService.initialize();
           this.handleSuccessfulLogin(response);
         }
       })
@@ -212,4 +235,5 @@ export class Auth {
     console.log('[AuthService] Delegando reembolso a InteractionCounter...');
     this.interactionCounter.incrementCount();
   }
+
 }
