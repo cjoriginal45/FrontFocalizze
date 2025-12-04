@@ -7,4 +7,5 @@ export interface UserInterface {
   followingCount: number;
   followersCount: number;
   isBlocked?: boolean;
+  isTwoFactorEnabled?: boolean;
 }

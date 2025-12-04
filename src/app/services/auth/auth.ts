@@ -104,10 +104,16 @@ export class Auth {
       user: this.userService.getMe(),
       interactions: this.userService.getInteractionStatus(),
     }).subscribe(({ user, interactions }) => {
+      // Obtenemos el valor actual para no perderlo
+      const currentValue = this.currentUser()?.isTwoFactorEnabled;
+
       const updatedUser = {
         ...user,
         dailyInteractionsRemaining: interactions.remaining,
+        // Si viene del backend, úsalo. Si no, mantén el que ya teníamos.
+        isTwoFactorEnabled: user.isTwoFactorEnabled ?? currentValue,
       } as unknown as AuthUser;
+
       this.currentUser.set(updatedUser);
     });
   }

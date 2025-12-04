@@ -34,20 +34,13 @@ export class SecurityAccess implements OnInit {
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
-  // Estado
   isTwoFactorEnabled = false;
   isLoading = false;
 
   ngOnInit(): void {
-    // Aquí deberías cargar el estado real del usuario desde tu AuthService o API
     const user = this.authService.getCurrentUser();
     if (user) {
-      // Asumimos que el usuario tiene una propiedad 'isTwoFactorEnabled'
-      // Si no la tiene en la interfaz, deberías agregarla.
       this.isTwoFactorEnabled = user.isTwoFactorEnabled ?? false;
-
-      // Por ahora lo simulamos:
-      this.isTwoFactorEnabled = false;
     }
   }
 
@@ -81,8 +74,6 @@ export class SecurityAccess implements OnInit {
           : 'Autenticación en 2 pasos desactivada.';
 
         this.snackBar.open(message, 'OK', { duration: 3000 });
-
-        // Aquí podrías actualizar el usuario en el AuthService si guardas ese dato localmente
       },
       error: (err) => {
         console.error('Error al cambiar 2FA', err);
