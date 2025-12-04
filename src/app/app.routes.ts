@@ -24,6 +24,7 @@ import { SecurityAccess } from './pages/configurations/security-access/security-
 import { FocusMode } from './pages/configurations/focus-mode/focus-mode';
 import { ThemePage } from './pages/configurations/theme-page/theme-page';
 import { AdminPanel } from './pages/admin-pages/admin-panel/admin-panel';
+import { ReportedUsers } from './pages/reported-users/reported-users/reported-users';
 
 
 export const routes: Routes = [
@@ -59,6 +60,7 @@ export const routes: Routes = [
       { path: 'password-recovery', component: PasswordRecovery },
       { path: 'reset-password', component: PasswordRecovery },
       {path: 'admin-panel', component: AdminPanel},
+      {path: 'reported-users', component: ReportedUsers},
     ],
   },
 ];

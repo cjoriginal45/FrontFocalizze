@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReportResponse } from '../../../interfaces/ReportResponse';
 import { Admin } from '../../../services/admin/admin';
+import { ConfirmMatDialog } from '../../mat-dialog/mat-dialog/mat-dialog';
 
 @Component({
   selector: 'app-report-details-modal',
@@ -44,7 +45,8 @@ export class ReportDetailsModal {
         this.snackBar.open(action === 'DISMISS' ? 'Reporte ignorado.' : 'Usuario suspendido.', 'Cerrar', { duration: 3000 });
         this.dialogRef.close(true); // Retorna true para indicar que se actualice la lista
       },
-      error: () => {
+      error: (e) => {
+        console.log("ERROR:"+e.message);
         this.snackBar.open('Error al procesar.', 'Cerrar', { duration: 3000 });
         this.isLoading = false;
       }
