@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Detalles del Reporte</h2>
+<mat-dialog-content>
+  <div class="detail-row">
+    <strong>Reportado:</strong> @{{ report.reportedUsername }}
+  </div>
+  <div class="detail-row">
+    <strong>Reportado por:</strong> @{{ report.reporterUsername }}
+  </div>
+  <div class="detail-row">
+    <strong>Razón:</strong> {{ report.reason }}
+  </div>
+  @if (report.description) {
+    <div class="detail-box">
+      <p>{{ report.description }}</p>
+    </div>
+  }
+
+  <div class="suspension-options">
+    <h3>Acciones</h3>
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Duración de suspensión</mat-label>
+      <mat-select [(ngModel)]="selectedDays">
+        <mat-option [value]="1">1 Día</mat-option>
+        <mat-option [value]="7">7 Días</mat-option>
+        <mat-option [value]="30">1 Mes</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dismissReport()" [disabled]="isLoading">Ignorar</button>
+  <button mat-flat-button color="warn" (click)="suspendUser()" [disabled]="isLoading">
+    Suspender Usuario
+  </button>
+</mat-dialog-actions>
