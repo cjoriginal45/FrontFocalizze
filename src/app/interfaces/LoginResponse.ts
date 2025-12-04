@@ -6,4 +6,8 @@ export interface LoginResponse {
     followingCount: number;
     followersCount: number;
     role: string;
+    isTwoFactorEnabled: boolean;
+    requiresTwoFactor: boolean;
+    message?: string;
   }
+

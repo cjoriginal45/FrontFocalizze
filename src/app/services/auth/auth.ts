@@ -12,7 +12,6 @@ import { UserState } from '../user-state/user-state';
 import { CategoryState } from '../category-state/category-state';
 import { NotificationState } from '../notification-state/notification-state';
 import { InteractionCounter } from '../interactionCounter/interaction-counter';
-import { Language } from '../language/language';
 
 export interface AuthUser {
   id: number;
@@ -23,10 +22,16 @@ export interface AuthUser {
   followersCount: number;
   role: string;
   dailyInteractionsRemaining: number; // Ahora este dato vendrá del endpoint separado
+  isTwoFactorEnabled?: boolean;
 }
 
 interface UserTokenData {
   sub: string;
+}
+
+export interface VerifyOtpRequest {
+  username: string;
+  code: string;
 }
 
 @Injectable({
@@ -59,6 +64,61 @@ export class Auth {
     });
   }
 
+  verifyOtp(data: VerifyOtpRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/verify-2fa`, data).pipe(
+      tap((response) => {
+        if (response.token) {
+          this.handleSuccessfulLogin(response);
+        }
+      })
+    );
+  }
+
+  // 3. Helper privado para reutilizar lógica de guardado
+  private handleSuccessfulLogin(response: LoginResponse) {
+    localStorage.setItem('jwt_token', response.token);
+
+    // Aquí puedes decodificar y setear el currentUser básico
+    const decodedToken: any = jwtDecode(response.token);
+    const user: AuthUser = {
+      id: response.userId,
+      username: decodedToken.sub,
+      displayName: response.displayName,
+      avatarUrl: response.avatarUrl,
+      followingCount: response.followingCount,
+      followersCount: response.followersCount,
+      role: response.role,
+      dailyInteractionsRemaining: 0,
+      isTwoFactorEnabled: decodedToken.isTwoFactorEnabled,
+    };
+    this.currentUser.set(user);
+    this.notificationStateService.initialize();
+
+    // Cargar el resto de datos en segundo plano
+    this.loadUserCompleteData();
+  }
+
+  private loadUserCompleteData() {
+    // Aquí pones tu forkJoin(getMe, interactions) que tenías antes
+    // para actualizar el currentUser con los datos frescos.
+    forkJoin({
+      user: this.userService.getMe(),
+      interactions: this.userService.getInteractionStatus(),
+    }).subscribe(({ user, interactions }) => {
+      // Obtenemos el valor actual para no perderlo
+      const currentValue = this.currentUser()?.isTwoFactorEnabled;
+
+      const updatedUser = {
+        ...user,
+        dailyInteractionsRemaining: interactions.remaining,
+        // Si viene del backend, úsalo. Si no, mantén el que ya teníamos.
+        isTwoFactorEnabled: user.isTwoFactorEnabled ?? currentValue,
+      } as unknown as AuthUser;
+
+      this.currentUser.set(updatedUser);
+    });
+  }
+
   // --- CARGA INICIAL DESDE EL TOKEN ---
   async loadUserFromToken(): Promise<void> {
     const token = localStorage.getItem('jwt_token');
@@ -68,17 +128,18 @@ export class Auth {
         if (Date.now() >= decodedToken.exp * 1000) {
           localStorage.removeItem('jwt_token');
         } else {
-          // Usamos 'await' para esperar la respuesta de la API
-          const user = await firstValueFrom(this.userService.getMe());
-          this.currentUser.set(user as unknown as AuthUser);
+          // Inicializamos notificaciones
           this.notificationStateService.initialize();
-          // --- CAMBIO CLAVE: Usamos forkJoin para pedir User + Interacciones ---
+
+          // Pedimos User + Interacciones
           const combinedData$ = forkJoin({
             user: this.userService.getMe(),
             interactions: this.userService.getInteractionStatus(),
           }).pipe(
             map(({ user, interactions }) => {
-              // Mezclamos los dos objetos en uno solo del tipo AuthUser
+              // Mezclamos los objetos.
+              // Como 'user' viene del backend (UserDto), si allá agregaste 'isTwoFactorEnabled',
+              // aquí se propagará automáticamente gracias al spread operator (...user).
               return {
                 ...user,
                 dailyInteractionsRemaining: interactions.remaining,
@@ -88,7 +149,6 @@ export class Auth {
 
           const authUser = await firstValueFrom(combinedData$);
           this.currentUser.set(authUser);
-          // -----------------------------------------------------------------
         }
       } catch (error) {
         console.error('Fallo al inicializar auth:', error);
@@ -104,9 +164,10 @@ export class Auth {
   });
 
   // --- LOGIN ---
-  login(credentials: any): Observable<AuthUser> {
+  login(credentials: { identifier: string; password: string }): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
+        // Solo iniciamos sesión si YA nos dieron el token (caso sin 2FA)
         if (response.token) {
           localStorage.setItem('jwt_token', response.token);
           const decodedToken: UserTokenData = jwtDecode(response.token);
@@ -125,26 +186,11 @@ export class Auth {
           this.currentUser.set(user);
 
           this.notificationStateService.initialize();
+          this.handleSuccessfulLogin(response);
         }
-      }),
-      // Una vez logueado, pedimos los datos completos
-      switchMap(() =>
-        forkJoin({
-          user: this.userService.getMe(),
-          interactions: this.userService.getInteractionStatus(),
-        })
-      ),
-      // Combinamos los datos
-      map(({ user, interactions }) => {
-        return {
-          ...user,
-          dailyInteractionsRemaining: interactions.remaining,
-        } as unknown as AuthUser;
-      }),
-      // Actualizamos la señal
-      tap((authUser) => {
-        this.currentUser.set(authUser);
       })
+      // Quitamos el switchMap/map complejo de aquí para simplificar.
+      // La carga de datos user/interacciones la haremos después de tener el token seguro.
     );
   }
 
