@@ -8,21 +8,21 @@ import { environment } from '../../environments/environment';
 })
 export class SecurityService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiBaseUrl + '/users';
-  private authUrl = environment.apiBaseUrl + '/auth';
+  private baseUrl = environment.apiBaseUrl + '/security';
 
   /**
    * Activa o desactiva la autenticación en dos pasos (2FA).
+   * Backend espera: PATCH /api/security/2fa
    */
   toggleTwoFactor(enable: boolean): Observable<any> {
-    // El backend debería esperar un booleano o un objeto { enabled: boolean }
-    return this.http.patch(`${this.apiUrl}/me/2fa`, { enabled: enable });
+    return this.http.patch(`${this.baseUrl}/2fa`, { enabled: enable });
   }
 
   /**
-   * Cierra la sesión en todos los dispositivos (invalida todos los tokens del usuario).
+   * Cierra la sesión en todos los dispositivos.
+   * Backend espera: POST /api/security/logout-all
    */
   logoutAllDevices(): Observable<any> {
-    return this.http.post(`${this.authUrl}/logout-all`, {});
+    return this.http.post(`${this.baseUrl}/logout-all`, {});
   }
 }

@@ -29,6 +29,11 @@ interface UserTokenData {
   sub: string;
 }
 
+export interface VerifyOtpRequest {
+  username: string;
+  code: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -56,6 +61,54 @@ export class Auth {
       if (this.currentUser() === null) {
         this.clearAllAppState();
       }
+    });
+  }
+
+  verifyOtp(data: VerifyOtpRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/verify-2fa`, data).pipe(
+      tap((response) => {
+        if (response.token) {
+          this.handleSuccessfulLogin(response);
+        }
+      })
+    );
+  }
+
+  // 3. Helper privado para reutilizar lógica de guardado
+  private handleSuccessfulLogin(response: LoginResponse) {
+    localStorage.setItem('jwt_token', response.token);
+
+    // Aquí puedes decodificar y setear el currentUser básico
+    const decodedToken: any = jwtDecode(response.token);
+    const user: AuthUser = {
+      id: response.userId,
+      username: decodedToken.sub,
+      displayName: response.displayName,
+      avatarUrl: response.avatarUrl,
+      followingCount: response.followingCount,
+      followersCount: response.followersCount,
+      dailyInteractionsRemaining: 0,
+      isTwoFactorEnabled: response.isTwoFactorEnabled,
+    };
+    this.currentUser.set(user);
+    this.notificationStateService.initialize();
+
+    // Cargar el resto de datos en segundo plano
+    this.loadUserCompleteData();
+  }
+
+  private loadUserCompleteData() {
+    // Aquí pones tu forkJoin(getMe, interactions) que tenías antes
+    // para actualizar el currentUser con los datos frescos.
+    forkJoin({
+      user: this.userService.getMe(),
+      interactions: this.userService.getInteractionStatus(),
+    }).subscribe(({ user, interactions }) => {
+      const updatedUser = {
+        ...user,
+        dailyInteractionsRemaining: interactions.remaining,
+      } as unknown as AuthUser;
+      this.currentUser.set(updatedUser);
     });
   }
 
@@ -99,45 +152,16 @@ export class Auth {
   }
 
   // --- LOGIN ---
-  login(credentials: any): Observable<AuthUser> {
+  login(credentials: { identifier: string; password: string }): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
+        // Solo iniciamos sesión si YA nos dieron el token (caso sin 2FA)
         if (response.token) {
-          localStorage.setItem('jwt_token', response.token);
-          const decodedToken: UserTokenData = jwtDecode(response.token);
-
-          // Construimos el usuario temporal con datos del login
-          const user: AuthUser = {
-            id: response.userId,
-            username: decodedToken.sub,
-            displayName: response.displayName,
-            avatarUrl: response.avatarUrl || undefined,
-            followingCount: response.followingCount,
-            followersCount: response.followersCount,
-            dailyInteractionsRemaining: 0,
-            isTwoFactorEnabled: false, // Valor por defecto temporal hasta que cargue el perfil completo
-          };
-          this.currentUser.set(user);
-
-          this.notificationStateService.initialize();
+          this.handleSuccessfulLogin(response);
         }
-      }),
-      // Una vez logueado, pedimos los datos completos (que incluyen el 2FA real)
-      switchMap(() =>
-        forkJoin({
-          user: this.userService.getMe(),
-          interactions: this.userService.getInteractionStatus(),
-        })
-      ),
-      map(({ user, interactions }) => {
-        return {
-          ...user, // Aquí vendrá el 'isTwoFactorEnabled' real de la BD
-          dailyInteractionsRemaining: interactions.remaining,
-        } as unknown as AuthUser;
-      }),
-      tap((authUser) => {
-        this.currentUser.set(authUser);
       })
+      // Quitamos el switchMap/map complejo de aquí para simplificar.
+      // La carga de datos user/interacciones la haremos después de tener el token seguro.
     );
   }
 
