@@ -1,12 +1,20 @@
 <section class="login-page">
+  <!-- LOGO (Visible en ambos pasos) -->
   <div class="login-page__logo-box">
     <img class="login-page__logo-img" [src]="logoPath()" alt="Logo Focalizze" />
     <p class="login-page__logo-title">Donde menos es más</p>
   </div>
+
   <div class="login-page__panel-box">
     <div class="login-panel">
+      <!-- ================================================= -->
+      <!-- PASO 1: CREDENCIALES (Usuario y Contraseña)       -->
+      <!-- ================================================= -->
+      @if (step === 'credentials') {
       <h1 class="login-panel__title">{{ 'LOGIN.TITLE' | translate }}</h1>
+
       <form class="login-panel__form" (ngSubmit)="onSubmit()">
+        <!-- Input Usuario -->
         <input
           class="login-panel__input"
           type="text"
@@ -14,7 +22,10 @@
           name="identifier"
           [(ngModel)]="loginData.identifier"
           required
+          [disabled]="isLoading"
         />
+
+        <!-- Input Contraseña -->
         <div class="login-panel__password-field-wrapper">
           <input
             class="login-panel__input"
@@ -23,25 +34,80 @@
             name="password"
             [(ngModel)]="loginData.password"
             required
+            [disabled]="isLoading"
           />
-
           <span class="login-panel__toggle-btn" (click)="togglePasswordVisibility()">
             <mat-icon>{{ showPasswordIcon }}</mat-icon>
           </span>
         </div>
 
-        <!-- Mostramos un mensaje de error si existe -->
-        @if (errorMessage) {
-        <div class="login-panel__error-message">
-          {{ errorMessage }}
-        </div>
-        }
-
-        <button class="login-panel__button" type="submit">{{ 'LOGIN.BUTTON' | translate }}</button>
+        <!-- Botón Ingresar -->
+        <button class="login-panel__button" type="submit" [disabled]="isLoading">
+          {{ isLoading ? 'Cargando...' : ('LOGIN.BUTTON' | translate) }}
+        </button>
       </form>
-      <a class="login-panel__link" routerLink="/register">{{
-        'LOGIN.REGISTER_LINK' | translate
-      }}</a>
+
+      <!-- Link Registro -->
+      <a class="login-panel__link" routerLink="/register">
+        {{ 'LOGIN.REGISTER_LINK' | translate }}
+      </a>
+      }
+
+      <!-- ================================================= -->
+      <!-- PASO 2: CÓDIGO DE VERIFICACIÓN (2FA)              -->
+      <!-- ================================================= -->
+      @if (step === 'otp') {
+      <h1 class="login-panel__title">Verificación</h1>
+      <p
+        style="text-align: center; color: var(--text-color); margin-bottom: 20px; font-size: 0.9rem"
+      >
+        Ingresa el código de 6 dígitos enviado a tu correo.
+      </p>
+
+      <form class="login-panel__form" (ngSubmit)="onVerifyOtp()">
+        <!-- Input Código OTP -->
+        <input
+          class="login-panel__input"
+          type="text"
+          placeholder="123456"
+          name="otpCode"
+          [(ngModel)]="otpCode"
+          maxlength="6"
+          required
+          autocomplete="one-time-code"
+          style="letter-spacing: 5px; text-align: center; font-weight: bold"
+          [disabled]="isLoading"
+        />
+
+        <!-- Botón Verificar -->
+        <button
+          class="login-panel__button"
+          type="submit"
+          [disabled]="!otpCode || otpCode.length < 6 || isLoading"
+        >
+          {{ isLoading ? 'Verificando...' : 'Verificar' }}
+        </button>
+
+        <!-- Botón Volver (Reutilizo el estilo de link para que sea sutil) -->
+        <a
+          class="login-panel__link"
+          (click)="cancelOtp()"
+          style="cursor: pointer; margin-top: 15px"
+        >
+          Volver al inicio de sesión
+        </a>
+      </form>
+      }
+
+      <!-- ================================================= -->
+      <!-- MENSAJES DE ERROR Y FOOTER (Comunes)              -->
+      <!-- ================================================= -->
+
+      @if (errorMessage) {
+      <div class="login-panel__error-message">
+        {{ errorMessage }}
+      </div>
+      }
 
       <p class="login-panel__copyright-text">{{ 'FOOTER.COPYRIGHT' | translate }}</p>
     </div>
