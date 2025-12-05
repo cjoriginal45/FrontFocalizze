@@ -14,7 +14,7 @@ export class Admin {
 
   getPendingReports(page: number, size: number): Observable<Page<ReportResponse>> {
     const params = new HttpParams().set('page', page).set('size', size);
-    return this.http.get<Page<ReportResponse>>(`${this.apiUrl}/reports`, { params });
+    return this.http.get<Page<ReportResponse>>(`${this.apiUrl}/reports/users`, { params });
   }
 
   processReport(reportId: number, action: 'DISMISS' | 'SUSPEND', days?: number): Observable<void> {
