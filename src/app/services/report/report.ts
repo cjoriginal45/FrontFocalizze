@@ -14,4 +14,8 @@ export class Report {
   reportUser(username: string, reportData: ReportRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/users/${username}`, reportData);
   }
+
+  reportThread(threadId: number, reportData: ReportRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/threads/${threadId}`, reportData);
+  }
 }

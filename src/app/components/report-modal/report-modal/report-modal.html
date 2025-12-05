@@ -1,4 +1,10 @@
-<h2 mat-dialog-title>{{ 'REPORT_MODAL.TITLE' | translate:{username: data.username} }}</h2>
+<h2 mat-dialog-title>
+  @if (data.threadId) {
+    {{ 'THREAD.REPORT' | translate }} 
+  } @else {
+    {{ 'REPORT_MODAL.TITLE' | translate:{username: data.username} }} 
+  }
+</h2>
 
 <mat-dialog-content class="report-content">
   <div class="form-container">
