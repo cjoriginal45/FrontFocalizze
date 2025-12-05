@@ -7,4 +7,6 @@ export interface ReportResponse {
     reason: string;
     description: string;
     createdAt: string;
+    reportedThreadId?: number;
+    reportedThreadPreview?: string;
   }

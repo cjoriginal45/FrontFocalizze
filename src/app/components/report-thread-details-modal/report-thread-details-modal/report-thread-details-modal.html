@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Reporte de Hilo</h2>
+<mat-dialog-content class="modal-content">
+  <!-- Info del Reporte -->
+  <div class="report-info">
+    <div class="info-row"><strong>Razón:</strong> {{ report.reason }}</div>
+    <div class="info-row"><strong>Reportado por:</strong> @{{ report.reporterUsername }}</div>
+    <div class="info-row"><strong>Autor del Hilo:</strong> @{{ report.reportedUsername }}</div>
+    @if(report.description) {
+        <div class="desc-box"><small>Nota: {{ report.description }}</small></div>
+    }
+  </div>
+
+  <hr class="divider">
+
+  <!-- Área de Edición / Visualización -->
+  <h3>Contenido del Hilo</h3>
+  @if (isLoading) {
+    <p>Cargando contenido original...</p>
+  } @else {
+    <div class="editor-container">
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Post 1</mat-label>
+            <textarea matInput [(ngModel)]="post1Content" rows="3"></textarea>
+        </mat-form-field>
+
+        @if (post2Content) {
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Post 2</mat-label>
+            <textarea matInput [(ngModel)]="post2Content" rows="3"></textarea>
+        </mat-form-field>
+        }
+
+        @if (post3Content) {
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Post 3</mat-label>
+            <textarea matInput [(ngModel)]="post3Content" rows="3"></textarea>
+        </mat-form-field>
+        }
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="actions-footer">
+  <!-- Grupo Izquierdo: Acciones Destructivas/Ignorar -->
+  <div class="actions-left">
+      <button mat-button color="warn" (click)="deleteThread()" [disabled]="isLoading">
+        <mat-icon>delete</mat-icon> Eliminar Hilo
+      </button>
+      <button mat-button (click)="dismissReport()" [disabled]="isLoading">Ignorar</button>
+  </div>
+
+  <!-- Grupo Derecho: Guardar Edición -->
+  <button mat-flat-button color="primary" (click)="saveEdits()" [disabled]="isLoading">
+    <mat-icon>save</mat-icon> Guardar Cambios (Editar)
+  </button>
+</mat-dialog-actions>
