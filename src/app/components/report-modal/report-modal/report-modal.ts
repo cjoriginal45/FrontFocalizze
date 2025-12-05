@@ -40,7 +40,7 @@ export class ReportModal {
 
   constructor(
     public dialogRef: MatDialogRef<ReportModal>,
-    @Inject(MAT_DIALOG_DATA) public data: { username: string }
+    @Inject(MAT_DIALOG_DATA) public data: { username?: string, threadId?: number }
   ) {}
 
   onCancel(): void {
@@ -49,23 +49,37 @@ export class ReportModal {
 
   onSubmit(): void {
     if (!this.selectedReason) return;
-
     this.isSubmitting = true;
+    
     const request: ReportRequest = {
       reason: this.selectedReason,
       description: this.description
     };
 
-    this.reportService.reportUser(this.data.username, request).subscribe({
+    let reportObservable;
+
+    // Decidimos qué método llamar
+    if (this.data.threadId) {
+      reportObservable = this.reportService.reportThread(this.data.threadId, request);
+    } else if (this.data.username) {
+      reportObservable = this.reportService.reportUser(this.data.username, request);
+    } else {
+      return;
+    }
+
+    reportObservable.subscribe({
       next: () => {
         this.snackBar.open('Reporte enviado correctamente.', 'Cerrar', { duration: 3000 });
         this.dialogRef.close(true);
       },
       error: (err) => {
-        console.error('Error enviando reporte', err);
-        this.snackBar.open('Error al enviar el reporte.', 'Cerrar', { duration: 3000 });
         this.isSubmitting = false;
+        this.snackBar.open('Error al enviar el reporte. Por favor, inténtalo de nuevo.', 'Cerrar', { duration: 3000 });
       }
     });
+  
   }
+
+  
+
 }

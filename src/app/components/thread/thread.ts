@@ -328,4 +328,14 @@ export class Thread {
       }
     });
   }
+
+  openReportThreadModal(): void {
+    const threadId = this.threadId;
+    if (!threadId) return;
+
+    this.dialog.open(ReportModal, {
+      width: '500px',
+      data: { threadId: threadId } 
+    });
+  }
 }

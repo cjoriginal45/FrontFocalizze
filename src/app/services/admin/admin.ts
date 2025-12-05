@@ -14,12 +14,28 @@ export class Admin {
 
   getPendingReports(page: number, size: number): Observable<Page<ReportResponse>> {
     const params = new HttpParams().set('page', page).set('size', size);
-    return this.http.get<Page<ReportResponse>>(`${this.apiUrl}/reports`, { params });
+    return this.http.get<Page<ReportResponse>>(`${this.apiUrl}/reports/users`, { params });
   }
 
   processReport(reportId: number, action: 'DISMISS' | 'SUSPEND', days?: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/suspend`, { 
       reportId, action, suspensionDays: days 
     });
+  }
+
+  getPendingThreadReports(page: number, size: number): Observable<Page<ReportResponse>> {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<Page<ReportResponse>>(`${this.apiUrl}/reports/threads`, { params });
+  }
+
+  processThreadReport(reportId: number, action: 'DISMISS' | 'DELETE' | 'EDIT', posts?: string[]): Observable<void> {
+    const body = {
+      reportId,
+      action,
+      newContentPost1: posts?.[0],
+      newContentPost2: posts?.[1],
+      newContentPost3: posts?.[2]
+    };
+    return this.http.post<void>(`${this.apiUrl}/process-thread`, body);
   }
 }
