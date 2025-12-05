@@ -26,7 +26,7 @@ import { ThemePage } from './pages/configurations/theme-page/theme-page';
 import { AdminPanel } from './pages/admin-pages/admin-panel/admin-panel';
 import { ReportedUsers } from './pages/admin-pages/reported-users/reported-users';
 import { ReportedThreads } from './pages/admin-pages/reported-threads/reported-threads';
-
+import { ManageAccounts } from './pages/admin-pages/manage-accounts/manage-accounts';
 
 export const routes: Routes = [
   // ... (rutas públicas como login, register)
@@ -60,9 +60,10 @@ export const routes: Routes = [
       { path: 'theme', component: ThemePage },
       { path: 'password-recovery', component: PasswordRecovery },
       { path: 'reset-password', component: PasswordRecovery },
-      {path: 'admin-panel', component: AdminPanel},
-      {path: 'reported-users', component: ReportedUsers},
-      {path: 'reported-threads', component: ReportedThreads},
+      { path: 'admin-panel', component: AdminPanel },
+      { path: 'reported-users', component: ReportedUsers },
+      { path: 'reported-threads', component: ReportedThreads },
+      { path: 'manage-accounts', component: ManageAccounts },
     ],
   },
 ];

@@ -12,7 +12,7 @@
     <button mat-icon-button (click)="goBack()" class="back-button">
       <mat-icon class="arrow-icon">arrow_back</mat-icon>
     </button>
-    <span>Panel de Administración</span>
+    <span>Administrar Cuentas</span>
   </mat-toolbar>
 
   <!-- 
@@ -33,30 +33,14 @@
       Navigation menu with MatNavList, semantically correct for lists of links.
     -->
     <mat-nav-list>
-      <a routerLink="/manage-accounts" mat-list-item>
+      <a routerLink="/" mat-list-item>
         <!-- Más adelante será un [routerLink] -->
         <mat-icon matListItemIcon>person</mat-icon>
-        <span matListItemTitle>Administrar Cuentas</span>
-      </a>
-      <a routerLink="/reported-threads" mat-list-item>
-        <mat-icon matListItemIcon>report</mat-icon>
-        <span matListItemTitle>Hilos Reportados</span>
-      </a>
-      <a routerLink="/reported-users" mat-list-item>
-        <mat-icon matListItemIcon>person_4</mat-icon>
-        <span matListItemTitle>Usuarios Reportados</span>
+        <span matListItemTitle>Crear Administrador</span>
       </a>
       <a routerLink="/" mat-list-item>
         <mat-icon matListItemIcon>block</mat-icon>
-        <span matListItemTitle>Banear Usuario</span>
-      </a>
-      <a routerLink="/" mat-list-item>
-        <mat-icon matListItemIcon>border_color</mat-icon>
-        <span matListItemTitle>Modificar Hilo</span>
-      </a>
-      <a routerLink="/" mat-list-item>
-        <mat-icon matListItemIcon>save</mat-icon>
-        <span matListItemTitle>Respaldo</span>
+        <span matListItemTitle>Eliminar Administrador</span>
       </a>
     </mat-nav-list>
   </main>
