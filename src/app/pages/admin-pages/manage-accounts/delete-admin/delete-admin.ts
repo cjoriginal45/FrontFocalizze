@@ -96,7 +96,6 @@ export class DeleteAdmin {
 
     this.isLoading = true;
 
-    // AQUÍ LLAMAS A TU BACKEND PARA VERIFICAR PASSWORD
     // Simulación:
     setTimeout(() => {
       this.isLoading = false;

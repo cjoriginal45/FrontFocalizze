@@ -2,7 +2,6 @@
 
 <div class="page-wrapper">
   <div class="settings-container">
-    
     <!-- Header de la página -->
     <div class="settings-header">
       <button mat-icon-button (click)="goBack()" class="back-button">
@@ -18,100 +17,126 @@
       </div>
 
       @if (currentStep === 1) {
-        <div class="step-container">
-          <h3 class="step-title">Paso 1/2: Confirmar Identidad</h3>
-          
-          <div class="form-card">
-            <form [formGroup]="verifyForm" (ngSubmit)="verifyIdentity()">
-              
-              <p class="input-label">Ingrese su contraseña</p>
-              <mat-form-field appearance="outline" class="custom-field">
-                <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
-                <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-                  <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-              </mat-form-field>
+      <div class="step-container">
+        <h3 class="step-title">Paso 1/2: Confirmar Identidad</h3>
 
-              <p class="input-label">Vuelva a ingresar su contraseña</p>
-              <mat-form-field appearance="outline" class="custom-field">
-                <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword">
-                <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
-                  <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-              </mat-form-field>
-
-              <div class="actions">
-                <button mat-flat-button class="btn-primary" type="submit" [disabled]="isLoading || verifyForm.invalid">
-                  {{ isLoading ? 'Verificando...' : 'Siguiente' }}
-                </button>
-              </div>
-
-            </form>
-          </div>
-        </div>
-      }
-
-      @if (currentStep === 2) {
-        <div class="step-container">
-          <h3 class="step-title">Paso 2/2: Buscar Usuario</h3>
-
-          <div class="form-card">
-            
-            <!-- Buscador -->
-            <p class="input-label">Ingrese nombre de usuario a eliminar</p>
-            <mat-form-field appearance="outline" class="custom-field search-field">
-              <input type="text"
-                     placeholder="@username"
-                     matInput
-                     [formControl]="searchControl"
-                     [matAutocomplete]="auto">
-               <!-- Botón de búsqueda visual (opcional si es reactivo) -->
-               <button mat-icon-button matSuffix>
-                  <mat-icon>search</mat-icon>
-               </button>
-              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayUser" (optionSelected)="onUserSelected($event)">
-                @for (user of userSearchResults$ | async; track user.username) {
-                  <mat-option [value]="user">
-                    <div class="autocomplete-option">
-                      <img [src]="user.avatarUrl" class="mini-avatar">
-                      <span>{{ user.username }}</span>
-                    </div>
-                  </mat-option>
-                }
-              </mat-autocomplete>
+        <div class="form-card">
+          <form [formGroup]="verifyForm" (ngSubmit)="verifyIdentity()">
+            <p class="input-label">Ingrese su contraseña</p>
+            <mat-form-field appearance="outline" class="custom-field">
+              <input
+                matInput
+                [type]="hidePassword ? 'password' : 'text'"
+                formControlName="password"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hidePassword = !hidePassword"
+                type="button"
+              >
+                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
             </mat-form-field>
 
+            <p class="input-label">Vuelva a ingresar su contraseña</p>
+            <mat-form-field appearance="outline" class="custom-field">
+              <input
+                matInput
+                [type]="hideConfirmPassword ? 'password' : 'text'"
+                formControlName="confirmPassword"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hideConfirmPassword = !hideConfirmPassword"
+                type="button"
+              >
+                <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </mat-form-field>
 
-            <!-- Tarjeta de Usuario Encontrado -->
-            @if (selectedUser(); as user) {
-              <div class="found-user-section">
-                <p class="input-label">Usuario encontrado:</p>
-                
-                <div class="user-card">
-                  <div class="user-card-content">
-                    <img [src]="user.avatarUrl" alt="avatar" class="user-card-avatar">
-                    <div class="user-card-info">
-                      <span class="user-card-handle">@{{ user.username }}</span>
-                      <span class="user-card-name">{{ user.displayName }}</span>
-                    </div>
-                  </div>
-                  <button mat-icon-button (click)="clearSelection()">
-                    <mat-icon>close</mat-icon>
-                  </button>
+            <div class="actions">
+              <button
+                mat-flat-button
+                class="btn-primary"
+                type="submit"
+                [disabled]="isLoading || verifyForm.invalid"
+              >
+                {{ isLoading ? 'Verificando...' : 'Siguiente' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      } @if (currentStep === 2) {
+      <div class="step-container">
+        <h3 class="step-title">Paso 2/2: Buscar Usuario</h3>
+
+        <div class="form-card">
+          <!-- Buscador -->
+          <p class="input-label">Ingrese nombre de usuario a eliminar</p>
+          <mat-form-field appearance="outline" class="custom-field search-field">
+            <input
+              type="text"
+              placeholder="@username"
+              matInput
+              [formControl]="searchControl"
+              [matAutocomplete]="auto"
+            />
+            <!-- Botón de búsqueda visual (opcional si es reactivo) -->
+            <button mat-icon-button matSuffix>
+              <mat-icon>search</mat-icon>
+            </button>
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              [displayWith]="displayUser"
+              (optionSelected)="onUserSelected($event)"
+            >
+              @for (user of userSearchResults$ | async; track user.username) {
+              <mat-option [value]="user">
+                <div class="autocomplete-option">
+                  <img [src]="user.avatarUrl" class="mini-avatar" />
+                  <span>{{ user.username }}</span>
                 </div>
+              </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
 
-                <div class="actions delete-action">
-                  <button mat-flat-button class="btn-primary btn-delete" (click)="deleteSelectedAdmin()" [disabled]="isLoading">
-                    {{ isLoading ? 'Eliminando...' : 'Eliminar' }}
-                  </button>
+          <!-- Tarjeta de Usuario Encontrado -->
+          @if (selectedUser(); as user) {
+          <div class="found-user-section">
+            <p class="input-label">Usuario encontrado:</p>
+
+            <div class="user-card">
+              <div class="user-card-content">
+                <img [src]="user.avatarUrl" alt="avatar" class="user-card-avatar" />
+                <div class="user-card-info">
+                  <span class="user-card-handle">@{{ user.username }}</span>
+                  <span class="user-card-name">{{ user.displayName }}</span>
                 </div>
               </div>
-            }
+              <button mat-icon-button (click)="clearSelection()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
 
+            <div class="actions delete-action">
+              <button
+                mat-flat-button
+                class="btn-primary btn-delete"
+                (click)="deleteSelectedAdmin(user.username)"
+                [disabled]="isLoading"
+              >
+                {{ isLoading ? 'Eliminando...' : 'Eliminar' }}
+              </button>
+            </div>
           </div>
+          }
         </div>
+      </div>
       }
-
     </main>
   </div>
 </div>
