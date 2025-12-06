@@ -27,6 +27,7 @@ import { Search } from '../../../../services/search/search';
 import { Admin } from '../../../../services/admin/admin';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmMatDialog } from '../../../../components/mat-dialog/mat-dialog/mat-dialog';
+import { SecurityService } from '../../../../services/securityService/security-service';
 
 @Component({
   selector: 'app-delete-admin',
@@ -55,6 +56,7 @@ export class DeleteAdmin {
   private adminService = inject(Admin); // Tu servicio para eliminar/verificar
   private dialog = inject(MatDialog);
   private location = inject(AngularLocation);
+  private securityService = inject(SecurityService);
 
   // Estado
   currentStep = 1;
@@ -102,12 +104,32 @@ export class DeleteAdmin {
 
     const { password, confirmPassword } = this.verifyForm.value;
 
+    // 1. Validación local de coincidencia
     if (password !== confirmPassword) {
       this.snackBar.open('Las contraseñas no coinciden.', 'Cerrar', { duration: 3000 });
       return;
     }
 
-    this.currentStep = 2;
+    this.isLoading = true;
+
+    // 2. VALIDACIÓN REAL CON EL BACKEND
+    this.securityService.validateCurrentPassword(password).subscribe({
+      next: (isValid) => {
+        this.isLoading = false;
+        if (isValid) {
+          // Si el backend dice que es correcta, avanzamos
+          this.currentStep = 2;
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        // Si el backend devuelve error (403 Forbidden), mostramos mensaje
+        this.snackBar.open('La contraseña ingresada es incorrecta.', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+      },
+    });
   }
 
   // --- PASO 2: LÓGICA ---
