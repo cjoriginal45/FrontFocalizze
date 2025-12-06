@@ -1,0 +1,197 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background-color: var(--background-color, #f0f4f8);
+  }
+  
+  .page-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .settings-container {
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+  }
+  
+  /* Header */
+  .settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  .back-button {
+    position: absolute;
+    left: 0;
+    color: var(--primary-dark, #01344a);
+  }
+  
+  .header-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-dark, #01344a);
+    margin: 0;
+  }
+  
+  /* Watermark */
+  .content-area {
+    position: relative;
+    min-height: 400px;
+  }
+  
+  .watermark-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.05;
+  }
+  
+  .watermark {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #000;
+  }
+  
+  /* Tarjetas y Formularios */
+  .step-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .step-title {
+    color: #37474f;
+    margin-bottom: 20px;
+  }
+  
+  .form-card {
+    background-color: rgba(233, 236, 239, 0.8); /* Fondo grisáceo como en la foto */
+    padding: 30px 20px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    backdrop-filter: blur(5px);
+  }
+  
+  .input-label {
+    color: #455a64;
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+  
+  /* Inputs de Material personalizados */
+  .custom-field {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  /* Botones */
+  .actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .btn-primary {
+    background-color: #01344a;
+    color: white;
+    padding: 8px 40px;
+    font-size: 1rem;
+    border-radius: 8px;
+  }
+  
+  .btn-delete {
+    background-color: #01344a; /* O rojo si prefieres: #d32f2f */
+  }
+  
+  /* --- Estilos Específicos Paso 2 (Tarjeta de usuario) --- */
+  .found-user-section {
+    margin-top: 20px;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .user-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 50px; /* Borde redondeado tipo pastilla */
+    padding: 8px 15px;
+    margin-bottom: 20px;
+  }
+  
+  .user-card-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .user-card-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #ccc;
+  }
+  
+  .user-card-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .user-card-handle {
+    font-weight: 600;
+    color: #01344a;
+  }
+  
+  .user-card-name {
+    font-size: 0.8rem;
+    color: #666;
+  }
+  
+  /* Autocomplete items */
+  .autocomplete-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mini-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Ajustes Mobile */
+  @media (max-width: 600px) {
+    .watermark {
+      font-size: 3rem;
+    }
+    .form-card {
+      background-color: transparent; /* En móvil quizás más limpio */
+      box-shadow: none;
+      padding: 0;
+    }
+    .custom-field ::ng-deep .mat-mdc-form-field-flex {
+      background-color: #e0e0e0; /* Input gris en móvil */
+    }
+  }
