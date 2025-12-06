@@ -38,4 +38,8 @@ export class Admin {
     };
     return this.http.post<void>(`${this.apiUrl}/process-thread`, body);
   }
+
+  deleteAdmin(username: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete/${username}`);
+  }
 }
