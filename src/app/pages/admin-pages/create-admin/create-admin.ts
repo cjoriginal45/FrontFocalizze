@@ -132,19 +132,25 @@ export class CreateAdmin implements OnInit {
           // Opcional: navegar atrás
           // this.goBack();
         },
-        error: (err) => {
-          this.isLoading = false;
-          let msg = 'Ocurrió un error al procesar la solicitud.';
+       error: (err) => {
+        this.isLoading = false;
+        let msg = 'Ocurrió un error al procesar la solicitud.';
+        
+        // Priorizamos el mensaje que viene del backend si existe
+        if (err.error && err.error.message) {
+            msg = err.error.message;
+        } else {
+            // Mensajes genéricos de respaldo por código de estado
+            if (err.status === 403) msg = 'Contraseña de administrador incorrecta.';
+            if (err.status === 404) msg = 'El usuario especificado no existe.';
+            if (err.status === 409) msg = 'Este usuario ya es administrador.';
+        }
 
-          if (err.status === 403) msg = 'Contraseña de administrador incorrecta.';
-          if (err.status === 404) msg = 'El usuario especificado no existe.';
-          if (err.status === 409) msg = 'Este usuario ya es administrador.'; // Si el backend lanza IllegalState
-
-          this.snackBar.open(msg, 'Cerrar', {
-            duration: 4000,
-            panelClass: ['error-snackbar'],
-          });
-        },
+        this.snackBar.open(msg, 'Cerrar', {
+          duration: 4000,
+          panelClass: ['error-snackbar']
+        });
+      },
       });
   }
 }
