@@ -1,12 +1,10 @@
 <app-header></app-header>
 
 <div class="page-container">
-  <!-- Marca de agua de fondo -->
   <div class="watermark-container">
     <span class="watermark-text">FOCALIZZE</span>
   </div>
 
-  <!-- Cabecera -->
   <header class="page-header">
     <button mat-icon-button (click)="goBack()" aria-label="Volver atrás">
       <mat-icon>arrow_back</mat-icon>
@@ -15,18 +13,40 @@
   </header>
 
   <main class="content-wrapper">
-    <!-- Tarjeta del Formulario -->
     <div class="settings-card form-card">
       <form [formGroup]="adminForm" (ngSubmit)="onSubmit()" class="admin-form">
-        <!-- 1. Usuario a promover -->
+        <!-- 1. Usuario a promover (Con Autocomplete) -->
         <label class="input-label">Ingrese nombre de usuario del nuevo admin</label>
         <mat-form-field appearance="outline" class="custom-input">
           <input
             matInput
+            type="text"
             formControlName="targetUsername"
             placeholder="@username"
             autocomplete="off"
+            [matAutocomplete]="auto"
           />
+
+          <!-- Lista de sugerencias -->
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onUserSelected($event)">
+            @for (user of userSearchResults$ | async; track user.username) {
+            <!-- El valor que pasamos es el objeto completo para usarlo en el evento -->
+            <mat-option [value]="user">
+              <div class="user-option">
+                <img
+                  [src]="user.avatarUrl || 'assets/images/default-avatar.webp'"
+                  class="user-option__avatar"
+                  alt="Avatar"
+                />
+                <div class="user-option__info">
+                  <span class="user-option__display-name">{{ user.displayName }}</span>
+                  <span class="user-option__username">@{{ user.username }}</span>
+                </div>
+              </div>
+            </mat-option>
+            }
+          </mat-autocomplete>
+
           <mat-error *ngIf="adminForm.get('targetUsername')?.hasError('required')">
             El usuario es requerido
           </mat-error>
@@ -55,7 +75,6 @@
           </mat-error>
         </mat-form-field>
 
-        <!-- Botón Finalizar -->
         <div class="action-container">
           <button
             mat-flat-button

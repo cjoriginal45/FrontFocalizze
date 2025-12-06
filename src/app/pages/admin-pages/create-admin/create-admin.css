@@ -121,6 +121,38 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
 }
 
+/* Estilos para las opciones del Autocomplete */
+.user-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.user-option__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-option__info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-option__display-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.user-option__username {
+  font-size: 0.75rem;
+  color: #777;
+}
+
 /* --- BOTÓN --- */
 .action-container {
   margin-top: 10px;
