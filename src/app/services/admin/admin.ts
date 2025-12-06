@@ -53,4 +53,8 @@ export class Admin {
   promoteUser(data: PromoteAdminRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/promote`, data);
   }
+
+  deleteAdmin(username: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete/${username}`);
+  }
 }
