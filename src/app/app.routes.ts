@@ -27,6 +27,8 @@ import { AdminPanel } from './pages/admin-pages/admin-panel/admin-panel';
 import { ReportedUsers } from './pages/admin-pages/reported-users/reported-users';
 import { ReportedThreads } from './pages/admin-pages/reported-threads/reported-threads';
 import { ManageAccounts } from './pages/admin-pages/manage-accounts/manage-accounts';
+import { CreateAdmin } from './pages/admin-pages/create-admin/create-admin';
+import { adminGuard } from './services/guards/admin-guard';
 
 export const routes: Routes = [
   // ... (rutas públicas como login, register)
@@ -65,5 +67,11 @@ export const routes: Routes = [
       { path: 'reported-threads', component: ReportedThreads },
       { path: 'manage-accounts', component: ManageAccounts },
     ],
+  },
+
+  {
+    path: 'create-admin',
+    component: CreateAdmin,
+    canActivate: [authReadyGuard, adminGuard], // Protegido doblemente
   },
 ];
