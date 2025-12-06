@@ -10,6 +10,11 @@ export interface PromoteAdminRequest {
   adminPassword: string;
 }
 
+export interface RevokeAdminRequest {
+  targetUsername: string;
+  adminPassword: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -54,7 +59,7 @@ export class Admin {
     return this.http.post<void>(`${this.apiUrl}/promote`, data);
   }
 
-  deleteAdmin(username: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/delete/${username}`);
+  revokeAdmin(data: RevokeAdminRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/revoke`, data);
   }
 }
