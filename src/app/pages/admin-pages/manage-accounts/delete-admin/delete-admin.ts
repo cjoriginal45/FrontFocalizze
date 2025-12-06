@@ -1,5 +1,5 @@
 import { CommonModule, Location as AngularLocation } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormsModule,
@@ -48,7 +48,7 @@ import { SecurityService } from '../../../../services/securityService/security-s
   templateUrl: './delete-admin.html',
   styleUrl: './delete-admin.css',
 })
-export class DeleteAdmin {
+export class DeleteAdmin implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
