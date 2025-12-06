@@ -68,12 +68,38 @@ export const routes: Routes = [
       { path: 'reported-threads', component: ReportedThreads },
       { path: 'manage-accounts', component: ManageAccounts },
       { path: 'manage-accounts/delete-admin', component: DeleteAdmin },
-    ],
-  },
 
-  {
-    path: 'create-admin',
-    component: CreateAdmin,
-    canActivate: [authReadyGuard, adminGuard], // Protegido doblemente
+      // --- RUTAS DE ADMINISTRACIÓN (Protegidas) ---
+      {
+        path: 'admin-panel',
+        component: AdminPanel,
+        canActivate: [adminGuard],
+      },
+      {
+        path: 'reported-users',
+        component: ReportedUsers,
+        canActivate: [adminGuard],
+      },
+      {
+        path: 'reported-threads',
+        component: ReportedThreads,
+        canActivate: [adminGuard],
+      },
+      {
+        path: 'manage-accounts',
+        component: ManageAccounts,
+        canActivate: [adminGuard],
+      },
+      {
+        path: 'manage-accounts/delete-admin',
+        component: DeleteAdmin,
+        canActivate: [adminGuard],
+      },
+      {
+        path: 'create-admin',
+        component: CreateAdmin,
+        canActivate: [adminGuard],
+      },
+    ],
   },
 ];
