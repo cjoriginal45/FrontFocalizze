@@ -27,6 +27,8 @@ import { AdminPanel } from './pages/admin-pages/admin-panel/admin-panel';
 import { ReportedUsers } from './pages/admin-pages/reported-users/reported-users';
 import { ReportedThreads } from './pages/admin-pages/reported-threads/reported-threads';
 import { ManageAccounts } from './pages/admin-pages/manage-accounts/manage-accounts';
+import { CreateAdmin } from './pages/admin-pages/create-admin/create-admin';
+import { adminGuard } from './services/guards/admin-guard';
 import { DeleteAdmin } from './pages/admin-pages/manage-accounts/delete-admin/delete-admin';
 
 export const routes: Routes = [
@@ -65,7 +67,13 @@ export const routes: Routes = [
       { path: 'reported-users', component: ReportedUsers },
       { path: 'reported-threads', component: ReportedThreads },
       { path: 'manage-accounts', component: ManageAccounts },
-      {path: 'manage-accounts/delete-admin', component: DeleteAdmin},
+      { path: 'manage-accounts/delete-admin', component: DeleteAdmin },
     ],
+  },
+
+  {
+    path: 'create-admin',
+    component: CreateAdmin,
+    canActivate: [authReadyGuard, adminGuard], // Protegido doblemente
   },
 ];

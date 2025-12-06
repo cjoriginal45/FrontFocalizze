@@ -5,6 +5,11 @@ import { environment } from '../../environments/environment';
 import { Page } from '../../interfaces/PageInterface';
 import { ReportResponse } from '../../interfaces/ReportResponse';
 
+export interface PromoteAdminRequest {
+  targetUsername: string;
+  adminPassword: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -18,8 +23,10 @@ export class Admin {
   }
 
   processReport(reportId: number, action: 'DISMISS' | 'SUSPEND', days?: number): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/suspend`, { 
-      reportId, action, suspensionDays: days 
+    return this.http.post<void>(`${this.apiUrl}/suspend`, {
+      reportId,
+      action,
+      suspensionDays: days,
     });
   }
 
@@ -28,15 +35,23 @@ export class Admin {
     return this.http.get<Page<ReportResponse>>(`${this.apiUrl}/reports/threads`, { params });
   }
 
-  processThreadReport(reportId: number, action: 'DISMISS' | 'DELETE' | 'EDIT', posts?: string[]): Observable<void> {
+  processThreadReport(
+    reportId: number,
+    action: 'DISMISS' | 'DELETE' | 'EDIT',
+    posts?: string[]
+  ): Observable<void> {
     const body = {
       reportId,
       action,
       newContentPost1: posts?.[0],
       newContentPost2: posts?.[1],
-      newContentPost3: posts?.[2]
+      newContentPost3: posts?.[2],
     };
     return this.http.post<void>(`${this.apiUrl}/process-thread`, body);
+  }
+
+  promoteUser(data: PromoteAdminRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/promote`, data);
   }
 
   deleteAdmin(username: string): Observable<void> {
