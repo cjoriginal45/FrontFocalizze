@@ -57,7 +57,6 @@ export class Login implements OnDestroy {
 
     this.isLoading = true;
 
-    // Mapeamos 'identifier' a 'username' para que coincida con el DTO del backend
     const credentials = {
       identifier: this.loginData.identifier.trim(),
       password: this.loginData.password.trim(),
@@ -68,17 +67,13 @@ export class Login implements OnDestroy {
         this.isLoading = false;
 
         if (response.requiresTwoFactor) {
-          // CASO A: Requiere 2FA -> Cambiamos a la pantalla de código
           this.step = 'otp';
-
-          // Mostramos mensaje amigable
           this.snackBar.open(
             response.message || 'Código de verificación enviado a tu correo.',
             'OK',
             { duration: 5000 }
           );
         } else {
-          // CASO B: Login directo -> Vamos al feed
           console.log('Login exitoso!', response);
           this.router.navigate(['/feed']);
         }
@@ -86,7 +81,21 @@ export class Login implements OnDestroy {
       error: (err) => {
         this.isLoading = false;
         console.error('Error en el login', err);
-        this.showError('Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.');
+
+        // --- LÓGICA DE ERRORES DIFERENCIADA ---
+
+        if (err.status === 403) {
+          // CASO BANEO: Mostramos el mensaje exacto que manda el backend
+          // (Ej: "Tu cuenta ha sido suspendida hasta...")
+          const banMessage = err.error?.message || 'Tu cuenta ha sido suspendida.';
+          this.showError(banMessage);
+        } else if (err.status === 401) {
+          // CASO CREDENCIALES: Mensaje genérico por seguridad
+          this.showError('Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.');
+        } else {
+          // OTROS ERRORES (500, Sin internet, etc.)
+          this.showError('Ocurrió un error inesperado. Inténtalo más tarde.');
+        }
       },
     });
   }

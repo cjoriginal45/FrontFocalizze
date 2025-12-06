@@ -1,0 +1,133 @@
+<app-header></app-header>
+
+<div class="page-wrapper">
+  <div class="settings-container">
+    <!-- Header -->
+    <div class="settings-header">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon class="arrow-icon">arrow_back</mat-icon>
+      </button>
+      <h2 class="header-title">Banear Usuario</h2>
+    </div>
+
+    <main class="content-area">
+      <!-- Marca de agua -->
+      <div class="watermark-container">
+        <div class="watermark">FOCALIZZE</div>
+      </div>
+
+      <!-- Título de Paso -->
+      <h3 class="step-indicator">Paso {{ currentStep }}/2</h3>
+
+      <div class="form-card">
+        <!-- PASO 1: DATOS DEL BANEO -->
+        @if (currentStep === 1) {
+        <form [formGroup]="banDataForm" (ngSubmit)="goToStep2()">
+          <!-- Username -->
+          <p class="input-label">Ingrese nombre de usuario a banear</p>
+          <mat-form-field appearance="outline" class="custom-field">
+            <input
+              matInput
+              placeholder="@username"
+              formControlName="targetUsername"
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onUserSelected($event)">
+              @for (user of userSearchResults$ | async; track user.username) {
+              <mat-option [value]="user">
+                <div class="autocomplete-option">
+                  <img [src]="user.avatarUrl" class="mini-avatar" />
+                  <span>{{ user.username }}</span>
+                </div>
+              </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <!-- Motivo -->
+          <p class="input-label">Motivo de Ban</p>
+          <mat-form-field appearance="outline" class="custom-field textarea-field">
+            <textarea matInput placeholder="" formControlName="reason" rows="3"> </textarea>
+          </mat-form-field>
+
+          <!-- Tiempo (Radio List) -->
+          <p class="input-label">Tiempo de Ban</p>
+          <div class="radio-list-container">
+            <mat-radio-group formControlName="duration" class="custom-radio-group">
+              <mat-radio-button value="WEEK" class="custom-radio-button">
+                Una semana
+              </mat-radio-button>
+              <mat-radio-button value="MONTH" class="custom-radio-button">
+                Un mes
+              </mat-radio-button>
+              <mat-radio-button value="PERMANENT" class="custom-radio-button">
+                Permanente
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <div class="actions">
+            <button
+              mat-flat-button
+              class="btn-primary"
+              type="submit"
+              [disabled]="banDataForm.invalid"
+            >
+              Siguiente
+            </button>
+          </div>
+        </form>
+        }
+
+        <!-- PASO 2: CONFIRMACIÓN CONTRASEÑA -->
+        @if (currentStep === 2) {
+        <form [formGroup]="passwordForm" (ngSubmit)="confirmBan()">
+          <p class="input-label">Ingrese su contraseña</p>
+          <mat-form-field appearance="outline" class="custom-field">
+            <input
+              matInput
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="password"
+              placeholder="Password"
+            />
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <p class="input-label">Vuelva a ingresar su contraseña</p>
+          <mat-form-field appearance="outline" class="custom-field">
+            <input
+              matInput
+              [type]="hideConfirmPassword ? 'password' : 'text'"
+              formControlName="confirmPassword"
+              placeholder="Password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="hideConfirmPassword = !hideConfirmPassword"
+              type="button"
+            >
+              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <div class="actions">
+            <button
+              mat-flat-button
+              class="btn-primary"
+              type="submit"
+              [disabled]="isLoading || passwordForm.invalid"
+            >
+              {{ isLoading ? 'Procesando...' : 'Finalizar' }}
+            </button>
+          </div>
+        </form>
+        }
+      </div>
+    </main>
+  </div>
+</div>
+
+<app-botton-nav></app-botton-nav>

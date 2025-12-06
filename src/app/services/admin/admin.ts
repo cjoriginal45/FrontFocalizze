@@ -15,6 +15,13 @@ export interface RevokeAdminRequest {
   adminPassword: string;
 }
 
+export interface BanUserRequest {
+  targetUsername: string;
+  reason: string;
+  duration: 'WEEK' | 'MONTH' | 'PERMANENT';
+  adminPassword: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -61,5 +68,9 @@ export class Admin {
 
   revokeAdmin(data: RevokeAdminRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/revoke`, data);
+  }
+
+  banUser(data: BanUserRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/ban`, data);
   }
 }

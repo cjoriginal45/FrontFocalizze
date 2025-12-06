@@ -1,0 +1,181 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--background-color, #f0f4f8);
+}
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 80px; /* Espacio para bottom nav */
+}
+
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+}
+
+/* Header */
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 10px;
+  color: #01344a;
+}
+
+.header-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #01344a;
+  margin: 0;
+}
+
+.step-indicator {
+  text-align: center;
+  color: #555;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+/* Watermark */
+.content-area {
+  position: relative;
+  min-height: 500px;
+  padding: 0 20px;
+}
+
+.watermark-container {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.05;
+}
+
+.watermark {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #000;
+  text-transform: uppercase;
+}
+
+/* Form Container */
+.form-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.5); /* Semi transparente */
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  padding: 20px 0; /* Padding vertical, los inputs tienen su propio ancho */
+}
+
+.input-label {
+  color: #455a64;
+  font-weight: 500;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  margin-left: 4px;
+}
+
+/* Inputs Personalizados (Estilo Imagen) */
+.custom-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* Fondo Lila/Rosado suave para los inputs del Paso 1 */
+:host ::ng-deep .custom-field .mdc-text-field--outlined {
+  background-color: #f3e5f5 !important; /* Lila muy suave */
+  border-radius: 8px;
+}
+
+:host ::ng-deep .custom-field .mdc-notched-outline__leading,
+:host ::ng-deep .custom-field .mdc-notched-outline__notch,
+:host ::ng-deep .custom-field .mdc-notched-outline__trailing {
+  border-color: transparent !important;
+}
+
+/* Radio Group (Estilo Lista) */
+.radio-list-container {
+  background-color: #fcfcfc;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.custom-radio-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-radio-button {
+  padding: 10px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.custom-radio-button:last-child {
+  border-bottom: none;
+}
+
+/* Botón Siguiente/Finalizar */
+.actions {
+  display: flex;
+  justify-content: flex-end; /* Alineado a la derecha como en la imagen */
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background-color: #01344a !important;
+  color: white !important;
+  padding: 8px 30px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.btn-primary:disabled {
+  background-color: #78909c !important;
+}
+
+/* Autocomplete */
+.autocomplete-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mini-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .page-wrapper {
+    padding-top: 60px;
+  }
+  .form-card {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  /* En desktop el fondo del input puede ser más neutro si se prefiere */
+  :host ::ng-deep .custom-field .mdc-text-field--outlined {
+    background-color: #f5f5f5 !important;
+  }
+}
