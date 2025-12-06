@@ -25,4 +25,8 @@ export class SecurityService {
   logoutAllDevices(): Observable<any> {
     return this.http.post(`${this.baseUrl}/logout-all`, {});
   }
+
+  validateCurrentPassword(password: string): Observable<boolean> {
+    return this.http.post<boolean>(`${this.baseUrl}/validate-password`, { password });
+  }
 }
