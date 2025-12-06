@@ -1,0 +1,153 @@
+:host {
+  display: block;
+  /* Fondo general grisáceo/azulado muy claro como en la imagen */
+  background-color: var(--background-color, #eef5f7);
+  min-height: 100vh;
+}
+
+.page-container {
+  padding-top: 60px;
+  padding-bottom: 80px;
+  position: relative;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* --- MARCA DE AGUA --- */
+.watermark-container {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.watermark-text {
+  font-size: clamp(3rem, 15vw, 6rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  /* Color blanco con transparencia para simular el efecto de la imagen */
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 2px;
+  font-family: 'Roboto', sans-serif;
+  user-select: none;
+}
+
+/* --- CABECERA --- */
+.page-header {
+  width: 100%;
+  max-width: 500px; /* Ancho limitado para alinearse con la tarjeta */
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.page-header h1 {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #5f6368;
+  margin: 0;
+  margin-right: 40px; /* Compensar botón back */
+}
+
+.page-header mat-icon {
+  color: #01344a;
+}
+
+/* --- CONTENIDO --- */
+.content-wrapper {
+  width: 100%;
+  max-width: 500px; /* Ancho similar al móvil en la imagen */
+  padding: 0 20px;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+/* --- TARJETA DEL FORMULARIO --- */
+.settings-card {
+  background-color: rgba(255, 255, 255, 0.6); /* Fondo blanco semitransparente */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 24px;
+  backdrop-filter: blur(5px); /* Efecto moderno */
+}
+
+/* --- FORMULARIO --- */
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: -10px; /* Acercar label al input */
+  margin-left: 4px;
+}
+
+/* Personalización de Inputs de Material para que parezcan cajas blancas */
+.custom-input {
+  width: 100%;
+}
+
+::ng-deep .custom-input .mdc-text-field--outlined {
+  background-color: white !important; /* Fondo blanco dentro del input */
+  border-radius: 8px;
+}
+
+::ng-deep .custom-input .mdc-notched-outline__leading,
+::ng-deep .custom-input .mdc-notched-outline__notch,
+::ng-deep .custom-input .mdc-notched-outline__trailing {
+  border-color: transparent !important; /* Quitar bordes grises por defecto */
+}
+
+/* Sombra suave al input */
+::ng-deep .custom-input .mdc-text-field {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+/* --- BOTÓN --- */
+.action-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.finalize-btn {
+  background-color: #01344a !important; /* Azul oscuro corporativo */
+  color: white !important;
+  border-radius: 8px;
+  padding: 22px 0; /* Botón alto */
+  width: 100%;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(1, 52, 74, 0.2);
+}
+
+.finalize-btn:disabled {
+  background-color: #7a929e !important;
+  color: #eee !important;
+}
+
+/* Desktop tweaks */
+@media (min-width: 768px) {
+  .page-container {
+    padding-top: 100px; /* Centrar más verticalmente en desktop */
+  }
+}

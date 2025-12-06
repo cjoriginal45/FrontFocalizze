@@ -1,1 +1,74 @@
-<p>create-admin works!</p>
+<app-header></app-header>
+
+<div class="page-container">
+  <!-- Marca de agua de fondo -->
+  <div class="watermark-container">
+    <span class="watermark-text">FOCALIZZE</span>
+  </div>
+
+  <!-- Cabecera -->
+  <header class="page-header">
+    <button mat-icon-button (click)="goBack()" aria-label="Volver atrás">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Crear Administrador</h1>
+  </header>
+
+  <main class="content-wrapper">
+    <!-- Tarjeta del Formulario -->
+    <div class="settings-card form-card">
+      <form [formGroup]="adminForm" (ngSubmit)="onSubmit()" class="admin-form">
+        <!-- 1. Usuario a promover -->
+        <label class="input-label">Ingrese nombre de usuario del nuevo admin</label>
+        <mat-form-field appearance="outline" class="custom-input">
+          <input
+            matInput
+            formControlName="targetUsername"
+            placeholder="@username"
+            autocomplete="off"
+          />
+          <mat-error *ngIf="adminForm.get('targetUsername')?.hasError('required')">
+            El usuario es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <!-- 2. Contraseña del Admin -->
+        <label class="input-label">Ingresa tu contraseña</label>
+        <mat-form-field appearance="outline" class="custom-input">
+          <input matInput type="password" formControlName="password" placeholder="********" />
+          <mat-error *ngIf="adminForm.get('password')?.hasError('required')">
+            Tu contraseña es requerida para validar
+          </mat-error>
+        </mat-form-field>
+
+        <!-- 3. Confirmar Contraseña -->
+        <label class="input-label">Vuelve a ingresar tu contraseña</label>
+        <mat-form-field appearance="outline" class="custom-input">
+          <input
+            matInput
+            type="password"
+            formControlName="confirmPassword"
+            placeholder="********"
+          />
+          <mat-error *ngIf="adminForm.errors?.['mismatch']">
+            Las contraseñas no coinciden
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Botón Finalizar -->
+        <div class="action-container">
+          <button
+            mat-flat-button
+            class="finalize-btn"
+            type="submit"
+            [disabled]="adminForm.invalid || isLoading"
+          >
+            {{ isLoading ? 'Procesando...' : 'Finalizar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<app-botton-nav></app-botton-nav>
