@@ -73,4 +73,10 @@ export class Admin {
   banUser(data: BanUserRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/ban`, data);
   }
+
+  downloadDatabaseBackup(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/backup/download`, {
+      responseType: 'blob', // Importante: Indica que esperamos un archivo binario
+    });
+  }
 }
