@@ -31,6 +31,7 @@ import { CreateAdmin } from './pages/admin-pages/create-admin/create-admin';
 import { adminGuard } from './services/guards/admin-guard';
 import { DeleteAdmin } from './pages/admin-pages/manage-accounts/delete-admin/delete-admin';
 import { BanUser } from './pages/admin-pages/admin-panel/ban-user/ban-user';
+import { BackupPage } from './pages/admin-pages/admin-panel/backup-page/backup-page';
 
 export const routes: Routes = [
   // ... (rutas públicas como login, register)
@@ -104,6 +105,11 @@ export const routes: Routes = [
       {
         path: 'manage-accounts/ban-user',
         component: BanUser,
+        canActivate: [adminGuard],
+      },
+      {
+        path: 'admin-panel/backup',
+        component: BackupPage,
         canActivate: [adminGuard],
       },
     ],

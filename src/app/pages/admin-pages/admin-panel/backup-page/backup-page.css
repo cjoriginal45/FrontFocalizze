@@ -1,0 +1,184 @@
+:host {
+  display: block;
+  background-color: var(--background-color, #eef5f7);
+  min-height: 100vh;
+}
+
+.page-container {
+  padding-top: 60px;
+  padding-bottom: 80px;
+  position: relative;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* --- MARCA DE AGUA --- */
+.watermark-container {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.watermark-text {
+  font-size: clamp(3rem, 18vw, 8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.04); /* Marca de agua sutil */
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* --- CABECERA --- */
+.page-header {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 20px;
+}
+
+.page-header h1 {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #5f6368;
+  margin: 0;
+  margin-right: 40px;
+}
+
+.page-header mat-icon {
+  color: #01344a;
+}
+
+/* --- CONTENIDO --- */
+.content-wrapper {
+  width: 100%;
+  max-width: 600px;
+  padding: 0 16px;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+/* --- TARJETA --- */
+.settings-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.backup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-wrapper {
+  background-color: #e0f7fa;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.backup-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: #01344a;
+}
+
+.backup-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #01344a;
+  margin: 0;
+}
+
+.backup-description {
+  color: #5f6368;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 80%;
+  margin: 0;
+}
+
+/* --- BOTÓN --- */
+.action-container {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.download-btn {
+  background-color: #01344a !important;
+  color: white !important;
+  padding: 24px 32px; /* Botón grande */
+  font-size: 1rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 300px;
+  box-shadow: 0 4px 6px rgba(1, 52, 74, 0.2);
+  transition: transform 0.2s;
+}
+
+.download-btn:active {
+  transform: scale(0.98);
+}
+
+.download-btn:disabled {
+  background-color: #b0bec5 !important;
+  color: #eceff1 !important;
+}
+
+/* Loader simple css */
+.loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #01344a;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .page-container {
+    padding-bottom: 40px;
+  }
+}
