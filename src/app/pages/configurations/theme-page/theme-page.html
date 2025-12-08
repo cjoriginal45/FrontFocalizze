@@ -1,12 +1,10 @@
 <app-header></app-header>
 
 <div class="page-container">
-  <!-- MARCA DE AGUA (TEXTO GIGANTE) -->
   <div class="watermark-container">
     <span class="watermark-text">FOCALIZZE</span>
   </div>
 
-  <!-- Cabecera -->
   <header class="page-header">
     <button mat-icon-button (click)="goBack()" aria-label="Volver atrás">
       <mat-icon>arrow_back</mat-icon>
@@ -15,52 +13,113 @@
   </header>
 
   <main class="content-wrapper">
-    <h2 class="section-title">Tema</h2>
-
-    <!-- Tarjeta de configuración -->
+    
+    <!-- SECCIÓN 1: MODO (CLARO / OSCURO) -->
+    <h2 class="section-title">Modo</h2>
     <div class="settings-card">
-      <!-- Opción: CLARO -->
+      <!-- Claro -->
       <div
         class="theme-item clickable"
-        [class.active-theme]="selectedTheme === 'light'"
-        (click)="setTheme('light')"
+        [class.active-item]="selectedTheme === 'light'"
+        (click)="setThemeMode('light')"
         matRipple
       >
         <div class="item-left">
-          <!-- Icono de sol -->
           <mat-icon class="item-icon">light_mode</mat-icon>
           <span class="item-text">Claro</span>
         </div>
-
-        <!-- Mostramos el check solo si está seleccionado -->
         @if (selectedTheme === 'light') {
-        <mat-icon class="check-icon">check_circle</mat-icon>
+          <mat-icon class="check-icon">check_circle</mat-icon>
         } @else {
-        <!-- Círculo vacío para indicar que es seleccionable (radio behavior) -->
-        <mat-icon class="radio-unchecked">radio_button_unchecked</mat-icon>
+          <mat-icon class="radio-unchecked">radio_button_unchecked</mat-icon>
         }
       </div>
 
-      <!-- Opción: OSCURO -->
+      <!-- Oscuro -->
       <div
         class="theme-item clickable"
-        [class.active-theme]="selectedTheme === 'dark'"
-        (click)="setTheme('dark')"
+        [class.active-item]="selectedTheme === 'dark'"
+        (click)="setThemeMode('dark')"
         matRipple
       >
         <div class="item-left">
-          <!-- Icono de luna -->
           <mat-icon class="item-icon">dark_mode</mat-icon>
           <span class="item-text">Oscuro</span>
         </div>
-
         @if (selectedTheme === 'dark') {
-        <mat-icon class="check-icon">check_circle</mat-icon>
+          <mat-icon class="check-icon">check_circle</mat-icon>
         } @else {
-        <mat-icon class="radio-unchecked">radio_button_unchecked</mat-icon>
+          <mat-icon class="radio-unchecked">radio_button_unchecked</mat-icon>
         }
       </div>
     </div>
+
+    <!-- SECCIÓN 2: PERSONALIZACIÓN (FONDO) -->
+    <h2 class="section-title margin-top">Personalización del Fondo</h2>
+    <div class="settings-card padding-card">
+      
+      <!-- Opción: Por defecto -->
+      <div class="custom-option" (click)="resetBackground()" 
+           [class.selected]="currentBgType === 'default'">
+        <div class="preview-circle default-circle"></div>
+        <span>Por defecto</span>
+      </div>
+
+      <!-- Opción: Color Sólido -->
+      <div class="subsection-header">
+        <h3>Color Sólido</h3>
+      </div>
+      <div class="colors-grid">
+        <!-- Paleta predefinida -->
+        @for (color of presetColors; track color) {
+          <div 
+            class="color-swatch" 
+            [style.background-color]="color"
+            [class.selected]="currentBgType === 'color' && currentBgValue === color"
+            (click)="selectColor(color)">
+            @if (currentBgType === 'color' && currentBgValue === color) {
+              <mat-icon>check</mat-icon>
+            }
+          </div>
+        }
+        
+        <!-- Picker Personalizado -->
+        <div class="color-picker-wrapper">
+          <input 
+            type="color" 
+            id="colorInput" 
+            (input)="onColorPickerChange($event)"
+            [value]="currentBgType === 'color' ? currentBgValue : '#ffffff'"
+          >
+          <label for="colorInput" class="color-swatch picker-swatch">
+            <mat-icon>palette</mat-icon>
+          </label>
+        </div>
+      </div>
+
+      <!-- Opción: Wallpapers -->
+      <div class="subsection-header">
+        <h3>Wallpapers</h3>
+      </div>
+      <div class="wallpapers-grid">
+        @for (img of wallpapers; track img) {
+          <div 
+            class="wallpaper-item" 
+            [class.selected]="currentBgType === 'image' && currentBgValue === img"
+            (click)="selectWallpaper(img)"
+            [style.background-image]="'url(' + img + ')'">
+            
+            @if (currentBgType === 'image' && currentBgValue === img) {
+              <div class="overlay-check">
+                <mat-icon>check_circle</mat-icon>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+    </div>
+
   </main>
 </div>
 
