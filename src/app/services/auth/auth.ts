@@ -12,6 +12,7 @@ import { UserState } from '../user-state/user-state';
 import { CategoryState } from '../category-state/category-state';
 import { NotificationState } from '../notification-state/notification-state';
 import { InteractionCounter } from '../interactionCounter/interaction-counter';
+import { Theme } from '../themeService/theme';
 
 export interface AuthUser {
   id: number;
@@ -51,6 +52,7 @@ export class Auth {
   private notificationStateService = inject(NotificationState);
 
   private interactionCounter = inject(InteractionCounter);
+  private themeService = inject(Theme);
 
   currentUser = signal<AuthUser | null>(null);
   isLoggedIn = computed(() => !!this.currentUser());
@@ -64,6 +66,8 @@ export class Auth {
     });
   }
 
+  // --- MÉTODOS PÚBLICOS ---
+
   verifyOtp(data: VerifyOtpRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/verify-2fa`, data).pipe(
       tap((response) => {
@@ -74,52 +78,7 @@ export class Auth {
     );
   }
 
-  // 3. Helper privado para reutilizar lógica de guardado
-  private handleSuccessfulLogin(response: LoginResponse) {
-    localStorage.setItem('jwt_token', response.token);
-
-    // Aquí puedes decodificar y setear el currentUser básico
-    const decodedToken: any = jwtDecode(response.token);
-    const user: AuthUser = {
-      id: response.userId,
-      username: decodedToken.sub,
-      displayName: response.displayName,
-      avatarUrl: response.avatarUrl,
-      followingCount: response.followingCount,
-      followersCount: response.followersCount,
-      role: response.role,
-      dailyInteractionsRemaining: 0,
-      isTwoFactorEnabled: decodedToken.isTwoFactorEnabled,
-    };
-    this.currentUser.set(user);
-    this.notificationStateService.initialize();
-
-    // Cargar el resto de datos en segundo plano
-    this.loadUserCompleteData();
-  }
-
-  private loadUserCompleteData() {
-    // Aquí pones tu forkJoin(getMe, interactions) que tenías antes
-    // para actualizar el currentUser con los datos frescos.
-    forkJoin({
-      user: this.userService.getMe(),
-      interactions: this.userService.getInteractionStatus(),
-    }).subscribe(({ user, interactions }) => {
-      // Obtenemos el valor actual para no perderlo
-      const currentValue = this.currentUser()?.isTwoFactorEnabled;
-
-      const updatedUser = {
-        ...user,
-        dailyInteractionsRemaining: interactions.remaining,
-        // Si viene del backend, úsalo. Si no, mantén el que ya teníamos.
-        isTwoFactorEnabled: user.isTwoFactorEnabled ?? currentValue,
-      } as unknown as AuthUser;
-
-      this.currentUser.set(updatedUser);
-    });
-  }
-
-  // --- CARGA INICIAL DESDE EL TOKEN ---
+  // --- CARGA INICIAL ---
   async loadUserFromToken(): Promise<void> {
     const token = localStorage.getItem('jwt_token');
     if (token) {
@@ -128,18 +87,18 @@ export class Auth {
         if (Date.now() >= decodedToken.exp * 1000) {
           localStorage.removeItem('jwt_token');
         } else {
-          // Inicializamos notificaciones
           this.notificationStateService.initialize();
 
-          // Pedimos User + Interacciones
           const combinedData$ = forkJoin({
             user: this.userService.getMe(),
             interactions: this.userService.getInteractionStatus(),
           }).pipe(
             map(({ user, interactions }) => {
-              // Mezclamos los objetos.
-              // Como 'user' viene del backend (UserDto), si allá agregaste 'isTwoFactorEnabled',
-              // aquí se propagará automáticamente gracias al spread operator (...user).
+              // AQUÍ SINCRONIZAMOS EL TEMA CUANDO SE RECARGA LA PÁGINA
+              if (user.backgroundType) {
+                this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
+              }
+
               return {
                 ...user,
                 dailyInteractionsRemaining: interactions.remaining,
@@ -158,48 +117,26 @@ export class Auth {
     this.authReady.set(true);
   }
 
-  isAdmin = computed(() => {
-    const user = this.currentUser();
-    return user?.role === 'ADMIN'; 
-  });
-
   // --- LOGIN ---
   login(credentials: { identifier: string; password: string }): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
-        // Solo iniciamos sesión si YA nos dieron el token (caso sin 2FA)
         if (response.token) {
-          localStorage.setItem('jwt_token', response.token);
-          const decodedToken: UserTokenData = jwtDecode(response.token);
-
-          // Al hacer login, construimos el objeto AuthUser con los datos del login.
-          const user: AuthUser = {
-            id: response.userId,
-            username: decodedToken.sub,
-            displayName: response.displayName,
-            avatarUrl: response.avatarUrl || undefined,
-            followingCount: response.followingCount,
-            followersCount: response.followersCount,
-            role: response.role,
-            dailyInteractionsRemaining: 0,
-          };
-          this.currentUser.set(user);
-
-          this.notificationStateService.initialize();
           this.handleSuccessfulLogin(response);
         }
       })
-      // Quitamos el switchMap/map complejo de aquí para simplificar.
-      // La carga de datos user/interacciones la haremos después de tener el token seguro.
     );
   }
 
-  // Elimina el token del localStorage al cerrar sesión.
+  isAdmin = computed(() => {
+    const user = this.currentUser();
+    return user?.role === 'ADMIN';
+  });
+
   logout(): void {
     localStorage.removeItem('jwt_token');
-    this.currentUser.set(null); // Esto hará que isLoggedIn() se vuelva false automáticamente.
+    this.currentUser.set(null);
     this.viewTrackingService.clearViewedThreads();
-    // 3. Limpiamos los stores de datos.
     this.threadStateService.clearState();
     this.userStateService.clearState();
     this.categoryState.clearState();
@@ -213,9 +150,7 @@ export class Auth {
 
   updateCurrentUserCounts(counts: { followingCount?: number; followersCount?: number }): void {
     this.currentUser.update((user) => {
-      if (!user) return null; // Si no hay usuario, no hacemos nada
-
-      // Creamos un nuevo objeto de usuario con los contadores actualizados
+      if (!user) return null;
       return {
         ...user,
         followingCount: counts.followingCount ?? user.followingCount,
@@ -225,15 +160,59 @@ export class Auth {
   }
 
   private clearAllAppState(): void {
-    console.log('[AuthService] No hay usuario. Limpiando todos los estados de la aplicación...');
+    console.log('[AuthService] No hay usuario. Limpiando todos los estados...');
     this.threadStateService.clearState();
     this.userStateService.clearState();
     this.categoryState.clearState();
   }
 
   refundInteraction(): void {
-    console.log('[AuthService] Delegando reembolso a InteractionCounter...');
     this.interactionCounter.incrementCount();
   }
 
+  // --- HELPERS PRIVADOS ---
+
+  private handleSuccessfulLogin(response: LoginResponse) {
+    localStorage.setItem('jwt_token', response.token);
+
+    const decodedToken: any = jwtDecode(response.token);
+    const user: AuthUser = {
+      id: response.userId,
+      username: decodedToken.sub,
+      displayName: response.displayName,
+      avatarUrl: response.avatarUrl,
+      followingCount: response.followingCount,
+      followersCount: response.followersCount,
+      role: response.role,
+      dailyInteractionsRemaining: 0,
+      isTwoFactorEnabled: decodedToken.isTwoFactorEnabled,
+    };
+    this.currentUser.set(user);
+    this.notificationStateService.initialize();
+
+    // Sincronizar tema con datos del login si vinieran en el DTO (opcional si loadUserCompleteData lo hace)
+    this.loadUserCompleteData();
+  }
+
+  private loadUserCompleteData() {
+    forkJoin({
+      user: this.userService.getMe(),
+      interactions: this.userService.getInteractionStatus(),
+    }).subscribe(({ user, interactions }) => {
+      const currentValue = this.currentUser()?.isTwoFactorEnabled;
+
+      // SINCRONIZAMOS TEMA TAMBIÉN AQUÍ
+      if (user.backgroundType) {
+        this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
+      }
+
+      const updatedUser = {
+        ...user,
+        dailyInteractionsRemaining: interactions.remaining,
+        isTwoFactorEnabled: user.isTwoFactorEnabled ?? currentValue,
+      } as unknown as AuthUser;
+
+      this.currentUser.set(updatedUser);
+    });
+  }
 }
