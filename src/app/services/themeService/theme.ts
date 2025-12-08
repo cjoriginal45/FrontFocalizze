@@ -73,9 +73,6 @@ export class Theme {
 
   setThemeMode(mode: ThemeMode) {
     this.currentTheme.set(mode);
-    // Nota: El modo light/dark suele guardarse separado o junto,
-    // aquí asumimos que solo persistimos el "fondo" en el endpoint nuevo,
-    // pero idealmente deberías guardar todo.
   }
 
   setCustomBackground(type: BackgroundType, value: string | null) {
