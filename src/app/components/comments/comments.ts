@@ -21,6 +21,8 @@ import { Auth } from '../../services/auth/auth';
 import { MatMenuModule } from '@angular/material/menu';
 import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 import { TranslateModule } from '@ngx-translate/core';
+import { CommentRequestDto } from '../../interfaces/CommentRequest';
+import { content } from 'html2canvas/dist/types/css/property-descriptors/content';
 
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
@@ -179,5 +181,41 @@ export class Comments {
 
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  openEditComment(commentId:number, comment: string): void {
+    const dialogRef = this.dialog.open(ConfirmMatDialog, {
+      data: {
+        title: '¿Quieres editar el comentario?',
+        message: 'Esta acción te restará una interacción.',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.editComment(commentId, comment);
+      }
+    });
+  }
+
+  private editComment(id:number, comment: string): void {
+
+    const commentRequest: CommentRequestDto = {
+      content: comment,
+    };
+
+    this.commentService.editComment(id, commentRequest).subscribe({
+
+      next: (updatedComment) => {
+        this.comments.unshift(updatedComment);
+        this.commentControl.reset();
+        this.commentControl.enable();
+
+        this.interactionService.notifyCommentAdded(this.data.threadId);
+      },
+      error: (err) => {
+        console.error('Error al editar el comentario', err);
+      },
+    });
   }
 }
