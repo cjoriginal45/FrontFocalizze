@@ -23,6 +23,7 @@ import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommentRequestDto } from '../../interfaces/CommentRequest';
 import { content } from 'html2canvas/dist/types/css/property-descriptors/content';
+import { EditCommentModal } from '../edit-comment-modal/edit-comment-modal';
 
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
@@ -183,35 +184,54 @@ export class Comments {
     this.dialogRef.close();
   }
 
-  openEditComment(commentId:number, comment: string): void {
-    const dialogRef = this.dialog.open(ConfirmMatDialog, {
+  openEditComment(commentId: number, currentContent: string): void {
+    // 1. Primero, el diálogo de confirmación (tu lógica actual)
+    const confirmRef = this.dialog.open(ConfirmMatDialog, {
       data: {
         title: '¿Quieres editar el comentario?',
-        message: 'Esta acción te restará una interacción.',
+        message: 'Esta acción te restará una interacción diaria.',
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Cancelar'
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === true) {
-        this.editComment(commentId, comment);
+    confirmRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed === true) {
+        // 2. Si confirma, abrimos el modal de edición
+        this.openEditModal(commentId, currentContent);
       }
     });
   }
 
-  private editComment(id:number, comment: string): void {
+  private openEditModal(commentId: number, currentContent: string): void {
+    const editRef = this.dialog.open(EditCommentModal, {
+      width: '600px',
+      data: { content: currentContent }
+    });
 
-    const commentRequest: CommentRequestDto = {
-      content: comment,
-    };
+    editRef.afterClosed().subscribe((newContent) => {
+      if (newContent) {
+        // 3. Si guardó cambios, llamamos a la API
+        this.editComment(commentId, newContent);
+      }
+    });
+  }
+
+  private editComment(id: number, content: string): void {
+    const commentRequest: CommentRequestDto = { content };
 
     this.commentService.editComment(id, commentRequest).subscribe({
-
       next: (updatedComment) => {
-        this.comments.unshift(updatedComment);
+        const index = this.comments.findIndex(c => c.id === id);
+
+        // 2. Si existe, lo reemplazamos con la versión actualizada que vino del backend
+        if (index !== -1) {
+          this.comments[index] = updatedComment;
+        }
+
+        // Limpiamos el formulario (aunque al editar se usa modal, esto no hace daño)
         this.commentControl.reset();
         this.commentControl.enable();
-
-        this.interactionService.notifyCommentAdded(this.data.threadId);
       },
       error: (err) => {
         console.error('Error al editar el comentario', err);
