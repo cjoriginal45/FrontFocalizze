@@ -189,7 +189,7 @@ export class Comments {
     const confirmRef = this.dialog.open(ConfirmMatDialog, {
       data: {
         title: '¿Quieres editar el comentario?',
-        message: 'Esta acción te restará una interacción diaria.',
+        message: 'Se abrirá un editor para modificar el contenido del comentario.',
         confirmButtonText: 'Continuar',
         cancelButtonText: 'Cancelar'
       },
@@ -224,12 +224,10 @@ export class Comments {
       next: (updatedComment) => {
         const index = this.comments.findIndex(c => c.id === id);
 
-        // 2. Si existe, lo reemplazamos con la versión actualizada que vino del backend
         if (index !== -1) {
           this.comments[index] = updatedComment;
         }
 
-        // Limpiamos el formulario (aunque al editar se usa modal, esto no hace daño)
         this.commentControl.reset();
         this.commentControl.enable();
       },
