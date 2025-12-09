@@ -50,7 +50,7 @@ export class Comment {
   /**
    * Edita el contenido de un comentario existente.
    */
-  editComment(commentId: number, content: string): Observable<CommentResponseDto> {
+  editComment(commentId: number, content: CommentRequestDto): Observable<CommentResponseDto> {
     return this.http.patch<CommentResponseDto>(`${this.commentsApiUrl}/${commentId}`, content);
   }
 }

@@ -56,6 +56,10 @@
             <mat-icon>more_horiz</mat-icon>
           </button>
           <mat-menu #commentMenu="matMenu">
+            <button mat-menu-item (click)="openEditComment(comment.id, comment.content)">
+              <mat-icon color="warn">edit</mat-icon>
+              <span>{{ 'COMMENTS.EDIT' | translate }}</span>
+            </button>
             <button mat-menu-item (click)="openDeleteConfirm(comment.id)">
               <mat-icon color="warn">delete</mat-icon>
               <span>{{ 'COMMENTS.DELETE' | translate }}</span>

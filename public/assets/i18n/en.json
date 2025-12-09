@@ -1,7 +1,9 @@
 {
     "COMMON": {
       "BACK": "Back",
-      "CONFIRM": "Confirm changes"
+      "CONFIRM": "Confirm changes",
+      "CANCEL":"Cancel",
+      "SAVE":"Save"
     },
     "SETTINGS": {
       "TITLE": "Settings",
@@ -64,6 +66,8 @@
     "BUTTON": "Comment",
     "LOADING": "Loading comments...",
     "DELETE": "Delete",
+    "EDIT": "Edit",
+    "EDIT_TITLE": "Edit Comment",
     "YOUR_AVATAR": "Your avatar",
     "DEFAULT_AVATAR": "Default avatar"
   },

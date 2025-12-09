@@ -1,7 +1,9 @@
 {
     "COMMON": {
       "BACK": "Volver",
-      "CONFIRM": "Confirmar cambios"
+      "CONFIRM": "Confirmar cambios",
+      "CANCEL":"Cancelar",
+      "SAVE":"Guardar"
     },
     "SETTINGS": {
       "TITLE": "Configuración",
@@ -64,6 +66,8 @@
         "BUTTON": "Comentar",
         "LOADING": "Cargando comentarios...",
         "DELETE": "Eliminar",
+        "EDIT": "Editar",
+        "EDIT_TITLE": "Editar Comentario",
         "YOUR_AVATAR": "Tu avatar",
         "DEFAULT_AVATAR": "Avatar por defecto"
       },
