@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { Page } from '../../interfaces/PageInterface';
 import { CommentResponseDto } from '../../interfaces/CommentResponse';
+import { CommentRequestDto } from '../../interfaces/CommentRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -44,5 +45,12 @@ export class Comment {
   deleteComment(commentId: number): Observable<void> {
     // Usamos la URL correcta: /api/comments/{id}
     return this.http.delete<void>(`${this.commentsApiUrl}/${commentId}`);
+  }
+
+  /**
+   * Edita el contenido de un comentario existente.
+   */
+  editComment(commentId: number, content: CommentRequestDto): Observable<CommentResponseDto> {
+    return this.http.patch<CommentResponseDto>(`${this.commentsApiUrl}/${commentId}`, content);
   }
 }

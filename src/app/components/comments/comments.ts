@@ -21,6 +21,9 @@ import { Auth } from '../../services/auth/auth';
 import { MatMenuModule } from '@angular/material/menu';
 import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 import { TranslateModule } from '@ngx-translate/core';
+import { CommentRequestDto } from '../../interfaces/CommentRequest';
+import { content } from 'html2canvas/dist/types/css/property-descriptors/content';
+import { EditCommentModal } from '../edit-comment-modal/edit-comment-modal';
 
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
@@ -179,5 +182,58 @@ export class Comments {
 
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  openEditComment(commentId: number, currentContent: string): void {
+    // 1. Primero, el diálogo de confirmación (tu lógica actual)
+    const confirmRef = this.dialog.open(ConfirmMatDialog, {
+      data: {
+        title: '¿Quieres editar el comentario?',
+        message: 'Se abrirá un editor para modificar el contenido del comentario.',
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Cancelar'
+      },
+    });
+
+    confirmRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed === true) {
+        // 2. Si confirma, abrimos el modal de edición
+        this.openEditModal(commentId, currentContent);
+      }
+    });
+  }
+
+  private openEditModal(commentId: number, currentContent: string): void {
+    const editRef = this.dialog.open(EditCommentModal, {
+      width: '600px',
+      data: { content: currentContent }
+    });
+
+    editRef.afterClosed().subscribe((newContent) => {
+      if (newContent) {
+        // 3. Si guardó cambios, llamamos a la API
+        this.editComment(commentId, newContent);
+      }
+    });
+  }
+
+  private editComment(id: number, content: string): void {
+    const commentRequest: CommentRequestDto = { content };
+
+    this.commentService.editComment(id, commentRequest).subscribe({
+      next: (updatedComment) => {
+        const index = this.comments.findIndex(c => c.id === id);
+
+        if (index !== -1) {
+          this.comments[index] = updatedComment;
+        }
+
+        this.commentControl.reset();
+        this.commentControl.enable();
+      },
+      error: (err) => {
+        console.error('Error al editar el comentario', err);
+      },
+    });
   }
 }
