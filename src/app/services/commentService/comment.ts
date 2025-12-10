@@ -43,7 +43,7 @@ export class Comment {
    * Elimina (lógicamente) un comentario.
    */
   deleteComment(commentId: number): Observable<void> {
-    // Usamos la URL correcta: /api/comments/{id}
+    
     return this.http.delete<void>(`${this.commentsApiUrl}/${commentId}`);
   }
 
