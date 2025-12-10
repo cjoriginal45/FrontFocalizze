@@ -92,7 +92,7 @@ export class Thread {
   }
   private _threadId!: number;
 
-  @Output() openComments = new EventEmitter<number>();
+  @Output() openComments = new EventEmitter<{ threadId: number; username: string }>();
 
   // --- SEÑALES INTERNAS (sin cambios) ---
   public threadSignal: WritableSignal<FeedThreadDto | null> = signal(null);
@@ -222,7 +222,14 @@ export class Thread {
   }
 
   onCommentClick(): void {
-    this.openComments.emit(this.threadId);
+    const thread = this.threadSignal();
+    
+    if (thread) {
+      this.openComments.emit({ 
+        threadId: this.threadId, 
+        username: thread.user.username 
+      });
+    }
   }
 
   openEditModal(): void {

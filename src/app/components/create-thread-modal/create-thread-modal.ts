@@ -76,7 +76,7 @@ export class CreateThreadModal implements OnInit, OnDestroy {
   categories: SelectCategory[] = [];
   selectedCategory: string | null = null;
   currentStep = 1;
-  readonly charLimits = { step1: 280, step2: 140, step3: 70 };
+  readonly charLimits = { step1: 600, step2: 400, step3: 300 };
 
   mentionResults$!: Observable<UserSearch[]>;
   private mentionQuery$ = new Subject<string | null>();

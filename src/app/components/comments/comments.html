@@ -9,9 +9,13 @@
   <!-- Sección para añadir comentario -->
   <div class="add-comment-section">
     @if (authService.currentUser(); as user) {
-    <img class="avatar" [src]="user.avatarUrl || defaultAvatar" [alt]="'COMMENTS.YOUR_AVATAR' | translate" />
+    <img
+      class="avatar"
+      [src]="user.avatarUrl || defaultAvatar"
+      [alt]="'COMMENTS.YOUR_AVATAR' | translate"
+    />
     } @else {
-    <img class="avatar" [src]="defaultAvatar"  [alt]="'COMMENTS.DEFAULT_AVATAR' | translate" />
+    <img class="avatar" [src]="defaultAvatar" [alt]="'COMMENTS.DEFAULT_AVATAR' | translate" />
     }
     <mat-form-field appearance="outline" class="comment-input">
       <textarea
@@ -29,13 +33,13 @@
       (click)="postComment()"
       [disabled]="commentControl.invalid"
     >
-    {{ 'COMMENTS.BUTTON' | translate }}
+      {{ 'COMMENTS.BUTTON' | translate }}
     </button>
   </div>
 
   <!-- Indicador de carga -->
   @if (isLoading) {
-    <p>{{ 'COMMENTS.LOADING' | translate }}</p>
+  <p>{{ 'COMMENTS.LOADING' | translate }}</p>
   }
 
   <!-- Lista de comentarios -->
@@ -68,8 +72,68 @@
           }
         </div>
         <p class="comment-text">{{ comment.content }}</p>
+
+        @if (isThreadAuthor && !replyingToCommentId) {
+        <button mat-button class="reply-btn" (click)="startReplying(comment.id)">Responder</button>
+        } @if (replyingToCommentId === comment.id) {
+        <div class="reply-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <textarea
+              matInput
+              [formControl]="replyControl"
+              placeholder="Escribe tu respuesta..."
+              cdkTextareaAutosize
+            ></textarea>
+          </mat-form-field>
+          <div class="reply-actions">
+            <button mat-button (click)="cancelReply()">Cancelar</button>
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="sendReply(comment.id)"
+              [disabled]="replyControl.invalid"
+            >
+              Responder
+            </button>
+          </div>
+        </div>
+        }
       </div>
     </div>
-    }
+    @if (comment.replies && comment.replies.length > 0) {
+    <div class="replies-list">
+      @for (reply of comment.replies; track reply.id) {
+      <div class="comment-item reply-item">
+        <img class="avatar small" [src]="reply.author.avatarUrl" alt="Avatar" />
+        <div class="comment-body">
+          <div class="comment-author">
+            <strong>{{ reply.author.displayName }}</strong>
+            @if (isThreadAuthor) {
+            <span class="author-badge">Autor</span>
+            }
+            <!-- Opcional -->
+            <span class="date">· {{ reply.createdAt | timeAgo }}</span>
+            @if (authService.currentUser()?.username === reply.author.username) {
+            <button mat-icon-button [matMenuTriggerFor]="replyMenu" class="comment-options-btn">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #replyMenu="matMenu">
+              <button mat-menu-item (click)="openEditComment(reply.id, reply.content)">
+                <mat-icon color="warn">edit</mat-icon>
+                <span>{{ 'COMMENTS.EDIT' | translate }}</span>
+              </button>
+              <button mat-menu-item (click)="openDeleteConfirm(reply.id)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>{{ 'COMMENTS.DELETE' | translate }}</span>
+              </button>
+            </mat-menu>
+            }
+          </div>
+          <p class="comment-text">{{ reply.content }}</p>
+        </div>
+      </div>
+      }
+    </div>
+    } }
   </div>
 </mat-dialog-content>
