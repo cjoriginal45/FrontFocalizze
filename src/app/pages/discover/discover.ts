@@ -101,12 +101,15 @@ export class Discover implements OnInit {
     });
   }
 
-  openCommentsModal(threadId: number): void {
+  openCommentsModal(data: { threadId: number; username: string }): void {
     this.dialog.open(Comments, {
       width: '700px',
       maxWidth: '95vw',
       maxHeight: '90vh',
-      data: { threadId: threadId },
+      data: { 
+        threadId: data.threadId,     // Extraemos el ID
+        username: data.username      // Extraemos el username del autor
+      }, 
       panelClass: 'comments-dialog-container',
     });
   }

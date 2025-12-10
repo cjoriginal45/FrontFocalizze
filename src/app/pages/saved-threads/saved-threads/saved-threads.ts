@@ -60,8 +60,17 @@ export class SavedThreads implements OnInit {
     });
   }
   
-  openCommentsModal(threadId: number): void {
-    this.dialog.open(Comments, { /* ... */ });
+  openCommentsModal(data: { threadId: number; username: string }): void {
+    this.dialog.open(Comments, {
+      width: '700px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      data: { 
+        threadId: data.threadId,    
+        username: data.username      
+      }, 
+      panelClass: 'comments-dialog-container',
+    });
   }
 
   goBack(): void {

@@ -22,7 +22,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommentRequestDto } from '../../interfaces/CommentRequest';
-import { content } from 'html2canvas/dist/types/css/property-descriptors/content';
 import { EditCommentModal } from '../edit-comment-modal/edit-comment-modal';
 
 // Interfaz para la data que recibe el modal
