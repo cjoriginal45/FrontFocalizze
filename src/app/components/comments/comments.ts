@@ -28,7 +28,8 @@ import { EditCommentModal } from '../edit-comment-modal/edit-comment-modal';
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
 export interface DialogData {
-  threadId: number; // El ID que nos pasa el FeedComponent / The ID that the FeedComponent passes to us
+  threadId: number; 
+  username: string;
 }
 
 @Component({
@@ -70,9 +71,18 @@ export class Comments {
   // Form for new comment
   commentControl = new FormControl('', [Validators.required, Validators.maxLength(280)]);
 
+  replyingToCommentId: number | null = null;
+  replyControl = new FormControl('', [Validators.required, Validators.maxLength(280)]);
+
   defaultAvatar = 'assets/images/default-avatar.png';
 
+  isThreadAuthor = false;
+
   ngOnInit(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser && this.data.username) {
+      this.isThreadAuthor = currentUser.username === this.data.username;
+    }
     this.loadComments();
   }
 
@@ -191,7 +201,7 @@ export class Comments {
         title: '¿Quieres editar el comentario?',
         message: 'Se abrirá un editor para modificar el contenido del comentario.',
         confirmButtonText: 'Continuar',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'Cancelar',
       },
     });
 
@@ -206,7 +216,7 @@ export class Comments {
   private openEditModal(commentId: number, currentContent: string): void {
     const editRef = this.dialog.open(EditCommentModal, {
       width: '600px',
-      data: { content: currentContent }
+      data: { content: currentContent },
     });
 
     editRef.afterClosed().subscribe((newContent) => {
@@ -222,7 +232,7 @@ export class Comments {
 
     this.commentService.editComment(id, commentRequest).subscribe({
       next: (updatedComment) => {
-        const index = this.comments.findIndex(c => c.id === id);
+        const index = this.comments.findIndex((c) => c.id === id);
 
         if (index !== -1) {
           this.comments[index] = updatedComment;
@@ -233,6 +243,41 @@ export class Comments {
       },
       error: (err) => {
         console.error('Error al editar el comentario', err);
+      },
+    });
+  }
+
+  startReplying(commentId: number): void {
+    this.replyingToCommentId = commentId;
+    this.replyControl.reset();
+  }
+
+  cancelReply(): void {
+    this.replyingToCommentId = null;
+    this.replyControl.reset();
+  }
+
+  sendReply(parentCommentId: number): void {
+    if (this.replyControl.invalid || !this.replyControl.value) return;
+
+    const content = this.replyControl.value;
+    this.replyControl.disable();
+
+    this.commentService.replyToComment(parentCommentId, content).subscribe({
+      next: (newReply) => {
+        // Buscamos el comentario padre y le agregamos la respuesta
+        const parent = this.comments.find((c) => c.id === parentCommentId);
+        if (parent) {
+          if (!parent.replies) parent.replies = [];
+          parent.replies.push(newReply);
+        }
+        this.interactionService.notifyCommentAdded(this.data.threadId);
+        this.cancelReply();
+        this.replyControl.enable();
+      },
+      error: (err) => {
+        console.error('Error al responder', err);
+        this.replyControl.enable();
       },
     });
   }

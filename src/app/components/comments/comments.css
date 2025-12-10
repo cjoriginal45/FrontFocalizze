@@ -159,6 +159,36 @@ textarea::placeholder {
   word-wrap: break-word; /* Evita que palabras largas rompan el diseño */
 }
 
+.replies-list {
+  margin-left: 50px; /* Indentación */
+  margin-top: 10px;
+  border-left: 2px solid #e0e0e0; /* Línea visual de hilo */
+  padding-left: 10px;
+}
+
+.reply-item {
+  margin-bottom: 10px;
+}
+
+.avatar.small {
+  width: 24px;
+  height: 24px;
+}
+
+.reply-form {
+  margin-top: 10px;
+}
+
+.author-badge {
+  background-color: #e0f7fa;
+  color: #006064;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 5px;
+  font-weight: bold;
+}
+
 /* --- DISEÑO MOBILE (Pantallas pequeñas) --- */
 @media (max-width: 600px) {
   .comments-content {

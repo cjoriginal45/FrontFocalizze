@@ -53,4 +53,12 @@ export class Comment {
   editComment(commentId: number, content: CommentRequestDto): Observable<CommentResponseDto> {
     return this.http.patch<CommentResponseDto>(`${this.commentsApiUrl}/${commentId}`, content);
   }
+
+
+  /**
+   * Responde a un comentario existente.
+   */
+  replyToComment(commentId: number, content: string): Observable<CommentResponseDto> {
+    return this.http.post<CommentResponseDto>(`${this.commentsApiUrl}/${commentId}/reply`, { content });
+  }
 }
