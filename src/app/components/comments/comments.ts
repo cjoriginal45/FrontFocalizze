@@ -142,52 +142,37 @@ export class Comments {
   }
 
   private deleteComment(commentId: number): void {
-    // 1. Buscar el comentario antes de borrarlo
-    const commentToDelete = this.comments.find((c) => c.id === commentId);
+    // Guardamos referencia por si hay error (optimista)
+    const originalComments = JSON.parse(JSON.stringify(this.comments)); 
 
-    const originalComments = [...this.comments];
-
-    // Actualización optimista (borrado visual de la lista)
-    this.comments = this.comments.filter((comment) => comment.id !== commentId);
+    // 1. Intentar borrar si es un comentario raíz
+    const isRoot = this.comments.some(c => c.id === commentId);
+    
+    if (isRoot) {
+      this.comments = this.comments.filter(c => c.id !== commentId);
+    } else {
+      // 2. Si no es raíz, buscar dentro de las respuestas de cada comentario
+      this.comments.forEach(parent => {
+        if (parent.replies && parent.replies.length > 0) {
+          parent.replies = parent.replies.filter(r => r.id !== commentId);
+        }
+      });
+    }
 
     this.commentService.deleteComment(commentId).subscribe({
       next: () => {
         this.interactionService.notifyCommentDeleted(this.data.threadId);
-
-        // --- LÓGICA DE REEMBOLSO DE INTERACCIÓN ---
-        if (commentToDelete) {
-          // Convertimos la fecha del comentario
-          const commentDate = new Date(commentToDelete.createdAt);
-          const today = new Date();
-
-          // LOGS DE DEPURACIÓN (Míralos en la consola del navegador F12)
-          console.log('Fecha Comentario:', commentDate.toDateString());
-          console.log('Fecha Hoy:', today.toDateString());
-
-          // Comparamos día, mes y año
-          const isSameDay =
-            commentDate.getDate() === today.getDate() &&
-            commentDate.getMonth() === today.getMonth() &&
-            commentDate.getFullYear() === today.getFullYear();
-
-          console.log('¿Es el mismo día?:', isSameDay);
-
-          if (isSameDay) {
-            console.log('¡Reembolsando interacción visualmente!');
-            this.authService.refundInteraction();
-          } else {
-            console.warn('No se reembolsó: Las fechas no coinciden.');
-          }
-        }
-
+        // Aquí iría tu lógica de reembolso de interacción si la necesitas...
         console.log(`Comentario ${commentId} eliminado con éxito.`);
       },
       error: (err) => {
-        console.error('Error al eliminar el comentario', err);
-        this.comments = originalComments;
+        console.error('Error al eliminar', err);
+        // Revertimos cambios si falla
+        this.comments = originalComments; 
       },
     });
   }
+
 
   onClose(): void {
     this.dialogRef.close();
@@ -231,10 +216,25 @@ export class Comments {
 
     this.commentService.editComment(id, commentRequest).subscribe({
       next: (updatedComment) => {
-        const index = this.comments.findIndex((c) => c.id === id);
+        
+        // 1. Buscar en la lista raíz
+        const rootIndex = this.comments.findIndex((c) => c.id === id);
 
-        if (index !== -1) {
-          this.comments[index] = updatedComment;
+        if (rootIndex !== -1) {
+          const existingReplies = this.comments[rootIndex].replies;
+          this.comments[rootIndex] = { ...updatedComment, replies: existingReplies };
+        } else {
+          // 2. Buscar en las respuestas (Nested loop)
+          for (const parent of this.comments) {
+            if (parent.replies) {
+              const replyIndex = parent.replies.findIndex(r => r.id === id);
+              if (replyIndex !== -1) {
+                // Es una respuesta: la actualizamos
+                parent.replies[replyIndex] = updatedComment;
+                break; // Terminamos la búsqueda
+              }
+            }
+          }
         }
 
         this.commentControl.reset();
