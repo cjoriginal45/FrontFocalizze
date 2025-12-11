@@ -144,3 +144,34 @@
   color: var(--text-color) !important;
   border-color: #fff !important;
 }
+
+/* Botón Emoji dentro del input */
+.emoji-btn {
+  color: var(--icon-color);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.emoji-btn:hover {
+  opacity: 1;
+  color: var(--primary-color);
+}
+
+/* Ajuste del menú de Material para que contenga el picker limpio */
+::ng-deep .emoji-menu-panel {
+  padding: 0 !important;
+  min-width: unset !important;
+  max-width: unset !important;
+  overflow: hidden !important;
+  border-radius: 12px !important;
+}
+
+::ng-deep .emoji-menu-panel .mat-mdc-menu-content {
+  padding: 0 !important;
+}
+
+/* Opcional: Ajuste del picker para que coincida con tu tema si lo deseas */
+::ng-deep .emoji-mart {
+  border: none !important;
+  font-family: inherit !important;
+}

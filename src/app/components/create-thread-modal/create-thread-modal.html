@@ -1,4 +1,3 @@
-<!-- Mini Header -->
 <header class="modal-header">
   <div class="modal-header__left">
     @if (currentStep > 1 && isMobileView) {
@@ -22,20 +21,18 @@
   </div>
 </header>
 
-<!-- Contenido Principal -->
 <div class="modal-content" mat-dialog-content>
   @if (showScheduler) {
   <div class="scheduler-panel">
     <h4>{{ 'CREATE_THREAD.SCHEDULE.TITLE' | translate }}</h4>
     <div class="scheduler-inputs">
-      <!-- Selector de Fecha (sin cambios) -->
       <mat-form-field appearance="outline" class="scheduler-inputs__datepicker">
         <mat-label>{{ 'CREATE_THREAD.SCHEDULE.DATE' | translate }}</mat-label>
         <input matInput [matDatepicker]="picker" [(ngModel)]="scheduledDate" />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
-      <!-- --- ¡CAMBIOS AQUÍ! SELECTORES PARA HORA Y MINUTOS --- -->
+
       <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
         <mat-label>{{ 'CREATE_THREAD.SCHEDULE.HOUR' | translate }}</mat-label>
         <mat-select [(ngModel)]="scheduledHour">
@@ -56,10 +53,19 @@
     </div>
     @if (scheduledDate && scheduledHour !== null && scheduledMinute !== null) {
     <p class="scheduler-info">
-      {{ 'CREATE_THREAD.SCHEDULE.INFO' | translate:{
-        date: (scheduledDate | date : 'fullDate'), 
-        time: ((scheduledHour < 10 ? '0' : '') + scheduledHour + ':' + (scheduledMinute < 10 ? '0' : '') + scheduledMinute)
-    } }}
+      {{
+        'CREATE_THREAD.SCHEDULE.INFO'
+          | translate
+            : {
+                date: (scheduledDate | date : 'fullDate'),
+                time:
+                  (scheduledHour < 10 ? '0' : '') +
+                  scheduledHour +
+                  ':' +
+                  (scheduledMinute < 10 ? '0' : '') +
+                  scheduledMinute
+              }
+      }}
     </p>
     }
   </div>
@@ -73,14 +79,17 @@
     [class.step-2]="isMobileView && currentStep === 2"
     [class.step-3]="isMobileView && currentStep === 3"
   >
-    <!-- UN ÚNICO BUCLE @for crea los 3 textareas una sola vez -->
     @for (thread of threads; track $index) {
     <mat-form-field appearance="fill" class="thread-input thread-input-{{ $index }}">
-      <mat-label>{{ 'CREATE_THREAD.POST_LABEL' | translate:{number: $index + 1} }}</mat-label>
+      <mat-label>{{ 'CREATE_THREAD.POST_LABEL' | translate : { number: $index + 1 } }}</mat-label>
+
+      <!-- REFERENCIA #threadInput es vital para la lógica de inserción -->
       <textarea
         matInput
+        #threadInput
         [(ngModel)]="threads[$index]"
-        (input)="onTextareaEvent($event)"
+        (input)="onTextareaEvent($event, $index)"
+        (click)="onTextareaEvent($event, $index)"
         [attr.data-index]="$index"
         [matAutocomplete]="mentionAutocomplete"
         [maxlength]="
@@ -89,12 +98,37 @@
         cdkTextareaAutosize
         [cdkAutosizeMinRows]="$index === 0 ? 3 : 3"
       ></textarea>
-      <mat-hint align="end"
-        >{{ threads[$index].length }} /
-        {{
-          $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3
-        }}</mat-hint
+
+      <mat-hint align="end">
+        {{ threads[$index].length }} /
+        {{ $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3 }}
+      </mat-hint>
+
+      <!-- BOTÓN EMOJI -->
+      <button
+        mat-icon-button
+        matSuffix
+        class="emoji-btn"
+        [matMenuTriggerFor]="emojiMenu"
+        (click)="$event.stopPropagation()"
+        type="button"
       >
+        <mat-icon>sentiment_satisfied_alt</mat-icon>
+      </button>
+
+      <!-- MENÚ DE EMOJIS -->
+      <mat-menu #emojiMenu="matMenu" class="emoji-menu-panel">
+        <!-- Detener propagación para no cerrar el menú al hacer clic dentro -->
+        <div (click)="$event.stopPropagation()">
+          <emoji-mart
+            [showPreview]="false"
+            [darkMode]="false"
+            [set]="'google'"
+            (emojiClick)="addEmoji($event, $index, threadInput)"
+          >
+          </emoji-mart>
+        </div>
+      </mat-menu>
     </mat-form-field>
     }
   </div>
@@ -118,7 +152,6 @@
   </mat-autocomplete>
 </div>
 
-<!-- Footer -->
 <footer class="modal-footer" mat-dialog-actions>
   <mat-form-field appearance="outline" class="category-selector">
     <mat-label>{{ 'CREATE_THREAD.CATEGORY_LABEL' | translate }}</mat-label>
@@ -129,14 +162,11 @@
     </mat-select>
   </mat-form-field>
   <div class="modal-footer__actions">
-    <!-- El botón "Avanzar" solo aparece en móvil y antes del último paso -->
     @if(isMobileView && currentStep < 3){
     <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">
       {{ 'CREATE_THREAD.NEXT' | translate }}
     </button>
-    }
-    <!-- El botón "Publicar" aparece en desktop, O en móvil en el último paso -->
-    @if(!isMobileView || currentStep === 3){
+    } @if(!isMobileView || currentStep === 3){
     <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="publish()">
       {{ 'CREATE_THREAD.PUBLISH' | translate }}
     </button>
