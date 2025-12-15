@@ -36,7 +36,7 @@ import { ViewTracking } from '../../services/viewTracking/view-tracking';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { UserSearch } from '../../interfaces/UserSearch';
 import { Search } from '../../services/search/search';
-import { MentionLinkerPipe } from "../../pipes/mention-linker-pipe";
+import { MentionLinkerPipe } from '../../pipes/mention-linker-pipe';
 import { Block } from '../../services/block/block';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
@@ -54,8 +54,8 @@ import { ReportModal } from '../report-modal/report-modal/report-modal';
     MatMenuModule,
     TimeAgoPipe,
     MentionLinkerPipe,
-    TranslateModule
-],
+    TranslateModule,
+  ],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
 })
@@ -70,12 +70,12 @@ export class Thread {
   public authService = inject(Auth);
   private dialog = inject(MatDialog);
   private viewTrackingService = inject(ViewTracking);
-  private blockService = inject(Block); 
-  private snackBar = inject(MatSnackBar); 
+  private blockService = inject(Block);
+  private snackBar = inject(MatSnackBar);
 
-    // --- NUEVAS PROPIEDADES PARA MENCIONES ---
-    @ViewChild('textarea', { read: ElementRef }) textareaRef!: ElementRef<HTMLTextAreaElement>;
-    @ViewChild('mentionsPanel') mentionsPanel!: TemplateRef<any>;
+  // --- NUEVAS PROPIEDADES PARA MENCIONES ---
+  @ViewChild('textarea', { read: ElementRef }) textareaRef!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('mentionsPanel') mentionsPanel!: TemplateRef<any>;
 
   private overlayRef: OverlayRef | null = null;
   mentionResults: UserSearch[] = [];
@@ -223,11 +223,11 @@ export class Thread {
 
   onCommentClick(): void {
     const thread = this.threadSignal();
-    
+
     if (thread) {
-      this.openComments.emit({ 
-        threadId: this.threadId, 
-        username: thread.user.username 
+      this.openComments.emit({
+        threadId: this.threadId,
+        username: thread.user.username,
       });
     }
   }
@@ -278,16 +278,16 @@ export class Thread {
     });
   }
 
-   openReportModal(): void {
-      const username = this.threadSignal()?.user.username;
-  
-      if (!username) return;
-  
+  openReportModal(): void {
+    const username = this.threadSignal()?.user.username;
+
+    if (!username) return;
+
     this.dialog.open(ReportModal, {
       width: '500px',
-      data: { username: username }
+      data: { username: username },
     });
-    }
+  }
 
   blockUser(): void {
     const threadData = this.threadSignal();
@@ -298,16 +298,18 @@ export class Thread {
 
     const dialogRef = this.dialog.open(ConfirmMatDialog, {
       data: {
-        title: isBlocking ? `¿Bloquear a @${userToToggle.username}?` : `¿Desbloquear a @${userToToggle.username}?`,
+        title: isBlocking
+          ? `¿Bloquear a @${userToToggle.username}?`
+          : `¿Desbloquear a @${userToToggle.username}?`,
         message: isBlocking
           ? `No volverás a ver su contenido y esta persona no podrá interactuar contigo.`
           : `Volverás a ver el contenido de @${userToToggle.username}. Si quieres volver a seguirle, deberás hacerlo desde su perfil.`,
         confirmButtonText: isBlocking ? 'Bloquear' : 'Desbloquear',
-        confirmButtonColor: 'warn'
+        confirmButtonColor: 'warn',
       },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.executeToggleBlock(userToToggle.username, isBlocking);
       }
@@ -321,7 +323,11 @@ export class Thread {
           // Si el resultado final es 'bloqueado', ocultamos todo su contenido.
           this.threadStateService.removeThreadsByAuthor(username);
           this.userStateService.updateBlockedState(username, true);
-          this.snackBar.open(`Has bloqueado a @${username}. Su contenido ha sido ocultado.`, 'Cerrar', { duration: 5000 });
+          this.snackBar.open(
+            `Has bloqueado a @${username}. Su contenido ha sido ocultado.`,
+            'Cerrar',
+            { duration: 5000 }
+          );
         } else {
           // Si desbloqueamos, solo actualizamos el estado para que el botón cambie.
           // No volvemos a cargar su contenido automáticamente, el usuario tendrá que recargar o navegar.
@@ -330,9 +336,9 @@ export class Thread {
         }
       },
       error: (err) => {
-        console.error("Error en la acción de bloqueo", err);
+        console.error('Error en la acción de bloqueo', err);
         this.snackBar.open('No se pudo completar la acción.', 'Cerrar', { duration: 3000 });
-      }
+      },
     });
   }
 
@@ -342,7 +348,11 @@ export class Thread {
 
     this.dialog.open(ReportModal, {
       width: '500px',
-      data: { threadId: threadId } 
+      data: { threadId: threadId },
     });
+  }
+
+  openImageModal(src: string): void {
+    window.open(src, '_blank');
   }
 }

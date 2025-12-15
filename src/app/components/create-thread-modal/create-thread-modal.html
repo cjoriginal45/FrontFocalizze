@@ -22,8 +22,9 @@
   </div>
 </header>
 
+<!-- Contenido Principal -->
 <div class="modal-content" mat-dialog-content>
-  <!-- Scheduler Panel (Sin cambios) -->
+  <!-- Panel del Programador (Scheduler) -->
   @if (showScheduler) {
   <div class="scheduler-panel">
     <h4>{{ 'CREATE_THREAD.SCHEDULE.TITLE' | translate }}</h4>
@@ -53,9 +54,27 @@
         </mat-select>
       </mat-form-field>
     </div>
+    @if (scheduledDate && scheduledHour !== null && scheduledMinute !== null) {
+    <p class="scheduler-info">
+      {{
+        'CREATE_THREAD.SCHEDULE.INFO'
+          | translate
+            : {
+                date: (scheduledDate | date : 'fullDate'),
+                time:
+                  (scheduledHour < 10 ? '0' : '') +
+                  scheduledHour +
+                  ':' +
+                  (scheduledMinute < 10 ? '0' : '') +
+                  scheduledMinute
+              }
+      }}
+    </p>
+    }
   </div>
   }
 
+  <!-- Contenedor de Hilos (Textareas) -->
   <div
     class="unified-threads-container"
     [class.desktop-view]="!isMobileView"
@@ -65,9 +84,12 @@
     [class.step-3]="isMobileView && currentStep === 3"
   >
     @for (thread of threads; track $index) {
+
+    <!-- Input del Hilo -->
     <mat-form-field appearance="fill" class="thread-input thread-input-{{ $index }}">
       <mat-label>{{ 'CREATE_THREAD.POST_LABEL' | translate : { number: $index + 1 } }}</mat-label>
 
+      <!-- REFERENCIA #threadInput vital para emojis y menciones -->
       <textarea
         matInput
         #threadInput
@@ -85,24 +107,48 @@
         [cdkAutosizeMinRows]="$index === 0 ? 3 : 3"
       ></textarea>
 
+      <!-- Contador de caracteres -->
       <mat-hint align="end">
         {{ threads[$index].length }} /
         {{ $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3 }}
       </mat-hint>
 
-      <!-- BOTÓN EMOJI -->
-      <button
-        mat-icon-button
-        matSuffix
-        class="emoji-btn"
-        [matMenuTriggerFor]="emojiMenu"
-        (click)="$event.stopPropagation()"
-        type="button"
-      >
-        <mat-icon>sentiment_satisfied_alt</mat-icon>
-      </button>
+      <!-- BOTONES DE ACCIÓN (Imágenes + Emojis) -->
+      <div class="input-actions" matSuffix>
+        <!-- Botón de Imagen (Solo disponible en el primer post o globalmente) -->
+        @if ($index === 0) {
+        <button
+          mat-icon-button
+          (click)="fileInput.click()"
+          matTooltip="Agregar imagen"
+          type="button"
+        >
+          <mat-icon>image</mat-icon>
+        </button>
+        <!-- Input oculto para selección de archivos -->
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          multiple
+          accept="image/*"
+          style="display: none"
+        />
+        }
 
-      <!-- MENÚ DE EMOJIS -->
+        <!-- Botón de Emoji -->
+        <button
+          mat-icon-button
+          class="emoji-btn"
+          [matMenuTriggerFor]="emojiMenu"
+          (click)="$event.stopPropagation()"
+          type="button"
+        >
+          <mat-icon>sentiment_satisfied_alt</mat-icon>
+        </button>
+      </div>
+
+      <!-- Menú de Emojis -->
       <mat-menu #emojiMenu="matMenu" class="emoji-menu-panel">
         <div (click)="$event.stopPropagation()">
           <emoji-mart
@@ -115,25 +161,33 @@
         </div>
       </mat-menu>
     </mat-form-field>
-    }
+
+    <!-- PREVISUALIZACIÓN DE IMÁGENES (Debajo del primer post) -->
+    @if ($index === 0 && imagePreviews.length > 0) {
+    <div class="image-previews-container">
+      @for (imgSrc of imagePreviews; track $index) {
+      <div class="preview-item">
+        <img [src]="imgSrc" alt="Preview" />
+        <button class="remove-btn" (click)="removeImage($index)" type="button">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      }
+    </div>
+    } }
+    <!-- Fin del bucle @for -->
   </div>
 
-  <!-- AUTOCOMPLETE COMPONENT (Compartido para todos los textareas) -->
+  <!-- Autocompletado de Usuarios (Compartido) -->
   <mat-autocomplete
     #mentionAutocomplete="matAutocomplete"
     (optionSelected)="onUserMentionSelected($event)"
     [displayWith]="displayWithFn"
-    class="custom-autocomplete"
   >
     @for (user of mentionResults$ | async; track user.username) {
-    <!-- El valor es el objeto completo UserSearch -->
-    <mat-option [value]="user">
+    <mat-option [value]="user" [disabled]="true">
       <div class="user-option">
-        <img
-          [src]="user.avatarUrl || 'assets/images/default-avatar.webp'"
-          class="user-option__avatar"
-          alt="Avatar"
-        />
+        <img [src]="user.avatarUrl" class="user-option__avatar" alt="Avatar" />
         <div class="user-option__info">
           <span class="user-option__display-name">{{ user.displayName }}</span>
           <span class="user-option__username">@{{ user.username }}</span>
@@ -144,6 +198,7 @@
   </mat-autocomplete>
 </div>
 
+<!-- Footer con Acciones -->
 <footer class="modal-footer" mat-dialog-actions>
   <mat-form-field appearance="outline" class="category-selector">
     <mat-label>{{ 'CREATE_THREAD.CATEGORY_LABEL' | translate }}</mat-label>
@@ -153,6 +208,7 @@
       <mat-option [value]="category.value">{{ category.viewValue }}</mat-option> }
     </mat-select>
   </mat-form-field>
+
   <div class="modal-footer__actions">
     @if(isMobileView && currentStep < 3){
     <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">
@@ -166,6 +222,7 @@
   </div>
 </footer>
 
+<!-- Mensaje de Error -->
 @if (errorMessage) {
 <div class="modal-error-message">{{ errorMessage }}</div>
 }

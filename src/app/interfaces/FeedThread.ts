@@ -10,4 +10,5 @@ export interface FeedThreadDto {
   isLiked: boolean;
   isSaved: boolean;
   categoryName?: string;
+  images?: string[];
 }
