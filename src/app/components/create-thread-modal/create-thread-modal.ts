@@ -84,11 +84,15 @@ export class CreateThreadModal implements OnInit, OnDestroy {
   currentStep = 1;
   readonly charLimits = { step1: 600, step2: 400, step3: 300 };
 
+  // --- AUTOCOMPLETE LÓGICA ---
   mentionResults$!: Observable<UserSearch[]>;
   private mentionQuery$ = new Subject<string | null>();
 
   // Solo necesitamos saber cuál input se tocó por última vez para las menciones
   private lastFocusedIndex: number = 0;
+  private lastCursorPosition: number = 0;
+
+  private lastTextContent: string = '';
 
   isMobileView = true;
   private breakpointSubscription!: Subscription;
@@ -113,10 +117,18 @@ export class CreateThreadModal implements OnInit, OnDestroy {
         this.isMobileView = result.matches;
         this.triggerResize();
       });
+
+    // Configuración reactiva del buscador
     this.mentionResults$ = this.mentionQuery$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((query) => (query ? this.searchService.searchUsers(query) : of([])))
+      switchMap((query) => {
+        if (query && query.length >= 1) {
+          // Buscar a partir de 1 letra después del @
+          return this.searchService.searchUsers(query);
+        }
+        return of([]);
+      })
     );
   }
 
@@ -131,61 +143,88 @@ export class CreateThreadModal implements OnInit, OnDestroy {
   }
 
   // --- MANEJO DE EVENTOS TEXTAREA ---
+  // --- 1. RASTREO DEL CURSOR (Se ejecuta al escribir/clicar) ---
+  // --- 1. RASTREO ROBUSTO DEL CURSOR ---
   onTextareaEvent(event: Event, index: number): void {
     const textarea = event.target as HTMLTextAreaElement;
-    this.lastFocusedIndex = index; // Guardamos índice para saber dónde insertar la mención
 
-    const cursorPos = textarea.selectionStart;
-    const textBeforeCursor = textarea.value.substring(0, cursorPos);
+    this.lastFocusedIndex = index;
+    this.lastCursorPosition = textarea.selectionStart;
+    this.lastTextContent = textarea.value; // <--- GUARDAMOS EL TEXTO AQUÍ
+
+    // Lógica de detección de @
+    const textBeforeCursor = textarea.value.substring(0, this.lastCursorPosition);
     const mentionMatch = textBeforeCursor.match(/@(\w+)$/);
 
     this.mentionQuery$.next(mentionMatch ? mentionMatch[1] : null);
   }
 
-  // --- LÓGICA DE EMOJIS (API Nativa) ---
-  addEmoji(event: any, index: number, textarea: HTMLTextAreaElement): void {
-    const emoji = event.emoji.native;
-
-    // 1. Insertar emoji en la posición del cursor (o reemplazar selección)
-    textarea.setRangeText(emoji, textarea.selectionStart, textarea.selectionEnd, 'end');
-
-    // 2. Notificar a Angular que el valor cambió (para actualizar ngModel)
-    textarea.dispatchEvent(new Event('input'));
-
-    // 3. Devolver foco
-    textarea.focus();
-  }
-
-  // --- LÓGICA DE MENCIONES (Optimizada) ---
+  // --- 2. SELECCIÓN DE MENCIÓN CORREGIDA ---
   onUserMentionSelected(event: MatAutocompleteSelectedEvent): void {
+    // Evitamos que el evento por defecto propague valores incorrectos
+    event.option.deselect();
+
     const selectedUser = event.option.value;
     const index = this.lastFocusedIndex;
 
-    // Obtenemos referencia directa al elemento para evitar desincronización
+    // Obtenemos el elemento nativo
     const textareaRef = this.threadInputs.toArray()[index];
     if (!textareaRef) return;
     const textarea = textareaRef.nativeElement;
 
-    const cursor = textarea.selectionStart;
-    const currentText = textarea.value; // Leemos valor real del DOM
+    // USAMOS LAS VARIABLES GUARDADAS (Snapshot del momento antes de perder el foco)
+    const cursor = this.lastCursorPosition;
+    const currentText = this.lastTextContent; // Usamos el texto que guardamos en 'input'
 
-    // Buscamos dónde empieza el '@' antes del cursor
-    const textBefore = currentText.substring(0, cursor);
-    const lastAtPos = textBefore.lastIndexOf('@');
+    // Buscamos el @ hacia atrás desde la posición del cursor guardada
+    const textBeforeCursor = currentText.substring(0, cursor);
+    const atIndex = textBeforeCursor.lastIndexOf('@');
 
-    if (lastAtPos !== -1) {
-      // Reemplazar desde el '@' hasta el cursor con la mención completa
-      textarea.setRangeText(`@${selectedUser.username} `, lastAtPos, cursor, 'end');
+    if (atIndex !== -1) {
+      // Texto previo al @
+      const prefix = currentText.substring(0, atIndex);
+      // Texto posterior al cursor (lo que había después de lo que estabas escribiendo)
+      const suffix = currentText.substring(cursor);
 
-      // Notificar a Angular
+      // Construimos el nuevo texto
+      const newText = `${prefix}@${selectedUser.username} ${suffix}`;
+
+      // 1. Actualizamos el modelo de Angular
+      this.threads[index] = newText;
+
+      // 2. Forzamos la actualización visual del DOM (para contrarrestar a Material)
+      textarea.value = newText;
+
+      // 3. Avisamos a Angular que hubo un cambio "input"
       textarea.dispatchEvent(new Event('input'));
 
-      // Devolver foco
-      textarea.focus();
+      // 4. Calculamos dónde debe quedar el cursor (después del espacio)
+      const newCursorPos = atIndex + selectedUser.username.length + 2; // +2 por '@' y ' '
+
+      // 5. Devolvemos el foco y el cursor
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+
+        // Actualizamos el tracker para que no quede desfasado
+        this.lastCursorPosition = newCursorPos;
+        this.lastTextContent = newText;
+      }, 0);
     }
   }
 
-  displayWithFn = () => '';
+  // --- LÓGICA DE EMOJIS ---
+  addEmoji(event: any, index: number, textarea: HTMLTextAreaElement): void {
+    const emoji = event.emoji.native;
+    textarea.setRangeText(emoji, textarea.selectionStart, textarea.selectionEnd, 'end');
+    textarea.dispatchEvent(new Event('input'));
+    textarea.focus();
+  }
+
+  // Helper para mostrar string vacío en el input mientras se selecciona (Angular Material quirk)
+  displayWithFn(user: UserSearch): string {
+    return '';
+  }
 
   loadCategories(): void {
     this.categoryService
@@ -231,7 +270,6 @@ export class CreateThreadModal implements OnInit, OnDestroy {
     ) {
       const date = new Date(this.scheduledDate);
       date.setHours(this.scheduledHour, this.scheduledMinute, 0, 0);
-      // Construcción manual de fecha ISO local
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const day = date.getDate().toString().padStart(2, '0');

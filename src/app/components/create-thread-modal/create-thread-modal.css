@@ -175,3 +175,41 @@
   border: none !important;
   font-family: inherit !important;
 }
+
+/* ESTILOS PARA AUTOCOMPLETE (Copiados de create-admin / search-bar) */
+.user-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.user-option__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.user-option__info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-option__display-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.user-option__username {
+  font-size: 0.75rem;
+  color: var(--icon-color);
+}
+
+/* Ajuste para que el panel del autocomplete tenga el ancho correcto si es necesario */
+::ng-deep .custom-autocomplete {
+  min-width: 250px !important;
+}

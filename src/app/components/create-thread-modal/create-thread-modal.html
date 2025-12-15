@@ -1,3 +1,4 @@
+<!-- Mini Header -->
 <header class="modal-header">
   <div class="modal-header__left">
     @if (currentStep > 1 && isMobileView) {
@@ -22,6 +23,7 @@
 </header>
 
 <div class="modal-content" mat-dialog-content>
+  <!-- Scheduler Panel (Sin cambios) -->
   @if (showScheduler) {
   <div class="scheduler-panel">
     <h4>{{ 'CREATE_THREAD.SCHEDULE.TITLE' | translate }}</h4>
@@ -51,23 +53,6 @@
         </mat-select>
       </mat-form-field>
     </div>
-    @if (scheduledDate && scheduledHour !== null && scheduledMinute !== null) {
-    <p class="scheduler-info">
-      {{
-        'CREATE_THREAD.SCHEDULE.INFO'
-          | translate
-            : {
-                date: (scheduledDate | date : 'fullDate'),
-                time:
-                  (scheduledHour < 10 ? '0' : '') +
-                  scheduledHour +
-                  ':' +
-                  (scheduledMinute < 10 ? '0' : '') +
-                  scheduledMinute
-              }
-      }}
-    </p>
-    }
   </div>
   }
 
@@ -83,13 +68,14 @@
     <mat-form-field appearance="fill" class="thread-input thread-input-{{ $index }}">
       <mat-label>{{ 'CREATE_THREAD.POST_LABEL' | translate : { number: $index + 1 } }}</mat-label>
 
-      <!-- REFERENCIA #threadInput es vital para la lógica de inserción -->
       <textarea
         matInput
         #threadInput
         [(ngModel)]="threads[$index]"
         (input)="onTextareaEvent($event, $index)"
         (click)="onTextareaEvent($event, $index)"
+        (keyup)="onTextareaEvent($event, $index)"
+        (focus)="onTextareaEvent($event, $index)"
         [attr.data-index]="$index"
         [matAutocomplete]="mentionAutocomplete"
         [maxlength]="
@@ -118,7 +104,6 @@
 
       <!-- MENÚ DE EMOJIS -->
       <mat-menu #emojiMenu="matMenu" class="emoji-menu-panel">
-        <!-- Detener propagación para no cerrar el menú al hacer clic dentro -->
         <div (click)="$event.stopPropagation()">
           <emoji-mart
             [showPreview]="false"
@@ -133,15 +118,22 @@
     }
   </div>
 
+  <!-- AUTOCOMPLETE COMPONENT (Compartido para todos los textareas) -->
   <mat-autocomplete
     #mentionAutocomplete="matAutocomplete"
     (optionSelected)="onUserMentionSelected($event)"
     [displayWith]="displayWithFn"
+    class="custom-autocomplete"
   >
     @for (user of mentionResults$ | async; track user.username) {
-    <mat-option [value]="user" [disabled]="true">
+    <!-- El valor es el objeto completo UserSearch -->
+    <mat-option [value]="user">
       <div class="user-option">
-        <img [src]="user.avatarUrl" class="user-option__avatar" alt="Avatar" />
+        <img
+          [src]="user.avatarUrl || 'assets/images/default-avatar.webp'"
+          class="user-option__avatar"
+          alt="Avatar"
+        />
         <div class="user-option__info">
           <span class="user-option__display-name">{{ user.displayName }}</span>
           <span class="user-option__username">@{{ user.username }}</span>
