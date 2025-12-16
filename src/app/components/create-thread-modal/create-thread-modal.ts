@@ -84,6 +84,12 @@ export class CreateThreadModal implements OnInit, OnDestroy {
   currentStep = 1;
   readonly charLimits = { step1: 600, step2: 400, step3: 300 };
 
+  // --- VARIABLES PARA IMÁGENES ---
+  selectedImages: File[] = [];
+  imagePreviews: string[] = [];
+  readonly MAX_IMAGES = 4;
+  readonly MAX_SIZE_MB = 5;
+
   // --- AUTOCOMPLETE LÓGICA ---
   mentionResults$!: Observable<UserSearch[]>;
   private mentionQuery$ = new Subject<string | null>();
@@ -301,7 +307,12 @@ export class CreateThreadModal implements OnInit, OnDestroy {
       return;
     }
 
-    this.threadService.createThread(threadData).subscribe({
+    if (threadData.post1.trim() === '' && this.selectedImages.length === 0) {
+      this.errorMessage = 'Debes escribir algo o subir una imagen.';
+      return;
+    }
+
+    this.threadService.createThread(threadData, this.selectedImages).subscribe({
       next: (responseDto) => {
         const newFeedThread: FeedThreadDto = {
           id: responseDto.id,
@@ -320,6 +331,7 @@ export class CreateThreadModal implements OnInit, OnDestroy {
           isLiked: false,
           isSaved: false,
           categoryName: responseDto.categoryName || 'Ninguna',
+          images: responseDto.images || [],
         };
         this.threadState.notifyThreadCreated(newFeedThread);
         this.closeModal();
@@ -333,5 +345,52 @@ export class CreateThreadModal implements OnInit, OnDestroy {
         }
       },
     });
+  }
+
+  // --- LÓGICA DE IMÁGENES ---
+
+  // Se dispara al seleccionar archivos desde el input oculto
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const files = Array.from(input.files);
+
+    // Validaciones
+    if (this.selectedImages.length + files.length > this.MAX_IMAGES) {
+      this.errorMessage = `Máximo ${this.MAX_IMAGES} imágenes permitidas.`;
+      return;
+    }
+
+    for (const file of files) {
+      // Validar tipo
+      if (!file.type.startsWith('image/')) {
+        this.errorMessage = 'Solo se permiten archivos de imagen.';
+        continue;
+      }
+      // Validar tamaño
+      if (file.size > this.MAX_SIZE_MB * 1024 * 1024) {
+        this.errorMessage = `La imagen ${file.name} excede el tamaño máximo de ${this.MAX_SIZE_MB}MB.`;
+        continue;
+      }
+
+      this.selectedImages.push(file);
+
+      // Generar preview
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreviews.push(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Limpiar input para permitir seleccionar la misma imagen si se borra
+    input.value = '';
+    this.errorMessage = null;
+  }
+
+  removeImage(index: number): void {
+    this.selectedImages.splice(index, 1);
+    this.imagePreviews.splice(index, 1);
   }
 }

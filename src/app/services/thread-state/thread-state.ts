@@ -115,6 +115,7 @@ export class ThreadState {
         categoryName: updatedDataFromApi.categoryName,
         // Opcional: la API también puede devolver stats actualizados
         stats: updatedDataFromApi.stats,
+        images: updatedDataFromApi.images,
       };
 
       console.log('[Store] Nuevo estado fusionado:', newState);

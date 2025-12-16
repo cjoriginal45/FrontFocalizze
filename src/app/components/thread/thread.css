@@ -287,6 +287,45 @@ app-follow-button {
   color: var(--hover-color);
 }
 
+/* GRID DE IMÁGENES */
+.thread__images-grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Lógica simple para layout según cantidad */
+.thread__images-grid[data-count='1'] {
+  grid-template-columns: 1fr;
+}
+.thread__images-grid[data-count='2'] {
+  grid-template-columns: 1fr 1fr;
+}
+.thread__images-grid[data-count='3'] {
+  grid-template-columns: 1fr 1fr;
+}
+.thread__images-grid[data-count='4'] {
+  grid-template-columns: 1fr 1fr;
+}
+
+.thread__image-item {
+  width: 100%;
+  height: 200px; /* Altura fija para uniformidad */
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  transition: opacity 0.2s;
+}
+
+.thread__image-item:hover {
+  opacity: 0.9;
+}
+
 @media (max-width: 380px) {
   .thread__header {
     padding: 10px 8px;
@@ -300,5 +339,11 @@ app-follow-button {
   .thread__avatar {
     width: 32px;
     height: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .thread__image-item {
+    height: 150px;
   }
 }

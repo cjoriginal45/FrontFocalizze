@@ -213,3 +213,63 @@
 ::ng-deep .custom-autocomplete {
   min-width: 250px !important;
 }
+
+/* Alinear botones dentro del input */
+.input-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--icon-color);
+}
+
+/* Contenedor de Previsualizaciones */
+.image-previews-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  padding: 0 10px;
+}
+
+.preview-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.remove-btn mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.remove-btn:hover {
+  background-color: rgba(244, 67, 54, 0.9); /* Rojo al hover */
+}
