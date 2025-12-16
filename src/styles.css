@@ -107,21 +107,28 @@ body {
   Apunta al panel flotante generado por mat-autocomplete.
 */
 .mat-mdc-autocomplete-panel {
-  /* Le damos bordes redondeados, igual que la barra de búsqueda */
-  border-radius: 0 0 20px 20px !important;
+  /* Mantenemos los bordes redondeados abajo */
+  border-radius: 15px !important;
 
   background-color: #fff !important;
-  /* Añadimos una sombra de caja para que resalte */
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important; */
+
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-  padding-top: 30px !important;
-  margin-top: -17px;
-  /* Quitamos cualquier borde que pueda tener por defecto */
+
+  /* --- CORRECCIÓN AQUÍ --- */
+  /* 1. Quitamos el padding gigante de arriba */
+  padding-top: 0 !important;
+
+  /* 2. Cambiamos el margen negativo por uno positivo o 0 
+        para que empiece JUSTO DEBAJO del input, no encima */
+  margin-top: 2px !important; /* Un pequeño espacio o 0px */
+
+  /* ----------------------- */
+
   border: 1px solid rgba(51, 51, 51, 0.3) !important;
   border-top: none !important;
+
+  /* No es necesario forzar z-index aquí, el Overlay de Angular ya lo maneja (1000) */
   position: relative !important;
-  z-index: 1000 !important;
-  /* Lo separamos un poco de la barra de búsqueda */
 }
 
 /* 
