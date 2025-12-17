@@ -58,7 +58,7 @@ body {
 
 .create-thread-modal-panel .mat-dialog-container {
   padding: 0 !important;
-  border-radius: 15px;
+  background-color: var(--card-background);
   overflow: hidden;
 }
 
@@ -85,6 +85,30 @@ body {
   padding: 0 !important;
   border-radius: 15px;
   overflow: hidden;
+}
+
+/*Scheduler Panel*/
+
+.mat-datepicker-content-container {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-select-placeholder {
+  background-color: var(--text-color) !important;
+  color: var(--text-color);
+}
+
+.mat-calendar-content {
+  color: var(--text-color) !important;
+}
+
+.mat-calendar {
+  background-color: var(--card-background) !important;
+  color: var(--text-color) !important;
+}
+
+.mat-calendar span {
+  color: var(--text-color) !important;
 }
 
 /* ========================================================= */
