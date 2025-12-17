@@ -6,7 +6,7 @@
   --primary-color: #01344a; /* Azul oscuro */
   --secondary-color: #80d8ff; /* Azul claro */
   --background-color: #f4f6f8; /* Gris muy claro */
-  --shadow-color: rgba(0, 0, 0, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.7);
   --panel-color: #e0f1f3;
   --hover-color: #31647874; /* Color para hover */
   --text-color: #333; /* Gris oscuro para texto */
