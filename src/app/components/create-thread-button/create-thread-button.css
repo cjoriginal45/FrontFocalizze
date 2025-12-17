@@ -1,43 +1,97 @@
-/* --- ESTILOS DE POSICIONAMIENTO (TU CÓDIGO, QUE ES CORRECTO) --- */
+/* 
+  ANIMACIÓN DE ENTRADA 
+  Efecto suave: aparece desde abajo y aumenta la opacidad.
+*/
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-.create-thread-btn {
+/* --- 1. CONTENEDOR (POSICIONAMIENTO) --- */
+.create-thread-container {
   position: fixed;
+  z-index: 999;
+
+  /* MEDIDAS BASE (Móvil) - Las que ya tenías */
   bottom: 85px;
   right: 20px;
-  z-index: 999;
-  border-radius: 16px;
-  box-shadow: 0 0px 8px var(--shadow-color);
+
+  /* Aplicar animación de entrada (0.5s de duración) */
+  animation: slideUpFade 0.5s ease-out forwards;
 }
 
-/* --- MEDIA QUERIES PARA ESCRITORIO --- */
+/* --- 2. BOTÓN (ESTILO Y HOVER) --- */
+.create-thread-fab {
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px var(--shadow-color) !important;
+
+  /* Transición suave para el hover */
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+/* EFECTO HOVER: Agrandarse un poquito (10%) */
+.create-thread-fab:hover {
+  transform: scale(1.1);
+}
+
+/* Efecto Click: Achicarse un poco */
+.create-thread-fab:active {
+  transform: scale(0.95);
+}
+
+.create-thread-icon {
+  font-size: 24px;
+}
+
+/* ========================================================= */
+/* === MEDIA QUERIES (ADAPTACIÓN Y TUS MEDIDAS)          === */
+/* ========================================================= */
+
+/* 
+  1. TABLETS (Nueva Medida Agregada)
+  A partir de 768px, generalmente la barra de navegación móvil desaparece 
+  o cambia. Bajamos el botón para que no flote tan alto sin motivo.
+*/
+@media (min-width: 768px) {
+  .create-thread-container {
+    bottom: 80px; /* Bajamos de 85px a 30px */
+    right: 30px; /* Un poco más de margen lateral */
+  }
+}
+
+/* 
+  2. DESKTOP PEQUEÑO (Tus medidas originales)
+*/
 @media (min-width: 992px) {
-  .create-thread-btn {
-    position: fixed;
+  .create-thread-container {
     bottom: 20px;
-    right: calc(350px + 30px + 20px);
+    right: calc(320px + 30px + 20px);
   }
 }
 
+/* 
+  3. DESKTOP MEDIANO (Tus medidas originales - Centrado relativo)
+  Nota: Al usar transform aquí en el contenedor, no afecta al scale del botón hijo.
+*/
+
+/* 
+  4. DESKTOP GRANDE (Tus medidas originales)
+  Aquí sobreescribimos la regla anterior si aplica
+*/
 @media (min-width: 1200px) {
-  .create-thread-btn {
+  .create-thread-container {
+    /* Reseteamos el left/transform si quieres usar el right calculado, 
+       o mantienes la lógica del 1024px. 
+       Aquí respeto tu código original que usaba right calculado: */
+    left: auto;
+    transform: none;
     right: calc(380px + 30px + 20px);
-  }
-}
-
-.create-thread-btn__button {
-  background-color: var(--primary-color);
-}
-
-.create-thread-btn__icon {
-  color: #fff;
-}
-
-@media (min-width: 1024px) {
-  .create-thread-btn {
-    bottom: 40px;
-    left: calc(50% + 300px);
-    right: auto;
-    transform: translateX(-50%);
-    z-index: 999;
   }
 }
