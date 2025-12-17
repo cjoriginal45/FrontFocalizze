@@ -1,22 +1,130 @@
+/* ========================================================= */
+/* === ESTILO BASE (MOBILE FIRST)                        === */
+/* ========================================================= */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--card-background);
+  color: var(--text-color);
+  width: 100%;
+}
+
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 24px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--card-background);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  min-height: 56px;
+  position: relative;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.modal-header button {
+  position: absolute;
+  right: 8px;
+  color: var(--icon-color);
+}
+
+.modal-body {
+  flex: 1;
+  padding: 24px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-field {
+  width: 100%;
+}
+
+textarea {
+  line-height: 1.5;
+  resize: none;
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .edit-field .mat-mdc-form-field-subscript-wrapper {
+  padding-left: 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--card-background);
+  gap: 12px;
+}
+
+.btn-cancel {
+  color: var(--primary-color) !important;
+  font-weight: 500;
+  border-radius: 20px;
+  min-width: 90px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-cancel:hover {
+  background-color: var(--primary-color);
+  color: #fff !important;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transform: translateY(-1px);
+}
+
+.btn-save {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border-radius: 20px;
+  padding: 0 24px;
+  height: 36px;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-save:hover {
+  box-shadow: 0 0 8px var(--shadow-color);
+  transform: translateY(-1px);
+}
+
+.btn-save:active {
+  transition: transform 0.1s;
+  transform: scale(0.96);
+  box-shadow: none;
+}
+
+.btn-save:disabled {
+  background-color: var(--border-color) !important;
+  color: var(--icon-color) !important;
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* ========================================================= */
+/* === MEDIA QUERIES (TABLET & DESKTOP)                  === */
+/* ========================================================= */
+
+@media (min-width: 600px) {
+  :host {
+    min-width: 400px;
   }
-  
-  .modal-content {
-    padding-top: 20px !important;
-    min-width: 300px;
+
+  .modal-body {
+    padding: 24px;
   }
-  
-  .full-width {
-    width: 100%;
-  }
-  
-  @media (min-width: 600px) {
-    .modal-content {
-      min-width: 500px;
-    }
-  }
+}

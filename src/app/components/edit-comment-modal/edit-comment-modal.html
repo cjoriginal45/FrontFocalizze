@@ -1,31 +1,41 @@
+<!-- HEADER: Sticky y Centrado (Igual que Comments) -->
 <header class="modal-header">
-    <h2 mat-dialog-title>{{ 'COMMENTS.EDIT_TITLE' | translate }}</h2>
-    <button mat-icon-button (click)="onCancel()" aria-label="Cerrar">
-      <mat-icon>close</mat-icon>
-    </button>
-  </header>
-  
-  <mat-dialog-content class="modal-content">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Comentario</mat-label>
-      <textarea
-        matInput
-        [formControl]="contentControl"
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="3"
-        maxlength="280"
-      ></textarea>
-      <mat-hint align="end">{{ contentControl.value?.length || 0 }} / 280</mat-hint>
-    </mat-form-field>
-  </mat-dialog-content>
-  
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()">{{ 'COMMON.CANCEL' | translate }}</button>
-    <button 
-      mat-flat-button 
-      color="primary" 
-      (click)="onSave()" 
-      [disabled]="contentControl.invalid || contentControl.pristine">
-      {{ 'COMMON.SAVE' | translate }}
-    </button>
-  </mat-dialog-actions>
+  <h2>{{ 'COMMENTS.EDIT_TITLE' | translate }}</h2>
+  <button mat-icon-button (click)="onCancel()" aria-label="Cerrar">
+    <mat-icon>close</mat-icon>
+  </button>
+</header>
+
+<!-- CONTENIDO: Flexible y scrolleable -->
+<div class="modal-body">
+  <mat-form-field appearance="outline" class="edit-field">
+    <!-- Quitamos el label flotante para un look más limpio tipo "chat", 
+         o lo dejamos si prefieres el estilo formulario. Aquí lo dejo tipo form. -->
+    <mat-label>Comentario</mat-label>
+    <textarea
+      matInput
+      [formControl]="contentControl"
+      cdkTextareaAutosize
+      [cdkAutosizeMinRows]="4"
+      [cdkAutosizeMaxRows]="10"
+      maxlength="280"
+    ></textarea>
+    <mat-hint align="end">{{ contentControl.value?.length || 0 }} / 280</mat-hint>
+  </mat-form-field>
+</div>
+
+<!-- FOOTER: Acciones alineadas a la derecha -->
+<div class="modal-footer">
+  <button mat-button class="btn-cancel" (click)="onCancel()">
+    {{ 'COMMON.CANCEL' | translate }}
+  </button>
+
+  <button
+    mat-flat-button
+    class="btn-save"
+    (click)="onSave()"
+    [disabled]="contentControl.invalid || contentControl.pristine"
+  >
+    {{ 'COMMON.SAVE' | translate }}
+  </button>
+</div>
