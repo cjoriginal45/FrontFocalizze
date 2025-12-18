@@ -24,6 +24,10 @@
   transform: translateY(-50%); /* Lo centra verticalmente de forma perfecta */
 }
 
+.modal-header__button:hover {
+  color: var(--primary-color);
+}
+
 /* --- Contenido y Footer (sin cambios) --- */
 .modal-content {
   display: flex;
@@ -41,26 +45,57 @@
   background-color: var(--primary-color);
   color: #fff;
   border: 1px solid var(--primary-color);
-  transition: all 0.3s ease;
+  border-radius: 20px;
+  padding: 8px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
 .save-button:hover {
-  background-color: rgba(1, 52, 74, 0.7);
+  box-shadow: 0 0 8px var(--shadow-color);
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.save-button:active {
+  transform: scale(0.96);
+  box-shadow: none;
+  transition: transform 0.1s;
+}
+
+.save-button:disabled {
+  background-color: var(--border-color);
+  border-color: var(--border-color);
+  color: var(--icon-color);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .cancel-button {
-  background-color: #fff;
+  background-color: transparent;
   color: var(--primary-color);
-  border-color: var(--primary-color);
-  transition: all 0.3s ease;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 8px 24px;
+  border: 1px solid transparent !important;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
 .cancel-button:hover {
   background-color: var(--primary-color);
-  color: #fff;
+  color: #fff !important;
+  box-shadow: 0 0 8px var(--shadow-color);
+  transform: translateY(-1px);
 }
 
-/* Estilos para el cargador de avatar (sin cambios) */
+.cancel-button:active {
+  transform: scale(0.96);
+  transition: transform 0.1s;
+}
+
 .avatar-uploader {
   display: flex;
   justify-content: center;

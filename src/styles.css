@@ -311,3 +311,8 @@ body {
 :host ::ng-deep .custom-select-field .mat-mdc-form-field-subscript-wrapper {
   display: none; /* Ocultar espacio de error/hint si no se usa */
 }
+
+.mat-mdc-dialog-surface,
+.mdc-dialog__surface {
+  background-color: var(--card-background) !important;
+}
