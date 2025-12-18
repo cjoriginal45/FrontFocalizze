@@ -29,6 +29,11 @@
 .modal-header__button {
   color: var(--icon-color);
 }
+
+.modal-header__button:hover {
+  color: var(--primary-color);
+}
+
 /* Por defecto, el botón de atrás está visible (si el @if lo permite) */
 .modal-header__back-btn {
   display: inline-flex;
@@ -61,13 +66,54 @@
 .modal-footer__actions {
   display: flex;
 }
-.modal-footer__next-btn {
-  display: block;
-  background-color: var(--primary-color);
-}
+
+/* --- Estilos compartidos para botones de acción (Siguiente / Publicar) --- */
+.modal-footer__next-btn,
 .modal-footer__publish-btn {
-  display: none;
-  background-color: var(--primary-color);
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+
+  /* Forma y tamaño */
+  border-radius: 20px;
+  padding: 0 24px;
+  height: 36px;
+  min-width: 100px; /* Para asegurar un ancho mínimo elegante */
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  /* Transición suave para todos los cambios */
+  transition: all 0.3s ease-in-out;
+}
+
+/* --- Estado Hover (Flotar) --- */
+.modal-footer__next-btn:hover,
+.modal-footer__publish-btn:hover {
+  /* Elevación y sombra difusa */
+  transform: translateY(-1px);
+  box-shadow: 0 0 8px var(--shadow-color);
+
+  /* Le damos un toque de brillo para indicar interactividad */
+  filter: brightness(1.1);
+}
+
+/* --- Estado Active (Click) --- */
+.modal-footer__next-btn:active,
+.modal-footer__publish-btn:active {
+  /* Efecto de hundimiento rápido */
+  transform: scale(0.96);
+  box-shadow: none;
+  transition: transform 0.1s;
+}
+
+/* --- Estado Disabled (Deshabilitado) --- */
+.modal-footer__next-btn:disabled,
+.modal-footer__publish-btn:disabled {
+  background-color: var(--border-color) !important;
+  color: var(--icon-color) !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  filter: none;
 }
 
 /* --- LÓGICA DE VISIBILIDAD (MÓVIL vs ESCRITORIO) --- */
@@ -137,4 +183,8 @@
 
 .modal-header__button mat-icon.active {
   color: var(--secondary-color);
+}
+
+.mat-mdc-form-field-infix {
+  background-color: var(--card-background) !important;
 }
