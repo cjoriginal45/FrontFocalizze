@@ -316,3 +316,9 @@ body {
 .mdc-dialog__surface {
   background-color: var(--card-background) !important;
 }
+
+.mdc-floating-label mat-label,
+.mat-mdc-select-placeholder,
+.mat-mdc-select-min-line {
+  background-color: var(--card-background) !important;
+}
