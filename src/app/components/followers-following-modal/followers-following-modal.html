@@ -13,7 +13,6 @@
     mat-stretch-tabs="false"
     mat-align-tabs="center"
   >
-    <!-- PESTAÑA SEGUIDORES -->
     <mat-tab [label]="'FOLLOW_MODAL.FOLLOWERS_TAB' | translate">
       <div class="list-container">
         @if (isLoading()) {
@@ -21,7 +20,7 @@
           <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
         </div>
         } @else { @if (followersList().length === 0) {
-          <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWERS' | translate }}</p>
+        <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWERS' | translate }}</p>
         } @else { @for (user of followersList(); track user.id) {
         <div class="user-row">
           <a [routerLink]="['/profile', user.username]" (click)="onClose()" class="user-info-link">
@@ -32,8 +31,6 @@
             </div>
           </a>
 
-          <!-- Botón de Seguir -->
-          <!-- No mostrar botón si soy yo mismo -->
           @if (authService.getCurrentUser()?.username !== user.username) {
           <app-follow-button
             type="user"
@@ -47,7 +44,6 @@
       </div>
     </mat-tab>
 
-    <!-- PESTAÑA SEGUIDOS -->
     <mat-tab label="Seguidos">
       <div class="list-container">
         @if (isLoading()) {
@@ -55,7 +51,7 @@
           <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
         </div>
         } @else { @if (followingList().length === 0) {
-          <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWING' | translate }}</p>
+        <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWING' | translate }}</p>
         } @else { @for (user of followingList(); track user.id) {
         <div class="user-row">
           <a [routerLink]="['/profile', user.username]" (click)="onClose()" class="user-info-link">
