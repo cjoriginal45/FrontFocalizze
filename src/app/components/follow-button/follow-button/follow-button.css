@@ -1,50 +1,39 @@
-/* --- ESTILOS BASE (TU CÓDIGO ORIGINAL) --- */
 .follow-btn {
-    flex-shrink: 0;
-    height: 32px;
-    line-height: 30px;
-    padding: 0 16px;
-    border-radius: 16px;
-    font-weight: bold;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    transition: all 0.2s ease-in-out;
-    
-    /* Interacción */
-    cursor: pointer;
-  
-    /* Para centrar el texto verticalmente */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* --- ESTADOS --- */
-  
-  /* Estado hover por defecto (cuando dice "Seguir") */
-  .follow-btn:hover {
-    background-color: var(--primary-color);
-    color: #fff;
-  }
-  
-  /* Clase que se añade cuando ya se está siguiendo */
-  .follow-btn.follow-btn--following {
-    background-color: var(--primary-color);
-    color: #fff;
-    transition: all 0.5s ease-in-out;
-  }
-  
-  /* Efecto hover para "Dejar de Seguir" */
-  .follow-btn.follow-btn--following:hover {
-    background-color: #fff; /* Rojo de peligro */
-    border-color: #fff;
-    color: var(--primary-color);
-    border: solid 2px var(--primary-color);
-  }
-  
-  /* Estilo para el botón cuando está deshabilitado (durante la carga) */
-  .follow-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
- 
+  flex-shrink: 0;
+  height: 32px;
+  line-height: 30px;
+  padding: 0 16px;
+  border-radius: 16px;
+  font-weight: bold;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  transition: all 0.2s ease-in-out;
+  background-color: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.follow-btn:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.follow-btn.follow-btn--following {
+  background-color: var(--primary-color);
+  color: #fff;
+  transition: all 0.5s ease-in-out;
+}
+
+.follow-btn.follow-btn--following:hover {
+  background-color: transparent;
+  border-color: #fff;
+  color: var(--primary-color);
+  border: solid 2px var(--primary-color);
+}
+
+.follow-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
