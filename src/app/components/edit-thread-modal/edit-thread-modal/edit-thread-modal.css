@@ -1,4 +1,7 @@
-/* --- Mini Header (Actualizado) --- */
+/* ========================================================= */
+/* === ESTILO BASE (MOBILE FIRST)                        === */
+/* ========================================================= */
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -8,18 +11,18 @@
   border-bottom: 1px solid var(--border-color);
   background-color: var(--card-background);
 }
-/* Contenedores para el layout de 3 columnas del header */
+
 .modal-header__left,
 .modal-header__right {
   display: flex;
   align-items: center;
-  flex: 0 0 80px; /* Ancho fijo (no crece, no se encoge, base de 80px) */
+  flex: 0 0 80px;
 }
 .modal-header__right {
-  justify-content: flex-end; /* Alinea los iconos a la derecha */
+  justify-content: flex-end;
 }
 .modal-header__title {
-  flex-grow: 1; /* El título ocupa todo el espacio central */
+  flex-grow: 1;
   text-align: center;
   font-size: 1.2rem;
   font-weight: bold;
@@ -34,12 +37,10 @@
   color: var(--primary-color);
 }
 
-/* Por defecto, el botón de atrás está visible (si el @if lo permite) */
 .modal-header__back-btn {
   display: inline-flex;
 }
 
-/* --- Contenido Principal (Sin cambios) --- */
 .modal-content {
   padding: 16px;
   display: flex;
@@ -51,7 +52,6 @@
   width: 100%;
 }
 
-/* --- Footer (Sin cambios en el layout principal) --- */
 .modal-footer {
   display: flex;
   justify-content: space-between;
@@ -67,45 +67,34 @@
   display: flex;
 }
 
-/* --- Estilos compartidos para botones de acción (Siguiente / Publicar) --- */
 .modal-footer__next-btn,
 .modal-footer__publish-btn {
   background-color: var(--primary-color) !important;
   color: #fff !important;
-
-  /* Forma y tamaño */
   border-radius: 20px;
   padding: 0 24px;
   height: 36px;
-  min-width: 100px; /* Para asegurar un ancho mínimo elegante */
+  min-width: 100px;
   font-weight: 600;
   border: none;
   cursor: pointer;
-  /* Transición suave para todos los cambios */
   transition: all 0.3s ease-in-out;
 }
 
-/* --- Estado Hover (Flotar) --- */
 .modal-footer__next-btn:hover,
 .modal-footer__publish-btn:hover {
-  /* Elevación y sombra difusa */
   transform: translateY(-1px);
   box-shadow: 0 0 8px var(--shadow-color);
-
-  /* Le damos un toque de brillo para indicar interactividad */
   filter: brightness(1.1);
 }
 
-/* --- Estado Active (Click) --- */
 .modal-footer__next-btn:active,
 .modal-footer__publish-btn:active {
-  /* Efecto de hundimiento rápido */
   transform: scale(0.96);
   box-shadow: none;
   transition: transform 0.1s;
 }
 
-/* --- Estado Disabled (Deshabilitado) --- */
 .modal-footer__next-btn:disabled,
 .modal-footer__publish-btn:disabled {
   background-color: var(--border-color) !important;
@@ -116,9 +105,6 @@
   filter: none;
 }
 
-/* --- LÓGICA DE VISIBILIDAD (MÓVIL vs ESCRITORIO) --- */
-
-/* Por defecto (Móvil), mostramos la vista por pasos y ocultamos la de escritorio */
 .modal-content__desktop-view {
   display: none;
 }
@@ -133,29 +119,26 @@
   display: block;
 }
 
-/* --- ESTILOS PARA EL CONTADOR DE CARACTERES --- */
-
-/* Estilo por defecto para el contador */
 .mat-mdc-form-field-hint {
-  color: #6c757d; /* Un color gris suave */
+  color: #6c757d;
 }
 
-/* Estilo que se aplica cuando el textarea está enfocado */
-/* NOTA: Esta regla se aplica a 'fill', que ahora usas en escritorio */
 .mat-form-field-appearance-fill.mat-focused .mat-mdc-form-field-hint {
-  color: var(--primary-color); /* Cambia al color primario cuando se escribe */
+  color: var(--primary-color);
 }
 
 .modal-error-message {
-  color: #f44336; /* Color de 'warn' de Material */
-  padding: 0 16px 8px; /* Espaciado */
+  color: #f44336;
+  padding: 0 16px 8px;
   font-size: 0.9rem;
   text-align: right;
 }
 
-/* --- MEDIA QUERY PARA ESCRITORIO (A PARTIR DE 768px) --- */
+/* ========================================================= */
+/* === MEDIA QUERIE DESKTOP                              === */
+/* ========================================================= */
+
 @media (min-width: 768px) {
-  /* Invertimos la visibilidad de las vistas de contenido */
   .modal-content__desktop-view {
     display: flex;
     flex-direction: column;
@@ -165,16 +148,14 @@
     display: none;
   }
 
-  /* En escritorio, ocultamos el botón de 'Atrás' del header */
   .modal-header__back-btn {
     display: none;
   }
-  /* Y también el de 'Avanzar' del footer */
+
   .modal-footer__next-btn {
     display: none !important;
   }
 
-  /* Mostramos SIEMPRE el botón 'Publicar' */
   .modal-footer__publish-btn {
     display: block !important;
     background-color: var(--primary-color);
