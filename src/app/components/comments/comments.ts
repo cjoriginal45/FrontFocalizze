@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import {
   MAT_DIALOG_DATA,
@@ -23,6 +23,7 @@ import { ConfirmMatDialog } from '../mat-dialog/mat-dialog/mat-dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommentRequestDto } from '../../interfaces/CommentRequest';
 import { EditCommentModal } from '../edit-comment-modal/edit-comment-modal';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // Interfaz para la data que recibe el modal
 // Interface for the data that the modal receives
@@ -54,230 +55,184 @@ export interface DialogData {
   styleUrl: './comments.css',
 })
 export class Comments {
-  private commentService = inject(Comment);
-  private interactionService = inject(Interaction);
-  public dialogRef = inject(MatDialogRef<Comments>);
-  public data: DialogData = inject(MAT_DIALOG_DATA);
-  public authService = inject(Auth);
-  private dialog = inject(MatDialog);
 
-  // Estado del componente
-  // Component state
-  comments: CommentResponseDto[] = [];
-  isLoading = false;
+    // --- Inyección de Dependencias ---
+    private readonly commentService = inject(Comment);
+    private readonly interactionService = inject(Interaction);
+    public readonly authService = inject(Auth);
+    private readonly dialog = inject(MatDialog);
+    private readonly destroyRef = inject(DestroyRef);
 
-  // Formulario para el nuevo comentario
-  // Form for new comment
-  commentControl = new FormControl('', [Validators.required, Validators.maxLength(280)]);
 
-  replyingToCommentId: number | null = null;
-  replyControl = new FormControl('', [Validators.required, Validators.maxLength(280)]);
+    public readonly dialogRef = inject(MatDialogRef<Comments>);
+    public readonly data: DialogData = inject(MAT_DIALOG_DATA);
 
-  defaultAvatar = 'assets/images/default-avatar.png';
 
-  isThreadAuthor = false;
+      // --- Estado con Signals ---
+    public readonly comments = signal<CommentResponseDto[]>([]);
+    public readonly isLoading = signal<boolean>(false);
+    public readonly replyingToCommentId = signal<number | null>(null);
+    public readonly isThreadAuthor = signal<boolean>(false);
 
-  ngOnInit(): void {
-    const currentUser = this.authService.getCurrentUser();
-    if (currentUser && this.data.username) {
-      this.isThreadAuthor = currentUser.username === this.data.username;
-    }
+
+    // --- Formularios ---
+  public readonly commentControl = new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.maxLength(280)]
+  });
+
+  public readonly replyControl = new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.maxLength(280)]
+  });
+
+  public readonly defaultAvatar = 'assets/images/default-avatar.png';
+
+
+
+   ngOnInit(): void {
+    this.checkThreadOwnership();
     this.loadComments();
   }
 
+  private checkThreadOwnership(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser && this.data.username) {
+      this.isThreadAuthor.set(currentUser.username === this.data.username);
+    }
+  }
+
   loadComments(): void {
-    this.isLoading = true;
-    this.commentService.getComments(this.data.threadId, 0, 20).subscribe({
-      next: (page) => {
-        this.comments = page.content;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar comentarios', err);
-        this.isLoading = false;
-      },
-    });
+   this.isLoading.set(true);
+    this.commentService.getComments(this.data.threadId, 0, 20)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (page) => {
+          this.comments.set(page.content);
+          this.isLoading.set(false);
+        },
+        error: () => this.isLoading.set(false)
+      });
   }
 
   postComment(): void {
-    if (this.commentControl.invalid || !this.commentControl.value) {
-      return;
-    }
-    const content = this.commentControl.value;
+    if (this.commentControl.invalid) return;
+
+    const content = this.commentControl.getRawValue();
     this.commentControl.disable();
 
-    this.commentService.createComment(this.data.threadId, content).subscribe({
-      next: (newComment) => {
-        // Actualizamos la lista local de comentarios para que se vea el nuevo
-        // We update the local list of comments to show the new one
-        this.comments.unshift(newComment);
-        this.commentControl.reset();
-        this.commentControl.enable();
-
-        // Notificamos al servicio de interacción que se ha añadido un comentario a un hilo específico.
-        // We notify the interaction service that a comment has been added to a specific thread.
-        this.interactionService.notifyCommentAdded(this.data.threadId);
-      },
-      error: (err) => {
-        console.error('Error al publicar el comentario', err);
-        this.commentControl.enable();
-      },
-    });
+    this.commentService.createComment(this.data.threadId, content)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (newComment) => {
+          this.comments.update(prev => [newComment, ...prev]);
+          this.commentControl.reset();
+          this.commentControl.enable();
+          this.interactionService.notifyCommentAdded(this.data.threadId);
+        },
+        error: () => this.commentControl.enable()
+      });
   }
 
   openDeleteConfirm(commentId: number): void {
-    const dialogRef = this.dialog.open(ConfirmMatDialog, {
+    this.dialog.open(ConfirmMatDialog, {
       data: {
         title: '¿Eliminar Comentario?',
-        message: 'Esta acción no se puede deshacer. El comentario será eliminado.',
+        message: 'Esta acción no se puede deshacer.',
       },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      // Si el usuario confirma, procedemos a borrar.
-      if (result === true) {
-        this.deleteComment(commentId);
-      }
-    });
+    }).afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed: boolean) => {
+        if (confirmed) this.deleteComment(commentId);
+      });
   }
 
   private deleteComment(commentId: number): void {
-    // Guardamos referencia por si hay error (optimista)
-    const originalComments = JSON.parse(JSON.stringify(this.comments)); 
+   // Eliminación optimista en el Signal
+   const previousComments = this.comments();
+   this.applyDeleteLocally(commentId);
 
-    // 1. Intentar borrar si es un comentario raíz
-    const isRoot = this.comments.some(c => c.id === commentId);
-    
-    if (isRoot) {
-      this.comments = this.comments.filter(c => c.id !== commentId);
-    } else {
-      // 2. Si no es raíz, buscar dentro de las respuestas de cada comentario
-      this.comments.forEach(parent => {
-        if (parent.replies && parent.replies.length > 0) {
-          parent.replies = parent.replies.filter(r => r.id !== commentId);
-        }
-      });
+   this.commentService.deleteComment(commentId)
+   .pipe(takeUntilDestroyed(this.destroyRef))
+   .subscribe({
+     next: () => this.interactionService.notifyCommentDeleted(this.data.threadId),
+     error: () => this.comments.set(previousComments) // Revertir si falla
+   });
     }
 
-    this.commentService.deleteComment(commentId).subscribe({
-      next: () => {
-        this.interactionService.notifyCommentDeleted(this.data.threadId);
-        // Aquí iría tu lógica de reembolso de interacción si la necesitas...
-        console.log(`Comentario ${commentId} eliminado con éxito.`);
-      },
-      error: (err) => {
-        console.error('Error al eliminar', err);
-        // Revertimos cambios si falla
-        this.comments = originalComments; 
-      },
-    });
+  private applyDeleteLocally(commentId: number): void {
+      this.comments.update(allComments => 
+        allComments
+          .filter(c => c.id !== commentId)
+          .map(parent => ({
+            ...parent,
+            replies: parent.replies?.filter(r => r.id !== commentId) || []
+          }))
+      );
   }
 
 
-  onClose(): void {
+  public onClose(): void {
     this.dialogRef.close();
   }
 
   openEditComment(commentId: number, currentContent: string): void {
-    // 1. Primero, el diálogo de confirmación (tu lógica actual)
-    const confirmRef = this.dialog.open(ConfirmMatDialog, {
-      data: {
-        title: '¿Quieres editar el comentario?',
-        message: 'Se abrirá un editor para modificar el contenido del comentario.',
-        confirmButtonText: 'Continuar',
-        cancelButtonText: 'Cancelar',
-      },
-    });
-
-    confirmRef.afterClosed().subscribe((confirmed) => {
-      if (confirmed === true) {
-        // 2. Si confirma, abrimos el modal de edición
-        this.openEditModal(commentId, currentContent);
-      }
-    });
-  }
-
-  private openEditModal(commentId: number, currentContent: string): void {
-    const editRef = this.dialog.open(EditCommentModal, {
+    this.dialog.open(EditCommentModal, {
       width: '600px',
       data: { content: currentContent },
-    });
-
-    editRef.afterClosed().subscribe((newContent) => {
-      if (newContent) {
-        // 3. Si guardó cambios, llamamos a la API
-        this.editComment(commentId, newContent);
-      }
-    });
+    }).afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((newContent: string) => {
+        if (newContent) this.editComment(commentId, newContent);
+      });
   }
 
   private editComment(id: number, content: string): void {
-    const commentRequest: CommentRequestDto = { content };
-
-    this.commentService.editComment(id, commentRequest).subscribe({
-      next: (updatedComment) => {
-        
-        // 1. Buscar en la lista raíz
-        const rootIndex = this.comments.findIndex((c) => c.id === id);
-
-        if (rootIndex !== -1) {
-          const existingReplies = this.comments[rootIndex].replies;
-          this.comments[rootIndex] = { ...updatedComment, replies: existingReplies };
-        } else {
-          // 2. Buscar en las respuestas (Nested loop)
-          for (const parent of this.comments) {
-            if (parent.replies) {
-              const replyIndex = parent.replies.findIndex(r => r.id === id);
-              if (replyIndex !== -1) {
-                // Es una respuesta: la actualizamos
-                parent.replies[replyIndex] = updatedComment;
-                break; // Terminamos la búsqueda
-              }
-            }
-          }
-        }
-
-        this.commentControl.reset();
-        this.commentControl.enable();
-      },
-      error: (err) => {
-        console.error('Error al editar el comentario', err);
-      },
-    });
+    const request: CommentRequestDto = { content };
+    this.commentService.editComment(id, request)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (updated) => this.updateCommentLocally(updated),
+      });
   }
 
-  startReplying(commentId: number): void {
-    this.replyingToCommentId = commentId;
+  private updateCommentLocally(updated: CommentResponseDto): void {
+    this.comments.update(list => list.map(c => {
+      if (c.id === updated.id) return { ...updated, replies: c.replies };
+      if (c.replies) {
+        return { 
+          ...c, 
+          replies: c.replies.map(r => r.id === updated.id ? updated : r) 
+        };
+      }
+      return c;
+    }));
+  }
+
+  public startReplying(commentId: number): void {
+    this.replyingToCommentId.set(commentId);
     this.replyControl.reset();
   }
 
-  cancelReply(): void {
-    this.replyingToCommentId = null;
-    this.replyControl.reset();
-  }
+  public sendReply(parentCommentId: number): void {
+    if (this.replyControl.invalid) return;
 
-  sendReply(parentCommentId: number): void {
-    if (this.replyControl.invalid || !this.replyControl.value) return;
-
-    const content = this.replyControl.value;
+    const content = this.replyControl.getRawValue();
     this.replyControl.disable();
 
-    this.commentService.replyToComment(parentCommentId, content).subscribe({
-      next: (newReply) => {
-        // Buscamos el comentario padre y le agregamos la respuesta
-        const parent = this.comments.find((c) => c.id === parentCommentId);
-        if (parent) {
-          if (!parent.replies) parent.replies = [];
-          parent.replies.push(newReply);
-        }
-        this.interactionService.notifyCommentAdded(this.data.threadId);
-        this.cancelReply();
-        this.replyControl.enable();
-      },
-      error: (err) => {
-        console.error('Error al responder', err);
-        this.replyControl.enable();
-      },
-    });
+    this.commentService.replyToComment(parentCommentId, content)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (newReply) => {
+          this.comments.update(list => list.map(c => 
+            c.id === parentCommentId ? { ...c, replies: [...(c.replies || []), newReply] } : c
+          ));
+          this.interactionService.notifyCommentAdded(this.data.threadId);
+          this.replyingToCommentId.set(null);
+          this.replyControl.enable();
+        },
+        error: () => this.replyControl.enable()
+      });
   }
+
 }
