@@ -1,12 +1,9 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav class="sidenav" mode="over" [opened]="false">
-    <!-- Usamos 'authService.currentUser()' para obtener la señal del usuario.
-         La sintaxis 'as user' lo desenvuelve en una variable local 'user'. -->
     @if (authService.currentUser(); as user) { @if (isMobile$ | async) {
     <div class="sidenav__mobile">
       <header class="sidenav__header-mobile">
         <div class="user-profile__info-mobile">
-          <!-- Enlace a la página de perfil con avatar -->
           <a
             class="user-profile__avatar-link"
             routerLink="/profile/{{ user.username }}"
@@ -24,13 +21,11 @@
               }
             </div>
           </a>
-          <!-- Información de nombre y username -->
           <div class="user-profile__name-handle-mobile">
             <span class="user-profile__name-mobile">{{ user.displayName || user.username }}</span>
             <span class="user-profile__handle-mobile">@{{ user.username }}</span>
           </div>
         </div>
-        <!-- Botón de cerrar -->
         <div class="user-profile__button-box-mobile">
           <button
             mat-icon-button
@@ -42,7 +37,6 @@
           </button>
         </div>
       </header>
-      <!-- Contadores de seguidores/seguidos (necesitarás cargarlos en el futuro) -->
       <div class="mobile-stats-container">
         <div class="mobile-stats">
           <span
@@ -56,7 +50,6 @@
         </div>
       </div>
       <div class="sidenav__header-line-mobile"></div>
-      <!-- Lista de Navegación -->
       <mat-nav-list class="sidenav__nav-list">
         <a mat-list-item routerLink="/saved" (click)="matSidenav.close()">
           <mat-icon>bookmark</mat-icon> <span>{{ 'MENU.SAVED' | translate }}</span>
@@ -72,10 +65,7 @@
         <img class="header__logo" [src]="logoPath()" [alt]="'COMMON.LOGO_ALT' | translate" />
       </div>
     </div>
-    }
-
-    <!-- === VISTA ESCRITORIO (AUTENTICADO) === -->
-    @else {
+    } @else {
     <div class="sidenav__desktop">
       <header class="sidenav__header">
         <div class="sidenav__logo-container">
@@ -90,7 +80,6 @@
           <mat-icon>close</mat-icon>
         </button>
       </header>
-      <!-- Lista de Navegación -->
       <mat-nav-list class="sidenav__nav-list">
         <a mat-list-item routerLink="/home" (click)="matSidenav.close()">
           <mat-icon>home</mat-icon> <span>{{ 'MENU.HOME' | translate }}</span>
@@ -106,7 +95,6 @@
         </a>
       </mat-nav-list>
 
-      <!-- Perfil de Usuario en el Footer (ahora dinámico) -->
       <a
         class="sidenav__user-profile-link"
         routerLink="/profile/{{ user.username }}"
@@ -126,7 +114,6 @@
             <span class="user-profile__name">{{ user.displayName || user.username }}</span>
             <span class="user-profile__handle">@{{ user.username }}</span>
           </div>
-          <!-- Contadores (necesitarás cargarlos) -->
           <div class="user-profile__stats">
             <span
               ><strong>{{ user.followingCount | number }}</strong>
@@ -139,15 +126,11 @@
           </div>
         </div>
       </a>
-      <!-- Botón de Cerrar Sesión -->
       <button mat-stroked-button class="sidenav__logout-btn" (click)="logout()" routerLink="/login">
         {{ 'MENU.LOGOUT' | translate }}
       </button>
     </div>
     } } @else {
-    <!-- ========================================================== -->
-    <!-- CONTENIDO A MOSTRAR SI EL USUARIO NO ESTÁ AUTENTICADO -->
-    <!-- ========================================================== -->
     <div class="sidenav__anonymous-view">
       <div class="sidenav__header">
         <div class="sidenav__logo-container">
