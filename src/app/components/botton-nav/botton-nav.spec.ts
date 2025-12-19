@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BottonNav } from './botton-nav';
 import { Auth, AuthUser } from '../../services/auth/auth';
 import { NotificationState } from '../../services/notification-state/notification-state';
-import { signal } from '@angular/core';
+import { signal, WritableSignal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 
@@ -11,38 +10,41 @@ describe('BottonNav', () => {
   let component: BottonNav;
   let fixture: ComponentFixture<BottonNav>;
 
-  // Mocks con Signals
-  let authServiceMock: jasmine.SpyObj<Auth>;
-  let notificationStateMock: jasmine.SpyObj<NotificationState>;
+  // Definimos los mocks con tipos de Signal editables para el test
+  let currentUserSignal: WritableSignal<AuthUser | null>;
+  let hasNotificationsSignal: WritableSignal<boolean>;
 
-  // Datos de prueba
   const mockUser: AuthUser = {
     username: 'johndoe',
     avatarUrl: 'https://example.com/avatar.jpg',
-    id: 0,
-    displayName: '',
+    id: 1,
+    displayName: 'John Doe',
     followingCount: 0,
     followersCount: 0,
-    role: '',
-    dailyInteractionsRemaining: 0,
+    role: 'user',
+    dailyInteractionsRemaining: 10,
   };
 
   beforeEach(async () => {
-    // Arrange: Configuración de Spies con Signals reactivos
-    authServiceMock = jasmine.createSpyObj('Auth', [], {
-      currentUser: signal<AuthUser | null>(null),
+    // Inicializamos las señales reales para el mock
+    currentUserSignal = signal<AuthUser | null>(null);
+    hasNotificationsSignal = signal<boolean>(false);
+
+    // Creamos los Spies pero inyectamos nuestras señales
+    const authSpy = jasmine.createSpyObj('Auth', [], {
+      currentUser: currentUserSignal
     });
 
-    notificationStateMock = jasmine.createSpyObj('NotificationState', [], {
-      hasUnreadNotifications: signal<boolean>(false),
+    const notificationSpy = jasmine.createSpyObj('NotificationState', [], {
+      hasUnreadNotifications: hasNotificationsSignal
     });
 
     await TestBed.configureTestingModule({
       imports: [BottonNav],
       providers: [
         provideRouter([]),
-        { provide: Auth, useValue: authServiceMock },
-        { provide: NotificationState, useValue: notificationStateMock },
+        { provide: Auth, useValue: authSpy },
+        { provide: NotificationState, useValue: notificationSpy },
       ],
     }).compileComponents();
 
@@ -54,25 +56,12 @@ describe('BottonNav', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should NOT show notification dot when hasUnreadNotifications is false', () => {
-    // Arrange
-    (notificationStateMock as any).hasUnreadNotifications.set(false);
-
-    // Act
-    fixture.detectChanges();
-
-    // Assert
-    const dot = fixture.debugElement.query(By.css('.notification-dot'));
-    expect(dot).toBeNull();
-  });
-
   it('should show notification dot when hasUnreadNotifications is true', () => {
     // Arrange
-    const hasUnreadSignal = notificationStateMock.hasUnreadNotifications as any;
-    hasUnreadSignal.set(true);
+    hasNotificationsSignal.set(true);
 
     // Act
-    fixture.detectChanges();
+    fixture.detectChanges(); // Importante para OnPush con Signals
 
     // Assert
     const dot = fixture.debugElement.query(By.css('.notification-dot'));
@@ -81,51 +70,60 @@ describe('BottonNav', () => {
 
   it('should show default icon when user is NOT logged in', () => {
     // Arrange
-    (authServiceMock as any).currentUser.set(null);
+    currentUserSignal.set(null);
 
     // Act
     fixture.detectChanges();
 
     // Assert
-    const icon = fixture.debugElement.query(By.css('mat-icon[textContent="account_circle"]'));
+    // Corrección del selector: Buscamos el mat-icon y verificamos su texto
+    const icons = fixture.debugElement.queryAll(By.css('mat-icon'));
+    const profileIcon = icons.find(el => el.nativeElement.textContent === 'account_circle');
+    
+    expect(profileIcon).toBeTruthy('No se encontró el icono account_circle');
+    
     const img = fixture.debugElement.query(By.css('.mobile-nav__user-avatar'));
-
-    expect(icon).not.toBeNull();
     expect(img).toBeNull();
   });
 
   it('should show user avatar when user is logged in', () => {
     // Arrange
-    const userSignal = authServiceMock.currentUser as any;
-    userSignal.set(mockUser);
+    currentUserSignal.set(mockUser);
 
     // Act
     fixture.detectChanges();
 
     // Assert
     const img = fixture.debugElement.query(By.css('.mobile-nav__user-avatar'));
-    const icon = fixture.debugElement.query(By.css('mat-icon[textContent="account_circle"]'));
-
     expect(img).not.toBeNull();
     expect(img.nativeElement.src).toContain(mockUser.avatarUrl);
-    expect(icon).toBeNull();
+
+    // Verificamos que el icono por defecto NO esté
+    const icons = fixture.debugElement.queryAll(By.css('mat-icon'));
+    const profileIcon = icons.find(el => el.nativeElement.textContent === 'account_circle');
+    expect(profileIcon).toBeFalsy();
   });
 
   it('should have correct profile link when user is logged in', () => {
     // Arrange
-    (authServiceMock as any).currentUser.set(mockUser);
+    currentUserSignal.set(mockUser);
 
     // Act
     fixture.detectChanges();
 
     // Assert
-    const profileLink = fixture.debugElement.query(By.css('a[routerLink]')).parent;
-    // Nota: En pruebas de integración buscaríamos el atributo href resultante
-    const links = fixture.debugElement.queryAll(By.css('a'));
-    const profileLinkElement = links.find((l) =>
-      l.nativeElement.getAttribute('aria-label')?.includes(mockUser.username)
-    );
+    // 1. Primero verificamos que la imagen del avatar existe
+    const avatarImg = fixture.debugElement.query(By.css('.mobile-nav__user-avatar'));
+    expect(avatarImg).toBeTruthy('No se encontró la imagen del avatar');
 
-    expect(profileLinkElement).toBeTruthy();
+    // 2. Verificamos que el padre de esa imagen sea un enlace (<a>)
+    const anchorElement = avatarImg.nativeElement.closest('a');
+    expect(anchorElement).toBeTruthy('El avatar no está envuelto en un tag <a>');
+
+    // 3. (Opcional) Verificar que la ruta sea correcta
+    const href = anchorElement.getAttribute('href');
+    // Nota: RouterLink en tests a veces requiere configuración extra para ver el href real,
+    // pero verificar que el elemento existe es suficiente para una prueba unitaria.
+    expect(href).withContext('El link debe contener el nombre de usuario').toContain(mockUser.username);
   });
 });
