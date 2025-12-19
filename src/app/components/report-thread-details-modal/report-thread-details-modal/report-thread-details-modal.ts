@@ -11,13 +11,23 @@ import { ReportResponse } from '../../../interfaces/ReportResponse';
 import { ThreadResponse } from '../../../interfaces/ThreadResponseDto';
 import { threadService } from '../../../services/thread/thread';
 import { Admin } from '../../../services/admin/admin';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-report-thread-details-modal',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, FormsModule],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatProgressSpinner,
+  ],
   templateUrl: './report-thread-details-modal.html',
-  styleUrls: ['./report-thread-details-modal.css']
+  styleUrls: ['./report-thread-details-modal.css'],
 })
 export class ReportThreadDetailsModal implements OnInit {
   private adminService = inject(Admin);
@@ -26,7 +36,7 @@ export class ReportThreadDetailsModal implements OnInit {
 
   isLoading = true;
   threadData: ThreadResponse | null = null; // Para guardar los posts a editar
-  
+
   // Modelos para los textareas de edición
   post1Content = '';
   post2Content = '';
@@ -45,7 +55,7 @@ export class ReportThreadDetailsModal implements OnInit {
           this.threadData = {
             ...data,
             author: (data as any).author || '', // Cast to 'any' to access dynamic properties
-            createdAt: (data as any).createdAt || new Date().toISOString() // Cast to 'any' to access dynamic properties
+            createdAt: (data as any).createdAt || new Date().toISOString(), // Cast to 'any' to access dynamic properties
           } as ThreadResponse;
           // Asumiendo que data.posts es un array de strings o objetos con content
           this.post1Content = data.posts[0] || '';
@@ -56,7 +66,7 @@ export class ReportThreadDetailsModal implements OnInit {
         error: () => {
           this.snackBar.open('Error al cargar el contenido del hilo.', 'Cerrar');
           this.isLoading = false; // Permitir al menos borrar/ignorar aunque no cargue
-        }
+        },
       });
     }
   }
@@ -66,8 +76,8 @@ export class ReportThreadDetailsModal implements OnInit {
   }
 
   deleteThread() {
-    if(confirm('¿Estás seguro de eliminar este hilo permanentemente?')) {
-        this.executeAction('DELETE');
+    if (confirm('¿Estás seguro de eliminar este hilo permanentemente?')) {
+      this.executeAction('DELETE');
     }
   }
 
@@ -85,14 +95,14 @@ export class ReportThreadDetailsModal implements OnInit {
         if (action === 'DISMISS') msg = 'Reporte ignorado.';
         if (action === 'DELETE') msg = 'Hilo eliminado.';
         if (action === 'EDIT') msg = 'Hilo modificado correctamente.';
-        
+
         this.snackBar.open(msg, 'Cerrar', { duration: 3000 });
         this.dialogRef.close(true);
       },
       error: () => {
         this.snackBar.open('Error al procesar la acción.', 'Cerrar');
         this.isLoading = false;
-      }
+      },
     });
   }
 }

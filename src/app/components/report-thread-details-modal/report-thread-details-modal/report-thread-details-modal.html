@@ -1,56 +1,107 @@
-<h2 mat-dialog-title>Reporte de Hilo</h2>
-<mat-dialog-content class="modal-content">
-  <!-- Info del Reporte -->
-  <div class="report-info">
-    <div class="info-row"><strong>Razón:</strong> {{ report.reason }}</div>
-    <div class="info-row"><strong>Reportado por:</strong> @{{ report.reporterUsername }}</div>
-    <div class="info-row"><strong>Autor del Hilo:</strong> @{{ report.reportedUsername }}</div>
+<!-- HEADER: Sticky y Centrado -->
+<header class="modal-header">
+  <h2 class="modal-header__title">Gestión de Reporte</h2>
+  <div class="modal-header__right">
+    <button mat-icon-button [mat-dialog-close]="false" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</header>
+
+<!-- CONTENIDO: Scrolleable -->
+<div class="modal-content">
+  <!-- Tarjeta de Información (Contexto) -->
+  <div class="info-card">
+    <h3 class="info-title">Detalles del Reporte</h3>
+
+    <div class="detail-row">
+      <span class="label">Razón:</span>
+      <span class="value">{{ report.reason }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">Reportado por:</span>
+      <span class="value">@{{ report.reporterUsername }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">Autor del Hilo:</span>
+      <span class="value highlight">@{{ report.reportedUsername }}</span>
+    </div>
+
     @if(report.description) {
-        <div class="desc-box"><small>Nota: {{ report.description }}</small></div>
+    <div class="description-box">
+      <mat-icon class="info-icon">info</mat-icon>
+      <p>{{ report.description }}</p>
+    </div>
     }
   </div>
 
-  <hr class="divider">
+  <div class="divider"></div>
 
-  <!-- Área de Edición / Visualización -->
-  <h3>Contenido del Hilo</h3>
-  @if (isLoading) {
-    <p>Cargando contenido original...</p>
-  } @else {
-    <div class="editor-container">
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Post 1</mat-label>
-            <textarea matInput [(ngModel)]="post1Content" rows="3"></textarea>
-        </mat-form-field>
+  <!-- Área de Edición -->
+  <div class="editor-section">
+    <h3 class="section-title">Editar Contenido</h3>
+    <p class="section-subtitle">Modifica el contenido para cumplir las normas o elimina el hilo.</p>
 
-        @if (post2Content) {
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Post 2</mat-label>
-            <textarea matInput [(ngModel)]="post2Content" rows="3"></textarea>
-        </mat-form-field>
-        }
-
-        @if (post3Content) {
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Post 3</mat-label>
-            <textarea matInput [(ngModel)]="post3Content" rows="3"></textarea>
-        </mat-form-field>
-        }
+    @if (isLoading) {
+    <div class="loading-state">
+      <mat-spinner diameter="30"></mat-spinner>
+      <span>Cargando contenido original...</span>
     </div>
-  }
-</mat-dialog-content>
+    } @else {
+    <div class="inputs-container">
+      <!-- Post 1 -->
+      <mat-form-field appearance="outline" class="edit-field">
+        <mat-label>Post 1</mat-label>
+        <textarea matInput [(ngModel)]="post1Content" rows="3"></textarea>
+      </mat-form-field>
 
-<mat-dialog-actions align="end" class="actions-footer">
-  <!-- Grupo Izquierdo: Acciones Destructivas/Ignorar -->
-  <div class="actions-left">
-      <button mat-button color="warn" (click)="deleteThread()" [disabled]="isLoading">
-        <mat-icon>delete</mat-icon> Eliminar Hilo
-      </button>
-      <button mat-button (click)="dismissReport()" [disabled]="isLoading">Ignorar</button>
+      <!-- Post 2 (Opcional) -->
+      @if (post2Content) {
+      <mat-form-field appearance="outline" class="edit-field">
+        <mat-label>Post 2</mat-label>
+        <textarea matInput [(ngModel)]="post2Content" rows="3"></textarea>
+      </mat-form-field>
+      }
+
+      <!-- Post 3 (Opcional) -->
+      @if (post3Content) {
+      <mat-form-field appearance="outline" class="edit-field">
+        <mat-label>Post 3</mat-label>
+        <textarea matInput [(ngModel)]="post3Content" rows="3"></textarea>
+      </mat-form-field>
+      }
+    </div>
+    }
+  </div>
+</div>
+
+<!-- FOOTER: Acciones -->
+<div class="modal-footer">
+  <!-- Grupo Izquierdo: Acciones de Reporte -->
+  <div class="actions-group left">
+    <button
+      mat-button
+      class="btn-delete"
+      (click)="deleteThread()"
+      [disabled]="isLoading"
+      matTooltip="Eliminar el hilo completamente"
+    >
+      <mat-icon>delete</mat-icon>
+      <span class="btn-text">Eliminar</span>
+    </button>
+
+    <button mat-button class="btn-secondary" (click)="dismissReport()" [disabled]="isLoading">
+      Ignorar
+    </button>
   </div>
 
   <!-- Grupo Derecho: Guardar Edición -->
-  <button mat-flat-button color="primary" (click)="saveEdits()" [disabled]="isLoading">
-    <mat-icon>save</mat-icon> Guardar Cambios (Editar)
-  </button>
-</mat-dialog-actions>
+  <div class="actions-group right">
+    <button mat-flat-button class="btn-save" (click)="saveEdits()" [disabled]="isLoading">
+      <mat-icon>save</mat-icon>
+      <span class="btn-text">Guardar</span>
+    </button>
+  </div>
+</div>
