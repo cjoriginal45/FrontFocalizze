@@ -1,22 +1,23 @@
-<!-- 
-  El header ahora tiene el botón de cierre a la izquierda y el título centrado.
-  The header now has the close button on the left and the title centered.
--->
 <header class="modal-header">
-  <!-- 1. Botón de cierre movido al principio del header. -->
   <button mat-icon-button class="modal-header__button" (click)="closeModal()" aria-label="Cerrar">
     <mat-icon>close</mat-icon>
   </button>
-  <!-- 2. El título se mantiene como el elemento principal a centrar. -->
   <h2 class="modal-header__title">{{ 'EDIT_PROFILE.TITLE' | translate }}</h2>
 </header>
 
-<!-- El resto del contenido no necesita cambios -->
 <div class="modal-content" mat-dialog-content [formGroup]="profileForm">
   <!-- Selector de Avatar -->
   <div class="avatar-uploader">
     <label for="avatar-input" class="avatar-uploader__label">
-      <img [src]="imagePreview" [alt]="'EDIT_PROFILE.AVATAR_PREVIEW' | translate" class="avatar-uploader__preview" />
+      <!-- Uso de Control Flow para manejar la carga de imagen o placeholder -->
+      @if (imagePreview) {
+        <img [src]="imagePreview" [alt]="'EDIT_PROFILE.AVATAR_PREVIEW' | translate" class="avatar-uploader__preview" />
+      } @else {
+        <div class="avatar-placeholder">
+          <mat-icon>person</mat-icon>
+        </div>
+      }
+      
       <div class="avatar-uploader__overlay">
         <mat-icon>photo_camera</mat-icon>
       </div>
@@ -33,8 +34,11 @@
   <!-- Campo para Display Name -->
   <mat-form-field appearance="fill">
     <mat-label>{{ 'EDIT_PROFILE.NAME_LABEL' | translate }}</mat-label>
-    <input matInput formControlName="displayName" [maxlength]="50" />
-    <mat-hint align="end">{{ profileForm.get('displayName')?.value?.length || 0 }} / 50</mat-hint>
+    <input matInput formControlName="displayName" maxlength="50" />
+    <!-- Uso de Safe Navigation y Control Flow nativo para el hint -->
+    <mat-hint align="end">
+      {{ profileForm.controls.displayName.value.length }} / 50
+    </mat-hint>
   </mat-form-field>
 
   <!-- Campo para Biografía -->
@@ -43,23 +47,27 @@
     <textarea
       matInput
       formControlName="biography"
-      [maxlength]="160"
+      maxlength="160"
       cdkTextareaAutosize
       cdkAutosizeMinRows="3"
     ></textarea>
-    <mat-hint align="end">{{ profileForm.get('biography')?.value?.length || 0 }} / 160</mat-hint>
+    <mat-hint align="end">
+      {{ profileForm.controls.biography.value.length }} / 160
+    </mat-hint>
   </mat-form-field>
 </div>
 
 <footer class="modal-footer" mat-dialog-actions align="end">
-  <button mat-stroked-button class="cancel-button" (click)="closeModal()">{{ 'EDIT_PROFILE.CANCEL' | translate }}</button>
+  <button mat-stroked-button class="cancel-button" (click)="closeModal()">
+    {{ 'EDIT_PROFILE.CANCEL' | translate }}
+  </button>
   <button
     mat-flat-button
     color="primary"
     class="save-button"
     (click)="onSave()"
-    [disabled]="profileForm.invalid"
+    [disabled]="profileForm.invalid || (profileForm.pristine && !selectedFile)"
   >
-  {{ 'EDIT_PROFILE.SAVE' | translate }}
+    {{ 'EDIT_PROFILE.SAVE' | translate }}
   </button>
 </footer>
