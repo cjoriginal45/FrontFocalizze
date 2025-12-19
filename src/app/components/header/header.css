@@ -1,4 +1,6 @@
-/* ---------- Desktop design ---------- */
+/* ========================================================= */
+/* === ESTILOS BASE (MOBILE FIRST - < 768px)             === */
+/* ========================================================= */
 
 .header {
   display: flex;
@@ -6,23 +8,32 @@
   align-items: center;
   background-color: var(--primary-color);
   color: var(--text-color);
-  height: var(--header-height);
+  height: 100px;
   min-height: 60px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   position: sticky;
   top: 0;
   z-index: 999;
+  padding: 0 8px;
+  animation: fadeIn 1s ease-out forwards;
 }
 
 .header__section {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
+
+.header__section--left,
+.header__section--right {
+  flex: 1;
+}
+
 .header__section--center {
-  flex: 1 1 auto;
+  flex: 2;
   justify-content: center;
 }
+
 .header__section--right {
   justify-content: flex-end;
 }
@@ -30,12 +41,16 @@
 .header__logo-container {
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .header__logo {
-  width: 60px;
   height: auto;
   display: block;
+}
+
+.mobile-logo {
+  width: 100px;
 }
 
 .header__button {
@@ -44,88 +59,113 @@
   justify-content: center;
   color: #fff;
   background-color: transparent;
-  transition: background-color 0.2s ease-in-out;
   border: none;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
   border-radius: 50%;
-  position: relative; /* Contexto para el punto */
+  position: relative;
   text-decoration: none;
+  width: 48px;
+  height: 48px;
+  transition: background-color 0.2s ease-in-out;
+}
 
-  mat-icon {
-    font-size: 28px;
-    height: 28px;
-    width: 28px;
-  }
+.header__button mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
 }
 
 .header__button:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
 }
 
 .header__button:active {
   color: rgba(255, 255, 255, 0.8);
 }
 
-.user-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.hide-on-mobile {
+  display: none !important;
 }
 
-.header__user-avatar {
-  background-color: #fff;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover; /* Evita que la imagen se deforme */
-  border: 1.5px solid #fff; /* Un borde sutil para que destaque */
-  display: block; /* Elimina espacio extra debajo de la imagen */
+.show-on-mobile {
+  display: flex !important;
 }
 
-.header__avatar-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s ease-in-out;
-  padding: 4px; /* Espacio para el efecto hover */
-}
+/* ========================================================= */
+/* === TABLET & DESKTOP (>= 768px)                       === */
+/* ========================================================= */
 
-.header__avatar-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
+@media (min-width: 768px) {
+  .header {
+    height: var(--header-height, 60px);
+    padding: 0 16px;
+  }
 
-.user-option__avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-}
+  .header__section {
+    gap: 8px;
+  }
 
-.notification-dot {
-  position: absolute;
-  top: 8px; /* Ajusta para el posicionamiento vertical */
-  right: 8px; /* Ajusta para el posicionamiento horizontal */
-  width: 10px;
-  height: 10px;
-  background-color: var(--warn-color, #f44336); /* Color de "warning" de Material */
-  border-radius: 50%;
-  border: 2px solid var(--primary-color); /* Borde del color del header para crear un espacio */
-  pointer-events: none; /* El punto no debe ser clickeable */
-}
+  .header__section--center {
+    flex: 1 1 auto;
+  }
 
-.user-option__info {
-  display: flex;
-  flex-direction: column;
-}
-.user-option__display-name {
-  font-weight: 500;
-}
-.user-option__username {
-  font-size: 0.8rem;
-  color: #555;
+  .header__logo {
+    width: 60px;
+  }
+
+  .header__button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header__button mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .header__user-avatar {
+    background-color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #fff;
+    display: block;
+  }
+
+  .header__avatar-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease-in-out;
+    padding: 4px;
+  }
+
+  .header__avatar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .notification-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 9px;
+    height: 9px;
+    background-color: var(--warn-color, #f44336);
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    pointer-events: none;
+  }
+
+  .hide-on-mobile {
+    display: flex !important;
+  }
+
+  .show-on-mobile {
+    display: none !important;
+  }
 }
 
 :host ::ng-deep .header__search .mdc-notched-outline > * {
@@ -138,59 +178,14 @@
 }
 
 :host ::ng-deep .header__search input::placeholder {
-  color: var(--text-color) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
-.show-on-mobile {
-  display: none !important;
-}
-
-/* ---------- Mobile design ---------- */
-
-@media (max-width: 768px) {
-  .header {
-    height: 100px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-
-  .header__logo {
-    width: 100px;
-    height: auto;
-    display: block;
-  }
-
-  .header__section--center {
-    height: 100px;
-  }
-
-  .hide-on-mobile {
-    display: none !important;
-  }
-  .show-on-mobile {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-  }
-  .header__section--left,
-  .header__section--right {
-    flex: 1;
-  }
-  .header__section--center {
-    flex: 2;
-  }
-
-  .header__button {
-    width: 48px;
-    height: 48px;
-  }
-
-  .header__button mat-icon {
-    font-size: 32px;
-    height: 32px;
-    width: 32px;
-  }
-
-  .notification-dot {
-    top: 10px;
-    right: 10px;
+  to {
+    opacity: 1;
   }
 }
