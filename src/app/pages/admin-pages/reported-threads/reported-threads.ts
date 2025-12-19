@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { BottonNav } from "../../../components/botton-nav/botton-nav";
-import { Header } from "../../../components/header/header";
-import { MatIcon } from "@angular/material/icon";
+import { BottonNav } from '../../../components/botton-nav/botton-nav';
+import { Header } from '../../../components/header/header';
+import { MatIcon } from '@angular/material/icon';
 import { ReportResponse } from '../../../interfaces/ReportResponse';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDetailsModal } from '../../../components/report-details-modal/report-details-modal/report-details-modal';
 import { Admin } from '../../../services/admin/admin';
 import { ReportThreadDetailsModal } from '../../../components/report-thread-details-modal/report-thread-details-modal/report-thread-details-modal';
-import { TimeAgoPipe } from "../../../pipes/time-ago/time-ago-pipe";
+import { TimeAgoPipe } from '../../../pipes/time-ago/time-ago-pipe';
 
 @Component({
   selector: 'app-reported-threads',
@@ -38,20 +38,19 @@ export class ReportedThreads {
         this.currentPage++;
         this.isLoading = false;
       },
-      error: () => this.isLoading = false
+      error: () => (this.isLoading = false),
     });
   }
 
   openReport(report: ReportResponse) {
     const dialogRef = this.dialog.open(ReportThreadDetailsModal, {
-      width: '500px',
-      data: report
+      data: report,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result === true) {
         // Si se tomó acción, removemos el reporte de la lista local
-        this.reports = this.reports.filter(r => r.id !== report.id);
+        this.reports = this.reports.filter((r) => r.id !== report.id);
       }
     });
   }
