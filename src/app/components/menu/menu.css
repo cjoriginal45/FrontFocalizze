@@ -1,11 +1,10 @@
-/* --- ESTILOS GLOBALES DEL SIDENAV --- */
 :host {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* Permite hacer clic a través del contenedor */
+  pointer-events: none;
   z-index: 2000;
 }
 
@@ -19,107 +18,210 @@
   background-color: var(--primary-color);
   color: #fff;
   border-right: none;
-  box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.2), 0 16px 24px 2px rgba(0, 0, 0, 0.14),
-    0 6px 30px 5px rgba(0, 0, 0, 0.12);
-  pointer-events: auto; /* El panel sí debe ser interactivo */
-  padding: 20px;
-  box-sizing: border-box;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+  pointer-events: auto;
+  width: 300px;
+  max-width: 85vw;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 .sidenav__desktop,
-.sidenav__mobile {
+.sidenav__mobile,
+.sidenav__anonymous-view {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
+.sidenav__close-button {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: transparent;
+  border: none;
+  transition: all 0.2s ease;
+}
 
-/* --- ESTILOS DE ESCRITORIO (DESKTOP) --- */
+.sidenav__close-button:hover {
+  color: rgba(255, 255, 255, 0.6);
+  transform: rotate(90deg);
+}
+
+.sidenav__nav-list {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+}
+
+.sidenav__nav-list a[mat-list-item] {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 0 16px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidenav__nav-list a[mat-list-item]:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+}
+
+.sidenav__nav-list mat-icon {
+  margin-right: 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ========================================================= */
+/* === VISTA MÓVIL                                       === */
+/* ========================================================= */
+
+.sidenav__header-mobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.user-profile__avatar-link {
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+}
+
+.user-profile__avatar-mobile-img,
+.user-profile__avatar-mobile {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  font-size: 64px;
+  display: block;
+}
+
+.user-profile__name-handle-mobile {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-profile__name-mobile {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.user-profile__handle-mobile {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 2px;
+}
+
+.mobile-stats-container {
+  margin-bottom: 10px;
+}
+
+.mobile-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mobile-stats strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.sidenav__header-line-mobile {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.1)
+  );
+  margin: 10px 0 20px 0;
+}
+
+.sidenav__footer-mobile {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  opacity: 0.5;
+}
+
+.sidenav__footer-mobile img {
+  width: 80px;
+}
+
+/* ========================================================= */
+/* === VISTA ESCRITORIO                                  === */
+/* ========================================================= */
 
 .sidenav__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 10px;
 }
 
 .sidenav__logo-container img {
-  width: 150px; /* Un poco más grande para el logo principal */
+  height: 60px;
+  width: auto;
+}
+
+.sidenav__user-profile-link {
+  text-decoration: none;
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: auto;
+  margin-bottom: 12px;
+  transition: background-color 0.2s;
   display: block;
 }
 
-.sidenav__close-button {
-  color: #fff;
-  background-color: var(--primary-color);
-  border: none;
-}
-
-.sidenav__close-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-
-.sidenav__nav-list {
-  padding-top: 0;
-  flex-grow: 1; /* Empuja el perfil de usuario hacia abajo */
-  list-style: none;
-}
-
-.sidenav__nav-list a[mat-list-item] {
-  /* La propiedad clave para eliminar el subrayado */
-  text-decoration: none;
-  
-  /* Mantén el resto de tus estilos para los items aquí */
-  color: #fff;
-  font-size: 1.1rem;
-  border-radius: 25px;
-  margin-bottom: 8px;
-  transition: background-color 0.2s ease-in-out;
-  display: flex;
-  gap: 40px;
-  align-items: center;
-  padding: 10px 16px;
-}
-
-.sidenav__nav-list a[mat-list-item]:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  text-decoration: none; /* También lo quitamos en el estado hover por si acaso */
-}
-
-.sidenav__nav-list mat-icon {
-  color: #fff;
-  font-size: 24px;
-}
-
-/* Footer del Perfil de Usuario (Desktop) */
-.sidenav__user-profile-link {
-  text-decoration: none; /* Quita el subrayado del enlace */
-  color: inherit;
-  display: block; /* Asegura que el enlace ocupe todo el ancho */
-  border-radius: 8px;
-  padding: 8px;
-  transition: background-color 0.2s ease-in-out;
-  margin-bottom: 16px; /* Espacio antes del botón de logout */
-}
 .sidenav__user-profile-link:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .sidenav__user-profile {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  gap: 4px 12px;
   align-items: center;
-  gap: 12px;
 }
 
-/* CORRECCIÓN: Estilos para la IMAGEN del avatar y el ICONO de fallback */
-.user-profile__avatar,
-.user-profile__avatar-img {
-  width: 40px;
-  height: 40px;
+.user-profile__avatar-img,
+.user-profile__avatar {
+  grid-row: 1 / 3;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  object-fit: cover; /* Para que la imagen no se deforme */
-  font-size: 40px;   /* Para que el mat-icon tenga el tamaño correcto */
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  font-size: 48px;
 }
 
 .user-profile__info {
@@ -128,112 +230,48 @@
 }
 
 .user-profile__name {
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 .user-profile__handle {
-  font-size: 0.9em;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.user-profile__stats {
+  grid-column: 2;
+  display: flex;
+  gap: 12px;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.7);
+  margin-top: 4px;
 }
 
 .sidenav__logout-btn {
-  align-self: center;
-  width: 50%;
-  border-color: rgba(255, 255, 255, 0.5);
-  border-radius: 14px;
-  color: white;
-  background-color: var(--primary-color);
-}
-.sidenav__logout-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* --- ESTILOS MÓVIL --- */
-
-.sidenav__header-mobile {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 16px;
-  box-sizing: border-box;
-}
-
-.user-profile__info-mobile {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.user-profile__avatar-link {
-  text-decoration: none;
-}
-
-.user-profile_avatar-box-mobile {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* CORRECCIÓN: Estilos para la IMAGEN del avatar móvil y el ICONO */
-.user-profile__avatar-mobile,
-.user-profile__avatar-mobile-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  font-size: 50px;
-}
-
-.user-profile__name-handle-mobile {
-  display: flex;
-  flex-direction: column;
-}
-.user-profile__name-mobile {
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-.user-profile__handle-mobile {
-  font-size: 0.95em;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.sidenav__close-button-mobile {
+  width: 100%;
+  background-color: transparent;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #fff;
+  border-radius: 25px;
+  padding: 4px 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
 }
 
-.mobile-stats-container {
-  padding: 0 16px;
-}
-.mobile-stats {
-  font-size: 0.9em;
-  color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px; /* Espacio vertical y horizontal */
+.sidenav__logout-btn:hover {
+  background-color: rgba(255, 68, 68, 0.15);
+  border-color: rgba(255, 68, 68, 0.5);
 }
 
-.sidenav__header-line-mobile {
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.2);
-  margin: 16px 0;
-}
+/* ========================================================= */
+/* === VISTA ANÓNIMA (No autenticado)                    === */
+/* ========================================================= */
 
-.sidenav__footer-mobile {
-  margin-top: auto; /* Empuja el footer hacia abajo */
-  padding: 16px 0;
-  text-align: center;
-}
-.sidenav__footer-mobile img {
-  width: 50px;
-  opacity: 0.7;
-}
-
-/* --- ESTILOS PARA LA VISTA DE USUARIO ANÓNIMO --- */
-
-.sidenav__anonymous-view {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
 .sidenav__anonymous-content {
   flex-grow: 1;
   display: flex;
@@ -241,13 +279,50 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 20px;
+  gap: 16px;
 }
+
 .sidenav__anonymous-content h2 {
-  margin-bottom: 8px;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.2;
 }
+
+.sidenav__anonymous-content p {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin: 0;
+  max-width: 250px;
+}
+
 .sidenav__anonymous-actions {
   display: flex;
+  flex-direction: column;
+  width: 100%;
   gap: 12px;
-  margin-top: 24px;
+  margin-top: 32px;
+}
+
+.sidenav__anonymous-actions a {
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.1s;
+}
+
+.sidenav__anonymous-actions a:active {
+  transform: scale(0.98);
+}
+
+.sidenav__anonymous-actions a[mat-flat-button] {
+  background-color: #fff;
+  color: var(--primary-color);
+}
+
+.sidenav__anonymous-actions a[mat-stroked-button] {
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
 }
