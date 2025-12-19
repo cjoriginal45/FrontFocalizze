@@ -1,46 +1,46 @@
-/* El app-follow-button no necesita estilos aquí, se alinea al final por defecto */
-
 :host {
-  /* 1. Hacemos que el propio componente (<app-suggestion-item>)
-     sea el contenedor flex principal. */
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
-  gap: 8px; /* Espacio entre los elementos internos */
+  padding: 8px 0;
+  gap: 12px;
 }
 
 .suggestion-item__link {
-  /* 2. Hacemos que el enlace (icono + nombre) ocupe todo el espacio
-     disponible, empujando el resto de elementos a la derecha. */
-  flex-grow: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   text-decoration: none;
   color: var(--text-color);
-  min-width: 0; /* Evita problemas de desbordamiento de texto */
-  cursor: pointer;
+  flex-grow: 1;
+  min-width: 0;
+  transition: transform 0.2s ease;
 }
 
-.suggestion-item__link:hover .suggestion-item__name {
-  color: var(--primary-color);
+.suggestion-item__link:hover {
+  transform: translateX(4px);
 }
 
 .suggestion-item__icon {
   color: var(--primary-color);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--panel-color);
+  padding: 6px;
+  border-radius: 8px;
+  box-sizing: content-box;
 }
 
-.suggestion-item__icon:hover {
-  color: var(--hover-color);
+.suggestion-item__link:hover .suggestion-item__icon {
+  background-color: var(--hover-color);
 }
 
 .suggestion-item__name {
+  font-size: 0.95rem;
   font-weight: 500;
-  color: var(--text-color);
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Añade "..." si el nombre es muy largo */
+  text-overflow: ellipsis;
 }
-
-/* El botón se alineará a la derecha automáticamente gracias a flex-grow en el enlace */
-/* No se necesitan estilos adicionales para app-follow-button aquí */
