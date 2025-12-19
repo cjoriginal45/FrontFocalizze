@@ -3,7 +3,6 @@ import { MatIcon, MatIconModule } from '@angular/material/icon';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
-  MatDialogContent,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
@@ -37,7 +36,6 @@ export interface DialogData {
   standalone: true,
   imports: [
     MatIcon,
-    MatDialogContent,
     MatFormField,
     MatDialogModule,
     MatButtonModule,
@@ -49,8 +47,8 @@ export interface DialogData {
     ReactiveFormsModule,
     TimeAgoPipe,
     MatMenuModule,
-    TranslateModule,
-  ],
+    TranslateModule
+],
   templateUrl: './comments.html',
   styleUrl: './comments.css',
 })
