@@ -80,7 +80,7 @@ describe('BottonNav', () => {
     const icons = fixture.debugElement.queryAll(By.css('mat-icon'));
     const profileIcon = icons.find(el => el.nativeElement.textContent === 'account_circle');
     
-    expect(profileIcon).toBeTruthy('No se encontró el icono account_circle');
+    expect(profileIcon).withContext('No se encontró el icono account_circle').toBeTruthy();
     
     const img = fixture.debugElement.query(By.css('.mobile-nav__user-avatar'));
     expect(img).toBeNull();
@@ -118,7 +118,7 @@ describe('BottonNav', () => {
 
     // 2. Verificamos que el padre de esa imagen sea un enlace (<a>)
     const anchorElement = avatarImg.nativeElement.closest('a');
-    expect(anchorElement).toBeTruthy('El avatar no está envuelto en un tag <a>');
+    expect(anchorElement).withContext('El avatar no está envuelto en un tag <a>').toBeTruthy();
 
     // 3. (Opcional) Verificar que la ruta sea correcta
     const href = anchorElement.getAttribute('href');
