@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { Feed } from '../../pages/feed/feed';
 
-import { Feed } from './feed';
 
 describe('Feed', () => {
   let service: Feed;

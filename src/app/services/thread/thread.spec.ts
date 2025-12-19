@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { Thread } from '../../components/thread/thread';
 
-import { Thread } from './thread';
+
 
 describe('Thread', () => {
   let service: Thread;

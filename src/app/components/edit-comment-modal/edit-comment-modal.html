@@ -1,4 +1,3 @@
-<!-- HEADER: Sticky y Centrado (Igual que Comments) -->
 <header class="modal-header">
   <h2>{{ 'COMMENTS.EDIT_TITLE' | translate }}</h2>
   <button mat-icon-button (click)="onCancel()" aria-label="Cerrar">
@@ -6,12 +5,9 @@
   </button>
 </header>
 
-<!-- CONTENIDO: Flexible y scrolleable -->
-<div class="modal-body">
+<div class="modal-body" mat-dialog-content>
   <mat-form-field appearance="outline" class="edit-field">
-    <!-- Quitamos el label flotante para un look más limpio tipo "chat", 
-         o lo dejamos si prefieres el estilo formulario. Aquí lo dejo tipo form. -->
-    <mat-label>Comentario</mat-label>
+    <mat-label>{{ 'COMMENTS.LABEL' | translate }}</mat-label>
     <textarea
       matInput
       [formControl]="contentControl"
@@ -20,18 +16,22 @@
       [cdkAutosizeMaxRows]="10"
       maxlength="280"
     ></textarea>
-    <mat-hint align="end">{{ contentControl.value?.length || 0 }} / 280</mat-hint>
+    
+    <!-- Uso de sintaxis moderna de Angular para hints y contadores -->
+    <mat-hint align="end">
+      {{ contentControl.value.length }} / 280
+    </mat-hint>
   </mat-form-field>
 </div>
 
-<!-- FOOTER: Acciones alineadas a la derecha -->
-<div class="modal-footer">
+<div class="modal-footer" mat-dialog-actions align="end">
   <button mat-button class="btn-cancel" (click)="onCancel()">
     {{ 'COMMON.CANCEL' | translate }}
   </button>
 
   <button
     mat-flat-button
+    color="primary"
     class="btn-save"
     (click)="onSave()"
     [disabled]="contentControl.invalid || contentControl.pristine"

@@ -56,6 +56,11 @@ describe('Auth', () => {
         userId: 1,
         token: 'fake-jwt-token',
         displayName: 'Test User',
+        followingCount: 0,
+        followersCount: 0,
+        role: '',
+        isTwoFactorEnabled: false,
+        requiresTwoFactor: false
       };
 
       // Act: Ejecutar el método login y suscribirse a la respuesta
@@ -94,6 +99,11 @@ describe('Auth', () => {
         userId: 1,
         token: '',
         displayName: 'Test User',
+        followingCount: 0,
+        followersCount: 0,
+        role: '',
+        isTwoFactorEnabled: false,
+        requiresTwoFactor: false
       };
 
       // Act & Assert

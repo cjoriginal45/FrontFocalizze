@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { SavedThreads } from '../../pages/saved-threads/saved-threads/saved-threads';
 
-import { SavedThreads } from './saved-threads';
 
 describe('SavedThreads', () => {
   let service: SavedThreads;
