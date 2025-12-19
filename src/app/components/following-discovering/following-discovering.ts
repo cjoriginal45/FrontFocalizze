@@ -1,5 +1,5 @@
 import { Component, effect, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
 import { InteractionCounter } from '../../services/interactionCounter/interaction-counter';
 import { Auth } from '../../services/auth/auth';
 import { TranslateModule } from '@ngx-translate/core';
@@ -7,14 +7,11 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-following-discovering',
   standalone: true,
-  imports: [
-    RouterLink,
-    TranslateModule
-  ],
+  imports: [RouterLink, TranslateModule, RouterModule],
   templateUrl: './following-discovering.html',
   styleUrl: './following-discovering.css',
 })
-export class FollowingDiscovering implements OnInit{
+export class FollowingDiscovering implements OnInit {
   public interactionCounterService = inject(InteractionCounter);
   public authService = inject(Auth); // Para saber si el usuario está logueado
 
@@ -25,9 +22,9 @@ export class FollowingDiscovering implements OnInit{
     effect(() => {
       // Leemos la señal. Esto crea la dependencia reactiva.
       const isLoggedIn = this.authService.isLoggedIn();
-      
+
       console.log(`[FollowingDiscovering] El estado de login es: ${isLoggedIn}.`);
-      
+
       if (isLoggedIn) {
         // Si el usuario está logueado (o acaba de loguearse),
         // llamamos a la API para obtener el contador.
@@ -46,5 +43,4 @@ export class FollowingDiscovering implements OnInit{
       this.interactionCounterService.fetchInitialCount().subscribe();
     }
   }
-
 }
