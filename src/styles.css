@@ -189,93 +189,150 @@ body {
 }
 
 /* ====================================================== */
-/* == Estilos Personalizados para el Panel de Autocompletado == */
+/* == PANEL DE AUTOCOMPLETADO (Estilo Global)          == */
 /* ====================================================== */
 
-/* 
-  Este es el selector principal. 
-  Apunta al panel flotante generado por mat-autocomplete.
-*/
+/* Contenedor principal del panel flotante */
 .mat-mdc-autocomplete-panel {
-  /* Mantenemos los bordes redondeados abajo */
-  border-radius: 15px !important;
+  /* Fondo y Texto */
+  background-color: var(--card-background) !important;
+  color: var(--text-color) !important;
 
-  background-color: #fff !important;
+  /* Bordes redondeados */
+  border-radius: 20px !important;
 
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-
-  /* --- CORRECCIÓN AQUÍ --- */
-  /* 1. Quitamos el padding gigante de arriba */
-  padding-top: 0 !important;
-
-  /* 2. Cambiamos el margen negativo por uno positivo o 0 
-        para que empiece JUSTO DEBAJO del input, no encima */
-  margin-top: 2px !important; /* Un pequeño espacio o 0px */
-
-  /* ----------------------- */
-
-  border: 1px solid rgba(51, 51, 51, 0.3) !important;
+  /* Sombra y Borde */
+  box-shadow: 0 4px 20px var(--shadow-color) !important;
+  border: 1px solid var(--border-color) !important;
   border-top: none !important;
 
-  /* No es necesario forzar z-index aquí, el Overlay de Angular ya lo maneja (1000) */
+  /* Posicionamiento */
+  margin-top: 2px !important;
+  padding: 0 !important;
   position: relative !important;
+
+  /* Control de desbordamiento */
+  overflow-x: hidden !important; /* Evita scroll lateral accidental */
+  overflow-y: auto !important; /* Scroll vertical fluido */
+
+  /* Ajuste de altura por defecto (Desktop) */
+  max-height: 300px !important;
+
+  /* === SCROLLBAR (Firefox) === */
+  scrollbar-width: thin;
+  scrollbar-color: var(--icon-color) transparent;
 }
 
-/* 
-  Estilizamos cada opción individual dentro del panel.
-*/
+/* ====================================================== */
+/* == ESTILOS SCROLLBAR (Chrome, Edge, Safari)         == */
+/* ====================================================== */
+
+.mat-mdc-autocomplete-panel::-webkit-scrollbar {
+  width: 5px; /* Un poco más fina para móviles */
+}
+
+.mat-mdc-autocomplete-panel::-webkit-scrollbar-track {
+  background: transparent;
+  /* Aumentamos el margen para que la barra no toque las esquinas redondeadas */
+  margin: 15px 0;
+}
+
+.mat-mdc-autocomplete-panel::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 10px;
+  /* Esto crea un efecto de "flotación" dentro del carril */
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+.mat-mdc-autocomplete-panel::-webkit-scrollbar-thumb:hover {
+  background-color: var(--icon-color);
+}
+
+/* ====================================================== */
+/* == AJUSTES MOBILE / TABLET (Prevent Overflow)       == */
+/* ====================================================== */
+
+@media (max-width: 768px) {
+  .mat-mdc-autocomplete-panel {
+    /* 1. Altura dinámica: */
+    /* En móvil, el teclado ocupa espacio. Limitamos la altura para que se pueda scrollear */
+    max-height: 40vh !important;
+
+    /* 2. Ancho seguro: */
+    /* Evita que se salga de la pantalla si el input es muy ancho */
+    max-width: 95vw !important;
+
+    /* 3. Ajuste de bordes para pantallas pequeñas */
+    border-radius: 16px !important;
+
+    /* 4. Sombra más suave en móvil */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* Opciones un poco más compactas en altura para ver más resultados */
+  .mat-mdc-autocomplete-panel .mat-mdc-option {
+    min-height: 52px !important;
+  }
+
+  .mat-mdc-autocomplete-panel::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+}
+
+/* ====================================================== */
+/* == OPCIONES (ITEMS)                                 == */
+/* ====================================================== */
+
 .mat-mdc-autocomplete-panel .mat-mdc-option {
-  /* Le damos un poco más de altura a cada opción para que respire */
-  min-height: 56px !important;
+  min-height: 60px !important;
   padding: 8px 16px !important;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.2s ease;
+
+  /* Asegura que el borde inferior no duplique el del contenedor */
+  border-bottom: 1px solid var(--border-color);
 }
 
-/* 
-  Cambiamos el color de fondo cuando pasamos el ratón por encima de una opción.
-*/
+/* Quitar borde del último elemento para que no choque con el borde redondeado del panel */
+.mat-mdc-autocomplete-panel .mat-mdc-option:last-child {
+  border-bottom: none;
+}
+
+/* Estado Hover */
 .mat-mdc-autocomplete-panel .mat-mdc-option:hover {
-  background-color: #f5f5f5;
+  background-color: var(--hover-color) !important;
 }
 
-/*
-  Estilo para la opción que está seleccionada o activa con el teclado.
-*/
+/* Estado Activo */
 .mat-mdc-autocomplete-panel .mat-mdc-option.mdc-list-item--selected,
-.mat-mdc-autocomplete-panel .mat-mdc-option:focus {
-  background-color: #e8f0fe !important;
+.mat-mdc-autocomplete-panel .mat-mdc-option:focus,
+.mat-mdc-autocomplete-panel .mat-mdc-option.mat-mdc-option-active {
+  background-color: var(--panel-color) !important;
 }
 
-/* styles.css o thread.css */
-.mention-link {
-  color: var(--primary-color); /* O el color que uses para los enlaces */
-  text-decoration: none;
-  font-weight: 500;
+/* ====================================================== */
+/* == CORRECCIONES DE TEXTO                            == */
+/* ====================================================== */
+
+.mat-mdc-autocomplete-panel mat-option .mdc-list-item__primary-text {
+  color: var(--text-color) !important;
+  font-size: 0.95rem;
+  /* Evita que textos largos rompan el diseño en móvil */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.mention-link:hover {
-  text-decoration: underline;
+.mat-mdc-autocomplete-panel .user-option__display-name {
+  color: var(--text-color);
+  font-weight: 600;
 }
 
-.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] {
-  /* Forzamos opacidad y color del texto base. */
-  opacity: 1 !important;
-  color: currentColor !important;
+.mat-mdc-autocomplete-panel .user-option__username {
+  color: var(--icon-color);
+  font-size: 0.85rem;
 }
-
-/*
-  Selector para el contenido principal DENTRO de la opción.
-  Angular Material anida varios divs y spans.
-*/
-.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .mdc-list-item__content,
-.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .mdc-list-item__primary-text,
-.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .user-option,
-.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .user-option__display-name,
-.mat-mdc-autocomplete-panel mat-option[aria-disabled='true'] .user-option__username {
-  /* Nos aseguramos de que el texto interno también sea completamente opaco y herede el color. */
-  opacity: 1 !important;
-  color: inherit !important;
-}
-
 /* --- Estilos para input deshabilitado --- */
 :host::ng-deep
   .mat-mdc-form-field.mat-form-field-disabled

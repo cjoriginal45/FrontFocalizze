@@ -1,110 +1,123 @@
+/* ========================================================= */
+/* === Estilo base (Mobile First)                        === */
+/* ========================================================= */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
 .search-bar__form {
-  width: 500px;
-  height: 60px;
+  position: relative;
+  z-index: 2001;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* 'position' es necesario para que 'z-index' funcione */
-  z-index: 1001; /* Un valor más alto que el overlay por defecto (1000) */
-}
-.search-bar__field {
   width: 100%;
-  max-width: 450px;
-  margin-top: 20px;
 }
 
-.user-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.search-bar__field {
+  width: 100%;
+  margin: 0;
 }
-.user-option__avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+
+:host ::ng-deep .search-bar__field .mat-mdc-text-field-wrapper {
+  height: 44px;
+  background-color: var(--card-background) !important;
+  border-radius: 50px !important;
+  padding: 0 4px 0 16px !important;
+
+  border: 1px solid var(--border-color);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.user-option__info {
-  display: flex;
-  flex-direction: column;
+
+:host ::ng-deep .search-bar__field.mat-focused .mat-mdc-text-field-wrapper {
+  box-shadow: 0 0 12px var(--shadow-color);
+  border-color: var(--primary-color);
 }
-.user-option__display-name {
-  font-weight: 500;
-}
-.user-option__username {
-  font-size: 0.8rem;
-  color: #555;
+
+:host ::ng-deep .search-bar__field .mdc-notched-outline,
+:host ::ng-deep .search-bar__field .mdc-notched-outline__leading,
+:host ::ng-deep .search-bar__field .mdc-notched-outline__notch,
+:host ::ng-deep .search-bar__field .mdc-notched-outline__trailing {
+  border: none !important;
 }
 
 :host ::ng-deep .search-bar__field .mat-mdc-form-field-flex {
-  height: 40px;
-  background-color: var(--card-background);
-  border-radius: 50px;
-  display: flex;
-  align-items: center;
-  padding-left: 15px;
-}
-:host ::ng-deep .search-bar__field .mdc-notched-outline > * {
-  border: none !important;
-}
-:host ::ng-deep .search-bar__field input,
-:host ::ng-deep .search-bar__field mat-icon {
-  color: var(--primary-color) !important;
-}
-:host ::ng-deep .search-bar__field input::placeholder {
-  color: var(--icon-color) !important;
-}
-
-/* 
-  1. Apuntamos al contenedor principal del campo (.search-bar__field) y luego,
-     con ::ng-deep, entramos para estilizar el "wrapper" interno.
-*/
-:host .search-bar__field ::ng-deep .mat-mdc-text-field-wrapper {
-  /* Le damos una altura fija al contenedor */
-  height: 40px;
-
-  /* El fondo blanco que quieres */
-  background-color: var(--card-background);
-
-  /* Los bordes redondeados */
-  border-radius: 50px;
-  border: 1px solid rgba(51, 51, 51, 0.3);
-  box-shadow: 0 0 6px var(--shadow-color) !important;
-}
-
-/* 
-  2. Quitamos los bordes por defecto del 'mat-form-field' con appearance="outline".
-*/
-:host .search-bar__field ::ng-deep .mdc-notched-outline > * {
-  border: none !important;
-}
-
-/* 
-  3. Nos aseguramos de que el contenedor flexible interno (flex) ocupe toda la altura
-     y tenga el padding correcto para el ícono y el texto.
-*/
-:host .search-bar__field ::ng-deep .mat-mdc-form-field-flex {
   height: 100%;
   padding: 0;
   display: flex;
   align-items: center;
 }
 
-/* 
-  4. Finalmente, ajustamos los colores del texto y del ícono.
-*/
-:host .search-bar__field ::ng-deep input,
-:host .search-bar__field ::ng-deep mat-icon {
-  color: var(--text-color) !important; /* Un color oscuro para el texto, como en Twitter */
+:host ::ng-deep .search-bar__field input {
+  color: var(--text-color) !important;
+  caret-color: var(--primary-color);
 }
 
-:host .search-bar__field ::ng-deep input::placeholder {
-  color: var(--icon-color) !important; /* Un gris medio para el placeholder */
+:host ::ng-deep .search-bar__field input::placeholder {
+  color: var(--icon-color) !important;
+  opacity: 0.7;
 }
 
-@media (max-width: 768px) {
+:host ::ng-deep .search-bar__field mat-icon {
+  color: var(--primary-color) !important;
+}
+
+:host ::ng-deep .search-bar__field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.user-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.user-option__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+  background-color: #fff;
+}
+
+.user-option__info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+.user-option__display-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-color);
+
+  /* Truncar texto largo */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-option__username {
+  font-size: 0.85rem;
+  color: var(--icon-color);
+}
+
+/* ========================================================= */
+/* === MEDIA QUERIES (DESKTOP)                           === */
+/* ========================================================= */
+
+@media (min-width: 768px) {
   .search-bar__form {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+    width: 480px;
+  }
+
+  :host ::ng-deep .search-bar__field .mat-mdc-text-field-wrapper {
+    box-shadow: 0 0 6px var(--shadow-color);
   }
 }

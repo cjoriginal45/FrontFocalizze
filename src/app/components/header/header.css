@@ -106,7 +106,15 @@
   }
 
   .header__section--center {
-    flex: 1 1 auto;
+    /* CAMBIO CLAVE: Posicionamiento absoluto para centrado perfecto */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* Aseguramos que no se superponga si la pantalla se achica mucho */
+    width: auto;
+    display: flex;
+    justify-content: center;
   }
 
   .header__logo {
