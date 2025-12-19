@@ -1,14 +1,8 @@
-<!-- CAMBIO: La etiqueta ahora es <app-menu> -->
 <app-menu [isMobile$]="isMobile$"></app-menu>
 
 <mat-toolbar class="header">
   <div class="header__section header__section--left">
-    <button
-      mat-icon-button
-      class="header__button"
-      (click)="onMenuClick()"
-      aria-label="Abrir menú de navegación"
-    >
+    <button mat-icon-button class="header__button" (click)="onMenuClick()" aria-label="Abrir menú">
       <mat-icon>menu</mat-icon>
     </button>
     <a href="/feed" class="header__logo-container hide-on-mobile">
@@ -16,50 +10,37 @@
     </a>
   </div>
   <div class="header__section header__section--center">
-    <app-search-bar class="header__section hide-on-mobile"></app-search-bar>
+    <app-search-bar class="header__search hide-on-mobile"></app-search-bar>
     <a href="/feed" class="header__logo-container show-on-mobile">
-      <img class="header__logo" [src]="logoPath()" alt="Focalizze logo" />
+      <img class="header__logo mobile-logo" [src]="logoPath()" alt="Focalizze logo" />
     </a>
   </div>
+
   <div class="header__section header__section--right">
     <a
       routerLink="/notifications"
       mat-icon-button
       class="header__button notification-button hide-on-mobile"
-      aria-label="Ver notificaciones"
+      aria-label="Notificaciones"
     >
-      <!-- El ícono de notificación -->
       <mat-icon>notifications</mat-icon>
       @if (hasUnreadNotifications()) {
       <span class="notification-dot"></span>
       }
     </a>
 
-    @if (currentUser(); as user) {
-    <!-- El enlace apunta al perfil del usuario -->
-    <a
-      [routerLink]="['/profile', user.username]"
-      class="header__avatar-link hide-on-mobile"
-      aria-label="Ver perfil de usuario"
-    >
-      <img
-        [src]="user.avatarUrl"
-        class="header__user-avatar"
-        alt="Avatar de {{ user.displayName }}"
-      />
-    </a>
-    } @else {
-    <!-- Fallback: Muestra el ícono si no hay un usuario -->
-    <button
-      mat-icon-button
-      class="header__button hide-on-mobile"
-      aria-label="Ver perfil de usuario"
-    >
-      <mat-icon>account_circle</mat-icon>
-    </button>
-    }
-
-    <button mat-icon-button class="header__button show-on-mobile" aria-label="Ver configuración">
+    <div class="hide-on-mobile">
+      @if (currentUser(); as user) {
+      <a [routerLink]="['/profile', user.username]" class="header__avatar-link">
+        <img [src]="user.avatarUrl" class="header__user-avatar" alt="Avatar" />
+      </a>
+      } @else {
+      <button mat-icon-button class="header__button">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      }
+    </div>
+    <button mat-icon-button class="header__button show-on-mobile" aria-label="Configuración">
       <mat-icon>settings</mat-icon>
     </button>
   </div>
