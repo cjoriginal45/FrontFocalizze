@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 
-import { MatDialog } from './mat-dialog';
+
 
 describe('MatDialog', () => {
   let component: MatDialog;

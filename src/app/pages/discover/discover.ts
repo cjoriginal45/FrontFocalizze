@@ -107,8 +107,8 @@ export class Discover implements OnInit {
       maxWidth: '95vw',
       maxHeight: '90vh',
       data: { 
-        threadId: data.threadId,     // Extraemos el ID
-        username: data.username      // Extraemos el username del autor
+        threadId: data.threadId,     
+        username: data.username      
       }, 
       panelClass: 'comments-dialog-container',
     });

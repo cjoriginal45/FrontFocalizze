@@ -140,6 +140,11 @@ describe('Login', () => {
         userId: 1,
         token: 'fake-jwt-token',
         displayName: 'Test User',
+        followersCount: 0,
+        followingCount: 0,
+        role: 'user',
+        isTwoFactorEnabled: false,
+        requiresTwoFactor: false,
       };
       authService.login.and.returnValue(of(mockResponse));
 
@@ -266,6 +271,11 @@ describe('Login', () => {
         userId: 1,
         token: 'fake-token',
         displayName: 'Test User',
+        followersCount: 0,
+        followingCount: 0,
+        role: 'user',
+        isTwoFactorEnabled: false,
+        requiresTwoFactor: false,
       };
       authService.login.and.returnValue(of(mockResponse));
 
