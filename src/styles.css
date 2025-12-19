@@ -4,6 +4,7 @@
 
 :root {
   --primary-color: #01344a; /* Azul oscuro */
+  --primary-hover: #024b6a;
   --secondary-color: #80d8ff; /* Azul claro */
   --background-color: #f4f6f8; /* Gris muy claro */
   --shadow-color: rgba(0, 0, 0, 0.7);
@@ -22,6 +23,7 @@
 /* --- Variables Tema Oscuro --- */
 body.dark-theme {
   --primary-color: #33667c; /* Azul más brillante para resaltar en oscuro */
+  --primary-hover: #3f7a94;
   --background-color: #121212; /* Fondo muy oscuro */
   --shadow-color: rgb(255, 255, 255, 0.7);
   --panel-color: #1e1e1e;

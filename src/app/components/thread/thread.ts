@@ -41,6 +41,7 @@ import { Block } from '../../services/block/block';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReportModal } from '../report-modal/report-modal/report-modal';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-thread',
@@ -55,6 +56,7 @@ import { ReportModal } from '../report-modal/report-modal/report-modal';
     TimeAgoPipe,
     MentionLinkerPipe,
     TranslateModule,
+    MatProgressSpinner,
   ],
   templateUrl: './thread.html',
   styleUrl: './thread.css',

@@ -1,9 +1,6 @@
-<!-- La condición principal ahora es simplemente la señal del hilo.
-     Angular no renderizará nada de esto hasta que 'threadSignal' deje de ser 'null'. -->
 @if (threadSignal(); as thread) {
 
 <article class="thread">
-  <!-- Mini Header del Hilo -->
   <header class="thread__header">
     <div class="thread__header-left">
       <a [routerLink]="['/profile', thread.user.username]" class="thread__user">
@@ -18,7 +15,6 @@
         </div>
       </a>
 
-      <!-- La señal 'userSignal' ya no es necesaria aquí, podemos usar 'thread.user' directamente -->
       @if (authService.getCurrentUser()?.username !== thread.user.username) {
       <app-follow-button type="user" [identifier]="thread.user.username"></app-follow-button>
       }
@@ -75,18 +71,13 @@
     </div>
   </header>
 
-  <!-- Cuerpo del Hilo -->
   <div class="thread__body" [class.thread__body--expanded]="isExpanded">
     <div class="thread__content">
       <div class="thread__post">
         <h3 class="thread__post-title">{{ 'THREAD.POST_NUMBER' | translate : { number: 1 } }}</h3>
         <p class="thread__post-text" [innerHTML]="thread.posts[0] | mentionLinker"></p>
-
-        <!-- --- NUEVO BLOQUE DE IMÁGENES --- -->
-        <!-- Mostramos las imágenes asociadas al hilo -->
         @if (thread.images && thread.images.length > 0) {
         <div class="thread__images-grid" [attr.data-count]="thread.images.length">
-          <!-- Mostramos solo las primeras en vista previa, o todas si quieres -->
           @for (imgSrc of thread.images; track $index) {
           <img
             [src]="imgSrc"
@@ -115,19 +106,22 @@
       </div>
     </div>
     @if (thread.posts.length > 1 || !isFullyLoaded) {
-    <a (click)="toggleExpansion()" class="thread__expand-btn">
+    <button
+      class="thread__expand-btn"
+      (click)="toggleExpansion()"
+      [class.expanded]="isExpanded"
+      [attr.aria-label]="isExpanded ? ('THREAD.HIDE' | translate) : ('THREAD.EXPAND' | translate)"
+      mat-icon-button
+    >
       @if (isLoadingDetails) {
-      {{ 'THREAD.LOADING' | translate }}
-      } @else if (isExpanded) {
-      {{ 'THREAD.HIDE' | translate }}
+      <mat-spinner diameter="20" strokeWidth="2"></mat-spinner>
       } @else {
-      {{ 'THREAD.EXPAND' | translate }}
+      <mat-icon>expand_more</mat-icon>
       }
-    </a>
+    </button>
     }
   </div>
 
-  <!-- Footer con Acciones -->
   <footer class="thread__footer">
     <div
       class="thread__action thread__action--like"
@@ -155,5 +149,4 @@
     </div>
   </footer>
 </article>
-
 }
