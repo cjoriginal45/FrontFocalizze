@@ -7,38 +7,44 @@ import {
   OnDestroy,
   OnInit,
   QueryList,
-  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
+// --- ANGULAR MATERIAL IMPORTS ---
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { threadService } from '../../services/thread/thread';
-import { ThreadRequest } from '../../interfaces/ThreadRequest';
-import { Category } from '../../services/category/category';
 import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { Observable, of, Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
-import { UserSearch } from '../../interfaces/UserSearch';
-import { Search } from '../../services/search/search';
+import { MatMenuModule } from '@angular/material/menu';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
   MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
+
+// --- CDK & THIRD PARTY ---
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ThreadState } from '../../services/thread-state/thread-state';
-import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
-import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatMenuModule } from '@angular/material/menu';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+
+// --- RXJS ---
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
+
+// --- SERVICES & INTERFACES ---
+import { threadService } from '../../services/thread/thread';
+import { ThreadRequest } from '../../interfaces/ThreadRequest';
+import { Category } from '../../services/category/category';
+import { UserSearch } from '../../interfaces/UserSearch';
+import { Search } from '../../services/search/search';
+import { ThreadState } from '../../services/thread-state/thread-state';
+import { FeedThreadDto } from '../../interfaces/FeedThread';
 
 interface SelectCategory {
   value: string;
@@ -68,9 +74,21 @@ interface SelectCategory {
   styleUrl: './create-thread-modal.css',
 })
 export class CreateThreadModal implements OnInit, OnDestroy {
+  // --- INYECCIÓN DE SERVICIOS ---
   private threadState = inject(ThreadState);
 
+  // --- PROPIEDADES DE ESTADO Y UI ---
   errorMessage: string | null = null;
+  currentStep = 1;
+  isMobileView = true;
+  readonly charLimits = { step1: 600, step2: 400, step3: 300 };
+  
+  // --- HILOS Y CATEGORÍAS ---
+  threads: string[] = ['', '', ''];
+  categories: SelectCategory[] = [];
+  selectedCategory: string | null = null;
+
+  // --- PROGRAMADOR (SCHEDULER) ---
   showScheduler = false;
   scheduledDate: Date | null = null;
   scheduledHour: number | null = null;
@@ -78,31 +96,21 @@ export class CreateThreadModal implements OnInit, OnDestroy {
   hours: number[] = Array.from({ length: 24 }, (_, i) => i);
   minutes: number[] = Array.from({ length: 60 }, (_, i) => i);
 
-  threads: string[] = ['', '', ''];
-  categories: SelectCategory[] = [];
-  selectedCategory: string | null = null;
-  currentStep = 1;
-  readonly charLimits = { step1: 600, step2: 400, step3: 300 };
-
-  // --- VARIABLES PARA IMÁGENES ---
+  // --- IMÁGENES ---
   selectedImages: File[] = [];
   imagePreviews: string[] = [];
   readonly MAX_IMAGES = 4;
   readonly MAX_SIZE_MB = 5;
 
-  // --- AUTOCOMPLETE LÓGICA ---
+  // --- MENCIONES Y BÚSQUEDA ---
   mentionResults$!: Observable<UserSearch[]>;
   private mentionQuery$ = new Subject<string | null>();
-
-  // Solo necesitamos saber cuál input se tocó por última vez para las menciones
   private lastFocusedIndex: number = 0;
   private lastCursorPosition: number = 0;
-
   private lastTextContent: string = '';
 
-  isMobileView = true;
+  // --- SUBSCRIPCIONES Y VIEWCHILDREN ---
   private breakpointSubscription!: Subscription;
-
   @ViewChildren(CdkTextareaAutosize) cdkTextareas!: QueryList<CdkTextareaAutosize>;
   @ViewChildren('threadInput') threadInputs!: QueryList<ElementRef<HTMLTextAreaElement>>;
 
@@ -115,8 +123,12 @@ export class CreateThreadModal implements OnInit, OnDestroy {
     private _ngZone: NgZone
   ) {}
 
+  // --- CICLO DE VIDA ---
+
   ngOnInit(): void {
     this.loadCategories();
+    
+    // Observador para diseño responsivo
     this.breakpointSubscription = this.breakpointObserver
       .observe(['(max-width: 767px)'])
       .subscribe((result) => {
@@ -124,13 +136,12 @@ export class CreateThreadModal implements OnInit, OnDestroy {
         this.triggerResize();
       });
 
-    // Configuración reactiva del buscador
+    // Configuración reactiva del buscador de menciones
     this.mentionResults$ = this.mentionQuery$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((query) => {
         if (query && query.length >= 1) {
-          // Buscar a partir de 1 letra después del @
           return this.searchService.searchUsers(query);
         }
         return of([]);
@@ -148,78 +159,60 @@ export class CreateThreadModal implements OnInit, OnDestroy {
     }
   }
 
-  // --- MANEJO DE EVENTOS TEXTAREA ---
-  // --- 1. RASTREO DEL CURSOR (Se ejecuta al escribir/clicar) ---
-  // --- 1. RASTREO ROBUSTO DEL CURSOR ---
+  // --- MANEJO DE TEXTAREA Y EVENTOS ---
+
+  /** Rastrea la posición del cursor y detecta si se está escribiendo una mención (@) */
   onTextareaEvent(event: Event, index: number): void {
     const textarea = event.target as HTMLTextAreaElement;
 
     this.lastFocusedIndex = index;
     this.lastCursorPosition = textarea.selectionStart;
-    this.lastTextContent = textarea.value; // <--- GUARDAMOS EL TEXTO AQUÍ
+    this.lastTextContent = textarea.value;
 
-    // Lógica de detección de @
     const textBeforeCursor = textarea.value.substring(0, this.lastCursorPosition);
     const mentionMatch = textBeforeCursor.match(/@(\w+)$/);
 
     this.mentionQuery$.next(mentionMatch ? mentionMatch[1] : null);
   }
 
-  // --- 2. SELECCIÓN DE MENCIÓN CORREGIDA ---
+  /** Inserta el usuario seleccionado en el textarea correspondiente */
   onUserMentionSelected(event: MatAutocompleteSelectedEvent): void {
-    // Evitamos que el evento por defecto propague valores incorrectos
     event.option.deselect();
 
     const selectedUser = event.option.value;
     const index = this.lastFocusedIndex;
-
-    // Obtenemos el elemento nativo
     const textareaRef = this.threadInputs.toArray()[index];
+    
     if (!textareaRef) return;
     const textarea = textareaRef.nativeElement;
 
-    // USAMOS LAS VARIABLES GUARDADAS (Snapshot del momento antes de perder el foco)
     const cursor = this.lastCursorPosition;
-    const currentText = this.lastTextContent; // Usamos el texto que guardamos en 'input'
+    const currentText = this.lastTextContent;
 
-    // Buscamos el @ hacia atrás desde la posición del cursor guardada
     const textBeforeCursor = currentText.substring(0, cursor);
     const atIndex = textBeforeCursor.lastIndexOf('@');
 
     if (atIndex !== -1) {
-      // Texto previo al @
       const prefix = currentText.substring(0, atIndex);
-      // Texto posterior al cursor (lo que había después de lo que estabas escribiendo)
       const suffix = currentText.substring(cursor);
-
-      // Construimos el nuevo texto
       const newText = `${prefix}@${selectedUser.username} ${suffix}`;
 
-      // 1. Actualizamos el modelo de Angular
       this.threads[index] = newText;
-
-      // 2. Forzamos la actualización visual del DOM (para contrarrestar a Material)
       textarea.value = newText;
-
-      // 3. Avisamos a Angular que hubo un cambio "input"
       textarea.dispatchEvent(new Event('input'));
 
-      // 4. Calculamos dónde debe quedar el cursor (después del espacio)
-      const newCursorPos = atIndex + selectedUser.username.length + 2; // +2 por '@' y ' '
+      const newCursorPos = atIndex + selectedUser.username.length + 2;
 
-      // 5. Devolvemos el foco y el cursor
       setTimeout(() => {
         textarea.focus();
         textarea.setSelectionRange(newCursorPos, newCursorPos);
-
-        // Actualizamos el tracker para que no quede desfasado
         this.lastCursorPosition = newCursorPos;
         this.lastTextContent = newText;
       }, 0);
     }
   }
 
-  // --- LÓGICA DE EMOJIS ---
+  /** Inserta un emoji en la posición actual del cursor */
   addEmoji(event: any, index: number, textarea: HTMLTextAreaElement): void {
     const emoji = event.emoji.native;
     textarea.setRangeText(emoji, textarea.selectionStart, textarea.selectionEnd, 'end');
@@ -227,10 +220,12 @@ export class CreateThreadModal implements OnInit, OnDestroy {
     textarea.focus();
   }
 
-  // Helper para mostrar string vacío en el input mientras se selecciona (Angular Material quirk)
+  /** Muestra string vacío en el input de Autocomplete durante la selección */
   displayWithFn(user: UserSearch): string {
     return '';
   }
+
+  // --- NAVEGACIÓN Y UTILIDADES DE UI ---
 
   loadCategories(): void {
     this.categoryService
@@ -258,16 +253,20 @@ export class CreateThreadModal implements OnInit, OnDestroy {
     }
   }
 
+  /** Ajusta el tamaño de los textareas para que encajen con el contenido */
   triggerResize(): void {
     this._ngZone.onStable.pipe(take(1)).subscribe(() => {
       this.cdkTextareas?.forEach((textarea) => textarea.resizeToFitContent(true));
     });
   }
 
+  // --- LÓGICA DE PUBLICACIÓN ---
+
   publish(): void {
     this.errorMessage = null;
     let finalScheduledTime: string | null = null;
 
+    // Procesamiento de fecha programada
     if (
       this.showScheduler &&
       this.scheduledDate &&
@@ -293,25 +292,23 @@ export class CreateThreadModal implements OnInit, OnDestroy {
       scheduledTime: finalScheduledTime,
     };
 
-    if (threadData.post1.trim() === '') {
-      this.errorMessage = 'Los post no pueden estar vacios.';
-      return;
-    }
+   // 1. Validar si todo está totalmente vacío (ni texto ni imágenes)
+  if (threadData.post1.trim() === '' && this.selectedImages.length === 0) {
+    this.errorMessage = 'Debes escribir algo o subir una imagen.';
+    return;
+  }
 
-    if (
-      threadData.post1.length > this.charLimits.step1 ||
-      threadData.post2.length > this.charLimits.step2 ||
-      threadData.post3.length > this.charLimits.step3
-    ) {
-      this.errorMessage = `Un post excede el límite de caracteres.`;
-      return;
-    }
+  // 2. Validar límites de caracteres (solo si hay texto)
+  if (
+    threadData.post1.length > this.charLimits.step1 ||
+    threadData.post2.length > this.charLimits.step2 ||
+    threadData.post3.length > this.charLimits.step3
+  ) {
+    this.errorMessage = `Un post excede el límite de caracteres.`;
+    return;
+  }
 
-    if (threadData.post1.trim() === '' && this.selectedImages.length === 0) {
-      this.errorMessage = 'Debes escribir algo o subir una imagen.';
-      return;
-    }
-
+    // Petición al servicio
     this.threadService.createThread(threadData, this.selectedImages).subscribe({
       next: (responseDto) => {
         const newFeedThread: FeedThreadDto = {
@@ -349,26 +346,23 @@ export class CreateThreadModal implements OnInit, OnDestroy {
 
   // --- LÓGICA DE IMÁGENES ---
 
-  // Se dispara al seleccionar archivos desde el input oculto
+  /** Procesa la selección de archivos e imágenes */
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
     const files = Array.from(input.files);
 
-    // Validaciones
     if (this.selectedImages.length + files.length > this.MAX_IMAGES) {
       this.errorMessage = `Máximo ${this.MAX_IMAGES} imágenes permitidas.`;
       return;
     }
 
     for (const file of files) {
-      // Validar tipo
       if (!file.type.startsWith('image/')) {
         this.errorMessage = 'Solo se permiten archivos de imagen.';
         continue;
       }
-      // Validar tamaño
       if (file.size > this.MAX_SIZE_MB * 1024 * 1024) {
         this.errorMessage = `La imagen ${file.name} excede el tamaño máximo de ${this.MAX_SIZE_MB}MB.`;
         continue;
@@ -376,7 +370,6 @@ export class CreateThreadModal implements OnInit, OnDestroy {
 
       this.selectedImages.push(file);
 
-      // Generar preview
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreviews.push(e.target.result);
@@ -384,7 +377,6 @@ export class CreateThreadModal implements OnInit, OnDestroy {
       reader.readAsDataURL(file);
     }
 
-    // Limpiar input para permitir seleccionar la misma imagen si se borra
     input.value = '';
     this.errorMessage = null;
   }
