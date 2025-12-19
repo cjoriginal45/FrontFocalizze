@@ -1,8 +1,12 @@
 <section class="f-d-container">
   <div class="f-d-container__options">
-    <a href="#" class="f-d-container__option" routerLink="/feed">{{ 'FEED_OPTIONS.FOLLOWING' | translate }}</a>
+    <a class="f-d-container__option" routerLink="/feed" routerLinkActive="active">
+      {{ 'FEED_OPTIONS.FOLLOWING' | translate }}
+    </a>
     <div class="f-d-container__line"></div>
-    <a href="#" class="f-d-container__option" routerLink="/discover">{{ 'FEED_OPTIONS.DISCOVER' | translate }}</a>
+    <a class="f-d-container__option" routerLink="/discover" routerLinkActive="active">
+      {{ 'FEED_OPTIONS.DISCOVER' | translate }}
+    </a>
   </div>
   @if (authService.isLoggedIn()) {
   <div class="f-d-container__interactions">
