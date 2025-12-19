@@ -11,6 +11,7 @@ import { ReportRequest } from '../../../interfaces/ReportRequest';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReportReason } from '../../../interfaces/ReportReason';
 import { Report } from '../../../services/report/report';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-report-modal',
@@ -23,6 +24,7 @@ import { Report } from '../../../services/report/report';
     MatInputModule,
     MatSelectModule,
     TranslateModule,
+    MatIcon,
   ],
   templateUrl: './report-modal.html',
   styleUrl: './report-modal.css',
@@ -33,14 +35,14 @@ export class ReportModal {
 
   // Mapeamos el enum a un array para el *ngFor
   reasons = Object.values(ReportReason);
-  
+
   selectedReason: ReportReason | null = null;
   description: string = '';
   isSubmitting = false;
 
   constructor(
     public dialogRef: MatDialogRef<ReportModal>,
-    @Inject(MAT_DIALOG_DATA) public data: { username?: string, threadId?: number }
+    @Inject(MAT_DIALOG_DATA) public data: { username?: string; threadId?: number }
   ) {}
 
   onCancel(): void {
@@ -50,10 +52,10 @@ export class ReportModal {
   onSubmit(): void {
     if (!this.selectedReason) return;
     this.isSubmitting = true;
-    
+
     const request: ReportRequest = {
       reason: this.selectedReason,
-      description: this.description
+      description: this.description,
     };
 
     let reportObservable;
@@ -74,12 +76,10 @@ export class ReportModal {
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.snackBar.open('Error al enviar el reporte. Por favor, inténtalo de nuevo.', 'Cerrar', { duration: 3000 });
-      }
+        this.snackBar.open('Error al enviar el reporte. Por favor, inténtalo de nuevo.', 'Cerrar', {
+          duration: 3000,
+        });
+      },
     });
-  
   }
-
-  
-
 }
