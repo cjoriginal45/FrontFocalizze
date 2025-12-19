@@ -1,23 +1,38 @@
-<h2 mat-dialog-title>Detalles del Reporte</h2>
-<mat-dialog-content>
-  <div class="detail-row">
-    <strong>Reportado:</strong> @{{ report.reportedUsername }}
+<header class="modal-header">
+  <h2 class="modal-header__title">Detalles del Reporte</h2>
+  <div class="modal-header__right">
+    <button mat-icon-button [mat-dialog-close]="true" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
-  <div class="detail-row">
-    <strong>Reportado por:</strong> @{{ report.reporterUsername }}
-  </div>
-  <div class="detail-row">
-    <strong>Razón:</strong> {{ report.reason }}
-  </div>
-  @if (report.description) {
-    <div class="detail-box">
-      <p>{{ report.description }}</p>
+</header>
+
+<div class="modal-content">
+  <div class="info-section">
+    <div class="detail-row">
+      <span class="label">Reportado:</span>
+      <span class="value highlight">@{{ report.reportedUsername }}</span>
     </div>
+    <div class="detail-row">
+      <span class="label">Reportado por:</span>
+      <span class="value">@{{ report.reporterUsername }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Razón:</span>
+      <span class="value">{{ report.reason }}</span>
+    </div>
+  </div>
+
+  @if (report.description) {
+  <div class="description-box">
+    <span class="label">Descripción:</span>
+    <p>{{ report.description }}</p>
+  </div>
   }
 
-  <div class="suspension-options">
+  <div class="actions-section">
     <h3>Acciones</h3>
-    <mat-form-field appearance="outline" style="width: 100%;">
+    <mat-form-field appearance="outline" class="full-width custom-select">
       <mat-label>Duración de suspensión</mat-label>
       <mat-select [(ngModel)]="selectedDays">
         <mat-option [value]="1">1 Día</mat-option>
@@ -26,11 +41,14 @@
       </mat-select>
     </mat-form-field>
   </div>
-</mat-dialog-content>
+</div>
 
-<mat-dialog-actions align="end">
-  <button mat-button (click)="dismissReport()" [disabled]="isLoading">Ignorar</button>
-  <button mat-flat-button color="warn" (click)="suspendUser()" [disabled]="isLoading">
+<div class="modal-footer">
+  <button mat-button class="btn-secondary" (click)="dismissReport()" [disabled]="isLoading">
+    Ignorar
+  </button>
+
+  <button mat-flat-button class="btn-warn" (click)="suspendUser()" [disabled]="isLoading">
     Suspender Usuario
   </button>
-</mat-dialog-actions>
+</div>
