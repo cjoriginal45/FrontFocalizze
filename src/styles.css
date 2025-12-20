@@ -449,3 +449,22 @@ body {
 .mat-focus-indicator:hover {
   background-color: var(--hover-color) !important;
 }
+
+.mat-mdc-dialog-container {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-dialog-inner-container,
+.mdc-dialog__container {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-dialog-title,
+.mdc-dialog__title {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-dialog-content,
+.mdc-dialog__content {
+  color: var(--text-color) !important;
+}
