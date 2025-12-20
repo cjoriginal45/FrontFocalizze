@@ -18,6 +18,10 @@
   animation: fadeIn 1s ease-out forwards;
 }
 
+.header.no-shadow {
+  box-shadow: none !important;
+}
+
 .header__section {
   display: flex;
   align-items: center;

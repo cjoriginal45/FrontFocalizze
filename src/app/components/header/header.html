@@ -1,6 +1,6 @@
 <app-menu [isMobile$]="isMobile$"></app-menu>
 
-<mat-toolbar class="header">
+<mat-toolbar class="header" [class.no-shadow]="disableShadow">
   <div class="header__section header__section--left">
     <button mat-icon-button class="header__button" (click)="onMenuClick()" aria-label="Abrir menú">
       <mat-icon>menu</mat-icon>
