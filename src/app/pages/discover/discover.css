@@ -4,8 +4,9 @@
   min-height: 100vh;
 }
 
-/* --- ESTILOS BASE / MÓVIL --- */
-/* --- BASE / MOBILE STYLES --- */
+/* ========================================================= */
+/* === ESTILOS BASE (MOBILE FIRST - < 768px)             === */
+/* ========================================================= */
 .discover-layout {
   display: block;
   padding: 15px;
@@ -23,8 +24,6 @@
   gap: 15px;
 }
 
-/* --- Animación de entrada de los hilos --- */
-/* --- Thread entry animation --- */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -36,15 +35,11 @@
   }
 }
 
-/* Aplica la animación a cada hilo */
-/* Apply the animation to each thread */
 .discover-layout__threads-list app-thread {
   opacity: 0;
   animation: fadeInUp 0.4s ease forwards;
 }
 
-/* Agrega un pequeño retraso progresivo entre hilos (efecto cascada) */
-/* Adds a small progressive delay between threads (cascade effect) */
 .discover-layout__threads-list app-thread:nth-child(1) {
   animation-delay: 0.05s;
 }
@@ -61,8 +56,6 @@
   animation-delay: 0.25s;
 }
 
-/* --- Indicador de carga y botón --- */
-/* --- Loading indicator and button --- */
 .loading-indicator {
   text-align: center;
   padding: 20px;
@@ -86,21 +79,19 @@
   transform: scale(1.03);
 }
 
-/* --- ESTILOS ESPECÍFICOS PARA LA RECOMENDACIÓN --- */
 .discover-item {
-  background-color: #e0e0e0;
+  background-color: var(--card-background);
   border-radius: 8px;
   overflow: hidden;
   opacity: 0;
   animation: fadeInUp 0.4s ease forwards;
+  transition: box-shadow 0.3s ease;
 }
 
 .discover-item:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px var(--shadow-color);
 }
 
-/* Agrega un pequeño retraso progresivo entre hilos (efecto cascada) */
-/* Adds a small progressive delay between threads (cascade effect) */
 .discover-item:nth-child(1) {
   animation-delay: 0.05s;
 }
@@ -123,22 +114,25 @@
   gap: 8px;
   font-size: 0.8rem;
   font-weight: 500;
-  color: rgba(1, 52, 74, 0.7);
+  color: #fff;
   padding: 6px 16px;
-  background-color: #e0e0e0;
-  border-bottom: 1px solid #e0e0e0;
+  background-color: var(--primary-hover);
 }
 .recommendation-header span {
   flex-grow: 1;
 }
+
+.recommendation-header mat-icon {
+  color: #fff;
+}
+
 .recommendation-header__icon {
   font-size: 16px;
   width: 16px;
   height: 16px;
-  color: var(--primary-color);
+  color: #fff;
 }
 
-/* Estilos para el contenido del menú desplegable */
 .recommendation-reason {
   padding: 12px 16px;
   max-width: 280px;
@@ -171,7 +165,9 @@
   color: var(--primary-color) !important;
 }
 
-/* --- MEDIA QUERY PARA ESCRITORIO --- */
+/* ========================================================= */
+/* === ESCRITORIO (>= 768px)                             === */
+/* ========================================================= */
 @media (min-width: 992px) {
   .discover-layout {
     display: grid;
@@ -192,36 +188,23 @@
   .discover-layout__sidebar {
     grid-column: 3 / 4;
     position: sticky;
-    top: 110px;
+    top: 120px;
     height: calc(100vh - (60px + 40px + 40px));
     overflow-y: auto;
     padding-right: 5px;
     border: 1px solid var(--border-color);
-    border-radius: 10px;
+    border-radius: 15px;
+    transition: box-shadow 0.3s ease;
   }
 
   .discover-layout__sidebar:hover {
-    box-shadow: 0 0 6px var(--shadow-color);
-  }
-
-  .discover-layout__sidebar::-webkit-scrollbar {
-    width: 6px;
-    border-radius: 4px;
-    background-color: var(--primary-color);
-  }
-
-  .discover-layout__sidebar::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color);
-    border-radius: 4px;
-  }
-
-  .discover-layout__sidebar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 15px var(--shadow-color);
   }
 }
 
-/* --- RESPONSIVIDAD --- */
-/* --- RESPONSIVITY --- */
+/* ========================================================= */
+/* === ESCRITORIO (<= 991px)                             === */
+/* ========================================================= */
 @media (max-width: 991px) {
   .load-more-button {
     width: 100%;

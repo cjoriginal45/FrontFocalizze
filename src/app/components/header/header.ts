@@ -1,4 +1,4 @@
-import { Component, inject, Signal, ViewChild, effect, computed } from '@angular/core';
+import { Component, inject, Signal, ViewChild, effect, computed, Input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 import { Menu } from '../menu/menu';
@@ -21,7 +21,7 @@ import { Theme } from '../../services/themeService/theme';
 export class Header {
   @ViewChild(Menu) public menuComponent!: Menu;
   public isMobile$: Observable<boolean>;
-
+  @Input() disableShadow: boolean = false;
   private authService = inject(Auth);
   private notificationStateService = inject(NotificationState);
   private themeService = inject(Theme);

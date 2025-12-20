@@ -59,6 +59,53 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* --- Firefox --- */
+html,
+body {
+  /* Barra delgada y colores de variable */
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+}
+
+/* --- Webkit (Chrome, Edge, Safari) --- */
+
+/* 1. Ancho de la barra */
+::-webkit-scrollbar {
+  width: 8px; /* Un ancho cómodo pero elegante */
+  height: 8px; /* Para scroll horizontal */
+}
+
+/* 2. El carril (Track) */
+::-webkit-scrollbar-track {
+  background: transparent; /* Fondo invisible para que se funda con la página */
+  /* Opcional: si quieres un carril visible sutil */
+  /* background: rgba(0, 0, 0, 0.05); */
+}
+
+/* 3. La barra (Thumb) */
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color); /* Tu color corporativo */
+  border-radius: 20px; /* Bordes totalmente redondeados (Píldora) */
+
+  /* Borde transparente para crear "aire" alrededor y que parezca flotar */
+  border: 2px solid transparent;
+  background-clip: content-box;
+
+  /* Opacidad inicial para no distraer (opcional, requiere usar rgba en var) */
+  /* Si prefieres color sólido, deja solo background-color */
+}
+
+/* 4. Estado Hover (Al pasar el mouse por la barra) */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-hover); /* Color un poco más intenso/oscuro */
+  border-width: 1px; /* Se hace un poco más gruesa al interactuar */
+}
+
+/* 5. Esquina (donde se juntan scroll vertical y horizontal) */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 .create-thread-modal-panel .mat-dialog-container {
   padding: 0 !important;
   background-color: var(--card-background);
@@ -381,4 +428,24 @@ body {
 .mat-mdc-select-placeholder,
 .mat-mdc-select-min-line {
   background-color: var(--card-background) !important;
+}
+
+.mat-mdc-menu-panel {
+  background-color: var(--card-background) !important;
+  border: 1px solid var(--border-color);
+}
+.mat-mdc-menu-panel:hover {
+  box-shadow: 0 0 4px var(--shadow-color) !important;
+  transition: box-shadow 0.3s ease;
+}
+
+.mat-mdc-menu-item,
+.mat-focus-indicator {
+  color: var(--text-color) !important;
+  transition: box-shadow 0.3s ease;
+}
+
+.mat-mdc-menu-item:hover,
+.mat-focus-indicator:hover {
+  background-color: var(--hover-color) !important;
 }

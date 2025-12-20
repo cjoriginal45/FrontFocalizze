@@ -1,24 +1,20 @@
-<app-header></app-header>
+<app-header [disableShadow]="true"></app-header>
 <app-following-discovering></app-following-discovering>
 
 <div class="feed-layout">
   <main class="feed-layout__content">
     <div class="feed-layout__threads-list">
       @for (threadId of threadIds; track threadId) {
-        <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
+      <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
       }
     </div>
 
-    <!-- Mostramos un mensaje de carga mientras se obtienen los datos -->
-    <!-- We show a loading message while the data is being fetched -->
     @if (isLoading) {
-      <div class="loading-indicator">{{ 'FEED.LOADING' | translate }}</div>
-    }
-
-    <!-- Mostramos un botón para cargar más si no hemos llegado al final -->
-    <!-- We show a button to load more if we haven't reached the end -->
-    @if (!isLastPage && threadIds.length > 0 && !isLoading) {
-      <button (click)="loadMoreThreads()" class="load-more-button">{{ 'FEED.LOAD_MORE' | translate }}</button>
+    <div class="loading-indicator">{{ 'FEED.LOADING' | translate }}</div>
+    } @if (!isLastPage && threadIds.length > 0 && !isLoading) {
+    <button (click)="loadMoreThreads()" class="load-more-button">
+      {{ 'FEED.LOAD_MORE' | translate }}
+    </button>
     }
   </main>
 

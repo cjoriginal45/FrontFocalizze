@@ -4,7 +4,9 @@
   min-height: 100vh;
 }
 
-/* --- ESTILOS BASE / MÓVIL --- */
+/* ========================================================= */
+/* === ESTILOS BASE (MOBILE FIRST - < 768px)             === */
+/* ========================================================= */
 .feed-layout {
   display: block;
   padding: 15px;
@@ -22,8 +24,6 @@
   gap: 15px;
 }
 
-/* --- Animación de entrada de los hilos --- */
-/* --- Thread entry animation --- */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -35,15 +35,11 @@
   }
 }
 
-/* Aplica la animación a cada hilo */
-/* Apply the animation to each thread */
 .feed-layout__threads-list app-thread {
   opacity: 0;
   animation: fadeInUp 0.4s ease forwards;
 }
 
-/* Agrega un pequeño retraso progresivo entre hilos (efecto cascada) */
-/* Adds a small progressive delay between threads (cascade effect) */
 .feed-layout__threads-list app-thread:nth-child(1) {
   animation-delay: 0.05s;
 }
@@ -60,8 +56,6 @@
   animation-delay: 0.25s;
 }
 
-/* --- Indicador de carga y botón --- */
-/* --- Loading indicator and button --- */
 .loading-indicator {
   text-align: center;
   padding: 20px;
@@ -85,7 +79,9 @@
   transform: scale(1.03);
 }
 
-/* --- MEDIA QUERY PARA ESCRITORIO --- */
+/* ========================================================= */
+/* === ESCRITORIO (>= 768px)                             === */
+/* ========================================================= */
 @media (min-width: 992px) {
   .feed-layout {
     display: grid;
@@ -106,30 +102,16 @@
   .feed-layout__sidebar {
     grid-column: 3 / 4;
     position: sticky;
-    top: 110px;
+    top: 120px;
     height: calc(100vh - (60px + 40px + 40px));
     overflow-y: auto;
     padding-right: 5px;
     border: 1px solid var(--border-color);
-    border-radius: 10px;
+    border-radius: 15px;
+    transition: box-shadow 0.3s ease;
   }
 
   .feed-layout__sidebar:hover {
-    box-shadow: 0 0 6px var(--shadow-color);
-  }
-
-  .feed-layout__sidebar::-webkit-scrollbar {
-    width: 6px;
-    border-radius: 4px;
-    background-color: var(--primary-color);
-  }
-
-  .feed-layout__sidebar::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color);
-    border-radius: 4px;
-  }
-
-  .feed-layout__sidebar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 15px var(--shadow-color);
   }
 }
