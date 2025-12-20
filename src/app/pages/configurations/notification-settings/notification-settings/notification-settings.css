@@ -12,19 +12,18 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  padding-top: 60px; /* Espacio para el header fijo */
-  padding-bottom: 80px; /* Espacio para el nav inferior */
+  padding-top: 60px;
+  padding-bottom: 80px;
   position: relative;
-  overflow: hidden; /* Evita scroll horizontal por la marca de agua grande */
+  overflow: hidden;
 }
 
-/* --- MARCA DE AGUA (FONDO) --- */
 .watermark-container {
-  position: fixed; /* Fijo a la pantalla */
-  bottom: 15%; /* Ubicación vertical (ajustable) */
+  position: fixed;
+  bottom: 15%;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 0; /* Detrás del contenido */
+  z-index: 0;
   pointer-events: none;
   width: 100%;
   display: flex;
@@ -32,17 +31,16 @@
 }
 
 .watermark-text {
-  font-size: clamp(3rem, 18vw, 8rem); /* Tipografía responsiva */
+  font-size: clamp(3rem, 18vw, 8rem);
   font-weight: 900;
   text-transform: uppercase;
-  color: var(--watermark-color); /* Variable global de transparencia */
+  color: var(--watermark-color);
   letter-spacing: 4px;
   font-family: 'Roboto', sans-serif;
   white-space: nowrap;
   user-select: none;
 }
 
-/* --- CONTENEDOR PRINCIPAL --- */
 .settings-container {
   width: 100%;
   max-width: 600px;
@@ -50,10 +48,9 @@
   flex-direction: column;
   padding: 0 16px;
   position: relative;
-  z-index: 1; /* Encima de la marca de agua */
+  z-index: 1;
 }
 
-/* --- HEADER INTERNO --- */
 .settings-header {
   display: flex;
   align-items: center;
@@ -76,7 +73,6 @@
   color: var(--text-color);
 }
 
-/* --- ÁREA DE CONTENIDO --- */
 .content-area {
   display: flex;
   flex-direction: column;
@@ -90,7 +86,6 @@
   margin-left: 4px;
 }
 
-/* --- TARJETA --- */
 .settings-card {
   border-radius: 16px;
   background-color: var(--card-background);
@@ -103,7 +98,6 @@
   padding: 0 16px;
 }
 
-/* --- FILAS DE INTERRUPTORES --- */
 .toggle-row {
   display: flex;
   justify-content: space-between;
@@ -128,7 +122,7 @@
 
 @media (min-width: 768px) {
   .page-wrapper {
-    padding-bottom: 40px; /* Menos padding abajo en PC */
+    padding-bottom: 40px;
   }
 
   .settings-container {
@@ -148,8 +142,7 @@
     font-size: 1rem;
   }
 
-  /* Ajuste de marca de agua en pantallas grandes */
   .watermark-container {
-    bottom: 10%; /* Más abajo en pantallas altas */
+    bottom: 10%;
   }
 }
