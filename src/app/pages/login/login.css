@@ -240,8 +240,11 @@
 
   .login-page__logo-title {
     font-size: 2.5rem;
-    margin: 40px 0 0 0;
-    position: relative;
+    position: absolute;
+    margin-top: 250px;
+    font-weight: bold;
+    max-width: 90%;
+    text-align: center;
   }
 
   .login-page__panel-box {
