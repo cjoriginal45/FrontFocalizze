@@ -24,9 +24,13 @@
 
           <mat-form-field appearance="outline" class="custom-select-field">
             <mat-select [(value)]="selectedLanguage" panelClass="custom-select-panel">
-              <mat-option *ngFor="let lang of languages" [value]="lang.code">
+              <!-- ✅ CAMBIO AQUI: Nueva sintaxis @for -->
+              <!-- 'track' es obligatorio y mejora mucho el rendimiento -->
+              @for (lang of languages; track lang.code) {
+              <mat-option [value]="lang.code">
                 {{ lang.name }}
               </mat-option>
+              }
             </mat-select>
           </mat-form-field>
 
