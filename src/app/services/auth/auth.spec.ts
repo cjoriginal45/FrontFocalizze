@@ -1,210 +1,137 @@
-import { TestBed } from '@angular/core/testing';
-
-import { Auth } from './auth';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { LoginResponse } from '../../interfaces/LoginResponse';
-import { environment } from '../../environments/environment';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
+import { signal } from '@angular/core';
 
-describe('Auth', () => {
+import { Auth, AuthUser } from './auth'; 
+import { environment } from '../../environments/environment';
+import { UserService } from '../user/user-service';
+import { ViewTracking } from '../viewTracking/view-tracking';
+import { ThreadState } from '../thread-state/thread-state';
+import { UserState } from '../user-state/user-state';
+import { CategoryState } from '../category-state/category-state';
+import { NotificationState } from '../notification-state/notification-state';
+import { InteractionCounter } from '../interactionCounter/interaction-counter';
+import { Theme } from '../themeService/theme';
+
+describe('Auth Service', () => {
   let service: Auth;
   let httpMock: HttpTestingController;
 
+  let routerSpy: jasmine.SpyObj<Router>;
+  let userServiceSpy: jasmine.SpyObj<UserService>;
+  let viewTrackingSpy: jasmine.SpyObj<ViewTracking>;
+  let threadStateSpy: jasmine.SpyObj<ThreadState>;
+  let userStateSpy: jasmine.SpyObj<UserState>;
+  let categoryStateSpy: jasmine.SpyObj<CategoryState>;
+  let notificationStateSpy: jasmine.SpyObj<NotificationState>;
+  let interactionCounterSpy: jasmine.SpyObj<InteractionCounter>;
+  let themeSpy: jasmine.SpyObj<Theme>;
+
+  const VALID_DUMMY_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImV4cCI6OTk5OTk5OTk5OSwiaXNUd29GYWN0b3JFbmFibGVkIjp0cnVlfQ.signature';
+
   beforeEach(() => {
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    userServiceSpy = jasmine.createSpyObj('UserService', ['getMe', 'getInteractionStatus']);
+    viewTrackingSpy = jasmine.createSpyObj('ViewTracking', ['clearViewedThreads']);
+    threadStateSpy = jasmine.createSpyObj('ThreadState', ['clearState']);
+    userStateSpy = jasmine.createSpyObj('UserState', ['clearState']);
+    categoryStateSpy = jasmine.createSpyObj('CategoryState', ['clearState']);
+    notificationStateSpy = jasmine.createSpyObj('NotificationState', ['initialize', 'clear']);
+    interactionCounterSpy = jasmine.createSpyObj('InteractionCounter', ['incrementCount']);
+    themeSpy = jasmine.createSpyObj('Theme', ['syncWithUserDto']);
+
+    userServiceSpy.getMe.and.returnValue(of({ username: 'testuser', backgroundType: 'COLOR', backgroundValue: '#000' } as any));
+    userServiceSpy.getInteractionStatus.and.returnValue(of({ remaining: 10, limit: 20 }));
+
     TestBed.configureTestingModule({
-      providers: [Auth, provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        Auth,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: Router, useValue: routerSpy },
+        { provide: UserService, useValue: userServiceSpy },
+        { provide: ViewTracking, useValue: viewTrackingSpy },
+        { provide: ThreadState, useValue: threadStateSpy },
+        { provide: UserState, useValue: userStateSpy },
+        { provide: CategoryState, useValue: categoryStateSpy },
+        { provide: NotificationState, useValue: notificationStateSpy },
+        { provide: InteractionCounter, useValue: interactionCounterSpy },
+        { provide: Theme, useValue: themeSpy }
+      ]
     });
+
     service = TestBed.inject(Auth);
     httpMock = TestBed.inject(HttpTestingController);
+    localStorage.clear();
   });
 
   afterEach(() => {
     httpMock.verify();
-    localStorage.clear();
   });
 
-  /**
-   * Prueba: Creación del servicio
-   * Verifica que el servicio Auth se instancia correctamente
-   *
-   * Test: Creating the Service
-   * Verify that the Auth service is instantiated correctly
-   */
-  it('should be created', () => {
+  it('debería instanciarse el servicio correctamente', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('login', () => {
-    /**
-     * Prueba: Login exitoso con almacenamiento de token
-     * Verifica que cuando el login es exitoso:
-     * - Se envía la petición POST con las credenciales correctas
-     * - Se recibe la respuesta esperada
-     * - El token JWT se guarda correctamente en el localStorage
-     *
-     * Test: Successful login with token storage
-     * Verify that upon successful login:
-     * - The POST request is sent with the correct credentials
-     * - The expected response is received
-     * - The JWT token is successfully saved in localStorage
-     */
-    it('should send login request and store token on success', () => {
-      // Arrange: Preparar credenciales y respuesta mock
-      // Prepare credentials and mock response
-      const mockCredentials = { identifier: 'testuser', password: 'password123' };
-      const mockResponse: LoginResponse = {
-        userId: 1,
-        token: 'fake-jwt-token',
-        displayName: 'Test User',
-        followingCount: 0,
-        followersCount: 0,
-        role: '',
-        isTwoFactorEnabled: false,
-        requiresTwoFactor: false
-      };
+  describe('Carga Inicial (loadUserFromToken)', () => {
+    it('debería cargar datos completos y sincronizar tema si el token es válido', fakeAsync(() => {
+      localStorage.setItem('jwt_token', VALID_DUMMY_JWT);
+      const mockUserRes = { username: 'testuser', backgroundType: 'IMAGE', backgroundValue: 'bg.jpg' };
+      userServiceSpy.getMe.and.returnValue(of(mockUserRes as any));
 
-      // Act: Ejecutar el método login y suscribirse a la respuesta
-      // Execute the login method and subscribe to the response
-      service.login(mockCredentials).subscribe((response) => {
-        // Assert: Verificar la respuesta y el almacenamiento del token
-        // Verify the response and token storage
-        expect(response).toEqual(mockResponse);
-        expect(localStorage.getItem('jwt_token')).toBe('fake-jwt-token');
-      });
+      service.loadUserFromToken();
+      tick();
 
-      // Assert: Verificar que se hizo la petición HTTP correcta
-      // Verify that the correct HTTP request was made
-      const req = httpMock.expectOne(`${environment.apiBaseUrl}/login`);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(mockCredentials);
-      req.flush(mockResponse);
-    });
+      expect(themeSpy.syncWithUserDto).toHaveBeenCalledWith('IMAGE', 'bg.jpg');
+      expect(service.authReady()).toBeTrue();
+    }));
 
-    /**
-     * Prueba: Login exitoso sin token en la respuesta
-     * Verifica que cuando el login es exitoso pero no incluye token:
-     * - No se guarda nada en el localStorage
-     * - La respuesta se procesa correctamente
-     *
-     * Test: Login successful without token in response
-     * Verify that when the login is successful but does not include a token:
-     * - Nothing is saved in localStorage
-     * - The response is processed correctly
-     */
-    it('should not store token if response does not have token', () => {
-      // Arrange: Preparar respuesta sin token
-      // Prepare response without token
-      const mockCredentials = { identifier: 'testuser', password: 'password123' };
-      const mockResponse: LoginResponse = {
-        userId: 1,
-        token: '',
-        displayName: 'Test User',
-        followingCount: 0,
-        followersCount: 0,
-        role: '',
-        isTwoFactorEnabled: false,
-        requiresTwoFactor: false
-      };
-
-      // Act & Assert
-      service.login(mockCredentials).subscribe((response) => {
-        expect(response).toEqual(mockResponse);
-        expect(localStorage.getItem('jwt_token')).toBeNull(); // No debería guardar token vacío / Should not save empty token
-      });
-
-      const req = httpMock.expectOne(`${environment.apiBaseUrl}/login`);
-      req.flush(mockResponse);
-    });
-
-    /**
-     * Prueba: Manejo de error en login
-     * Verifica que cuando el servidor retorna un error:
-     * - La petición se envía correctamente
-     * - El error se propaga al subscriber
-     * - No se guarda ningún token en el localStorage
-     *
-     * Test: Login Error Handling
-     * Verify that when the server returns an error:
-     * - The request is sent successfully
-     * - The error is propagated to the subscriber
-     * - No token is saved in localStorage
-     */
-    it('should handle login error', () => {
-      // Arrange: Preparar credenciales inválidas
-      // Prepare invalid credentials
-      const mockCredentials = { identifier: 'testuser', password: 'wrongpassword' };
-
-      // Act & Assert
-      service.login(mockCredentials).subscribe({
-        next: () => fail('should have failed with a 401 error'), // El test debería fallar si la petición tiene éxito / The test should fail if the request is successful.
-        error: (error) => {
-          expect(error.status).toBe(401); // Verificar que es error 401 / Verify that it is error 401
-        },
-      });
-
-      const req = httpMock.expectOne(`${environment.apiBaseUrl}/login`);
-      req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' }); // Simular error del servidor / Simulate server error
+    it('debería marcar authReady aunque no exista token previo', async () => {
+      localStorage.removeItem('jwt_token');
+      await service.loadUserFromToken();
+      expect(service.authReady()).toBeTrue();
     });
   });
 
-  describe('logout', () => {
-    /**
-     * Prueba: Logout elimina el token
-     * Verifica que el método logout:
-     * - Remueve el token JWT del localStorage
-     * - Limpia correctamente la sesión
-     *
-     * Test: Logout deletes the token
-     * Verify that the logout method:
-     * - Removes the JWT token from localStorage
-     * - Correctly clears the session
-     */
-    it('should remove token from localStorage', () => {
-      // Arrange: Simular que hay un token en el localStorage
-      // Simulate that there is a token in the localStorage
-      localStorage.setItem('jwt_token', 'fake-token');
-
-      // Act: Ejecutar logout
-      // Execute logout
+  describe('Logout y Estados', () => {
+    it('logout debería limpiar localstorage y estados', () => {
+      service.currentUser.set({ username: 'user' } as AuthUser);
       service.logout();
 
-      // Assert: Verificar que el token fue removido
-      // Verify that the token was removed
       expect(localStorage.getItem('jwt_token')).toBeNull();
+      expect(service.currentUser()).toBeNull();
+      expect(notificationStateSpy.clear).toHaveBeenCalled();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
     });
   });
 
-  describe('isLoggedIn', () => {
+  describe('Efectos Secundarios', () => {
     /**
-     * Preuba: Usuario autenticado
-     * Verifica que isLoggedIn retorna true cuando existe un token en el localStorage
-     *
-     * Test: Authenticated User
-     * Verify that isLoggedIn returns true when a token exists in localStorage
+     * TEST CLAVE: Para que el efecto se dispare, el valor debe CAMBIAR.
+     * Luego usamos flushEffects() para procesar la cola de efectos de Angular.
      */
-    it('should return true if token exists', () => {
-      // Arrange: Simular usuario logueado
-      // Simulate logged in user
-      localStorage.setItem('jwt_token', 'fake-token');
+    it('debería limpiar el estado de la app automáticamente cuando el usuario pasa a null', () => {
+      // 1. Seteamos un usuario (Estado inicial distinto de null)
+      service.currentUser.set({ username: 'test' } as AuthUser);
+      
+      // 2. Reseteamos los spies para ignorar cualquier llamada ocurrida en el constructor
+      threadStateSpy.clearState.calls.reset();
+      userStateSpy.clearState.calls.reset();
+      categoryStateSpy.clearState.calls.reset();
 
-      // Act & Assert
-      expect(service.isLoggedIn()).toBeTrue();
-    });
+      // 3. Cambiamos a null para disparar la lógica del effect()
+      service.currentUser.set(null);
 
-    /**
-     * Test: Usuario no autenticado
-     * Verifica que isLoggedIn retorna false cuando no hay token en el localStorage
-     *
-     * Test: Unauthenticated User
-     * Verify that isLoggedIn returns false when there is no token in localStorage
-     */
-    it('should return false if token does not exist', () => {
-      // Arrange: Asegurar que no hay token
-      // Ensure there is no token
-      localStorage.removeItem('jwt_token');
+      // 4. Forzamos la ejecución de los efectos pendientes en Angular 17.2/20
+      TestBed.flushEffects();
 
-      // Act & Assert
-      expect(service.isLoggedIn()).toBeFalse();
+      // 5. Assert
+      expect(threadStateSpy.clearState).withContext('ThreadState debería limpiarse').toHaveBeenCalled();
+      expect(userStateSpy.clearState).withContext('UserState debería limpiarse').toHaveBeenCalled();
+      expect(categoryStateSpy.clearState).withContext('CategoryState debería limpiarse').toHaveBeenCalled();
     });
   });
 });

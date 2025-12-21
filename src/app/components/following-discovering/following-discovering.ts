@@ -1,46 +1,54 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, inject, effect, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { take } from 'rxjs';
+
 import { InteractionCounter } from '../../services/interactionCounter/interaction-counter';
 import { Auth } from '../../services/auth/auth';
-import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Componente que gestiona las pestañas de navegación del feed (Siguiendo/Descubrir)
+ * y muestra el contador de interacciones diarias.
+ */
 @Component({
   selector: 'app-following-discovering',
   standalone: true,
   imports: [RouterLink, TranslateModule, RouterModule],
   templateUrl: './following-discovering.html',
   styleUrl: './following-discovering.css',
+  // OnPush mejora el rendimiento, delegando la actualización a los Signals
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FollowingDiscovering implements OnInit {
-  public interactionCounterService = inject(InteractionCounter);
-  public authService = inject(Auth); // Para saber si el usuario está logueado
+export class FollowingDiscovering {
+  // --- Inyección de dependencias ---
+  public readonly interactionCounterService = inject(InteractionCounter);
+  public readonly authService = inject(Auth);
 
   constructor() {
-    // --- ¡LA SOLUCIÓN! ---
-    // effect() crea una reacción que se ejecuta inmediatamente Y
-    // cada vez que una de las señales que lee ('isLoggedIn') cambia.
+    /**
+     * El effect() se ejecuta automáticamente al inicio y cada vez que
+     * la señal 'isLoggedIn' cambie de valor.
+     */
     effect(() => {
-      // Leemos la señal. Esto crea la dependencia reactiva.
       const isLoggedIn = this.authService.isLoggedIn();
 
-      console.log(`[FollowingDiscovering] El estado de login es: ${isLoggedIn}.`);
-
       if (isLoggedIn) {
-        // Si el usuario está logueado (o acaba de loguearse),
-        // llamamos a la API para obtener el contador.
-        this.interactionCounterService.fetchInitialCount().subscribe();
+        // Ejecutamos la carga inicial. Usamos take(1) para asegurar la limpieza.
+        this.interactionCounterService.fetchInitialCount()
+          .pipe(take(1))
+          .subscribe();
       } else {
-        // Si el usuario cierra sesión, reseteamos los contadores.
-        this.interactionCounterService.remainingInteractions.set(null);
-        this.interactionCounterService.interactionLimit.set(null);
+        // Limpieza de estado al cerrar sesión
+        this.resetCounters();
       }
     });
   }
 
-  ngOnInit(): void {
-    // Si el usuario está logueado, cargamos el contador inicial
-    if (this.authService.isLoggedIn()) {
-      this.interactionCounterService.fetchInitialCount().subscribe();
-    }
+  /**
+   * Resetea los valores del servicio de interacciones a su estado nulo.
+   */
+  private resetCounters(): void {
+    this.interactionCounterService.remainingInteractions.set(null);
+    this.interactionCounterService.interactionLimit.set(null);
   }
 }
