@@ -1,18 +1,21 @@
-@if (displaySignal?.(); as entity) {
-<button
-  class="follow-btn"
-  [class.follow-btn--following]="entity.isFollowing"
-  [disabled]="isLoading"
-  (click)="onClickFollow()"
-  (mouseenter)="isHovering = true"
-  (mouseleave)="isHovering = false"
->
-  @if (entity.isFollowing) { @if (isHovering) {
-  <span>{{ 'FOLLOW_BUTTON.UNFOLLOW' | translate }}</span>
-  } @else {
-  <span>{{ 'FOLLOW_BUTTON.FOLLOWING' | translate }}</span>
-  } } @else {
-  <span>{{ 'FOLLOW_BUTTON.FOLLOW' | translate }}</span>
-  }
-</button>
+@if (displaySignal(); as entity) {
+  <button
+    type="button"
+    class="follow-btn"
+    [class.follow-btn--following]="entity.isFollowing"
+    [disabled]="isLoading()"
+    (click)="onClickFollow()"
+    (mouseenter)="isHovering.set(true)"
+    (mouseleave)="isHovering.set(false)"
+  >
+    @if (entity.isFollowing) {
+      @if (isHovering()) {
+        <span>{{ 'FOLLOW_BUTTON.UNFOLLOW' | translate }}</span>
+      } @else {
+        <span>{{ 'FOLLOW_BUTTON.FOLLOWING' | translate }}</span>
+      }
+    } @else {
+      <span>{{ 'FOLLOW_BUTTON.FOLLOW' | translate }}</span>
+    }
+  </button>
 }
