@@ -7,8 +7,6 @@
 
   <div class="notification-list-container">
     @for (notification of notifications; track notification.id) {
-    <!-- --- ¡LÓGICA CLAVE AQUÍ! --- -->
-    <!-- El enlace exterior ahora es dinámico. -->
     <a
       [routerLink]="getLinkForNotification(notification)"
       [queryParams]="getQueryParamsForNotification(notification)"
@@ -21,7 +19,6 @@
 
         <div class="notif-content">
           @if (notification.triggerUser) {
-          <!-- El enlace del avatar siempre va al perfil del usuario que originó la acción -->
           <a
             [routerLink]="['/profile', notification.triggerUser.username]"
             class="notif-trigger-user-avatar-link"
@@ -34,7 +31,6 @@
           <div class="notif-text-content">
             <div class="notif-title">
               @if (notification.triggerUser) {
-              <!-- El enlace del nombre de usuario también va al perfil -->
               <a
                 [routerLink]="['/profile', notification.triggerUser.username]"
                 class="notif-trigger-user-link"
@@ -58,17 +54,16 @@
       </div>
     </a>
     } @empty { @if (!isLoading) {
-      <p class="no-notifications">{{ 'NOTIFICATIONS.EMPTY' | translate }}</p>
+    <p class="no-notifications">{{ 'NOTIFICATIONS.EMPTY' | translate }}</p>
     } }
   </div>
 
   @if (isLoading) {
-    <p class="loading-indicator">{{ 'NOTIFICATIONS.LOADING' | translate }}</p>
-  }
-
-  <!-- En el futuro, esto se puede reemplazar con una directiva de scroll infinito -->
-  @if (!isLastPage && notifications.length > 0 && !isLoading) {
-    <button (click)="loadMoreNotifications()" class="load-more-button">{{ 'NOTIFICATIONS.LOAD_MORE' | translate }}</button>
+  <p class="loading-indicator">{{ 'NOTIFICATIONS.LOADING' | translate }}</p>
+  } @if (!isLastPage && notifications.length > 0 && !isLoading) {
+  <button (click)="loadMoreNotifications()" class="load-more-button">
+    {{ 'NOTIFICATIONS.LOAD_MORE' | translate }}
+  </button>
   }
 </div>
 <app-botton-nav></app-botton-nav>
