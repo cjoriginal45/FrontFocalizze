@@ -1,7 +1,7 @@
 <div class="modal-container">
   <div class="modal-header">
     <h2 class="username-title">{{ data.username }}</h2>
-    <button mat-icon-button (click)="onClose()" class="close-btn">
+    <button mat-icon-button (click)="onClose()" class="close-btn" aria-label="Cerrar">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -13,65 +13,69 @@
     mat-stretch-tabs="false"
     mat-align-tabs="center"
   >
+    <!-- Pestaña Seguidores -->
     <mat-tab [label]="'FOLLOW_MODAL.FOLLOWERS_TAB' | translate">
       <div class="list-container">
         @if (isLoading()) {
-        <div class="spinner-wrapper">
-          <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
-        </div>
-        } @else { @if (followersList().length === 0) {
-        <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWERS' | translate }}</p>
-        } @else { @for (user of followersList(); track user.id) {
-        <div class="user-row">
-          <a [routerLink]="['/profile', user.username]" (click)="onClose()" class="user-info-link">
-            <img [src]="user.avatarUrl" alt="avatar" class="avatar" />
-            <div class="names">
-              <span class="display-name">{{ user.displayName }}</span>
-              <span class="username">@{{ user.username }}</span>
-            </div>
-          </a>
+          <div class="spinner-wrapper">
+            <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+          </div>
+        } @else {
+          @for (user of followersList(); track user.id) {
+            <div class="user-row">
+              <a [routerLink]="['/profile', user.username]" (click)="onClose()" class="user-info-link">
+                <img [src]="user.avatarUrl" alt="avatar" class="avatar" />
+                <div class="names">
+                  <span class="display-name">{{ user.displayName }}</span>
+                  <span class="username">@{{ user.username }}</span>
+                </div>
+              </a>
 
-          @if (authService.getCurrentUser()?.username !== user.username) {
-          <app-follow-button
-            type="user"
-            [identifier]="user.username"
-            (followStateChanged)="handleFollowStateChange(user.username, $event)"
-          >
-          </app-follow-button>
+              @if (authService.getCurrentUser()?.username !== user.username) {
+                <app-follow-button
+                  type="user"
+                  [identifier]="user.username"
+                  (followStateChanged)="handleFollowStateChange(user.username, $event)"
+                />
+              }
+            </div>
+          } @empty {
+            <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWERS' | translate }}</p>
           }
-        </div>
-        } } }
+        }
       </div>
     </mat-tab>
 
-    <mat-tab label="Seguidos">
+    <!-- Pestaña Seguidos -->
+    <mat-tab [label]="'FOLLOW_MODAL.FOLLOWING_TAB' | translate">
       <div class="list-container">
         @if (isLoading()) {
-        <div class="spinner-wrapper">
-          <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
-        </div>
-        } @else { @if (followingList().length === 0) {
-        <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWING' | translate }}</p>
-        } @else { @for (user of followingList(); track user.id) {
-        <div class="user-row">
-          <a [routerLink]="['/profile', user.username]" (click)="onClose()" class="user-info-link">
-            <img [src]="user.avatarUrl" alt="avatar" class="avatar" />
-            <div class="names">
-              <span class="display-name">{{ user.displayName }}</span>
-              <span class="username">@{{ user.username }}</span>
-            </div>
-          </a>
+          <div class="spinner-wrapper">
+            <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+          </div>
+        } @else {
+          @for (user of followingList(); track user.id) {
+            <div class="user-row">
+              <a [routerLink]="['/profile', user.username]" (click)="onClose()" class="user-info-link">
+                <img [src]="user.avatarUrl" alt="avatar" class="avatar" />
+                <div class="names">
+                  <span class="display-name">{{ user.displayName }}</span>
+                  <span class="username">@{{ user.username }}</span>
+                </div>
+              </a>
 
-          @if (authService.getCurrentUser()?.username !== user.username) {
-          <app-follow-button
-            type="user"
-            [identifier]="user.username"
-            (followStateChanged)="handleFollowStateChange(user.username, $event)"
-          >
-          </app-follow-button>
+              @if (authService.getCurrentUser()?.username !== user.username) {
+                <app-follow-button
+                  type="user"
+                  [identifier]="user.username"
+                  (followStateChanged)="handleFollowStateChange(user.username, $event)"
+                />
+              }
+            </div>
+          } @empty {
+            <p class="empty-state">{{ 'FOLLOW_MODAL.NO_FOLLOWING' | translate }}</p>
           }
-        </div>
-        } } }
+        }
       </div>
     </mat-tab>
   </mat-tab-group>
