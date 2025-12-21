@@ -468,3 +468,8 @@ body {
 .mdc-dialog__content {
   color: var(--text-color) !important;
 }
+
+.mat-mdc-select-value,
+.mat-mdc-select-min-line {
+  background-color: transparent !important;
+}
