@@ -109,6 +109,7 @@ export class EditThreadModal {
     });
   }
 
+  // Guardar los cambios y cerrar el modal
   public onSave(): void {
     const currentThreads = this.threads();
     
@@ -126,6 +127,7 @@ export class EditThreadModal {
     });
   }
   
+  // Navegación entre pasos
   public nextStep(): void {
     if (this.currentStep() < 3) {
       this.currentStep.update(s => s + 1);

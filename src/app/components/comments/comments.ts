@@ -87,7 +87,7 @@ export class Comments {
   public readonly defaultAvatar = 'assets/images/default-avatar.png';
 
 
-
+  // --- Ciclo de Vida del Componente ---
    ngOnInit(): void {
     this.checkThreadOwnership();
     this.loadComments();
@@ -100,6 +100,7 @@ export class Comments {
     }
   }
 
+  // carga los comentarios iniciales
   loadComments(): void {
    this.isLoading.set(true);
     this.commentService.getComments(this.data.threadId, 0, 20)
@@ -113,6 +114,7 @@ export class Comments {
       });
   }
 
+  // Publicar un nuevo comentario
   postComment(): void {
     if (this.commentControl.invalid) return;
 
@@ -132,6 +134,7 @@ export class Comments {
       });
   }
 
+  // Abrir diálogo de confirmación para eliminar comentario
   openDeleteConfirm(commentId: number): void {
     this.dialog.open(ConfirmMatDialog, {
       data: {
@@ -145,6 +148,7 @@ export class Comments {
       });
   }
 
+  // Eliminar comentario
   private deleteComment(commentId: number): void {
    // Eliminación optimista en el Signal
    const previousComments = this.comments();
@@ -158,6 +162,7 @@ export class Comments {
    });
     }
 
+    // Aplicar eliminación localmente en el Signal
   private applyDeleteLocally(commentId: number): void {
       this.comments.update(allComments => 
         allComments
@@ -169,11 +174,12 @@ export class Comments {
       );
   }
 
-
+  // Cerrar el modal
   public onClose(): void {
     this.dialogRef.close();
   }
 
+  // Abrir modal para editar comentario
   openEditComment(commentId: number, currentContent: string): void {
     this.dialog.open(EditCommentModal, {
       width: '600px',
@@ -185,6 +191,7 @@ export class Comments {
       });
   }
 
+  // Editar comentario
   private editComment(id: number, content: string): void {
     const request: CommentRequestDto = { content };
     this.commentService.editComment(id, request)
@@ -194,6 +201,7 @@ export class Comments {
       });
   }
 
+  // Actualizar comentario localmente en el Signal
   private updateCommentLocally(updated: CommentResponseDto): void {
     this.comments.update(list => list.map(c => {
       if (c.id === updated.id) return { ...updated, replies: c.replies };
@@ -207,11 +215,13 @@ export class Comments {
     }));
   }
 
+  // Iniciar respuesta a un comentario
   public startReplying(commentId: number): void {
     this.replyingToCommentId.set(commentId);
     this.replyControl.reset();
   }
 
+  // Enviar respuesta a un comentario
   public sendReply(parentCommentId: number): void {
     if (this.replyControl.invalid) return;
 

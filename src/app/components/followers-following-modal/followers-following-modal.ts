@@ -60,6 +60,7 @@ export class FollowersFollowingModal implements OnInit {
   public readonly followingList = signal<UserSummary[]>([]);
   public readonly isMyProfile = signal(false);
 
+  // --- Métodos del Ciclo de Vida ---
   ngOnInit(): void {
     this.checkOwnership();
     this.initializeTabIndex();
@@ -80,6 +81,7 @@ export class FollowersFollowingModal implements OnInit {
     this.loadDataForTab(index);
   }
 
+  // carga los seguidores o seguidos según la pestaña seleccionada
   public loadDataForTab(index: number): void {
     this.isLoading.set(true);
     const username = this.data.username;
@@ -100,6 +102,7 @@ export class FollowersFollowingModal implements OnInit {
     });
   }
 
+  // carga los usuarios en el estado global de usuarios
   private populateUserState(users: UserSummary[]): void {
     const userInterfaces: UserInterface[] = users.map((u) => ({
       id: u.id,
@@ -113,6 +116,7 @@ export class FollowersFollowingModal implements OnInit {
     this.userStateService.loadUsers(userInterfaces);
   }
 
+  // maneja los cambios en el estado de seguimiento
   public handleFollowStateChange(usernameChanged: string, isNowFollowing: boolean): void {
     // Si estoy en mi perfil y dejo de seguir a alguien en la pestaña "Seguidos" (index 1)
     if (this.isMyProfile() && this.selectedIndex() === 1 && !isNowFollowing) {
