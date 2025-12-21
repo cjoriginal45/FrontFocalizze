@@ -1,19 +1,23 @@
 <app-header></app-header>
 
 <div class="page-wrapper">
+  <div class="watermark-container">
+    <span class="watermark-text">FOCALIZZE</span>
+  </div>
+
   <div class="settings-container">
-    <div class="settings-header">
-        <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Volver">
-          <mat-icon class="arrow-icon">arrow_back</mat-icon>
-        </button>
+    <header class="settings-header">
+      <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Volver">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
       <h2 class="header-title">Bloqueo y Privacidad</h2>
-    </div>
+    </header>
 
     <main class="content-area">
       <div class="subsection">
-        <h4 class="subsection-label">Usuarios bloqueados:</h4>
+        <h3 class="section-title">Usuarios bloqueados</h3>
 
-        <div class="blocked-list-container">
+        <div class="blocked-list-card">
           <div class="custom-scroll-box">
             @for (user of blockedUsers(); track user.id) {
             <div
@@ -21,29 +25,35 @@
               [class.selected]="selectedUsernames.has(user.username)"
               (click)="toggleSelection(user.username)"
             >
-              <img [src]="user.avatarUrl" class="user-avatar" alt="Avatar" />
+              <img
+                [src]="user.avatarUrl || 'assets/images/default-avatar.webp'"
+                class="user-avatar"
+                alt="Avatar"
+              />
               <div class="user-info">
                 <span class="display-name">{{ user.displayName }}</span>
                 <span class="username">@{{ user.username }}</span>
               </div>
+              @if (selectedUsernames.has(user.username)) {
+              <mat-icon class="check-icon">check_circle</mat-icon>
+              }
             </div>
             } @empty { @if (!isLoading()) {
-            <p class="empty-list-message">No tienes usuarios bloqueados.</p>
+            <div class="empty-state">
+              <mat-icon>block</mat-icon>
+              <p>No tienes usuarios bloqueados.</p>
+            </div>
             } } @if (isLoading()) {
-            <p class="loading-message">Cargando...</p>
+            <div class="loading-state">Cargando...</div>
             }
           </div>
         </div>
+        <div class="actions-container" [class.visible]="selectedUsernames.size > 0">
+          <button mat-flat-button class="btn-unblock" (click)="unblockSelectedUsers()">
+            Desbloquear ({{ selectedUsernames.size }})
+          </button>
+        </div>
       </div>
-
-      <!-- Botón de desbloqueo que aparece solo si hay usuarios seleccionados -->
-      @if (selectedUsernames.size > 0) {
-      <div class="unblock-action-bar">
-        <button class="btn-unblock" (click)="unblockSelectedUsers()">
-          Desbloquear ({{ selectedUsernames.size }})
-        </button>
-      </div>
-      }
     </main>
   </div>
 </div>

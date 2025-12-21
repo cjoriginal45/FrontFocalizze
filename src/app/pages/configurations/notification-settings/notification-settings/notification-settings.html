@@ -1,70 +1,52 @@
 <app-header></app-header>
 
 <div class="page-wrapper">
-    <div class="settings-container">
-  
-      <div class="settings-header">
-        <button mat-icon-button class="back-button" aria-label="Volver">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <h2 class="header-title">Configuración</h2>
-      </div>
-  
-      <main class="content-area">
-        
-        <h3 class="section-title">Notificaciones</h3>
-  
-        <mat-card class="settings-card">
-          
-          <div class="watermark">Focalizze</div>
-  
-          <mat-card-content class="toggles-container">
-            
-            <div class="toggle-row">
-              <span class="toggle-label">Nuevos seguidores</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="settings.newFollowers">
-              </mat-slide-toggle>
-            </div>
-  
-            <div class="toggle-row">
-              <span class="toggle-label">Comentarios en mis hilos</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="settings.comments">
-              </mat-slide-toggle>
-            </div>
-  
-            <div class="toggle-row">
-              <span class="toggle-label">Likes en mis hilos</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="settings.likes">
-              </mat-slide-toggle>
-            </div>
-  
-            <div class="toggle-row">
-              <span class="toggle-label">Menciones (&#64;username)</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="settings.mentions">
-              </mat-slide-toggle>
-            </div>
-  
-            <div class="toggle-row">
-              <span class="toggle-label">Resumen diario de engagements</span>
-              <mat-slide-toggle 
-                color="primary" 
-                [(ngModel)]="settings.dailySummary">
-              </mat-slide-toggle>
-            </div>
-  
-          </mat-card-content>
-        </mat-card>
-  
-      </main>
-    </div>
+  <div class="watermark-container">
+    <span class="watermark-text">FOCALIZZE</span>
   </div>
 
-  <app-botton-nav></app-botton-nav>
+  <div class="settings-container">
+    <header class="settings-header">
+      <button mat-icon-button class="back-button" aria-label="Volver" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2 class="header-title">Configuración</h2>
+    </header>
+
+    <main class="content-area">
+      <h3 class="section-title">Notificaciones</h3>
+      <div class="settings-card">
+        <div class="toggles-container">
+          <div class="toggle-row">
+            <span class="toggle-label">Nuevos seguidores</span>
+            <mat-slide-toggle color="primary" [(ngModel)]="settings.newFollowers">
+            </mat-slide-toggle>
+          </div>
+
+          <div class="toggle-row">
+            <span class="toggle-label">Comentarios en mis hilos</span>
+            <mat-slide-toggle color="primary" [(ngModel)]="settings.comments"> </mat-slide-toggle>
+          </div>
+
+          <div class="toggle-row">
+            <span class="toggle-label">Likes en mis hilos</span>
+            <mat-slide-toggle color="primary" [(ngModel)]="settings.likes"> </mat-slide-toggle>
+          </div>
+
+          <div class="toggle-row">
+            <span class="toggle-label">Menciones (&#64;username)</span>
+            <mat-slide-toggle color="primary" [(ngModel)]="settings.mentions"> </mat-slide-toggle>
+          </div>
+
+          <div class="toggle-row">
+            <span class="toggle-label">Resumen diario de engagements</span>
+            <mat-slide-toggle color="primary" [(ngModel)]="settings.dailySummary">
+            </mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<app-botton-nav></app-botton-nav>

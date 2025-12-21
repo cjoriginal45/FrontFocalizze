@@ -1,37 +1,18 @@
 <app-header></app-header>
-<!-- 
-  Contenedor principal de la página de configuración.
-  Main container for the settings page.
--->
 <div class="settings-container">
-  <!-- 
-    Encabezado de la página usando MatToolbar para una estructura consistente.
-    Page header using MatToolbar for a consistent structure.
-  -->
   <mat-toolbar class="settings-toolbar">
-    <button mat-icon-button (click)="goBack()" class="back-button" [attr.aria-label]="'COMMON.BACK' | translate">
+    <button
+      mat-icon-button
+      (click)="goBack()"
+      class="back-button"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
       <mat-icon class="arrow-icon">arrow_back</mat-icon>
     </button>
     <span>{{ 'SETTINGS.TITLE' | translate }}</span>
   </mat-toolbar>
 
-  <!-- 
-    Contenido principal con el menú de opciones y el logo de fondo.
-    Main content with the options menu and the background logo.
-  -->
   <main class="settings-content">
-    <!-- 
-      El logo de Focalizze se muestra en el centro, con baja opacidad.
-      The Focalizze logo is displayed in the center with low opacity.
-    -->
-    <div class="logo-placeholder">
-      <img src="assets/images/focalizze-logo.webp" alt="Focalizze Logo" />
-    </div>
-
-    <!-- 
-      Menú de navegación con MatNavList, semánticamente correcto para listas de enlaces.
-      Navigation menu with MatNavList, semantically correct for lists of links.
-    -->
     <mat-nav-list>
       <a routerLink="/count-profile" mat-list-item href="/count-profile">
         <!-- Más adelante será un [routerLink] -->
@@ -63,13 +44,15 @@
         <span matListItemTitle>{{ 'SETTINGS.MENU.LANGUAGE' | translate }}</span>
       </a>
       @if(isAdmin()) {
-        <a routerLink="/admin-panel" mat-list-item>
-          <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
-          <span matListItemTitle>{{ 'SETTINGS.MENU.ADMIN_PANEL' | translate }}</span>
-        </a>
-        }
+      <a routerLink="/admin-panel" mat-list-item>
+        <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS.MENU.ADMIN_PANEL' | translate }}</span>
+      </a>
+      }
     </mat-nav-list>
+    <div class="watermark-container">
+      <span class="watermark-text">FOCALIZZE</span>
+    </div>
   </main>
-
 </div>
 <app-botton-nav></app-botton-nav>

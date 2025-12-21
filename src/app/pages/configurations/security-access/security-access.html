@@ -1,12 +1,10 @@
 <app-header></app-header>
 
 <div class="page-container">
-  <!-- Marca de agua de fondo -->
   <div class="watermark-container">
     <span class="watermark-text">FOCALIZZE</span>
   </div>
 
-  <!-- Cabecera -->
   <header class="page-header">
     <button mat-icon-button (click)="goBack()" aria-label="Volver atrás">
       <mat-icon>arrow_back</mat-icon>
@@ -18,8 +16,6 @@
     <h2 class="section-title">Seguridad y Acceso</h2>
 
     <div class="settings-card">
-      <!-- 1. Cambiar Contraseña -->
-      <!-- Usamos (click) para llamar al método que redirige -->
       <div class="setting-item clickable" (click)="changePassword()" matRipple>
         <div class="item-left">
           <mat-icon class="item-icon">vpn_key</mat-icon>
@@ -28,13 +24,11 @@
         <mat-icon class="chevron-icon">chevron_right</mat-icon>
       </div>
 
-      <!-- 2. Verificación en 2 pasos -->
       <div class="setting-item">
         <div class="item-left">
           <mat-icon class="item-icon">security</mat-icon>
           <div style="display: flex; flex-direction: column">
             <span class="item-text">Verificación en 2 pasos</span>
-            <!-- Pequeña descripción para que el usuario sepa que es por Email -->
             <span class="item-subtext">Vía correo electrónico</span>
           </div>
         </div>
@@ -47,7 +41,6 @@
         </mat-slide-toggle>
       </div>
 
-      <!-- 3. Cerrar sesión en todos los dispositivos -->
       <div class="action-container">
         <button class="logout-all-btn" (click)="logoutAllDevices()" [disabled]="isLoading">
           @if (isLoading) { Procesando... } @else { Cerrar sesión en todos los dispositivos }

@@ -1,27 +1,27 @@
 :host {
   display: block;
-  background-color: var(--background-color, #fdfdfd); /* Fondo gris muy claro */
+  background-color: var(--background-color, #fdfdfd);
   min-height: 100vh;
 }
 
-/* --- Layout Principal --- */
+/* ========================================================= */
+/* === ESTRUCTURA BASE (MOBILE FIRST)                    === */
+/* ========================================================= */
+
 .page-container {
-  /* Padding top para compensar el header fijo de 60px */
   padding-top: 60px;
-  padding-bottom: 80px; /* Espacio para el nav inferior */
+  padding-bottom: 80px;
   position: relative;
   min-height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centra todo horizontalmente */
+  align-items: center;
   overflow: hidden;
 }
 
-/* --- Marca de Agua --- */
-/* --- NUEVA MARCA DE AGUA (TEXTO) --- */
 .watermark-container {
   position: absolute;
-  top: 40%; /* Ajustado para que quede detrás de la tarjeta */
+  top: 60%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
@@ -29,21 +29,20 @@
   justify-content: center;
   align-items: center;
   z-index: 0;
-  pointer-events: none; /* Crucial para poder hacer click encima */
+  pointer-events: none;
 }
 
 .watermark-text {
   font-size: clamp(3rem, 18vw, 8rem);
   font-weight: 900;
   text-transform: uppercase;
-  color: #333;
+  color: var(--watermark-color);
   letter-spacing: 4px;
   font-family: 'Roboto', sans-serif;
   white-space: nowrap;
   user-select: none;
 }
 
-/* --- Cabecera con flecha --- */
 .page-header {
   width: 100%;
   max-width: 700px;
@@ -65,7 +64,6 @@
   font-weight: 500;
   color: var(--primary-color);
   margin: 0;
-  /* Compensamos visualmente el ancho del botón back para centrar perfecto */
   margin-right: 40px;
 }
 
@@ -73,7 +71,6 @@
   color: #01344a;
 }
 
-/* --- Contenido --- */
 .content-wrapper {
   width: 100%;
   max-width: 700px;
@@ -83,29 +80,26 @@
 }
 
 .section-title {
-  color: var(--text-color);
+  color: var(--primary-color);
   font-size: 1.2rem;
   font-weight: 600;
   margin: 20px 0 16px 4px;
 }
 
-/* --- Tarjeta Blanca --- */
 .settings-card {
   background-color: var(--card-background) !important;
   border-radius: 12px;
   box-shadow: 0 2px 8px var(--shadow-color);
   border: 1px solid var(--border-color);
-  overflow: hidden; /* Para que el ripple no se salga */
+  overflow: hidden;
 }
 
-/* Estilo adicional para el subtítulo de 2FA */
 .item-subtext {
   font-size: 0.75rem;
   color: var(--icon-color);
   margin-top: 2px;
 }
 
-/* Estado disabled para el botón */
 .logout-all-btn:disabled {
   background-color: var(--border-color);
   color: var(--icon-color);
@@ -113,7 +107,6 @@
   box-shadow: none;
 }
 
-/* --- Items de la lista --- */
 .setting-item {
   display: flex;
   justify-content: space-between;
@@ -133,10 +126,9 @@
 }
 
 .clickable:hover {
-  background-color: #333;
+  background-color: var(--hover-color);
 }
 
-/* Parte izquierda del item (Icono + Texto) */
 .item-left {
   display: flex;
   align-items: center;
@@ -144,7 +136,7 @@
 }
 
 .item-icon {
-  color: var(--primary-color); /* Color de marca oscuro */
+  color: var(--primary-color);
 }
 
 .item-text {
@@ -157,16 +149,15 @@
   color: var(--icon-color);
 }
 
-/* --- Botón Cerrar Sesión --- */
 .action-container {
   padding: 24px 20px;
   display: flex;
   justify-content: center;
-  border-top: 1px solid var(--border-color); /* Separador sutil */
+  border-top: 1px solid var(--border-color);
 }
 
 .logout-all-btn {
-  background-color: var(--primary-color); /* Azul oscuro de Focalizze */
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 8px;
@@ -188,14 +179,30 @@
   transform: translateY(0);
 }
 
-/* --- Desktop Adjustments --- */
+/* ========================================================= */
+/* === MEDIA QUERIES (TABLET & DESKTOP)                  === */
+/* ========================================================= */
+
 @media (min-width: 768px) {
   .page-container {
-    padding-bottom: 40px; /* Menos espacio abajo porque no hay nav bar */
+    padding-bottom: 40px;
   }
 
   .logout-all-btn {
-    width: auto; /* Botón no ocupa todo el ancho en PC */
+    width: auto;
     min-width: 300px;
+  }
+
+  .watermark-container {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    pointer-events: none;
   }
 }

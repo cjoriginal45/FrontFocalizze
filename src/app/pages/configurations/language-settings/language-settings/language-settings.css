@@ -1,35 +1,66 @@
-/* --- Layout General (Igual que anteriores) --- */
+/* ========================================================= */
+/* === ESTRUCTURA BASE (MOBILE FIRST)                    === */
+/* ========================================================= */
+
 :host {
   display: block;
-  background-color: var(--background-color, #f4f6f8);
+  background-color: var(--background-color);
   min-height: 100vh;
-  --primary-dark: #01344a;
-  --text-dark: #37474f;
 }
 
 .page-wrapper {
   display: flex;
   justify-content: center;
   width: 100%;
+  padding-top: 60px; /* Espacio Header */
+  padding-bottom: 80px; /* Espacio Nav */
+  position: relative;
+  overflow-x: hidden;
 }
 
+/* --- MARCA DE AGUA (FONDO) --- */
+.watermark-container {
+  position: fixed;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.watermark-text {
+  font-size: clamp(3rem, 18vw, 8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--watermark-color);
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
 .settings-container {
   width: 100%;
   max-width: 600px;
   display: flex;
   flex-direction: column;
+  padding: 0 16px;
   position: relative;
+  z-index: 1;
 }
 
-/* --- Header --- */
+/* --- HEADER INTERNO --- */
 .settings-header {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px 0 20px 0;
   position: relative;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .back-button {
@@ -40,34 +71,27 @@
 
 .header-title {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 500;
+  font-size: 1.2rem;
+  font-weight: 600;
   color: var(--primary-color);
-  opacity: 0.8;
 }
 
-/* --- Contenido --- */
-.content-area {
-  position: relative;
-  z-index: 1;
-}
-
+/* --- CONTENIDO --- */
 .section-title {
   color: var(--text-color);
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 20px;
-  padding-left: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-left: 4px;
 }
 
-/* --- Tarjeta del Formulario --- */
+/* --- TARJETA --- */
 .language-card {
   background-color: var(--card-background);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 24px;
-  position: relative;
-  z-index: 2; /* Sobre la marca de agua */
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .form-container {
@@ -78,76 +102,85 @@
 
 .input-label {
   color: var(--text-color);
-  font-weight: 500;
-  margin-bottom: 8px;
+  font-weight: 600;
+  margin-bottom: 12px;
   font-size: 0.95rem;
 }
 
 .helper-text {
-  font-size: 0.8rem;
-  color: var(--text-color);
-  margin-top: 8px;
-  margin-left: 4px;
+  font-size: 0.85rem;
+  color: var(--icon-color);
+  margin-top: 12px;
+  line-height: 1.4;
 }
 
-/* --- Personalización del Select --- */
+/* --- PERSONZALIZACIÓN SELECT --- */
 .custom-select-field {
   width: 100%;
 }
 
-/* --- Botón --- */
+/* Ajustes profundos para redondear el input */
+:host ::ng-deep .custom-select-field .mat-mdc-text-field-wrapper {
+  background-color: var(--background-color) !important; /* Contraste ligero dentro de la tarjeta */
+  border-radius: 12px !important;
+  border: 1px solid var(--border-color);
+}
+
+:host ::ng-deep .custom-select-field .mat-mdc-form-field-subscript-wrapper {
+  display: none; /* Ocultar espacio de error si no se usa */
+}
+
+/* --- BOTÓN --- */
 .actions-container {
   display: flex;
-  justify-content: flex-end; /* Botón a la derecha (o center si prefieres) */
+  justify-content: flex-end;
 }
 
 .btn-confirm {
   background-color: var(--primary-color) !important;
-  color: white;
-  box-shadow: 0 0 4px var(--shadow-color);
-  border-radius: 20px;
-  padding: 8px 24px;
-  font-weight: 500;
-  width: 100%; /* En móvil full width */
+  color: white !important;
+  border-radius: 20px; /* Estilo Píldora */
+  padding: 8px 32px;
+  height: 40px;
+  font-weight: 600;
+  width: 100%; /* Full width en móvil */
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* --- Marca de agua --- */
-.watermark-container {
-  position: absolute;
-  top: 100px;
-  left: 0;
-  width: 100%;
-  height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 0;
-  pointer-events: none;
+.btn-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px var(--shadow-color);
+  filter: brightness(1.1);
 }
 
-.watermark {
-  font-size: 4rem;
-  font-weight: 900;
-  color: #333; /* Muy sutil */
-  text-transform: uppercase;
-  letter-spacing: 2px;
+.btn-confirm:active {
+  transform: scale(0.98);
 }
 
-/* --- Responsive Desktop --- */
+/* ========================================================= */
+/* === MEDIA QUERIES (TABLET & DESKTOP)                  === */
+/* ========================================================= */
+
 @media (min-width: 768px) {
+  .page-wrapper {
+    padding-bottom: 40px;
+  }
+
   .settings-container {
-    max-width: 600px;
+    max-width: 700px;
   }
 
   .language-card {
+    padding: 32px;
     box-shadow: 0 4px 15px var(--shadow-color);
   }
 
   .btn-confirm {
-    width: auto; /* En desktop tamaño natural */
+    width: auto; /* Ancho natural en desktop */
+    min-width: 150px;
   }
 
-  .watermark {
-    font-size: 6rem;
+  .watermark-container {
+    bottom: 10%;
   }
 }

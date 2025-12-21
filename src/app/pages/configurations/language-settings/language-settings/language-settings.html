@@ -1,56 +1,52 @@
 <app-header></app-header>
 
 <div class="page-wrapper">
-    <div class="settings-container">
-  
-      <div class="settings-header">
-        <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Volver">
-          <mat-icon class="arrow-icon">arrow_back</mat-icon>
-        </button>
-        <!-- Traducción del título -->
-        <h2 class="header-title">{{ 'SETTINGS.TITLE' | translate }}</h2>
-      </div>
-  
-      <main class="content-area">
-        
-        <!-- Traducción del subtítulo -->
-        <h3 class="section-title">{{ 'SETTINGS.LANGUAGE_TITLE' | translate }}</h3>
-  
-        <div class="watermark-container">
-          <div class="watermark">Focalizze</div>
-        </div>
-  
-        <div class="language-card">
-          
-          <div class="form-container">
-            <!-- Traducción del label -->
-            <label class="input-label">{{ 'SETTINGS.SELECT_LABEL' | translate }}</label>
-            
-            <mat-form-field appearance="outline" class="custom-select-field">
-              <mat-select [(value)]="selectedLanguage" panelClass="custom-select-panel">
-                <mat-option *ngFor="let lang of languages" [value]="lang.code">
-                  {{ lang.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-  
-            <!-- Traducción del texto de ayuda -->
-            <p class="helper-text">
-              {{ 'SETTINGS.HELPER_TEXT' | translate }}
-            </p>
-          </div>
-  
-          <div class="actions-container">
-            <!-- Traducción del botón -->
-            <button mat-flat-button class="btn-confirm" (click)="saveLanguage()">
-              {{ 'COMMON.CONFIRM' | translate }}
-            </button>
-          </div>
-  
-        </div>
-  
-      </main>
-    </div>
+  <!-- MARCA DE AGUA (FONDO) -->
+  <div class="watermark-container">
+    <span class="watermark-text">FOCALIZZE</span>
   </div>
+
+  <div class="settings-container">
+    <!-- HEADER -->
+    <header class="settings-header">
+      <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Volver">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2 class="header-title">{{ 'SETTINGS.TITLE' | translate }}</h2>
+    </header>
+
+    <main class="content-area">
+      <h3 class="section-title">{{ 'SETTINGS.LANGUAGE_TITLE' | translate }}</h3>
+
+      <div class="settings-card language-card">
+        <div class="form-container">
+          <label class="input-label">{{ 'SETTINGS.SELECT_LABEL' | translate }}</label>
+
+          <mat-form-field appearance="outline" class="custom-select-field">
+            <mat-select [(value)]="selectedLanguage" panelClass="custom-select-panel">
+              <!-- ✅ CAMBIO AQUI: Nueva sintaxis @for -->
+              <!-- 'track' es obligatorio y mejora mucho el rendimiento -->
+              @for (lang of languages; track lang.code) {
+              <mat-option [value]="lang.code">
+                {{ lang.name }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <p class="helper-text">
+            {{ 'SETTINGS.HELPER_TEXT' | translate }}
+          </p>
+        </div>
+
+        <div class="actions-container">
+          <button mat-flat-button class="btn-confirm" (click)="saveLanguage()">
+            {{ 'COMMON.CONFIRM' | translate }}
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
 
 <app-botton-nav></app-botton-nav>

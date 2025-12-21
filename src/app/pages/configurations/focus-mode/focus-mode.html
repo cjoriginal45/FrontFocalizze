@@ -1,25 +1,17 @@
 <app-header></app-header>
-
 <div class="page-container">
-  <!-- MARCA DE AGUA (TEXTO GIGANTE) -->
   <div class="watermark-container">
     <span class="watermark-text">FOCALIZZE</span>
   </div>
-
-  <!-- Cabecera de navegación (Igual que en las otras páginas) -->
   <header class="page-header">
-    <button mat-icon-button (click)="goBack()" aria-label="Volver atrás">
+    <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Volver atrás">
       <mat-icon>arrow_back</mat-icon>
     </button>
     <h1>Configuración</h1>
   </header>
-
   <main class="content-wrapper">
     <h2 class="section-title">Modo enfoque</h2>
-
-    <!-- Tarjeta de configuración -->
     <div class="settings-card">
-      <!-- Item Único: Silenciar notificaciones -->
       <div class="setting-item">
         <span class="item-text"> Silenciar todas las notificaciones por 2 horas </span>
 
@@ -33,5 +25,4 @@
     </div>
   </main>
 </div>
-
 <app-botton-nav></app-botton-nav>

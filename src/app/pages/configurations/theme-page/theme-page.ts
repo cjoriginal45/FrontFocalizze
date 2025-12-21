@@ -26,18 +26,18 @@ export class ThemePage {
 
   // Datos para la UI
   presetColors = [
-    '#F44336',
-    '#E91E63',
-    '#9C27B0',
-    '#673AB7',
-    '#3F51B5',
-    '#2196F3',
-    '#009688',
-    '#4CAF50',
-    '#FFC107',
-    '#FF5722',
-    '#795548',
-    '#607D8B',
+    '#EF9A9A', // Rojo suave
+    '#F48FB1', // Rosa
+    '#CE93D8', // Lila
+    '#B39DDB', // Lavanda profundo
+    '#9FA8DA', // Índigo suave
+    '#90CAF9', // Azul cielo
+    '#80CBC4', // Teal / Menta
+    '#A5D6A7', // Verde hoja
+    '#FFF59D', // Amarillo crema
+    '#FFCC80', // Naranja / Durazno
+    '#BCAAA4', // Marrón tierra suave
+    '#B0BEC5', // Gris azulado
   ];
 
   // Asegúrate de tener estas imágenes en tu carpeta assets

@@ -1,10 +1,12 @@
 :host {
   display: block;
-  /* Usamos la variable global */
   background-color: var(--background-color);
   min-height: 100vh;
 }
 
+/* ========================================================= */
+/* === ESTRUCTURA BASE (MOBILE FIRST)                    === */
+/* ========================================================= */
 .page-container {
   padding-top: 60px;
   padding-bottom: 80px;
@@ -16,33 +18,6 @@
   overflow: hidden;
 }
 
-/* --- MARCA DE AGUA --- */
-.watermark-container {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.watermark-text {
-  font-size: clamp(3rem, 18vw, 8rem);
-  font-weight: 900;
-  text-transform: uppercase;
-  /* Variable para marca de agua */
-  color: var(--watermark-color);
-  letter-spacing: 4px;
-  font-family: 'Roboto', sans-serif;
-  white-space: nowrap;
-  user-select: none;
-}
-
-/* --- Cabecera --- */
 .page-header {
   width: 100%;
   max-width: 700px;
@@ -58,7 +33,6 @@
   text-align: center;
   font-size: 1.1rem;
   font-weight: 500;
-  /* Usamos variable de texto, quizás con opacidad para el gris */
   color: var(--primary-color);
   opacity: 0.8;
   margin: 0;
@@ -66,11 +40,9 @@
 }
 
 .page-header mat-icon {
-  /* Variable primaria */
   color: var(--primary-color);
 }
 
-/* --- Contenido --- */
 .content-wrapper {
   width: 100%;
   max-width: 700px;
@@ -86,18 +58,14 @@
   margin: 20px 0 16px 4px;
 }
 
-/* --- Tarjeta --- */
 .settings-card {
-  /* Variable fondo tarjeta */
   background-color: var(--card-background);
   border-radius: 12px;
   box-shadow: 0 2px 8px var(--shadow-color);
-  /* Variable borde */
   border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
-/* --- Items del Tema --- */
 .theme-item {
   display: flex;
   justify-content: space-between;
@@ -116,9 +84,7 @@
   background-color: var(--hover-color);
 }
 
-/* Estilos para el estado ACTIVO (Seleccionado) */
 .active-theme {
-  /* Un fondo sutil basado en el color primario pero muy transparente */
   background-color: color-mix(in srgb, var(--primary-color) 5%, transparent);
 }
 
@@ -149,7 +115,6 @@
   font-weight: 500;
 }
 
-/* Opción "Por defecto" */
 .custom-option {
   display: flex;
   align-items: center;
@@ -183,7 +148,6 @@
   background: linear-gradient(135deg, #fdfdfd 50%, #121212 50%);
 }
 
-/* Grid de Colores */
 .colors-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
@@ -208,7 +172,7 @@
 }
 
 .color-swatch.selected {
-  border-color: var(--text-color); /* Borde contrastante */
+  border-color: var(--text-color);
 }
 
 .color-swatch mat-icon {
@@ -218,7 +182,6 @@
   height: 20px;
 }
 
-/* Color Picker input escondido */
 .color-picker-wrapper {
   position: relative;
   width: 40px;
@@ -241,7 +204,6 @@
   border: 1px solid #ccc;
 }
 
-/* Grid de Wallpapers */
 .wallpapers-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -249,7 +211,7 @@
 }
 
 .wallpaper-item {
-  aspect-ratio: 1 / 1.5; /* Formato vertical tipo móvil */
+  aspect-ratio: 1 / 1.5;
   border-radius: 8px;
   background-size: cover;
   background-position: center;
@@ -278,7 +240,6 @@
   color: white;
 }
 
-/* Estilos previos mantenidos... */
 .active-item {
   background-color: rgba(1, 52, 74, 0.03);
 }
@@ -288,7 +249,6 @@
   font-weight: 500;
 }
 
-/* Iconos de estado */
 .check-icon {
   color: var(--primary-color);
   font-weight: bold;
@@ -301,8 +261,15 @@
   width: 20px;
 }
 
-/* Desktop */
+/* ========================================================= */
+/* === MEDIA QUERIES (TABLET & DESKTOP)                  === */
+/* ========================================================= */
 @media (min-width: 768px) {
+  .page-container {
+    padding-top: 10px;
+    padding-bottom: 40px;
+  }
+
   .page-container {
     padding-bottom: 40px;
   }

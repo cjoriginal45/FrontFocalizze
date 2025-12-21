@@ -1,45 +1,63 @@
-/* --- Variables locales basadas en el diseño --- */
 :host {
-  --bg-card: #ffffff; /* Fondo de la tarjeta */
-  --text-muted: #666; /* Texto secundario */
-  --input-bg: #f5f5f5; /* Fondo del input nombre */
-  --bio-bg: #f5f5f5; /* Fondo de la bio */
-  --border-radius-card: 20px;
-  --border-radius-input: 12px;
+  display: block;
+  background-color: var(--background-color, #f4f6f8);
+  min-height: 100vh;
 }
 
-:host {
-  background-color: var(--card-background);
-  margin: 0;
-  box-sizing: border-box;
-  padding: 0;
-}
+/* ========================================================= */
+/* === ESTRUCTURA BASE (MOBILE FIRST)                    === */
+/* ========================================================= */
 
-/* Contenedor que centra todo */
 .page-wrapper {
   display: flex;
   justify-content: center;
+  align-items: start;
   width: 100%;
-  margin-top: 20px;
+  padding-top: 10px;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* Contenedor principal (Simula la pantalla blanca/tarjeta grande) */
+.watermark-container {
+  position: fixed;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.watermark-text {
+  font-size: clamp(3rem, 18vw, 8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--watermark-color);
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  user-select: none;
+}
+
 .settings-container {
   width: 100%;
-  max-width: 600px; /* Ancho máximo similar al diseño desktop */
-  background-color: transparent; /* El fondo blanco lo da la mat-card en este diseño o el wrapper si se prefiere */
+  max-width: 600px;
   display: flex;
   flex-direction: column;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
 }
 
-/* --- Header Interno (Flecha y Título) --- */
 .settings-header {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 10px 0 20px 0;
-  color: var(--primary-color);
   position: relative;
-  justify-content: center; /* Centrado por defecto (móvil) */
+  margin-bottom: 10px;
 }
 
 .back-button {
@@ -52,25 +70,24 @@
   margin: 0;
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--primary-color); /* Tono grisáceo azulado del título */
+  color: var(--primary-color);
+  opacity: 0.9;
 }
 
-/* --- Tarjeta del Perfil --- */
 .profile-card {
-  border-radius: var(--border-radius-card) !important;
+  border-radius: 20px !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
-  padding: 20px 10px;
-  background: var(--card-background);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 24px 16px;
+  background-color: var(--card-background) !important;
+  border: 1px solid var(--border-color);
 }
 
-/* --- Sección Superior (Avatar + Usuario) --- */
 .top-section {
   display: flex;
-  flex-direction: column; /* Móvil: Columna */
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 25px;
+  gap: 24px;
+  margin-bottom: 30px;
 }
 
 .avatar-circle {
@@ -78,11 +95,9 @@
   height: 110px;
   border-radius: 50%;
   overflow: hidden;
-  background-color: #fff; /* Color de fondo por si la imagen es transparente */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: var(--card-background);
   box-shadow: 0 4px 10px var(--shadow-color);
+  border: 4px solid var(--card-background);
 }
 
 .profile-img {
@@ -93,61 +108,57 @@
 
 .username-wrapper {
   width: 100%;
-  text-align: center; /* Móvil: Texto centrado */
-  max-width: 300px;
+  text-align: center;
 }
 
 .field-label {
   display: block;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-color);
   margin-bottom: 8px;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
-/* Input simulado (caja gris redondeada) */
-.custom-input-box {
-  background-color: var(--card-background) !important;
-  padding: 12px 16px;
-  border-radius: var(--border-radius-input);
+.custom-input-box,
+.bio-box {
+  background-color: var(--panel-color) !important;
+  padding: 14px 16px;
+  border-radius: 12px;
   color: var(--text-color);
   font-size: 0.95rem;
   border: 1px solid var(--border-color);
-  text-align: left;
 }
 
-/* --- Sección Biografía --- */
+.custom-input-box {
+  text-align: center;
+  font-weight: 500;
+}
+
 .bio-section {
   margin-bottom: 30px;
 }
 
 .bio-box {
-  background-color: var(--card-background) !important;
-  border-radius: var(--border-radius-input);
-  padding: 20px;
-  color: var(--text-color) !important;
-  font-size: 0.85rem;
+  min-height: 80px;
   line-height: 1.6;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  text-align: justify;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
+  text-align: left;
+  font-size: 0.9rem;
 }
 
-/* --- Botón y Disclaimer --- */
 .action-section {
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 16px;
+  text-align: center;
 }
 
 .btn-export {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 14px 24px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 0.95rem;
   display: flex;
@@ -156,90 +167,79 @@
   gap: 10px;
   cursor: pointer;
   width: 100%;
-  max-width: 350px;
-  box-shadow: 0 0 4px var(--shadow-color);
-  transition: transform 0.1s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s, background-color 0.2s;
 }
 
 .btn-export:hover {
-  background-color: #00445e; /* Un tono más oscuro al pasar el ratón */
-  transition: background-color 0.2s ease;
+  filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
 .btn-export:active {
   transform: scale(0.98);
 }
 
-.icon-right {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
-}
-
 .disclaimer-text {
   font-size: 0.75rem;
-  color: var(--text-color);
-  max-width: 380px;
+  color: var(--icon-color);
+  max-width: 320px;
   line-height: 1.5;
   margin: 0;
 }
 
-.watermark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 4rem;
-  font-weight: 900;
-  color: rgba(1, 52, 74, 0.04); /* Muy sutil */
-  pointer-events: none; /* Click through */
-  user-select: none;
-  z-index: 0;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-/* ========================================================================
-   MEDIA QUERY DESKTOP (Tablet/PC > 768px)
-   Replica la imagen horizontal
-   ========================================================================
-*/
-@media (min-width: 768px) {
-  .settings-container {
-    max-width: 700px; /* Tarjeta un poco más ancha */
-  }
-
-  .profile-card {
-    padding: 40px; /* Más padding interno */
-  }
-
-  /* Transformación a layout horizontal */
-  .top-section {
-    flex-direction: row; /* Lado a lado */
-    align-items: center; /* Alineación vertical centro */
-    justify-content: center;
-    gap: 40px; /* Espacio entre avatar y nombre */
-    margin-bottom: 35px;
-  }
-
-  .username-wrapper {
-    text-align: left; /* Alinear texto a la izquierda */
-    width: auto;
-    flex: 1; /* Que ocupe el resto del espacio */
-    max-width: none;
-  }
-
-  /* Ajuste visual del input en desktop */
-  .custom-input-box {
-    border: 1px solid var(--border-color) !important;
-  }
-
-  .bio-box {
-    font-size: 0.9rem;
-    border: 1px solid var(--border-color) !important;
-  }
+.loading-state,
+.error-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--icon-color);
 }
 
 .hide-for-pdf {
   display: none !important;
+}
+
+/* ========================================================= */
+/* === MEDIA QUERIES (TABLET & DESKTOP)                  === */
+/* ========================================================= */
+
+@media (min-width: 768px) {
+  .page-wrapper {
+    padding-bottom: 40px;
+  }
+
+  .settings-container {
+    max-width: 700px;
+  }
+
+  .profile-card {
+    padding: 10px 20px;
+  }
+
+  .top-section {
+    flex-direction: row;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .username-wrapper {
+    text-align: left;
+    flex: 1;
+    max-width: none;
+  }
+
+  .custom-input-box {
+    text-align: left;
+  }
+
+  .btn-export {
+    width: auto;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .watermark-container {
+    bottom: 10%;
+  }
 }

@@ -15,7 +15,7 @@
   --card-background: #ffffff;
   --border-color: #e0e0e0;
   --icon-color: #5f6368;
-  --watermark-color: rgba(0, 0, 0, 0.04);
+  --watermark-color: rgba(0, 0, 0, 0.3);
   --header-height: 60px;
   --footer-height: 40px;
 }
@@ -32,7 +32,7 @@ body.dark-theme {
   --card-background: #1e1e1e; /* Fondo de tarjetas (Material Dark) */
   --border-color: #333333;
   --icon-color: #b0b0b0;
-  --watermark-color: rgba(255, 255, 255, 0.05); /* Marca de agua blanca sutil */
+  --watermark-color: rgba(255, 255, 255, 0.3); /* Marca de agua blanca sutil */
 }
 
 * {
@@ -448,4 +448,28 @@ body {
 .mat-mdc-menu-item:hover,
 .mat-focus-indicator:hover {
   background-color: var(--hover-color) !important;
+}
+
+.mat-mdc-dialog-container {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-dialog-inner-container,
+.mdc-dialog__container {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-dialog-title,
+.mdc-dialog__title {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-dialog-content,
+.mdc-dialog__content {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-select-value,
+.mat-mdc-select-min-line {
+  background-color: transparent !important;
 }
