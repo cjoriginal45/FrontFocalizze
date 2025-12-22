@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 import { Page } from '../../interfaces/PageInterface';
@@ -21,10 +21,8 @@ export class FeedService {
    * @returns Un Observable con la respuesta paginada.
    */
   getFeed(page: number, size: number): Observable<Page<FeedThreadDto>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-    
+    const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+
     // Spring usará automáticamente el 'sort' de @PageableDefault si no se envía uno.
     return this.http.get<Page<FeedThreadDto>>(this.feedApiUrl, { params });
   }

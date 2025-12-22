@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { firstValueFrom, forkJoin, map, Observable, switchMap, tap } from 'rxjs';
 import { LoginResponse } from '../../interfaces/LoginResponse';
 import { Router } from '@angular/router';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserSearch } from '../../interfaces/UserSearch';
@@ -7,13 +7,12 @@ import { ThreadResponse } from '../../interfaces/ThreadResponseDto';
 import { FeedThreadDto } from '../../interfaces/FeedThread';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Search {
-  
   private apiUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   searchUsers(query: string): Observable<UserSearch[]> {
     // Lógica para buscar usuarios en la API

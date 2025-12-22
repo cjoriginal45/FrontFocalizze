@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { effect, inject, Injectable, signal } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 export type ThemeMode = 'light' | 'dark';
 export type BackgroundType = 'default' | 'color' | 'image';

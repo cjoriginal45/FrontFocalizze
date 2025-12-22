@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { Page } from '../../interfaces/PageInterface';
 import { CommentResponseDto } from '../../interfaces/CommentResponse';
@@ -43,7 +43,6 @@ export class Comment {
    * Elimina (lógicamente) un comentario.
    */
   deleteComment(commentId: number): Observable<void> {
-    
     return this.http.delete<void>(`${this.commentsApiUrl}/${commentId}`);
   }
 
@@ -54,11 +53,12 @@ export class Comment {
     return this.http.patch<CommentResponseDto>(`${this.commentsApiUrl}/${commentId}`, content);
   }
 
-
   /**
    * Responde a un comentario existente.
    */
   replyToComment(commentId: number, content: string): Observable<CommentResponseDto> {
-    return this.http.post<CommentResponseDto>(`${this.commentsApiUrl}/${commentId}/reply`, { content });
+    return this.http.post<CommentResponseDto>(`${this.commentsApiUrl}/${commentId}/reply`, {
+      content,
+    });
   }
 }
