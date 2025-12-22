@@ -3,6 +3,7 @@ import { NotificationInterface } from '../../interfaces/NotificationInterface';
 import { Subject } from 'rxjs';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,10 @@ export class WebSockets {
       return;
     }
 
+    const serverUrl = environment.production
+      ? window.location.origin.replace('http', 'ws')
+      : 'http://localhost:8080/';
+
     if (this.stompClient && this.stompClient.active) {
       console.log('Cliente STOMP ya está conectado.');
       return;
@@ -28,8 +33,7 @@ export class WebSockets {
 
     // Creamos el cliente STOMP
     this.stompClient = new Client({
-      // El broker URL apunta a nuestro endpoint '/ws' del backend
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      webSocketFactory: () => new SockJS('${serverUrl}/ws'),
 
       // Pasamos el token JWT en las cabeceras de conexión para la autenticación
       connectHeaders: {
