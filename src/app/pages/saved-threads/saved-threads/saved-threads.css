@@ -14,7 +14,6 @@
   align-items: center;
   gap: 16px;
   padding: 8px;
-  border-bottom: 1px solid var(--border-color);
   top: var(--header-height, 60px); /* Se pega justo debajo del header principal */
   background-color: var(--background-color); /* Fondo para que no se vea el contenido de atrás */
   z-index: 10;
@@ -71,14 +70,6 @@
   text-align: center;
   padding: 40px;
   color: #777;
-}
-
-/* Indicador de carga y botón "Cargar más" (sin cambios, son correctos) */
-.loading-indicator {
-  /* ... */
-}
-.load-more-button {
-  /* ... */
 }
 
 /* --- MEDIA QUERY PARA ESCRITORIO (A PARTIR DE 768px o el breakpoint que prefieras) --- */
