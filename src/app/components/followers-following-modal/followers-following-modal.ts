@@ -1,5 +1,11 @@
-import { Component, Inject, OnInit, signal, effect, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  signal,
+  inject,
+  ChangeDetectionStrategy,
+  DestroyRef,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,6 +20,7 @@ import { UserState } from '../../services/user-state/user-state';
 import { Auth } from '../../services/auth/auth';
 import { UserInterface } from '../../interfaces/UserInterface';
 import { TranslateModule } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface FollowersModalData {
   username: string;
@@ -24,7 +31,6 @@ export interface FollowersModalData {
   selector: 'app-followers-following-modal',
   standalone: true,
   imports: [
-    CommonModule,
     MatDialogModule,
     MatTabsModule,
     MatIconModule,
@@ -36,108 +42,89 @@ export interface FollowersModalData {
   ],
   templateUrl: './followers-following-modal.html',
   styleUrl: './followers-following-modal.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FollowersFollowingModal implements OnInit {
-  private profileService = inject(ProfileService);
-  private userStateService = inject(UserState);
-  authService = inject(Auth);
+  // --- Inyección de Servicios ---
+  private readonly profileService = inject(ProfileService);
+  private readonly userStateService = inject(UserState);
+  private readonly destroyRef = inject(DestroyRef);
+  public readonly authService = inject(Auth);
+  public readonly dialogRef = inject(MatDialogRef<FollowersFollowingModal>);
+  public readonly data: FollowersModalData = inject(MAT_DIALOG_DATA);
 
-  // Estados reactivos
-  isLoading = signal(true);
-  selectedIndex = signal(0); // 0 = Followers, 1 = Following
+  // --- Estados Reactivos (Signals) ---
+  public readonly isLoading = signal(true);
+  public readonly selectedIndex = signal(0);
+  public readonly followersList = signal<UserSummary[]>([]);
+  public readonly followingList = signal<UserSummary[]>([]);
+  public readonly isMyProfile = signal(false);
 
-  // Listas de usuarios
-  followersList = signal<UserSummary[]>([]);
-  followingList = signal<UserSummary[]>([]);
-
-  // ¿El perfil que estamos viendo es el mío?
-  isMyProfile = false;
-
-  constructor(
-    public dialogRef: MatDialogRef<FollowersFollowingModal>,
-    @Inject(MAT_DIALOG_DATA) public data: FollowersModalData
-  ) {
-    // Detectamos si es mi perfil para saber si borrar items de la lista "Seguidos" en tiempo real
-    const currentUser = this.authService.getCurrentUser();
-    this.isMyProfile = currentUser?.username === data.username;
-
-    // Configurar pestaña inicial
-    this.selectedIndex.set(data.initialTab === 'following' ? 1 : 0);
-  }
-
+  // --- Métodos del Ciclo de Vida ---
   ngOnInit(): void {
-    // Cargamos la data de la pestaña inicial
+    this.checkOwnership();
+    this.initializeTabIndex();
     this.loadDataForTab(this.selectedIndex());
   }
 
-  onTabChange(index: number): void {
+  private checkOwnership(): void {
+    const currentUser = this.authService.getCurrentUser();
+    this.isMyProfile.set(currentUser?.username === this.data.username);
+  }
+
+  private initializeTabIndex(): void {
+    this.selectedIndex.set(this.data.initialTab === 'following' ? 1 : 0);
+  }
+
+  public onTabChange(index: number): void {
     this.selectedIndex.set(index);
     this.loadDataForTab(index);
   }
 
-  loadDataForTab(index: number): void {
+  // carga los seguidores o seguidos según la pestaña seleccionada
+  public loadDataForTab(index: number): void {
     this.isLoading.set(true);
     const username = this.data.username;
+    const request$ =
+      index === 0
+        ? this.profileService.getFollowers(username)
+        : this.profileService.getFollowing(username);
 
-    if (index === 0) {
-      // Followers
-      this.profileService.getFollowers(username).subscribe({
-        next: (users) => {
-          this.followersList.set(users);
-          this.populateUserState(users);
-          this.isLoading.set(false);
-        },
-        error: () => this.isLoading.set(false),
-      });
-    } else {
-      // Following
-      this.profileService.getFollowing(username).subscribe({
-        next: (users) => {
-          this.followingList.set(users);
-          this.populateUserState(users);
-          this.isLoading.set(false);
-        },
-        error: () => this.isLoading.set(false),
-      });
-    }
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (users) => {
+        if (index === 0) this.followersList.set(users);
+        else this.followingList.set(users);
+
+        this.populateUserState(users);
+        this.isLoading.set(false);
+      },
+      error: () => this.isLoading.set(false),
+    });
   }
 
-  // Cargamos los usuarios en el UserState para que el botón de FollowButton funcione
-  // ya que FollowButton depende del UserState para su reactividad.
-  private populateUserState(users: UserSummary[]) {
+  // carga los usuarios en el estado global de usuarios
+  private populateUserState(users: UserSummary[]): void {
     const userInterfaces: UserInterface[] = users.map((u) => ({
       id: u.id,
       username: u.username,
       displayName: u.displayName,
       avatarUrl: u.avatarUrl,
       isFollowing: u.isFollowing,
-      followersCount: 0, // No los necesitamos en el modal
-      followingCount: 0, // No los necesitamos en el modal
+      followersCount: 0,
+      followingCount: 0,
     }));
     this.userStateService.loadUsers(userInterfaces);
   }
 
-  onClose(): void {
-    this.dialogRef.close();
+  // maneja los cambios en el estado de seguimiento
+  public handleFollowStateChange(usernameChanged: string, isNowFollowing: boolean): void {
+    // Si estoy en mi perfil y dejo de seguir a alguien en la pestaña "Seguidos" (index 1)
+    if (this.isMyProfile() && this.selectedIndex() === 1 && !isNowFollowing) {
+      this.followingList.update((list) => list.filter((u) => u.username !== usernameChanged));
+    }
   }
 
-  /**
-   * Maneja el evento cuando cambia el estado de seguimiento dentro del modal.
-   * Si estamos en MI perfil, en la pestaña "Seguidos" y dejo de seguir a alguien,
-   * esa persona debe desaparecer de la lista visualmente.
-   */
-  handleFollowStateChange(usernameChanged: string, isNowFollowing: boolean): void {
-    const currentTab = this.selectedIndex();
-
-    // Caso especial: Estoy en MI perfil, viendo MIS seguidos.
-    if (this.isMyProfile && currentTab === 1 && !isNowFollowing) {
-      // Remover de la lista visualmente
-      this.followingList.update((list) => list.filter((u) => u.username !== usernameChanged));
-
-      // Actualizar contador del perfil de fondo (se hace via UserState -> ProfileComponent)
-      // ProfileComponent ya escucha UserState changes, pero necesitamos asegurar
-      // que el contador 'following' de MI perfil baje.
-      // El FollowButton ya actualiza el 'currentUser' en AuthService, lo cual es correcto.
-    }
+  public onClose(): void {
+    this.dialogRef.close();
   }
 }
