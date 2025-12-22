@@ -67,8 +67,4 @@ describe('threadService', () => {
       req.flush(null); // Simulamos respuesta vacía
     });
   });
-
-  // SE OMITE EL TEST DE createThread()
-  // Razón: El testeo de Multipart FormData con Blobs JSON es propenso a fallar
-  // dependiendo de la versión de Karma/Jasmine al comparar objetos Blob.
 });
