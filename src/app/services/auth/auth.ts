@@ -78,43 +78,76 @@ export class Auth {
     );
   }
 
-  // --- CARGA INICIAL ---
+  /**
+   * Carga el usuario desde el token guardado en el almacenamiento local.
+   * Se ejecuta al inicializar la aplicación.
+   */
   async loadUserFromToken(): Promise<void> {
     const token = localStorage.getItem('jwt_token');
-    if (token) {
-      try {
-        const decodedToken: { exp: number } = jwtDecode(token);
-        if (Date.now() >= decodedToken.exp * 1000) {
-          //localStorage.removeItem('jwt_token');
-        } else {
-          this.notificationStateService.initialize();
 
-          const combinedData$ = forkJoin({
-            user: this.userService.getMe(),
-            interactions: this.userService.getInteractionStatus(),
-          }).pipe(
-            map(({ user, interactions }) => {
-              // AQUÍ SINCRONIZAMOS EL TEMA CUANDO SE RECARGA LA PÁGINA
-              if (user.backgroundType) {
-                this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
-              }
-
-              return {
-                ...user,
-                dailyInteractionsRemaining: interactions.remaining,
-              } as unknown as AuthUser;
-            })
-          );
-
-          const authUser = await firstValueFrom(combinedData$);
-          this.currentUser.set(authUser);
-        }
-      } catch (error) {
-        console.error('Fallo al inicializar auth:', error);
-        //localStorage.removeItem('jwt_token');
-      }
+    // 1. Si no hay token, no hay nada que procesar.
+    if (!token) {
+      console.log('[AuthService] No se encontró token en localStorage.');
+      this.authReady.set(true);
+      return;
     }
-    this.authReady.set(true);
+
+    try {
+      // 2. Intentamos decodificar el token para verificar expiración
+      const decodedToken: { exp: number } = jwtDecode(token);
+      const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+      
+      /**
+       * 3. Verificación de expiración con MARGEN DE MANIOBRA (Buffer).
+       * Restamos 60 segundos al tiempo actual para absorber discrepancias de reloj (Clock Skew)
+       * entre tu PC y el servidor de Render.
+       */
+      const isExpired = decodedToken.exp < (currentTimeInSeconds - 60);
+
+      if (isExpired) {
+        console.warn('[AuthService] El token ha expirado. Limpiando sesión...');
+        this.logout(); // Logout ya limpia localStorage y navega a /login
+      } else {
+        // 4. EL TOKEN ES VÁLIDO: Inicializamos servicios dependientes
+        this.notificationStateService.initialize();
+
+        // 5. Obtenemos datos extendidos del usuario (Perfil + Interacciones)
+        const combinedData$ = forkJoin({
+          user: this.userService.getMe(),
+          interactions: this.userService.getInteractionStatus(),
+        }).pipe(
+          map(({ user, interactions }) => {
+            // Sincronizamos el tema visual del usuario (Fondo/Colores)
+            if (user.backgroundType) {
+              this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
+            }
+
+            // Mapeamos a nuestra interfaz AuthUser
+            return {
+              ...user,
+              dailyInteractionsRemaining: interactions.remaining,
+            } as unknown as AuthUser;
+          })
+        );
+
+        // Convertimos el observable en promesa para esperar el resultado antes de liberar el Guard
+        const authUser = await firstValueFrom(combinedData$);
+        this.currentUser.set(authUser);
+        console.log('[AuthService] Usuario cargado exitosamente desde el token.');
+      }
+    } catch (error) {
+      /**
+       * 6. Manejo de errores de decodificación o red.
+       * Si el token es inválido (basura), lo eliminamos para evitar bucles.
+       */
+      console.error('[AuthService] Error durante la inicialización de sesión:', error);
+      localStorage.removeItem('jwt_token');
+      this.currentUser.set(null);
+    } finally {
+      // 7. BLOQUE VITAL: Pase lo que pase (éxito o error), marcamos la auth como "lista".
+      // Esto permite que el authReadyGuard deje pasar al usuario al Feed o al Login.
+      this.authReady.set(true);
+    }
   }
 
   // --- LOGIN ---
