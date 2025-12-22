@@ -473,3 +473,7 @@ body {
 .mat-mdc-select-min-line {
   background-color: transparent !important;
 }
+
+.mat-mdc-input-element {
+  color: var(--text-color) !important;
+}

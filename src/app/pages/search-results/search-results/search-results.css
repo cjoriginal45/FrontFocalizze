@@ -9,7 +9,6 @@
   align-items: center;
   gap: 16px;
   padding: 12px;
-  border-bottom: 1px solid var(--border-color);
 
   /* Hacemos que el header sea pegajoso */
   position: sticky;
