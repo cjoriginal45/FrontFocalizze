@@ -1,5 +1,5 @@
 export const environment = {
   /* Production environment configuration */
   production: true,
-  apiBaseUrl: 'https://focalizze-app.vercel.app/api',
+  apiBaseUrl: 'https://focalizze-backend.onrender.com/api',
 };
