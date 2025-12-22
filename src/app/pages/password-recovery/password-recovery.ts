@@ -1,10 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { Header } from '../../components/header/header';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PasswordReset } from '../../services/password-reset';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { Theme } from '../../services/themeService/theme';
 
 @Component({
   selector: 'app-password-recovery',
@@ -17,24 +18,31 @@ export class PasswordRecovery implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private passwordResetService = inject(PasswordReset);
+  private themeService = inject(Theme);
 
   // Controla qué vista mostrar: 'request' (pedir email) o 'reset' (nueva contraseña)
   view: 'request' | 'reset' | 'invalid_token' | 'success' | 'email_sent' = 'request';
-  
+
   // Modelos para los inputs
   public email = '';
   newPassword = '';
   confirmPassword = '';
-  
+
   // Variables de estado
   errorMessage: string | null = null;
   isLoading = false;
   private token: string | null = null;
 
+  logoPath = computed(() => {
+    return this.themeService.currentTheme() === 'dark'
+      ? 'assets/images/focalizze-logo-dark-theme.webp'
+      : 'assets/images/focalizze-logo.webp';
+  });
+
   ngOnInit(): void {
     // Comprueba si la URL contiene un token
     this.token = this.route.snapshot.queryParamMap.get('token');
-    
+
     if (this.token) {
       this.isLoading = true;
       // FASE 2: Validar el token
@@ -46,7 +54,7 @@ export class PasswordRecovery implements OnInit {
         error: () => {
           this.view = 'invalid_token';
           this.isLoading = false;
-        }
+        },
       });
     }
   }
@@ -65,10 +73,10 @@ export class PasswordRecovery implements OnInit {
   resetPassword(): void {
     if (!this.newPassword || !this.confirmPassword || !this.token) return;
     if (this.newPassword !== this.confirmPassword) {
-      this.errorMessage = "Las contraseñas no coinciden.";
+      this.errorMessage = 'Las contraseñas no coinciden.';
       return;
     }
-    
+
     this.isLoading = true;
     this.passwordResetService.resetPassword(this.token, this.newPassword).subscribe({
       next: () => {
@@ -78,9 +86,9 @@ export class PasswordRecovery implements OnInit {
         setTimeout(() => this.router.navigate(['/login']), 4000);
       },
       error: () => {
-        this.errorMessage = "Ocurrió un error. El enlace puede haber expirado.";
+        this.errorMessage = 'Ocurrió un error. El enlace puede haber expirado.';
         this.isLoading = false;
-      }
+      },
     });
   }
 }
