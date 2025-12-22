@@ -1,82 +1,103 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RegisterService } from './register';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { RegisterResponse } from '../../interfaces/RegisterResponse';
 import { RegisterRequest } from '../../interfaces/RegisterRequest';
+import { RegisterResponse } from '../../interfaces/RegisterResponse';
+import { RegisterService } from './register';
 
 describe('RegisterService', () => {
   let service: RegisterService;
   let httpMock: HttpTestingController;
 
+  // URL esperada derivada del entorno
+  const EXPECTED_URL = `${environment.apiBaseUrl}/auth/register`;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RegisterService, provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        RegisterService,
+        // Configuración moderna para testing HTTP en Angular 18/19/20
+        // Reemplaza al antiguo HttpClientTestingModule
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
+
     service = TestBed.inject(RegisterService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
-    // Verificar que no hay peticiones HTTP pendientes después de cada test
-    // Verify that there are no pending HTTP requests after each test
+    // Verificación crucial: asegura que no haya solicitudes pendientes ni inesperadas
     httpMock.verify();
   });
 
-  /**
-   * Prueba: Creación del servicio
-   * Verifica que el servicio se instancia correctamente
-   *
-   * Test: Creating the service
-   * Verify that the service is instantiated correctly
-   */
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  /**
-   * Prueba: Envío de petición de registro
-   * Verifica que el servicio envía una petición POST con los datos correctos y retorna la respuesta del servidor
-   *
-   * Test: Sending a registration request
-   * Verify that the service sends a POST request with the correct data and returns the server response
-   */
-  it('should send register request and return response', () => {
-    // Arrange: Preparar datos de prueba
-    // Prepare test data
-    const mockRequest: RegisterRequest = {
-      username: 'testuser',
-      email: 'test@example.com',
-      password: 'password123',
-      confirmPassword: 'password123',
-    };
+  describe('register()', () => {
+    it('should send a POST request with correct body and return response', () => {
+      // 1. Arrange (Preparar datos)
+      const mockRequest: RegisterRequest = {
+        username: 'newUser',
+        email: 'test@mail.com',
+        password: 'password123',
+        displayName: 'New User',
+      } as unknown as RegisterRequest;
 
-    const mockResponse: RegisterResponse = {
-      userId: 1,
-      username: 'testuser',
-      displayName: 'testuser',
-      email: 'test@example.com',
-      message: 'User registered successfully',
-    };
+      const mockResponse: RegisterResponse = {
+        id: 1,
+        username: 'newUser',
+        token: 'fake-jwt-token',
+      } as unknown as RegisterResponse;
 
-    // Act: Ejecutar el método register
-    // Execute the register method
-    service.register(mockRequest).subscribe((response) => {
-      // Assert: Verificar que la respuesta es la esperada
-      // Verify that the response is as expected
-      expect(response).toEqual(mockResponse);
+      // 2. Act (Ejecutar método)
+      service.register(mockRequest).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
+
+      // 3. Assert (Verificar petición HTTP)
+      const req = httpMock.expectOne(EXPECTED_URL);
+
+      // Verificamos método HTTP
+      expect(req.request.method).toBe('POST');
+
+      // Verificamos que el cuerpo de la petición sea el correcto
+      expect(req.request.body).toEqual(mockRequest);
+
+      // Simulamos la respuesta del backend
+      req.flush(mockResponse);
     });
 
-    // Assert: Verificar que se hizo la petición HTTP correcta
-    // Verify that the correct HTTP request was made
-    const req = httpMock.expectOne(`${environment.apiBaseUrl}/register`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(mockRequest);
+    it('should handle server errors gracefully', () => {
+      // 1. Arrange
+      const mockRequest: RegisterRequest = {
+        username: 'existingUser',
+        password: '123',
+      } as unknown as RegisterRequest;
 
-    // Simular respuesta del servidor
-    // Simulate server response
-    req.flush(mockResponse);
+      const status = 409;
+      const statusText = 'Conflict';
+      const errorMsg = 'Username already exists';
+
+      // 2. Act
+      service.register(mockRequest).subscribe({
+        next: () => fail('Should have failed with 409 error'),
+        error: (error) => {
+          // 3. Assert
+          expect(error.status).toBe(status);
+          expect(error.statusText).toBe(statusText);
+        },
+      });
+
+      // Assert HTTP request
+      const req = httpMock.expectOne(EXPECTED_URL);
+
+      // Simulamos un error del servidor
+      req.flush(errorMsg, { status, statusText });
+    });
   });
 });
