@@ -1,15 +1,23 @@
-import { Component, inject, Signal, ViewChild, effect, computed, Input } from '@angular/core';
+import {
+  Component,
+  inject,
+  computed,
+  input,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
-import { Menu } from '../menu/menu';
-import { Observable } from 'rxjs';
-import { Responsive } from '../../services/responsive/responsive';
-import { SearchBar } from '../search-bar/search-bar';
-import { Auth, AuthUser } from '../../services/auth/auth';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
+import { Menu } from '../menu/menu';
+import { SearchBar } from '../search-bar/search-bar';
+
+import { Auth } from '../../services/auth/auth';
 import { NotificationState } from '../../services/notification-state/notification-state';
 import { Theme } from '../../services/themeService/theme';
+import { Responsive } from '../../services/responsive/responsive';
 
 @Component({
   selector: 'app-header',
@@ -17,30 +25,39 @@ import { Theme } from '../../services/themeService/theme';
   imports: [SearchBar, Menu, MatToolbar, MatIcon, RouterModule, CommonModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
-  @ViewChild(Menu) public menuComponent!: Menu;
-  public isMobile$: Observable<boolean>;
-  @Input() disableShadow: boolean = false;
+  // Inyección de dependencias moderna
   private authService = inject(Auth);
   private notificationStateService = inject(NotificationState);
   private themeService = inject(Theme);
+  private responsiveService = inject(Responsive);
 
-  logoPath = computed(() => {
+  // Signal Inputs (Reemplazo de @Input)
+  // Se define valor por defecto false, igual que en el original
+  public disableShadow = input<boolean>(false);
+
+  // Signal ViewChild (Reemplazo de @ViewChild)
+  // Acceso seguro y tipado al componente hijo
+  public menuComponent = viewChild.required(Menu);
+
+  // Observables y Signals expuestos
+  // No se modifican los servicios, solo se consumen
+  public isMobile$ = this.responsiveService.isMobile$;
+  public currentUser = this.authService.currentUser;
+  public hasUnreadNotifications = this.notificationStateService.hasUnreadNotifications;
+
+  // Lógica computada para assets
+  public logoPath = computed(() => {
     return this.themeService.currentTheme() === 'dark'
-      ? 'assets/images/focalizze-logo-small-dark-theme.webp' // Ruta imagen oscura (letras claras)
-      : 'assets/images/focalizze-logo-small.webp'; // Ruta imagen clara (letras oscuras)
+      ? 'assets/images/focalizze-logo-small-dark-theme.webp'
+      : 'assets/images/focalizze-logo-small.webp';
   });
-  public currentUser: Signal<AuthUser | null>;
-  public hasUnreadNotifications: Signal<boolean>;
 
-  constructor(private responsiveService: Responsive) {
-    this.isMobile$ = this.responsiveService.isMobile$;
-    this.currentUser = this.authService.currentUser;
-    this.hasUnreadNotifications = this.notificationStateService.hasUnreadNotifications;
-  }
-
-  onMenuClick(): void {
-    this.menuComponent.toggle();
+  // Métodos de interacción
+  public onMenuClick(): void {
+    // Acceso mediante signal execution ()
+    this.menuComponent().toggle();
   }
 }
