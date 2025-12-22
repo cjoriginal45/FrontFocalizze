@@ -1,0 +1,214 @@
+:host {
+  display: block;
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+/* ========================================================= */
+/* === ESTILOS BASE (MOBILE FIRST - < 768px)             === */
+/* ========================================================= */
+.discover-layout {
+  display: block;
+  padding: 15px;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+}
+
+.discover-layout__content {
+  width: 100%;
+}
+
+.discover-layout__threads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.discover-layout__threads-list app-thread {
+  opacity: 0;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.discover-layout__threads-list app-thread:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.discover-layout__threads-list app-thread:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.discover-layout__threads-list app-thread:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.discover-layout__threads-list app-thread:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.discover-layout__threads-list app-thread:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #333;
+}
+
+.load-more-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.load-more-button:hover {
+  transform: scale(1.03);
+}
+
+.discover-item {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeInUp 0.4s ease forwards;
+  transition: box-shadow 0.3s ease;
+}
+
+.discover-item:hover {
+  box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+.discover-item:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.discover-item:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.discover-item:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.ddiscover-item:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.discover-item:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.recommendation-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #fff;
+  padding: 6px 16px;
+  background-color: var(--primary-hover);
+}
+.recommendation-header span {
+  flex-grow: 1;
+}
+
+.recommendation-header mat-icon {
+  color: #fff;
+}
+
+.recommendation-header__icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #fff;
+}
+
+.recommendation-reason {
+  padding: 12px 16px;
+  max-width: 280px;
+  outline: none;
+}
+
+.recommendation-reason mat-icon {
+  color: var(--primary-color);
+}
+.reason-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.reason-title h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-color) !important;
+}
+.recommendation-reason p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  color: var(--primary-color) !important;
+}
+.recommendation-reason button {
+  width: 100%;
+  color: var(--primary-color) !important;
+}
+
+/* ========================================================= */
+/* === ESCRITORIO (>= 768px)                             === */
+/* ========================================================= */
+@media (min-width: 992px) {
+  .discover-layout {
+    display: grid;
+    grid-template-columns: 1fr minmax(500px, 600px) 350px;
+    gap: 30px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    align-items: start;
+  }
+
+  .discover-layout__content {
+    grid-column: 2 / 3;
+  }
+
+  .discover-layout__sidebar {
+    grid-column: 3 / 4;
+    position: sticky;
+    top: 120px;
+    height: calc(100vh - (60px + 40px + 40px));
+    overflow-y: auto;
+    padding-right: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    transition: box-shadow 0.3s ease;
+    background-color: var(--card-background);
+  }
+
+  .discover-layout__sidebar:hover {
+    box-shadow: 0 0 15px var(--shadow-color);
+  }
+}
+
+/* ========================================================= */
+/* === ESCRITORIO (<= 991px)                             === */
+/* ========================================================= */
+@media (max-width: 991px) {
+  .load-more-button {
+    width: 100%;
+    max-width: 300px;
+  }
+}

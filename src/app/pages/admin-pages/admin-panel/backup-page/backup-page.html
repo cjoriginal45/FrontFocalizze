@@ -1,0 +1,52 @@
+<app-header></app-header>
+
+<div class="page-container">
+  <!-- Marca de agua de fondo -->
+  <div class="watermark-container">
+    <span class="watermark-text">FOCALIZZE</span>
+  </div>
+
+  <!-- Cabecera de navegación -->
+  <header class="page-header">
+    <button mat-icon-button (click)="goBack()" aria-label="Volver atrás">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Respaldo</h1>
+  </header>
+
+  <main class="content-wrapper">
+    <!-- Tarjeta central -->
+    <div class="settings-card backup-card">
+      <div class="backup-content">
+        <!-- Icono decorativo (Tabla/Excel) -->
+        <div class="icon-wrapper">
+          <mat-icon class="backup-icon">table_view</mat-icon>
+        </div>
+
+        <h2 class="backup-title">Exportar datos del sistema</h2>
+
+        <p class="backup-description">
+          Se generará un archivo <strong>Excel (.xlsx)</strong> que contiene la lista completa de
+          usuarios, hilos y estadísticas actuales para análisis o respaldo administrativo.
+        </p>
+
+        <!-- Botón de acción -->
+        <div class="action-container">
+          <button
+            mat-flat-button
+            class="download-btn"
+            (click)="initiateBackup()"
+            [disabled]="isLoading"
+          >
+            @if (isLoading) {
+            <!-- Loader css definido en tu archivo de estilos -->
+            <span class="loader"></span> Generando... } @else { Descargar Reporte }
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Navegación inferior -->
+<app-botton-nav></app-botton-nav>

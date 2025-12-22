@@ -1,0 +1,61 @@
+<header class="modal-header">
+  <h2 class="modal-header__title">Detalles del Reporte</h2>
+  <div class="modal-header__right">
+    <button mat-icon-button [mat-dialog-close]="true" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</header>
+
+<div class="modal-content">
+  <div class="info-section">
+    <div class="detail-row">
+      <span class="label">Reportado:</span>
+      <span class="value highlight">@{{ report.reportedUsername }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Reportado por:</span>
+      <span class="value">@{{ report.reporterUsername }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Razón:</span>
+      <span class="value">{{ report.reason }}</span>
+    </div>
+  </div>
+
+  <!-- Uso de nueva sintaxis @if -->
+  @if (report.description) {
+  <div class="description-box">
+    <span class="label">Descripción:</span>
+    <p>{{ report.description }}</p>
+  </div>
+  }
+
+  <div class="actions-section">
+    <h3>Acciones</h3>
+    <mat-form-field appearance="outline" class="full-width custom-select">
+      <mat-label>Duración de suspensión</mat-label>
+      <!-- Binding explícito para Signal: [ngModel] lee, (ngModelChange) escribe -->
+      <mat-select
+        [ngModel]="selectedDays()"
+        (ngModelChange)="selectedDays.set($event)"
+        [disabled]="isLoading()"
+      >
+        <mat-option [value]="1">1 Día</mat-option>
+        <mat-option [value]="7">7 Días</mat-option>
+        <mat-option [value]="30">1 Mes</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <!-- Binding de señal isLoading() -->
+  <button mat-button class="btn-secondary" (click)="dismissReport()" [disabled]="isLoading()">
+    Ignorar
+  </button>
+
+  <button mat-flat-button class="btn-warn" (click)="suspendUser()" [disabled]="isLoading()">
+    Suspender Usuario
+  </button>
+</div>

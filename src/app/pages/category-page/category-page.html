@@ -1,0 +1,57 @@
+<app-header></app-header>
+
+<div class="category-page">
+  @if (isLoading() && !category()) {
+    <p class="category-page__loading">{{ 'CATEGORY.LOADING' | translate }}</p>
+  } @if (category(); as cat) {
+  <header
+    class="category-banner"
+    [style.background-image]="
+      'url(' + (cat.imageUrl || '/assets/images/categories/default-banner.webp') + ')'
+    "
+  >
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <h1 class="banner-content__name">{{ cat.name }}</h1>
+      <p class="banner-content__description">{{ cat.description }}</p>
+      <div class="banner-content__action">
+        <app-follow-button
+          type="category"
+          [identifier]="cat.id"
+          (followStateChanged)="onFollowChange($event)"
+        >
+        </app-follow-button>
+      </div>
+    </div>
+  </header>
+
+  <div class="category-stats">
+    <div class="stat">
+      <span class="stat__value">{{ cat.followersCount | number }}</span>
+      <span class="stat__label">{{ 'CATEGORY.FOLLOWERS' | translate }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat__value">{{ cat.threadsCount | number }}</span>
+      <span class="stat__label">{{ 'CATEGORY.THREADS_COUNT' | translate }}</span>
+    </div>
+  </div>
+
+  <div class="category-threads">
+    <h2 class="category-threads__title">{{ 'CATEGORY.THREADS_TITLE' | translate }}</h2>
+    @if (threadIds().length > 0) {
+    <div class="category-threads__list">
+      @for (threadId of threadIds(); track threadId) {
+      <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
+      }
+    </div>
+    } @else if (!isLoading()) {
+      <p class="category-threads__no-results">{{ 'CATEGORY.NO_THREADS' | translate }}</p>
+    } @if (isLoading() && category()) {
+      <p>{{ 'CATEGORY.LOADING_MORE' | translate }}</p>
+    }
+  </div>
+  }
+</div>
+
+<app-create-thread-button></app-create-thread-button>
+<app-botton-nav></app-botton-nav>

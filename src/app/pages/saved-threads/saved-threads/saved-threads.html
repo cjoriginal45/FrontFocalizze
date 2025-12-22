@@ -1,0 +1,29 @@
+<app-header></app-header>
+
+<div class="saved-threads-layout">
+  <main class="saved-threads-layout__content">
+    <div class="title-bar">
+      <button mat-icon-button (click)="goBack()" href="#" class="title-bar__back-btn" aria-label="Volver a la página anterior" style="cursor: pointer;">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="title-bar__title">{{ 'SAVED_THREADS.TITLE' | translate }}</h1>
+    </div>
+    <div class="saved-threads-layout__threads-list">
+      @for (threadId of threadIds; track threadId) {
+        <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
+      }
+    </div>
+
+    @if (isLoading) {
+      <div class="loading-indicator">{{ 'SAVED_THREADS.LOADING' | translate }}</div>
+    }
+    @if (!isLastPage && threadIds.length > 0 && !isLoading) {
+      <button (click)="loadMoreThreads()" class="load-more-button">{{ 'SAVED_THREADS.LOAD_MORE' | translate }}</button>
+    }
+    @if (!isLoading && threadIds.length === 0) {
+      <p class="no-results">{{ 'SAVED_THREADS.EMPTY' | translate }}</p>
+    }
+  </main>
+</div>
+
+<app-botton-nav></app-botton-nav>

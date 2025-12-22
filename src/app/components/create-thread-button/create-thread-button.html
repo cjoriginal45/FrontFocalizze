@@ -1,0 +1,13 @@
+<!-- Nuevo Control Flow (@if) basado en el estado de autenticación (Signal esperado) -->
+@if (authService.isLoggedIn()) {
+  <div class="create-thread-container">
+    <button
+      mat-fab
+      class="create-thread-fab"
+      (click)="createThread()"
+      aria-label="Crear un nuevo hilo"
+    >
+      <mat-icon class="create-thread-icon">edit_square</mat-icon>
+    </button>
+  </div>
+}

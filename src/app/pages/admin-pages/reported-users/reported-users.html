@@ -1,0 +1,53 @@
+<app-header></app-header>
+
+<div class="notification-page-container">
+  <header class="notification-page__header">
+    <!-- Título específico para esta página -->
+    <h1>Usuarios Reportados</h1>
+  </header>
+
+  <div class="notification-list-container">
+    @for (report of reports; track report.id) {
+      <!-- Al hacer clic, abrimos la modal en lugar de navegar -->
+      <div class="notification-item-link" (click)="openReport(report)" style="cursor: pointer;">
+        <div class="notification-item notification-item--unread"> <!-- Siempre estilo 'unread' para destacar -->
+          
+          <div class="notif-icon">
+            <mat-icon color="warn">report</mat-icon>
+          </div>
+
+          <div class="notif-content">
+            <!-- Avatar del usuario REPORTADO -->
+            <img [src]="report.reportedAvatarUrl" class="notif-avatar" alt="Avatar">
+
+            <div class="notif-text-content">
+              <div class="notif-title">
+                <strong>@{{ report.reportedUsername }}</strong> fue reportado.
+              </div>
+              
+              <div class="notif-box">
+                Motivo: {{ report.reason }}
+              </div>
+              
+              <span class="notif-date">{{ report.createdAt | timeAgo }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      @if (!isLoading) {
+        <p class="no-notifications">No hay reportes pendientes.</p>
+      }
+    }
+  </div>
+
+  @if (isLoading) {
+    <p class="loading-indicator">Cargando reportes...</p>
+  }
+
+  @if (!isLastPage && reports.length > 0 && !isLoading) {
+    <button (click)="loadReports()" class="load-more-button">Cargar más</button>
+  }
+</div>
+
+<app-botton-nav></app-botton-nav>

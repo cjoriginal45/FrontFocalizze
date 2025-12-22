@@ -1,0 +1,121 @@
+<header class="modal-header">
+  <div class="modal-header__left">
+    @if (currentStep() > 1) {
+      <button
+      mat-icon-button
+      class="modal-header__button modal-header__back-btn"
+      (click)="previousStep()"
+      [attr.aria-label]="'EDIT_THREAD.BACK_ARIA' | translate"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    }
+  </div>
+
+  <h2 class="modal-header__title">{{ 'EDIT_THREAD.TITLE' | translate }}</h2>
+  <div class="modal-header__right">
+    <button
+      mat-icon-button
+      class="modal-header__button"
+      (click)="closeModal()"
+      [attr.aria-label]="'EDIT_THREAD.CLOSE_ARIA' | translate"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</header>
+
+<div class="modal-content" mat-dialog-content>
+  <!-- Vista Desktop -->
+  <div class="modal-content__desktop-view">
+    @for (limit of [charLimits.step1, charLimits.step2, charLimits.step3]; track $index) {
+      <mat-form-field appearance="fill" class="thread-input">
+        <mat-label>{{ 'EDIT_THREAD.POST_LABEL' | translate : { number: $index + 1 } }}</mat-label>
+        <textarea
+          matInput
+          [ngModel]="threads()[$index]"
+          (ngModelChange)="updateThread($index, $event)"
+          [maxlength]="limit"
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="3"
+        ></textarea>
+        <mat-hint align="end">{{ threads()[$index].length }} / {{ limit }}</mat-hint>
+      </mat-form-field>
+    }
+  </div>
+
+  <!-- Vista Mobile con Control Flow Switch -->
+  <div class="modal-content__mobile-view">
+    @switch (currentStep()) {
+      @case (1) {
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>{{ 'EDIT_THREAD.POST_STEP_LABEL' | translate : { current: 1, total: 3 } }}</mat-label>
+          <textarea
+            matInput
+            [ngModel]="threads()[0]"
+            (ngModelChange)="updateThread(0, $event)"
+            [maxlength]="charLimits.step1"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="5"
+          ></textarea>
+          <mat-hint align="end">{{ threads()[0].length }} / {{ charLimits.step1 }}</mat-hint>
+        </mat-form-field>
+      }
+      @case (2) {
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>{{ 'EDIT_THREAD.POST_STEP_LABEL' | translate : { current: 2, total: 3 } }}</mat-label>
+          <textarea
+            matInput
+            [ngModel]="threads()[1]"
+            (ngModelChange)="updateThread(1, $event)"
+            [maxlength]="charLimits.step2"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="5"
+          ></textarea>
+          <mat-hint align="end">{{ threads()[1].length }} / {{ charLimits.step2 }}</mat-hint>
+        </mat-form-field>
+      }
+      @case (3) {
+        <mat-form-field appearance="fill" class="thread-input">
+          <mat-label>{{ 'EDIT_THREAD.POST_STEP_LABEL' | translate : { current: 3, total: 3 } }}</mat-label>
+          <textarea
+            matInput
+            [ngModel]="threads()[2]"
+            (ngModelChange)="updateThread(2, $event)"
+            [maxlength]="charLimits.step3"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="5"
+          ></textarea>
+          <mat-hint align="end">{{ threads()[2].length }} / {{ charLimits.step3 }}</mat-hint>
+        </mat-form-field>
+      }
+    }
+  </div>
+</div>
+
+<footer class="modal-footer" mat-dialog-actions>
+  <mat-form-field class="category-selector">
+    <mat-label>{{ 'EDIT_THREAD.CATEGORY_LABEL' | translate }}</mat-label>
+    <mat-select [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)" name="category">
+      <mat-option [value]="'Ninguna'">{{ 'EDIT_THREAD.CATEGORY_NONE' | translate }}</mat-option>
+      @for (category of categories(); track category.value) {
+        <mat-option [value]="category.value">{{ category.viewValue }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="modal-footer__actions" [class]="'step-' + currentStep()">
+    <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">
+      {{ 'EDIT_THREAD.NEXT' | translate }}
+    </button>
+    <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="onSave()">
+      {{ 'EDIT_THREAD.SAVE_CHANGES' | translate }}
+    </button>
+  </div>
+</footer>
+
+@if (errorMessage()) {
+  <div class="modal-error-message">
+    {{ errorMessage() }}
+  </div>
+}

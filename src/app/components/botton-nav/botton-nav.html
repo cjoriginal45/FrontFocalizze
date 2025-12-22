@@ -1,0 +1,59 @@
+<nav class="mobile-nav">
+  <ul class="mobile-nav__list">
+    <!-- Item: Home -->
+    <li class="mobile-nav__item">
+      <a
+        class="mobile-nav__link"
+        routerLink="/home"
+        routerLinkActive="mobile-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <mat-icon class="mobile-nav__icon">home</mat-icon>
+      </a>
+    </li>
+
+    <!-- Item: Search -->
+    <li class="mobile-nav__item">
+      <a
+        class="mobile-nav__link"
+        routerLink="/search-mobile"
+        routerLinkActive="mobile-nav__link--active"
+      >
+        <mat-icon class="mobile-nav__icon">search</mat-icon>
+      </a>
+    </li>
+
+    <!-- Item: Notifications -->
+    <li class="mobile-nav__item">
+      <a
+        class="mobile-nav__link"
+        routerLink="/notifications"
+        routerLinkActive="mobile-nav__link--active"
+      >
+        <div class="icon-wrapper">
+          <mat-icon class="mobile-nav__icon">notifications</mat-icon>
+          @if (hasUnreadNotifications()) {
+          <span class="notification-dot"></span>
+          }
+        </div>
+      </a>
+    </li>
+
+    <!-- Item: Profile -->
+    <li class="mobile-nav__item">
+      @if (currentUser(); as user) {
+      <a
+        class="mobile-nav__link"
+        [routerLink]="['/profile', user.username]"
+        routerLinkActive="mobile-nav__link--active"
+      >
+        <img [src]="user.avatarUrl" class="mobile-nav__user-avatar" alt="Avatar" />
+      </a>
+      } @else {
+      <a class="mobile-nav__link" routerLink="/profile" routerLinkActive="mobile-nav__link--active">
+        <mat-icon class="mobile-nav__icon">account_circle</mat-icon>
+      </a>
+      }
+    </li>
+  </ul>
+</nav>

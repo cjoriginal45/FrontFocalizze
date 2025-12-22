@@ -1,0 +1,67 @@
+<section class="register-page">
+  <div class="register-page__logo-box">
+    <img class="register-page__logo-img" [src]="logoPath()" alt="Logo Focalizze" />
+    <p class="register-page__logo-title">Donde menos es más</p>
+  </div>
+  <div class="register-page__panel-box">
+    <div class="register-panel">
+      <h1 class="register-panel__title">{{ 'REGISTER.TITLE' | translate }}</h1>
+      <form class="register-panel__form" (ngSubmit)="onSubmit()">
+        <input
+          class="register-panel__input"
+          type="text"
+          [placeholder]="'REGISTER.PLACEHOLDER_USER' | translate"
+          [(ngModel)]="registerData.username"
+          name="username"
+          required
+        />
+        <input
+          class="register-panel__input"
+          type="email"
+          [placeholder]="'REGISTER.PLACEHOLDER_EMAIL' | translate"
+          [(ngModel)]="registerData.email"
+          name="email"
+          required
+        />
+        <div class="register-panel__password-field-wrapper">
+          <input
+            class="register-panel__input"
+            [type]="passwordInputType"
+            [placeholder]="'REGISTER.PLACEHOLDER_PASS' | translate"
+            name="password"
+            [(ngModel)]="registerData.password"
+            required
+          />
+          <span class="register-panel__toggle-btn" (click)="togglePasswordVisibility()">
+            <mat-icon>{{ passwordIcon }}</mat-icon>
+          </span>
+        </div>
+
+        <div class="register-panel__password-field-wrapper">
+          <input
+            class="register-panel__input"
+            [type]="confirmPasswordInputType"
+            [placeholder]="'REGISTER.PLACEHOLDER_CONFIRM' | translate"
+            name="confirmPassword"
+            [(ngModel)]="registerData.confirmPassword"
+            required
+          />
+          <span class="register-panel__toggle-btn" (click)="toggleConfirmPasswordVisibility()">
+            <mat-icon>{{ confirmPasswordIcon }}</mat-icon>
+          </span>
+        </div>
+
+        <!-- Display error message / Mostrar mensaje de error -->
+        @if (errorMessage) {
+        <div class="register-panel__error">
+          {{ errorMessage }}
+        </div>
+        }
+
+        <button class="register-panel__button" type="submit">{{ 'REGISTER.BUTTON' | translate }}</button>
+      </form>
+      <a class="register-panel__link" routerLink="/">{{ 'REGISTER.LOGIN_LINK' | translate }}</a>
+      <p class="register-panel__copyright-text">{{ 'FOOTER.COPYRIGHT' | translate }}</p>
+    </div>
+  </div>
+</section>

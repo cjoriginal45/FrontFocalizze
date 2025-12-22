@@ -1,0 +1,39 @@
+.follow-btn {
+  flex-shrink: 0;
+  height: 32px;
+  line-height: 30px;
+  padding: 0 16px;
+  border-radius: 16px;
+  font-weight: bold;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  transition: all 0.2s ease-in-out;
+  background-color: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.follow-btn:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.follow-btn.follow-btn--following {
+  background-color: var(--primary-color);
+  color: #fff;
+  transition: all 0.5s ease-in-out;
+}
+
+.follow-btn.follow-btn--following:hover {
+  background-color: transparent;
+  border-color: #fff;
+  color: var(--primary-color);
+  border: solid 2px var(--primary-color);
+}
+
+.follow-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

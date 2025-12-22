@@ -1,0 +1,48 @@
+<app-header></app-header>
+
+<div class="notification-page-container">
+  <header class="notification-page__header">
+    <h1>Hilos Reportados</h1>
+  </header>
+
+  <div class="notification-list-container">
+    @for (report of reports; track report.id) {
+      <div class="notification-item-link" (click)="openReport(report)" style="cursor: pointer;">
+        <div class="notification-item notification-item--unread">
+          
+          <div class="notif-icon">
+            <mat-icon color="warn">flag</mat-icon> <!-- Icono diferente -->
+          </div>
+
+          <div class="notif-content">
+            <!-- No hay avatar de usuario reportado aquí necesariamente, o el del autor -->
+            <img [src]="report.reportedAvatarUrl" class="notif-avatar" alt="Avatar">
+
+            <div class="notif-text-content">
+              <div class="notif-title">
+                <strong>Hilo de @{{ report.reportedUsername }}</strong> reportado.
+              </div>
+              
+              <!-- Mostramos el preview del hilo -->
+              <div class="notif-box thread-preview">
+                "{{ report.reportedThreadPreview }}"
+              </div>
+              
+              <div class="reason-text">
+                <small>Motivo: {{ report.reason }}</small>
+              </div>
+              
+              <span class="notif-date">{{ report.createdAt | timeAgo }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      @if (!isLoading) {
+        <p class="no-notifications">No hay hilos reportados pendientes.</p>
+      }
+    }
+  </div>
+  <!-- ... Controles de carga y paginación iguales ... -->
+</div>
+<app-botton-nav></app-botton-nav>

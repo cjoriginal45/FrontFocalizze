@@ -1,0 +1,58 @@
+<app-header></app-header>
+<div class="settings-container">
+  <mat-toolbar class="settings-toolbar">
+    <button
+      mat-icon-button
+      (click)="goBack()"
+      class="back-button"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <mat-icon class="arrow-icon">arrow_back</mat-icon>
+    </button>
+    <span>{{ 'SETTINGS.TITLE' | translate }}</span>
+  </mat-toolbar>
+
+  <main class="settings-content">
+    <mat-nav-list>
+      <a routerLink="/count-profile" mat-list-item href="/count-profile">
+        <!-- Más adelante será un [routerLink] -->
+        <mat-icon matListItemIcon>person</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS.MENU.ACCOUNT' | translate }}</span>
+      </a>
+      <a routerLink="/security-access" mat-list-item>
+        <mat-icon matListItemIcon>lock</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS.MENU.SECURITY' | translate }}</span>
+      </a>
+      <a routerLink="/notifications-settings" mat-list-item href="/notifications-settings">
+        <mat-icon matListItemIcon>notifications</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS.MENU.NOTIFICATIONS' | translate }}</span>
+      </a>
+      <a routerLink="/focus-mode" mat-list-item>
+        <mat-icon matListItemIcon>volume_off</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS.MENU.FOCUS' | translate }}</span>
+      </a>
+      <a routerLink="/privacy-blocking" mat-list-item href="/privacy-blocking">
+        <mat-icon matListItemIcon>block</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS.MENU.PRIVACY' | translate }}</span>
+      </a>
+      <a routerLink="/theme" mat-list-item>
+        <mat-icon matListItemIcon>palette</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS.MENU.THEME' | translate }}</span>
+      </a>
+      <a routerLink="/language-settings" mat-list-item href="/language-settings">
+        <mat-icon matListItemIcon>language</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS.MENU.LANGUAGE' | translate }}</span>
+      </a>
+      @if(isAdmin()) {
+      <a routerLink="/admin-panel" mat-list-item>
+        <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
+        <span matListItemTitle>{{ 'SETTINGS.MENU.ADMIN_PANEL' | translate }}</span>
+      </a>
+      }
+    </mat-nav-list>
+    <div class="watermark-container">
+      <span class="watermark-text">FOCALIZZE</span>
+    </div>
+  </main>
+</div>
+<app-botton-nav></app-botton-nav>

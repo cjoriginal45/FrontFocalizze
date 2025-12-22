@@ -1,0 +1,91 @@
+/* --- Estructura principal y fix para el bottom-nav --- */
+.search-mobile-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  background-color: var(--background-color);
+}
+
+.search-mobile-page__header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  /* background-color: var(--primary-color); */
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0; /* Evita que el header se encoja */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.search-mobile-page__header app-search-bar {
+  flex-grow: 1;
+  margin-right: 30px;
+}
+
+.search-mobile-page__header mat-icon {
+  color: var(--primary-color);
+}
+
+/* El contenido principal ahora es el que se puede desplazar (scroll) */
+.search-mobile-page__content {
+  flex-grow: 1; /* Ocupa todo el espacio sobrante */
+  overflow-y: auto; /* Permite el scroll si el contenido es largo */
+  /* --- SOLUCIÓN AL LAYOUT --- */
+  /* Añadimos un padding inferior igual a la altura de tu nav-bar */
+  padding-bottom: 75px; /* 65px de la barra + 10px de espacio */
+}
+
+/* --- Estilos para el historial (mejorados) --- */
+.search-history__title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 16px 16px 4px;
+  color: var(--primary-color);
+}
+.search-history ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.search-history__empty {
+  text-align: center;
+  color: var(--text-color);
+  padding: 40px;
+}
+
+.search-history__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.search-history__item:hover {
+  background-color: var(--hover-color);
+}
+
+.item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.item-content__icon {
+  color: var(--primary-color);
+}
+.item-content__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fff;
+}
+.item-content__user-info {
+  display: flex;
+  flex-direction: column;
+}
+.user-info__username {
+  font-size: 0.9em;
+  color: var(--text-color);
+}
+
+.remove-button {
+  color: var(--icon-color);
+}

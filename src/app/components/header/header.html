@@ -1,0 +1,55 @@
+<!-- Se pasa el observable isMobile$ al menu como input -->
+<app-menu [isMobile$]="isMobile$"></app-menu>
+
+<!-- Se accede a disableShadow() como función porque es un signal -->
+<mat-toolbar class="header" [class.no-shadow]="disableShadow()">
+  <div class="header__section header__section--left">
+    <button mat-icon-button class="header__button" (click)="onMenuClick()" aria-label="Abrir menú">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a href="/feed" class="header__logo-container hide-on-mobile">
+      <img class="header__logo" [src]="logoPath()" alt="Focalizze logo" />
+    </a>
+  </div>
+
+  <div class="header__section header__section--center">
+    <app-search-bar class="header__search hide-on-mobile"></app-search-bar>
+    <a href="/feed" class="header__logo-container show-on-mobile">
+      <img class="header__logo mobile-logo" [src]="logoPath()" alt="Focalizze logo" />
+    </a>
+  </div>
+
+  <div class="header__section header__section--right">
+    <a
+      routerLink="/notifications"
+      mat-icon-button
+      class="header__button notification-button hide-on-mobile"
+      aria-label="Notificaciones"
+    >
+      <mat-icon>notifications</mat-icon>
+      @if (hasUnreadNotifications()) {
+      <span class="notification-dot"></span>
+      }
+    </a>
+
+    <div class="hide-on-mobile">
+      @if (currentUser(); as user) {
+      <a [routerLink]="['/profile', user.username]" class="header__avatar-link">
+        <img [src]="user.avatarUrl" class="header__user-avatar" alt="Avatar" />
+      </a>
+      } @else {
+      <button mat-icon-button class="header__button">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      }
+    </div>
+    <button
+      routerLink="/configuration-page"
+      mat-icon-button
+      class="header__button show-on-mobile"
+      aria-label="Configuración"
+    >
+      <mat-icon>settings</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>

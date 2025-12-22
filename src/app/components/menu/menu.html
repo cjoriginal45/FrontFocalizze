@@ -1,0 +1,173 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Se usa #sidenav para referenciarlo en el viewChild -->
+  <mat-sidenav #sidenav class="sidenav" mode="over" [opened]="false">
+    @if (authService.currentUser(); as user) {
+    <!-- Acceso al signal input como función: isMobile$() -->
+    @if (isMobile$() | async) {
+    <div class="sidenav__mobile">
+      <header class="sidenav__header-mobile">
+        <div class="user-profile__info-mobile">
+          <a
+            class="user-profile__avatar-link"
+            routerLink="/profile/{{ user.username }}"
+            (click)="matSidenav().close()"
+          >
+            <div class="user-profile_avatar-box-mobile">
+              @if (user.avatarUrl) {
+              <img
+                [src]="user.avatarUrl"
+                [alt]="'PROFILE.AVATAR_ALT' | translate : { name: user.displayName }"
+                class="user-profile__avatar-mobile-img"
+              />
+              } @else {
+              <mat-icon class="user-profile__avatar-mobile">account_circle</mat-icon>
+              }
+            </div>
+          </a>
+          <div class="user-profile__name-handle-mobile">
+            <span class="user-profile__name-mobile">{{ user.displayName || user.username }}</span>
+            <span class="user-profile__handle-mobile">@{{ user.username }}</span>
+          </div>
+        </div>
+        <div class="user-profile__button-box-mobile">
+          <button
+            mat-icon-button
+            class="sidenav__close-button"
+            (click)="matSidenav().close()"
+            [attr.aria-label]="'COMMON.CLOSE_MENU' | translate"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </header>
+      <div class="mobile-stats-container">
+        <div class="mobile-stats">
+          <span
+            ><strong>{{ user.followingCount | number }}</strong>
+            {{ 'PROFILE.FOLLOWING' | translate }}</span
+          >
+          <span
+            ><strong>{{ user.followersCount | number }}</strong>
+            {{ 'PROFILE.FOLLOWERS' | translate }}</span
+          >
+        </div>
+      </div>
+      <div class="sidenav__header-line-mobile"></div>
+      <mat-nav-list class="sidenav__nav-list">
+        <a mat-list-item routerLink="/saved" (click)="matSidenav().close()">
+          <mat-icon>bookmark</mat-icon> <span>{{ 'MENU.SAVED' | translate }}</span>
+        </a>
+        <a mat-list-item routerLink="/configuration-page" (click)="matSidenav().close()">
+          <mat-icon>settings</mat-icon> <span>{{ 'MENU.SETTINGS' | translate }}</span>
+        </a>
+        <a mat-list-item (click)="logout()">
+          <mat-icon>logout</mat-icon> <span>{{ 'MENU.LOGOUT' | translate }}</span>
+        </a>
+      </mat-nav-list>
+      <div class="sidenav__footer-mobile">
+        <img class="header__logo" [src]="logoPath()" [alt]="'COMMON.LOGO_ALT' | translate" />
+      </div>
+    </div>
+    } @else {
+    <!-- Desktop View -->
+    <div class="sidenav__desktop">
+      <header class="sidenav__header">
+        <div class="sidenav__logo-container">
+          <img class="header__logo" [src]="logoPath()" [alt]="'COMMON.LOGO_ALT' | translate" />
+        </div>
+        <button
+          mat-icon-button
+          class="sidenav__close-button"
+          (click)="matSidenav().close()"
+          [attr.aria-label]="'COMMON.CLOSE_MENU' | translate"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </header>
+      <mat-nav-list class="sidenav__nav-list">
+        <a mat-list-item routerLink="/home" (click)="matSidenav().close()">
+          <mat-icon>home</mat-icon> <span>{{ 'MENU.HOME' | translate }}</span>
+        </a>
+        <a mat-list-item routerLink="/notifications" (click)="matSidenav().close()">
+          <mat-icon>notifications</mat-icon> <span>{{ 'MENU.NOTIFICATIONS' | translate }}</span>
+        </a>
+        <a mat-list-item routerLink="/saved" (click)="matSidenav().close()">
+          <mat-icon>bookmark</mat-icon> <span>{{ 'MENU.SAVED' | translate }}</span>
+        </a>
+        <a mat-list-item routerLink="/configuration-page" (click)="matSidenav().close()">
+          <mat-icon>settings</mat-icon> <span>{{ 'MENU.SETTINGS' | translate }}</span>
+        </a>
+      </mat-nav-list>
+
+      <a
+        class="sidenav__user-profile-link"
+        routerLink="/profile/{{ user.username }}"
+        (click)="matSidenav().close()"
+      >
+        <div class="sidenav__user-profile">
+          @if (user.avatarUrl) {
+          <img
+            [src]="user.avatarUrl"
+            [alt]="'PROFILE.AVATAR_ALT' | translate : { name: user.displayName }"
+            class="user-profile__avatar-img"
+          />
+          } @else {
+          <mat-icon class="user-profile__avatar">account_circle</mat-icon>
+          }
+          <div class="user-profile__info">
+            <span class="user-profile__name">{{ user.displayName || user.username }}</span>
+            <span class="user-profile__handle">@{{ user.username }}</span>
+          </div>
+          <div class="user-profile__stats">
+            <span
+              ><strong>{{ user.followingCount | number }}</strong>
+              {{ 'PROFILE.FOLLOWING' | translate }}</span
+            >
+            <span
+              ><strong>{{ user.followersCount | number }}</strong>
+              {{ 'PROFILE.FOLLOWERS' | translate }}</span
+            >
+          </div>
+        </div>
+      </a>
+      <button mat-stroked-button class="sidenav__logout-btn" (click)="logout()" routerLink="/login">
+        {{ 'MENU.LOGOUT' | translate }}
+      </button>
+    </div>
+    } } @else {
+    <!-- Anonymous View -->
+    <div class="sidenav__anonymous-view">
+      <div class="sidenav__header">
+        <div class="sidenav__logo-container">
+          <img class="header__logo" [src]="logoPath()" [alt]="'COMMON.LOGO_ALT' | translate" />
+        </div>
+        <button
+          mat-icon-button
+          class="sidenav__close-button"
+          (click)="matSidenav().close()"
+          [attr.aria-label]="'COMMON.CLOSE_MENU' | translate"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="sidenav__anonymous-content">
+        <h2>{{ 'WELCOME.TITLE' | translate }}</h2>
+        <p>{{ 'WELCOME.SUBTITLE' | translate }}</p>
+        <div class="sidenav__anonymous-actions">
+          <a mat-stroked-button routerLink="/login" (click)="matSidenav().close()">{{
+            'COMMON.LOGIN' | translate
+          }}</a>
+          <a
+            mat-flat-button
+            color="primary"
+            routerLink="/register"
+            (click)="matSidenav().close()"
+            >{{ 'COMMON.REGISTER' | translate }}</a
+          >
+        </div>
+      </div>
+    </div>
+    }
+  </mat-sidenav>
+  <mat-sidenav-content></mat-sidenav-content>
+</mat-sidenav-container>

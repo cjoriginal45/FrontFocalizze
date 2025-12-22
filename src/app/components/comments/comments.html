@@ -1,0 +1,141 @@
+<header class="comments-header">
+  <h2>{{ 'COMMENTS.TITLE' | translate }}</h2>
+  <button mat-icon-button (click)="onClose()" aria-label="Cerrar">
+    <mat-icon>close</mat-icon>
+  </button>
+</header>
+
+<div class="comments-scroll-area">
+  <!-- Sección añadir comentario -->
+  <section class="add-comment-section">
+    <div class="user-avatar-wrapper">
+      <img 
+        [src]="authService.currentUser()?.avatarUrl || defaultAvatar" 
+        class="avatar" 
+        alt="Avatar" 
+      />
+    </div>
+
+    <div class="input-wrapper">
+      <mat-form-field appearance="outline" class="comment-field">
+        <textarea
+          matInput
+          [placeholder]="'COMMENTS.PLACEHOLDER' | translate"
+          cdkTextareaAutosize
+          [formControl]="commentControl"
+          maxlength="280"
+        ></textarea>
+        <mat-hint align="end">{{ commentControl.value.length }}/280</mat-hint>
+      </mat-form-field>
+
+      <div class="input-actions">
+        <button
+          mat-flat-button
+          class="btn-post"
+          (click)="postComment()"
+          [disabled]="commentControl.invalid || commentControl.disabled"
+        >
+          {{ 'COMMENTS.BUTTON' | translate }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="comments-list-section">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <p>{{ 'COMMENTS.LOADING' | translate }}...</p>
+      </div>
+    }
+
+    <div class="comments-list">
+      @for (comment of comments(); track comment.id) {
+        <article class="comment-item">
+          <img class="avatar comment-avatar" [src]="comment.author.avatarUrl" alt="Avatar" />
+
+          <div class="comment-content">
+            <div class="comment-meta">
+              <div class="meta-info">
+                <span class="author-name">{{ comment.author.displayName }}</span>
+                <span class="author-handle">@{{ comment.author.username }}</span>
+                <span class="dot-separator">·</span>
+                <span class="date">{{ comment.createdAt | timeAgo }}</span>
+              </div>
+
+              @if (authService.currentUser()?.username === comment.author.username) {
+                <button mat-icon-button [matMenuTriggerFor]="commentMenu" class="more-btn">
+                  <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #commentMenu="matMenu">
+                  <button mat-menu-item (click)="openEditComment(comment.id, comment.content)">
+                    <mat-icon color="primary">edit</mat-icon>
+                    <span>{{ 'COMMENTS.EDIT' | translate }}</span>
+                  </button>
+                  <button mat-menu-item (click)="openDeleteConfirm(comment.id)">
+                    <mat-icon color="warn">delete</mat-icon>
+                    <span>{{ 'COMMENTS.DELETE' | translate }}</span>
+                  </button>
+                </mat-menu>
+              }
+            </div>
+
+            <p class="comment-text">{{ comment.content }}</p>
+
+            @if (isThreadAuthor() && replyingToCommentId() !== comment.id) {
+              <button class="action-link" (click)="startReplying(comment.id)">Responder</button>
+            }
+
+            @if (replyingToCommentId() === comment.id) {
+              <div class="reply-form">
+                <mat-form-field appearance="outline" class="full-width dense-field">
+                  <textarea
+                    matInput
+                    [formControl]="replyControl"
+                    placeholder="Tu respuesta..."
+                    cdkTextareaAutosize
+                  ></textarea>
+                </mat-form-field>
+                <div class="reply-actions">
+                  <button mat-button (click)="replyingToCommentId.set(null)">Cancelar</button>
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    (click)="sendReply(comment.id)"
+                    [disabled]="replyControl.invalid || replyControl.disabled"
+                  >
+                    Enviar
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- Respuestas -->
+            @if (comment.replies && comment.replies.length > 0) {
+              <div class="replies-container">
+                @for (reply of comment.replies; track reply.id) {
+                  <div class="comment-item reply-item">
+                    <img class="avatar small-avatar" [src]="reply.author.avatarUrl" alt="Avatar" />
+                    <div class="comment-content">
+                      <div class="meta-info">
+                        <span class="author-name">{{ reply.author.displayName }}</span>
+                        @if (isThreadAuthor()) {
+                          <span class="badge-author">Autor</span>
+                        }
+                        <span class="date">· {{ reply.createdAt | timeAgo }}</span>
+                      </div>
+                      <p class="comment-text">{{ reply.content }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </article>
+      } @empty {
+        @if (!isLoading()) {
+          <p class="empty-msg">No hay comentarios aún.</p>
+        }
+      }
+    </div>
+  </section>
+</div>

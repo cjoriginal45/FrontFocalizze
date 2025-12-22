@@ -1,0 +1,107 @@
+<!-- HEADER: Sticky y Centrado -->
+<header class="modal-header">
+  <h2 class="modal-header__title">Gestión de Reporte</h2>
+  <div class="modal-header__right">
+    <button mat-icon-button [mat-dialog-close]="false" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</header>
+
+<!-- CONTENIDO: Scrolleable -->
+<div class="modal-content">
+  <!-- Tarjeta de Información (Contexto) -->
+  <div class="info-card">
+    <h3 class="info-title">Detalles del Reporte</h3>
+
+    <div class="detail-row">
+      <span class="label">Razón:</span>
+      <span class="value">{{ report.reason }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">Reportado por:</span>
+      <span class="value">@{{ report.reporterUsername }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">Autor del Hilo:</span>
+      <span class="value highlight">@{{ report.reportedUsername }}</span>
+    </div>
+
+    @if(report.description) {
+    <div class="description-box">
+      <mat-icon class="info-icon">info</mat-icon>
+      <p>{{ report.description }}</p>
+    </div>
+    }
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Área de Edición -->
+  <div class="editor-section">
+    <h3 class="section-title">Editar Contenido</h3>
+    <p class="section-subtitle">Modifica el contenido para cumplir las normas o elimina el hilo.</p>
+
+    @if (isLoading) {
+    <div class="loading-state">
+      <mat-spinner diameter="30"></mat-spinner>
+      <span>Cargando contenido original...</span>
+    </div>
+    } @else {
+    <div class="inputs-container">
+      <!-- Post 1 -->
+      <mat-form-field appearance="outline" class="edit-field">
+        <mat-label>Post 1</mat-label>
+        <textarea matInput [(ngModel)]="post1Content" rows="3"></textarea>
+      </mat-form-field>
+
+      <!-- Post 2 (Opcional) -->
+      @if (post2Content) {
+      <mat-form-field appearance="outline" class="edit-field">
+        <mat-label>Post 2</mat-label>
+        <textarea matInput [(ngModel)]="post2Content" rows="3"></textarea>
+      </mat-form-field>
+      }
+
+      <!-- Post 3 (Opcional) -->
+      @if (post3Content) {
+      <mat-form-field appearance="outline" class="edit-field">
+        <mat-label>Post 3</mat-label>
+        <textarea matInput [(ngModel)]="post3Content" rows="3"></textarea>
+      </mat-form-field>
+      }
+    </div>
+    }
+  </div>
+</div>
+
+<!-- FOOTER: Acciones -->
+<div class="modal-footer">
+  <!-- Grupo Izquierdo: Acciones de Reporte -->
+  <div class="actions-group left">
+    <button
+      mat-button
+      class="btn-delete"
+      (click)="deleteThread()"
+      [disabled]="isLoading"
+      matTooltip="Eliminar el hilo completamente"
+    >
+      <mat-icon>delete</mat-icon>
+      <span class="btn-text">Eliminar</span>
+    </button>
+
+    <button mat-button class="btn-secondary" (click)="dismissReport()" [disabled]="isLoading">
+      Ignorar
+    </button>
+  </div>
+
+  <!-- Grupo Derecho: Guardar Edición -->
+  <div class="actions-group right">
+    <button mat-flat-button class="btn-save" (click)="saveEdits()" [disabled]="isLoading">
+      <mat-icon>save</mat-icon>
+      <span class="btn-text">Guardar</span>
+    </button>
+  </div>
+</div>

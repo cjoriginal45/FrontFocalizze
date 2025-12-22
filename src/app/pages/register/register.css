@@ -1,0 +1,328 @@
+/* ========================================================= */
+/* === ANIMACIONES                                       === */
+/* ========================================================= */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ========================================================= */
+/* === ESTILOS BASE (MOBILE FIRST)                       === */
+/* ========================================================= */
+
+:host {
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.register-page {
+  display: flex;
+  flex-direction: column; /* Móvil: Columna */
+  width: 100%;
+  height: 100%;
+}
+
+/* --- 1. SECCIÓN SUPERIOR (LOGO) --- */
+.register-page__logo-box {
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  height: 120px; /* Altura compacta móvil */
+  padding: 0 20px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.register-page__logo-img {
+  width: 80px;
+  height: auto;
+}
+
+.register-page__logo-title {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 0 16px;
+  line-height: 1.2;
+}
+
+/* --- 2. SECCIÓN INFERIOR (PANEL) --- */
+.register-page__panel-box {
+  flex-grow: 1;
+  background-color: var(--background-color);
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+  min-height: 0; /* Permite scroll interno si es necesario en pantallas muy chicas */
+  overflow-y: auto; /* Scroll si el formulario no cabe en móvil */
+}
+
+/* El Panel */
+.register-panel {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* En móvil ocupa todo el alto para empujar el footer */
+  height: 100%;
+  min-height: 100%;
+
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+
+  animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Wrapper para centrado vertical del formulario */
+.register-panel__content-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 20px; /* Espacio antes del footer */
+}
+
+.register-panel__title {
+  color: var(--primary-color);
+  /* Tipografía dinámica */
+  font-size: clamp(2rem, 8vw, 2.8rem);
+  margin-top: 10rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.register-panel__form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- INPUTS --- */
+.register-panel__input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  margin-top: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.register-panel__input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--hover-color);
+}
+
+.register-panel__input::placeholder {
+  color: var(--primary-color);
+  opacity: 0.6;
+}
+
+/* Wrapper Password */
+.register-panel__password-field-wrapper {
+  position: relative;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.register-panel__password-field-wrapper .register-panel__input {
+  margin-top: 0;
+  padding-right: 48px;
+}
+
+/* Icono Ojo */
+.register-panel__toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.register-panel__toggle-btn:hover {
+  opacity: 1;
+}
+
+/* Ocultar iconos nativos IE/Edge */
+.register-panel__password-field-wrapper input::-ms-reveal,
+.register-panel__password-field-wrapper input::-ms-clear {
+  display: none;
+}
+
+/* Error */
+.register-panel__error {
+  margin-top: 1rem;
+  color: #f44336;
+  font-size: 0.9rem;
+  text-align: center;
+  background-color: rgba(244, 67, 54, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+}
+
+/* Botón */
+.register-panel__button {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.register-panel__button:active {
+  transform: scale(0.98);
+}
+
+.register-panel__link {
+  margin-top: 1.5rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.register-panel__link:hover {
+  text-decoration: underline;
+}
+
+.register-panel__copyright-text {
+  margin-top: auto; /* El wrapper lo empuja */
+  padding-bottom: 1rem;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ========================================================= */
+/* === TABLET Y ESCRITORIO (min-width: 992px)            === */
+/* ========================================================= */
+
+@media (min-width: 992px) {
+  .register-page {
+    flex-direction: row; /* Lado a lado */
+  }
+
+  /* --- Logo Box (Izquierda) --- */
+  .register-page__logo-box {
+    width: 50%;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .register-page__logo-img {
+    width: 400px;
+  }
+
+  .register-page__logo-title {
+    font-size: 2.5rem;
+    position: absolute;
+    margin-top: 250px;
+    font-weight: bold;
+    max-width: 90%;
+    text-align: center;
+  }
+
+  /* --- Panel Box (Derecha) --- */
+  .register-page__panel-box {
+    width: 50%;
+    height: 100vh;
+    align-items: center; /* Centrado vertical */
+    overflow: hidden; /* Sin scroll externo en escritorio */
+  }
+
+  /* --- Tarjeta Registro --- */
+  .register-panel {
+    background-color: var(--panel-color);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 50px 70px; /* Padding un poco menor que login por tener más inputs */
+    width: 550px;
+    max-width: 90%;
+    height: auto; /* Reset de altura móvil */
+    min-height: auto;
+
+    transition: transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 0 12px var(--shadow-color);
+  }
+
+  .register-panel:hover {
+    box-shadow: 0 0 30px var(--shadow-color);
+  }
+
+  /* Reset del Wrapper en Desktop */
+  .register-panel__content-wrapper {
+    flex-grow: 0;
+    display: contents; /* Elimina comportamiento flex extra */
+  }
+
+  .register-panel__title {
+    margin-top: 0;
+    font-size: 3rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .register-panel__button {
+    width: 180px;
+    margin-top: 2.5rem;
+  }
+
+  .register-panel__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 8px var(--shadow-color);
+  }
+
+  .register-panel__copyright-text {
+    margin-top: 3rem;
+    padding-bottom: 0;
+  }
+}
