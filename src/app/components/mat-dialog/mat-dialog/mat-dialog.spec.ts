@@ -1,17 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 
-
-
 describe('MatDialog', () => {
   let component: MatDialog;
   let fixture: ComponentFixture<MatDialog>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialog]
-    })
-    .compileComponents();
+      imports: [MatDialog],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MatDialog);
     component = fixture.componentInstance;
