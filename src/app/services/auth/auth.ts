@@ -85,7 +85,7 @@ export class Auth {
       try {
         const decodedToken: { exp: number } = jwtDecode(token);
         if (Date.now() >= decodedToken.exp * 1000) {
-          localStorage.removeItem('jwt_token');
+          //localStorage.removeItem('jwt_token');
         } else {
           this.notificationStateService.initialize();
 
@@ -111,7 +111,7 @@ export class Auth {
         }
       } catch (error) {
         console.error('Fallo al inicializar auth:', error);
-        localStorage.removeItem('jwt_token');
+        //localStorage.removeItem('jwt_token');
       }
     }
     this.authReady.set(true);
