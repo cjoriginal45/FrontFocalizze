@@ -23,6 +23,7 @@
     </div>
   </div>
 
+  <!-- Uso de nueva sintaxis @if -->
   @if (report.description) {
   <div class="description-box">
     <span class="label">Descripción:</span>
@@ -34,7 +35,12 @@
     <h3>Acciones</h3>
     <mat-form-field appearance="outline" class="full-width custom-select">
       <mat-label>Duración de suspensión</mat-label>
-      <mat-select [(ngModel)]="selectedDays">
+      <!-- Binding explícito para Signal: [ngModel] lee, (ngModelChange) escribe -->
+      <mat-select
+        [ngModel]="selectedDays()"
+        (ngModelChange)="selectedDays.set($event)"
+        [disabled]="isLoading()"
+      >
         <mat-option [value]="1">1 Día</mat-option>
         <mat-option [value]="7">7 Días</mat-option>
         <mat-option [value]="30">1 Mes</mat-option>
@@ -44,11 +50,12 @@
 </div>
 
 <div class="modal-footer">
-  <button mat-button class="btn-secondary" (click)="dismissReport()" [disabled]="isLoading">
+  <!-- Binding de señal isLoading() -->
+  <button mat-button class="btn-secondary" (click)="dismissReport()" [disabled]="isLoading()">
     Ignorar
   </button>
 
-  <button mat-flat-button class="btn-warn" (click)="suspendUser()" [disabled]="isLoading">
+  <button mat-flat-button class="btn-warn" (click)="suspendUser()" [disabled]="isLoading()">
     Suspender Usuario
   </button>
 </div>

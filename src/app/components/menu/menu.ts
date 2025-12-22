@@ -1,16 +1,25 @@
-import { Component, computed, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-import { Observable, Subject, takeUntil } from 'rxjs';
 import { MatNavList } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+
 import { Auth } from '../../services/auth/auth';
 import { Theme } from '../../services/themeService/theme';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-menu',
+  standalone: true,
   imports: [
     MatSidenav,
     MatSidenavContainer,
@@ -23,34 +32,35 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Menu {
+  // Inyección de dependencias
   public authService = inject(Auth);
-
   private themeService = inject(Theme);
 
-  logoPath = computed(() => {
+  // Signals Inputs (Reemplazo de @Input)
+  // Se marca como required para garantizar la integridad del tipo
+  public readonly isMobile$ = input.required<Observable<boolean>>();
+
+  // Signal ViewChild (Reemplazo de @ViewChild)
+  // Acceso seguro y reactivo al elemento del DOM
+  public readonly matSidenav = viewChild.required<MatSidenav>('sidenav');
+
+  // Computed Signals
+  public readonly logoPath = computed(() => {
     return this.themeService.currentTheme() === 'dark'
-      ? 'assets/images/focalizze-logo-small-dark-theme.webp' // Ruta imagen oscura (letras claras)
-      : 'assets/images/focalizze-logo-small.webp'; // Ruta imagen clara (letras oscuras)
+      ? 'assets/images/focalizze-logo-small-dark-theme.webp'
+      : 'assets/images/focalizze-logo-small.webp';
   });
 
-  // @ViewChild nos permite controlar el <mat-sidenav> de nuestra plantilla
-  // @ViewChild allows us to control the <mat-sidenav> of our template
-  @ViewChild('sidenav') public matSidenav!: MatSidenav;
-
-  // @Input permite que el padre (Header) nos pase el observable isMobile$
-  // // @Input allows the parent (Header) to pass us the isMobile$ observable
-  @Input() isMobile$!: Observable<boolean>;
-
-  // Este es el método PÚBLICO que el Header llamará
-  // This is the PUBLIC method that the Header will call
+  // Métodos públicos
   public toggle(): void {
-    this.matSidenav.toggle();
+    this.matSidenav().toggle();
   }
 
-  logout(): void {
+  public logout(): void {
     this.authService.logout();
-    this.matSidenav.close(); // Cierra el menú al hacer logout
+    this.matSidenav().close();
   }
 }
