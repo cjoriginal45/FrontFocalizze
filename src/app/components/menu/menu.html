@@ -1,13 +1,16 @@
 <mat-sidenav-container class="sidenav-container">
+  <!-- Se usa #sidenav para referenciarlo en el viewChild -->
   <mat-sidenav #sidenav class="sidenav" mode="over" [opened]="false">
-    @if (authService.currentUser(); as user) { @if (isMobile$ | async) {
+    @if (authService.currentUser(); as user) {
+    <!-- Acceso al signal input como función: isMobile$() -->
+    @if (isMobile$() | async) {
     <div class="sidenav__mobile">
       <header class="sidenav__header-mobile">
         <div class="user-profile__info-mobile">
           <a
             class="user-profile__avatar-link"
             routerLink="/profile/{{ user.username }}"
-            (click)="matSidenav.close()"
+            (click)="matSidenav().close()"
           >
             <div class="user-profile_avatar-box-mobile">
               @if (user.avatarUrl) {
@@ -30,7 +33,7 @@
           <button
             mat-icon-button
             class="sidenav__close-button"
-            (click)="matSidenav.close()"
+            (click)="matSidenav().close()"
             [attr.aria-label]="'COMMON.CLOSE_MENU' | translate"
           >
             <mat-icon>close</mat-icon>
@@ -51,10 +54,10 @@
       </div>
       <div class="sidenav__header-line-mobile"></div>
       <mat-nav-list class="sidenav__nav-list">
-        <a mat-list-item routerLink="/saved" (click)="matSidenav.close()">
+        <a mat-list-item routerLink="/saved" (click)="matSidenav().close()">
           <mat-icon>bookmark</mat-icon> <span>{{ 'MENU.SAVED' | translate }}</span>
         </a>
-        <a mat-list-item routerLink="/configuration-page" (click)="matSidenav.close()">
+        <a mat-list-item routerLink="/configuration-page" (click)="matSidenav().close()">
           <mat-icon>settings</mat-icon> <span>{{ 'MENU.SETTINGS' | translate }}</span>
         </a>
         <a mat-list-item (click)="logout()">
@@ -66,6 +69,7 @@
       </div>
     </div>
     } @else {
+    <!-- Desktop View -->
     <div class="sidenav__desktop">
       <header class="sidenav__header">
         <div class="sidenav__logo-container">
@@ -74,23 +78,23 @@
         <button
           mat-icon-button
           class="sidenav__close-button"
-          (click)="matSidenav.close()"
+          (click)="matSidenav().close()"
           [attr.aria-label]="'COMMON.CLOSE_MENU' | translate"
         >
           <mat-icon>close</mat-icon>
         </button>
       </header>
       <mat-nav-list class="sidenav__nav-list">
-        <a mat-list-item routerLink="/home" (click)="matSidenav.close()">
+        <a mat-list-item routerLink="/home" (click)="matSidenav().close()">
           <mat-icon>home</mat-icon> <span>{{ 'MENU.HOME' | translate }}</span>
         </a>
-        <a mat-list-item routerLink="/notifications" (click)="matSidenav.close()">
+        <a mat-list-item routerLink="/notifications" (click)="matSidenav().close()">
           <mat-icon>notifications</mat-icon> <span>{{ 'MENU.NOTIFICATIONS' | translate }}</span>
         </a>
-        <a mat-list-item routerLink="/saved" (click)="matSidenav.close()">
+        <a mat-list-item routerLink="/saved" (click)="matSidenav().close()">
           <mat-icon>bookmark</mat-icon> <span>{{ 'MENU.SAVED' | translate }}</span>
         </a>
-        <a mat-list-item routerLink="/configuration-page" (click)="matSidenav.close()">
+        <a mat-list-item routerLink="/configuration-page" (click)="matSidenav().close()">
           <mat-icon>settings</mat-icon> <span>{{ 'MENU.SETTINGS' | translate }}</span>
         </a>
       </mat-nav-list>
@@ -98,7 +102,7 @@
       <a
         class="sidenav__user-profile-link"
         routerLink="/profile/{{ user.username }}"
-        (click)="matSidenav.close()"
+        (click)="matSidenav().close()"
       >
         <div class="sidenav__user-profile">
           @if (user.avatarUrl) {
@@ -131,6 +135,7 @@
       </button>
     </div>
     } } @else {
+    <!-- Anonymous View -->
     <div class="sidenav__anonymous-view">
       <div class="sidenav__header">
         <div class="sidenav__logo-container">
@@ -139,7 +144,7 @@
         <button
           mat-icon-button
           class="sidenav__close-button"
-          (click)="matSidenav.close()"
+          (click)="matSidenav().close()"
           [attr.aria-label]="'COMMON.CLOSE_MENU' | translate"
         >
           <mat-icon>close</mat-icon>
@@ -149,12 +154,16 @@
         <h2>{{ 'WELCOME.TITLE' | translate }}</h2>
         <p>{{ 'WELCOME.SUBTITLE' | translate }}</p>
         <div class="sidenav__anonymous-actions">
-          <a mat-stroked-button routerLink="/login" (click)="matSidenav.close()">{{
+          <a mat-stroked-button routerLink="/login" (click)="matSidenav().close()">{{
             'COMMON.LOGIN' | translate
           }}</a>
-          <a mat-flat-button color="primary" routerLink="/register" (click)="matSidenav.close()">{{
-            'COMMON.REGISTER' | translate
-          }}</a>
+          <a
+            mat-flat-button
+            color="primary"
+            routerLink="/register"
+            (click)="matSidenav().close()"
+            >{{ 'COMMON.REGISTER' | translate }}</a
+          >
         </div>
       </div>
     </div>
