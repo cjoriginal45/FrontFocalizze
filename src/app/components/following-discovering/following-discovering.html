@@ -1,0 +1,32 @@
+<section class="f-d-container" aria-label="Opciones de navegación del feed">
+  <div class="f-d-container__options">
+    <a 
+      class="f-d-container__option" 
+      routerLink="/feed" 
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      {{ 'FEED_OPTIONS.FOLLOWING' | translate }}
+    </a>
+    
+    <div class="f-d-container__line" aria-hidden="true"></div>
+    
+    <a 
+      class="f-d-container__option" 
+      routerLink="/discover" 
+      routerLinkActive="active"
+    >
+      {{ 'FEED_OPTIONS.DISCOVER' | translate }}
+    </a>
+  </div>
+
+  @if (authService.isLoggedIn()) {
+    <div class="f-d-container__interactions">
+      <span class="interaction-text">
+        {{ 'FEED_OPTIONS.INTERACTIONS' | translate }}
+        {{ interactionCounterService.remainingInteractions() ?? '...' }} /
+        {{ interactionCounterService.interactionLimit() ?? '...' }}
+      </span>
+    </div>
+  }
+</section>

@@ -1,0 +1,148 @@
+/* ========================================================= */
+/* === ESTRUCTURA BASE (MOBILE FIRST)                    === */
+/* ========================================================= */
+
+:host {
+  display: block;
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 60px;
+  padding-bottom: 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.watermark-container {
+  position: fixed;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.watermark-text {
+  font-size: clamp(3rem, 18vw, 8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--watermark-color);
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 20px 0;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-title {
+  color: var(--primary-color);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  margin-left: 4px;
+}
+
+.settings-card {
+  border-radius: 16px;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.toggles-container {
+  padding: 0 16px;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.toggle-row:last-child {
+  border-bottom: none;
+}
+
+.toggle-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+/* ========================================================= */
+/* === MEDIA QUERIES (TABLET & DESKTOP)                  === */
+/* ========================================================= */
+
+@media (min-width: 768px) {
+  .page-wrapper {
+    padding-bottom: 40px;
+  }
+
+  .settings-container {
+    max-width: 700px;
+  }
+
+  .settings-card {
+    padding: 10px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+  }
+
+  .toggles-container {
+    padding: 0 24px;
+  }
+
+  .toggle-label {
+    font-size: 1rem;
+  }
+
+  .watermark-container {
+    bottom: 10%;
+  }
+}

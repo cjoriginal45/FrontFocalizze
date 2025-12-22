@@ -1,0 +1,245 @@
+:host {
+  display: block;
+  background-color: var(--background-color, #f4f6f8);
+  min-height: 100vh;
+}
+
+/* ========================================================= */
+/* === ESTRUCTURA BASE (MOBILE FIRST)                    === */
+/* ========================================================= */
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  padding-top: 10px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.watermark-container {
+  position: fixed;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.watermark-text {
+  font-size: clamp(3rem, 18vw, 8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--watermark-color);
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 20px 0;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  opacity: 0.9;
+}
+
+.profile-card {
+  border-radius: 20px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+  padding: 24px 16px;
+  background-color: var(--card-background) !important;
+  border: 1px solid var(--border-color);
+}
+
+.top-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.avatar-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--card-background);
+  box-shadow: 0 4px 10px var(--shadow-color);
+  border: 4px solid var(--card-background);
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.username-wrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.field-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.custom-input-box,
+.bio-box {
+  background-color: var(--panel-color) !important;
+  padding: 14px 16px;
+  border-radius: 12px;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color);
+}
+
+.custom-input-box {
+  text-align: center;
+  font-weight: 500;
+}
+
+.bio-section {
+  margin-bottom: 30px;
+}
+
+.bio-box {
+  min-height: 80px;
+  line-height: 1.6;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.action-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.btn-export {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s, background-color 0.2s;
+}
+
+.btn-export:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-export:active {
+  transform: scale(0.98);
+}
+
+.disclaimer-text {
+  font-size: 0.75rem;
+  color: var(--icon-color);
+  max-width: 320px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.loading-state,
+.error-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--icon-color);
+}
+
+.hide-for-pdf {
+  display: none !important;
+}
+
+/* ========================================================= */
+/* === MEDIA QUERIES (TABLET & DESKTOP)                  === */
+/* ========================================================= */
+
+@media (min-width: 768px) {
+  .page-wrapper {
+    padding-bottom: 40px;
+  }
+
+  .settings-container {
+    max-width: 700px;
+  }
+
+  .profile-card {
+    padding: 10px 20px;
+  }
+
+  .top-section {
+    flex-direction: row;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .username-wrapper {
+    text-align: left;
+    flex: 1;
+    max-width: none;
+  }
+
+  .custom-input-box {
+    text-align: left;
+  }
+
+  .btn-export {
+    width: auto;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .watermark-container {
+    bottom: 10%;
+  }
+}

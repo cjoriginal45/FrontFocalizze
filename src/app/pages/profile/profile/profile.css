@@ -1,0 +1,256 @@
+/* --- ESTILOS BASE (DESKTOP) --- */
+.profile-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px;
+  /* Espacio base para el footer en desktop */
+  padding-bottom: 40px;
+}
+
+/* Header del Perfil */
+.profile-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px 40px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  position: relative;
+  margin-bottom: 40px;
+  background-color: var(--card-background);
+}
+
+.profile-header__left {
+  text-align: center;
+}
+
+.profile-header__avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  margin-bottom: 12px;
+  object-fit: cover; /* Evita que la imagen se deforme */
+}
+
+.profile-header__display-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: var(--primary-color);
+  line-height: 1.2;
+}
+
+.profile-header__username {
+  font-size: 1rem;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.profile-header__right {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-header__biography {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 24px 0;
+  min-height: 40px;
+  margin-top: 3px;
+  color: var(--text-color);
+}
+
+.biography-title {
+  font-weight: bold;
+  margin-bottom: 7px;
+  color: var(--primary-color);
+}
+
+.profile-header__stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px 30px;
+  margin-bottom: 24px;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stat__value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.stat__label {
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.profile-header__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.meta__icon {
+  font-size: 18px;
+  width: 18px; /* Forzar ancho para alineación */
+  height: 18px;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botones de acción (Editar / Seguir) */
+.profile-header__edit-btn,
+.profile-header__action-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+.profile-header__edit-btn {
+  color: var(--primary-color) !important;
+  transition: all 0.3s ease;
+}
+
+/* Hilos del Perfil */
+.profile-threads__title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.profile-threads__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Utilidad para items clickeables (stats) */
+.clickable {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  user-select: none; /* Evita que se seleccione el texto al hacer click rápido */
+}
+
+.clickable:hover {
+  background-color: var(--hover-color);
+}
+
+/* --- RESPONSIVE PARA MÓVIL (CORREGIDO) --- */
+@media (max-width: 768px) {
+  /* 1. SOLUCIÓN AL BOTTON NAV TAPANDO CONTENIDO */
+  .profile-page {
+    padding: 10px;
+    /* Sumamos altura nav (65px) + espacio extra (35px) = 100px */
+    padding-bottom: 100px !important;
+  }
+
+  /* 2. AJUSTES DEL HEADER */
+  .profile-header {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+    padding-top: 20px; /* Un poco más de aire arriba */
+    margin-bottom: 24px;
+  }
+
+  /* Sección Avatar + Nombre */
+  .profile-header__left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+
+    /* Importante: para que el texto no se encime al botón absoluto */
+    padding-right: 40px;
+  }
+
+  .profile-header__avatar {
+    width: 70px; /* Un poco más chico para móviles */
+    height: 70px;
+    border-width: 2px;
+    margin-bottom: 0;
+    flex-shrink: 0; /* Evita que el avatar se aplaste */
+  }
+
+  .profile-header__user-identity {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0; /* Permite que el texto se corte si es muy largo */
+  }
+
+  .profile-header__display-name {
+    font-size: 1.3rem;
+    margin-bottom: 2px;
+    white-space: nowrap; /* Evita salto de línea */
+    overflow: hidden; /* Corta el texto */
+    text-overflow: ellipsis; /* Pone '...' */
+    max-width: 100%;
+  }
+
+  .profile-header__username {
+    font-size: 0.9rem;
+  }
+
+  /* Botones de acción en móvil */
+  .profile-header__edit-btn,
+  .profile-header__action-btn {
+    top: 16px; /* Más arriba */
+    right: 16px; /* Más a la derecha */
+    transform: scale(0.9); /* Ligeramente más pequeños */
+  }
+
+  /* Resto del contenido */
+  .profile-header__biography {
+    font-size: 0.95rem;
+    margin: 12px 0;
+    line-height: 1.4;
+  }
+
+  .profile-header__stats {
+    gap: 12px 24px;
+    justify-content: flex-start; /* Alineación a la izquierda */
+    margin-bottom: 16px;
+  }
+
+  .stat {
+    flex-direction: column; /* Poner número arriba y texto abajo ahorra espacio */
+    align-items: center;
+    gap: 0;
+  }
+
+  .stat__value {
+    font-size: 1.1rem;
+  }
+
+  .stat__label {
+    font-size: 0.8rem;
+    color: var(--text-color);
+  }
+
+  .profile-threads__title {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+}

@@ -1,0 +1,152 @@
+@if (threadSignal(); as thread) {
+
+<article class="thread">
+  <header class="thread__header">
+    <div class="thread__header-left">
+      <a [routerLink]="['/profile', thread.user.username]" class="thread__user">
+        <img
+          [src]="thread.user.avatarUrl"
+          [alt]="'THREAD.AVATAR_ALT' | translate : { name: thread.user.displayName }"
+          class="thread__avatar"
+        />
+        <div class="thread__user-info">
+          <span class="thread__display-name">{{ thread.user.displayName }}</span>
+          <span class="thread__username">@{{ thread.user.username }}</span>
+        </div>
+      </a>
+
+      @if (authService.getCurrentUser()?.username !== thread.user.username) {
+      <app-follow-button type="user" [identifier]="thread.user.username"></app-follow-button>
+      }
+    </div>
+    <div class="thread__header-right">
+      @if (thread.categoryName) {
+      <a [routerLink]="['/category', thread.categoryName]" class="thread__category">{{
+        thread.categoryName
+      }}</a>
+      <span class="thread__separator">·</span>
+      }
+      <span class="thread__date">{{ thread.publicationDate | timeAgo }}</span>
+
+      @if (authService.getCurrentUser()?.username === thread.user.username) {
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="threadMenu"
+        [attr.aria-label]="'THREAD.OPTIONS_LABEL' | translate"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #threadMenu="matMenu">
+        <button mat-menu-item (click)="openEditModal()">
+          <mat-icon>edit</mat-icon>
+          <span>{{ 'THREAD.EDIT' | translate }}</span>
+        </button>
+        <button mat-menu-item (click)="openDeleteConfirm()">
+          <mat-icon>delete</mat-icon>
+          <span>{{ 'THREAD.DELETE' | translate }}</span>
+        </button>
+      </mat-menu>
+      } @else {
+      <button mat-icon-button [matMenuTriggerFor]="threadMenu" aria-label="Más opciones">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #threadMenu="matMenu">
+        <button mat-menu-item (click)="openReportThreadModal()">
+          <mat-icon>flag_circle</mat-icon>
+          <span>{{ 'THREAD.REPORT' | translate }}</span>
+        </button>
+        <button mat-menu-item (click)="blockUser()" [class.text-warn]="thread.user.isBlocked">
+          <mat-icon>{{ thread.user.isBlocked ? 'lock_open' : 'block' }}</mat-icon>
+          <span>{{
+            (thread.user.isBlocked ? 'THREAD.UNBLOCK_USER' : 'THREAD.BLOCK_USER')
+              | translate : { username: thread.user.username }
+          }}</span>
+        </button>
+        <button mat-menu-item (click)="openReportModal()">
+          <mat-icon>report</mat-icon>
+          <span>{{ 'THREAD.USER_REPORT' | translate : { username: thread.user.username } }}</span>
+        </button>
+      </mat-menu>
+      }
+    </div>
+  </header>
+
+  <div class="thread__body" [class.thread__body--expanded]="isExpanded">
+    <div class="thread__content">
+      <div class="thread__post">
+        <h3 class="thread__post-title">{{ 'THREAD.POST_NUMBER' | translate : { number: 1 } }}</h3>
+        <p class="thread__post-text" [innerHTML]="thread.posts[0] | mentionLinker"></p>
+        @if (thread.images && thread.images.length > 0) {
+        <div class="thread__images-grid" [attr.data-count]="thread.images.length">
+          @for (imgSrc of thread.images; track $index) {
+          <img
+            [src]="imgSrc"
+            class="thread__image-item"
+            alt="Imagen del hilo"
+            loading="lazy"
+            (click)="$event.stopPropagation(); openImageModal(imgSrc)"
+          />
+          }
+        </div>
+        }
+      </div>
+      <div class="thread__expand-wrapper" [class.expanded]="isExpanded">
+        <div class="thread__expanded-content">
+          @if (isLoadingDetails) {
+          <div class="thread__loading-spinner">{{ 'THREAD.LOADING' | translate }}</div>
+          } @else { @for (post of thread.posts.slice(1); track $index) {
+          <div class="thread__post">
+            <h3 class="thread__post-title">
+              {{ 'THREAD.POST_NUMBER' | translate : { number: $index + 2 } }}
+            </h3>
+            <p class="thread__post-text" [innerHTML]="post | mentionLinker"></p>
+          </div>
+          } }
+        </div>
+      </div>
+    </div>
+    @if (thread.posts.length > 1 || !isFullyLoaded) {
+    <button
+      class="thread__expand-btn"
+      (click)="toggleExpansion()"
+      [class.expanded]="isExpanded"
+      [attr.aria-label]="isExpanded ? ('THREAD.HIDE' | translate) : ('THREAD.EXPAND' | translate)"
+      mat-icon-button
+    >
+      @if (isLoadingDetails) {
+      <mat-spinner diameter="20" strokeWidth="2"></mat-spinner>
+      } @else {
+      <mat-icon>expand_more</mat-icon>
+      }
+    </button>
+    }
+  </div>
+
+  <footer class="thread__footer">
+    <div
+      class="thread__action thread__action--like"
+      (click)="toggleLike()"
+      [class.thread__action--liked]="thread.isLiked"
+    >
+      <mat-icon class="thread__icon">{{
+        thread.isLiked ? 'favorite' : 'favorite_border'
+      }}</mat-icon>
+      <span class="thread__counter">{{ thread.stats.likes | number }}</span>
+    </div>
+    <div class="thread__action" (click)="onCommentClick()">
+      <mat-icon class="thread__icon">chat_bubble_outline</mat-icon>
+      <span class="thread__counter">{{ thread.stats.comments | number }}</span>
+    </div>
+    <div class="thread__action">
+      <mat-icon class="thread__icon">bar_chart</mat-icon>
+      <span class="thread__counter">{{ thread.stats.views | number }}</span>
+    </div>
+    <div class="thread__action" (click)="toggleSave()">
+      <mat-icon class="thread__icon">{{
+        thread.isSaved ? 'bookmark' : 'bookmark_border'
+      }}</mat-icon>
+      <span class="thread__counter">{{ thread.stats.saves | number }}</span>
+    </div>
+  </footer>
+</article>
+}

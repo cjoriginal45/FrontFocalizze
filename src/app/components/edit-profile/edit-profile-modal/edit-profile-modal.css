@@ -1,0 +1,132 @@
+/* --- Header de la Modal --- */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el título horizontalmente */
+  position: relative; /* Necesario para posicionar el botón de cierre de forma absoluta */
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--card-background);
+}
+
+.modal-header__title {
+  margin: 0;
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.modal-header__button {
+  position: absolute; /* Saca el botón del flujo normal del layout */
+  right: 16px; /* Lo posiciona a la izquierda con un padding */
+  top: 50%;
+  color: var(--icon-color);
+  transform: translateY(-50%); /* Lo centra verticalmente de forma perfecta */
+}
+
+.modal-header__button:hover {
+  color: var(--primary-color);
+}
+
+/* --- Contenido y Footer (sin cambios) --- */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 24px; /* Añadimos espacio superior para que no se pegue al header */
+  background-color: var(--card-background);
+}
+.modal-footer {
+  padding: 8px 24px;
+  background-color: var(--card-background);
+}
+
+.save-button {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: 1px solid var(--primary-color);
+  border-radius: 20px;
+  padding: 8px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.save-button:hover {
+  box-shadow: 0 0 8px var(--shadow-color);
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.save-button:active {
+  transform: scale(0.96);
+  box-shadow: none;
+  transition: transform 0.1s;
+}
+
+.save-button:disabled {
+  background-color: var(--border-color);
+  border-color: var(--border-color);
+  color: var(--icon-color);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.cancel-button {
+  background-color: transparent;
+  color: var(--primary-color);
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 8px 24px;
+  border: 1px solid transparent !important;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.cancel-button:hover {
+  background-color: var(--primary-color);
+  color: #fff !important;
+  box-shadow: 0 0 8px var(--shadow-color);
+  transform: translateY(-1px);
+}
+
+.cancel-button:active {
+  transform: scale(0.96);
+  transition: transform 0.1s;
+}
+
+.avatar-uploader {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.avatar-uploader__label {
+  position: relative;
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.avatar-uploader__preview {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+.avatar-uploader__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+.avatar-uploader__label:hover .avatar-uploader__overlay {
+  opacity: 1;
+}

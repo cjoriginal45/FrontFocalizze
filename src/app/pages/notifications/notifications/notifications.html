@@ -1,0 +1,69 @@
+<app-header></app-header>
+
+<div class="notification-page-container">
+  <header class="notification-page__header">
+    <h1>{{ 'NOTIFICATIONS.TITLE' | translate }}</h1>
+  </header>
+
+  <div class="notification-list-container">
+    @for (notification of notifications; track notification.id) {
+    <a
+      [routerLink]="getLinkForNotification(notification)"
+      [queryParams]="getQueryParamsForNotification(notification)"
+      class="notification-item-link"
+    >
+      <div class="notification-item" [class.notification-item--unread]="!notification.isRead">
+        <div class="notif-icon">
+          <mat-icon>{{ getIconForNotification(notification.type) }}</mat-icon>
+        </div>
+
+        <div class="notif-content">
+          @if (notification.triggerUser) {
+          <a
+            [routerLink]="['/profile', notification.triggerUser.username]"
+            class="notif-trigger-user-avatar-link"
+            (click)="$event.stopPropagation()"
+          >
+            <img [src]="notification.triggerUser.avatarUrl" class="notif-avatar" alt="Avatar" />
+          </a>
+          }
+
+          <div class="notif-text-content">
+            <div class="notif-title">
+              @if (notification.triggerUser) {
+              <a
+                [routerLink]="['/profile', notification.triggerUser.username]"
+                class="notif-trigger-user-link"
+                (click)="$event.stopPropagation()"
+              >
+                {{ notification.triggerUser.displayName }}
+              </a>
+              }
+              {{ notification.message }}
+            </div>
+
+            @if (notification.threadPreview) {
+            <div class="notif-box">
+              {{ notification.threadPreview }}
+            </div>
+            }
+
+            <span class="notif-date">{{ notification.createdAt | timeAgo }}</span>
+          </div>
+        </div>
+      </div>
+    </a>
+    } @empty { @if (!isLoading) {
+    <p class="no-notifications">{{ 'NOTIFICATIONS.EMPTY' | translate }}</p>
+    } }
+  </div>
+
+  @if (isLoading) {
+  <p class="loading-indicator">{{ 'NOTIFICATIONS.LOADING' | translate }}</p>
+  } @if (!isLastPage && notifications.length > 0 && !isLoading) {
+  <button (click)="loadMoreNotifications()" class="load-more-button">
+    {{ 'NOTIFICATIONS.LOAD_MORE' | translate }}
+  </button>
+  }
+</div>
+<app-botton-nav></app-botton-nav>

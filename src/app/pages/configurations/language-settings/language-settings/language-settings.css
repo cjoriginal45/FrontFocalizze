@@ -1,0 +1,186 @@
+/* ========================================================= */
+/* === ESTRUCTURA BASE (MOBILE FIRST)                    === */
+/* ========================================================= */
+
+:host {
+  display: block;
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 60px; /* Espacio Header */
+  padding-bottom: 80px; /* Espacio Nav */
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* --- MARCA DE AGUA (FONDO) --- */
+.watermark-container {
+  position: fixed;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.watermark-text {
+  font-size: clamp(3rem, 18vw, 8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--watermark-color);
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- HEADER INTERNO --- */
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 20px 0;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* --- CONTENIDO --- */
+.section-title {
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-left: 4px;
+}
+
+/* --- TARJETA --- */
+.language-card {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.input-label {
+  color: var(--text-color);
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.helper-text {
+  font-size: 0.85rem;
+  color: var(--icon-color);
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+/* --- PERSONZALIZACIÓN SELECT --- */
+.custom-select-field {
+  width: 100%;
+}
+
+/* Ajustes profundos para redondear el input */
+:host ::ng-deep .custom-select-field .mat-mdc-text-field-wrapper {
+  background-color: var(--background-color) !important; /* Contraste ligero dentro de la tarjeta */
+  border-radius: 12px !important;
+  border: 1px solid var(--border-color);
+}
+
+:host ::ng-deep .custom-select-field .mat-mdc-form-field-subscript-wrapper {
+  display: none; /* Ocultar espacio de error si no se usa */
+}
+
+/* --- BOTÓN --- */
+.actions-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-confirm {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border-radius: 20px; /* Estilo Píldora */
+  padding: 8px 32px;
+  height: 40px;
+  font-weight: 600;
+  width: 100%; /* Full width en móvil */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px var(--shadow-color);
+  filter: brightness(1.1);
+}
+
+.btn-confirm:active {
+  transform: scale(0.98);
+}
+
+/* ========================================================= */
+/* === MEDIA QUERIES (TABLET & DESKTOP)                  === */
+/* ========================================================= */
+
+@media (min-width: 768px) {
+  .page-wrapper {
+    padding-bottom: 40px;
+  }
+
+  .settings-container {
+    max-width: 700px;
+  }
+
+  .language-card {
+    padding: 32px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+  }
+
+  .btn-confirm {
+    width: auto; /* Ancho natural en desktop */
+    min-width: 150px;
+  }
+
+  .watermark-container {
+    bottom: 10%;
+  }
+}

@@ -1,0 +1,34 @@
+<app-header></app-header>
+<app-following-discovering></app-following-discovering>
+
+<div class="search-results-page">
+  <header class="search-results-page__header">
+    <button
+      mat-icon-button
+      (click)="goBack()"
+      class="search-results-page__back-btn"
+      [attr.aria-label]="'SEARCH_RESULTS.BACK_ARIA' | translate"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="search-results-page__title-container">
+      <h1 class="search-results-page__title">{{ 'SEARCH_RESULTS.TITLE' | translate }}</h1>
+      <p class="search-results-page__query">{{ 'SEARCH_RESULTS.SUBTITLE' | translate:{query: query} }}</p>
+    </div>
+  </header>
+
+  <main class="search-results-page__content">
+    @if (isLoading) {
+      <div class="loading-indicator">{{ 'SEARCH_RESULTS.LOADING' | translate }}</div>
+    } @else { @if (threadIds.length > 0) {
+    <div class="search-results-page__threads-list">
+      @for (threadId of threadIds; track threadId) {
+      <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
+      }
+    </div>
+    } @else {
+      <p class="search-results-page__no-results">{{ 'SEARCH_RESULTS.NO_RESULTS' | translate }}</p>
+    } }
+  </main>
+</div>
+<app-botton-nav></app-botton-nav>

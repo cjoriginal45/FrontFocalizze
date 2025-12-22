@@ -1,0 +1,27 @@
+<app-header [disableShadow]="true"></app-header>
+<app-following-discovering></app-following-discovering>
+
+<div class="feed-layout">
+  <main class="feed-layout__content">
+    <div class="feed-layout__threads-list">
+      @for (threadId of threadIds; track threadId) {
+      <app-thread [threadId]="threadId" (openComments)="openCommentsModal($event)"></app-thread>
+      }
+    </div>
+
+    @if (isLoading) {
+    <div class="loading-indicator">{{ 'FEED.LOADING' | translate }}</div>
+    } @if (!isLastPage && threadIds.length > 0 && !isLoading) {
+    <button (click)="loadMoreThreads()" class="load-more-button">
+      {{ 'FEED.LOAD_MORE' | translate }}
+    </button>
+    }
+  </main>
+
+  <aside class="feed-layout__sidebar">
+    <app-suggestions></app-suggestions>
+  </aside>
+</div>
+
+<app-botton-nav></app-botton-nav>
+<app-create-thread-button></app-create-thread-button>

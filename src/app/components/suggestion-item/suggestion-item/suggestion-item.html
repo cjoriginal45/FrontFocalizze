@@ -1,0 +1,8 @@
+@if (categorySignal?.(); as category) {
+<a [routerLink]="['/category', category.name]" class="suggestion-item__link">
+  <mat-icon class="suggestion-item__icon">label</mat-icon>
+  <span class="suggestion-item__name">{{ category.name }}</span>
+</a>
+
+<app-follow-button type="category" [identifier]="category.id"> </app-follow-button>
+}

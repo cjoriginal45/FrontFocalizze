@@ -1,0 +1,78 @@
+<div class="suggestions-mobile">
+  <button
+    class="suggestions-mobile__trigger"
+    (click)="toggleMobilePanel()"
+    [attr.aria-label]="'SUGGESTIONS.ARIA_TOGGLE' | translate"
+  >
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+
+  @if (isMobilePanelOpen) {
+  <div class="suggestions-mobile__overlay" (click)="toggleMobilePanel()"></div>
+  }
+
+  <aside
+    class="suggestions-mobile__panel"
+    [class.suggestions-mobile__panel--is-open]="isMobilePanelOpen"
+  >
+    <div class="suggestions-content">
+      <ng-container *ngTemplateOutlet="suggestionsContent"></ng-container>
+    </div>
+  </aside>
+</div>
+
+<aside class="suggestions-desktop">
+  <div class="suggestions-content">
+    <ng-container *ngTemplateOutlet="suggestionsContent"></ng-container>
+  </div>
+</aside>
+
+<ng-template #suggestionsContent>
+  <div class="suggestions">
+    <h2 class="suggestions__title">{{ 'SUGGESTIONS.TITLE' | translate }}</h2>
+    @if (!showAllCategories) {
+    <ul class="suggestions__list">
+      @for (categoryId of suggestedCategoryIds(); track categoryId) {
+      <li class="suggestions__item">
+        <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
+      </li>
+      }
+    </ul>
+    }
+
+    <div class="all-categories-wrapper" [class.expanded]="showAllCategories">
+      <ul class="suggestions__list suggestions__list--scrollable">
+        @for (categoryId of sortedCategoryIds(); track categoryId) {
+        <li class="suggestions__item">
+          <app-suggestion-item [categoryId]="categoryId"></app-suggestion-item>
+        </li>
+        }
+      </ul>
+    </div>
+
+    <a class="suggestions__see-more" (click)="toggleShowAllCategories()">
+      {{ (showAllCategories ? 'SUGGESTIONS.SHOW_LESS' : 'SUGGESTIONS.SHOW_MORE') | translate }}
+    </a>
+  </div>
+
+  <footer class="footer-links">
+    <ul class="footer-links__list">
+      <li class="footer-links__item">
+        <a routerLink="/terms">{{ 'FOOTER.TERMS' | translate }}</a>
+      </li>
+      <li class="footer-links__item">
+        <a routerLink="/privacy">{{ 'FOOTER.PRIVACY' | translate }}</a>
+      </li>
+      <li class="footer-links__item">
+        <a routerLink="/cookies">{{ 'FOOTER.COOKIES' | translate }}</a>
+      </li>
+      <li class="footer-links__item">
+        <a routerLink="/accessibility">{{ 'FOOTER.ACCESSIBILITY' | translate }}</a>
+      </li>
+      <li class="footer-links__item">
+        <a routerLink="/more-options">{{ 'FOOTER.MORE' | translate }}</a>
+      </li>
+    </ul>
+    <p class="footer-links__copyright">{{ 'FOOTER.COPYRIGHT' | translate }}</p>
+  </footer>
+</ng-template>

@@ -1,0 +1,228 @@
+<!-- Mini Header -->
+<header class="modal-header">
+  <div class="modal-header__left">
+    @if (currentStep > 1 && isMobileView) {
+    <button
+      mat-icon-button
+      class="modal-header__button modal-header__back-btn"
+      (click)="previousStep()"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    }
+  </div>
+  <h2 class="modal-header__title">{{ 'CREATE_THREAD.TITLE' | translate }}</h2>
+  <div class="modal-header__right">
+    <button mat-icon-button class="modal-header__button" (click)="showScheduler = !showScheduler">
+      <mat-icon [class.active]="showScheduler">schedule</mat-icon>
+    </button>
+    <button mat-icon-button class="modal-header__button" (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</header>
+
+<!-- Contenido Principal -->
+<div class="modal-content" mat-dialog-content>
+  <!-- Panel del Programador (Scheduler) -->
+  @if (showScheduler) {
+  <div class="scheduler-panel">
+    <h4>{{ 'CREATE_THREAD.SCHEDULE.TITLE' | translate }}</h4>
+    <div class="scheduler-inputs">
+      <mat-form-field appearance="outline" class="scheduler-inputs__datepicker">
+        <mat-label>{{ 'CREATE_THREAD.SCHEDULE.DATE' | translate }}</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="scheduledDate" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+        <mat-label>{{ 'CREATE_THREAD.SCHEDULE.HOUR' | translate }}</mat-label>
+        <mat-select [(ngModel)]="scheduledHour">
+          @for (hour of hours; track hour) {
+          <mat-option [value]="hour">{{ hour < 10 ? '0' + hour : hour }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="scheduler-inputs__timepicker">
+        <mat-label>{{ 'CREATE_THREAD.SCHEDULE.MINUTE' | translate }}</mat-label>
+        <mat-select [(ngModel)]="scheduledMinute">
+          @for (minute of minutes; track minute) {
+          <mat-option [value]="minute">{{ minute < 10 ? '0' + minute : minute }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    @if (scheduledDate && scheduledHour !== null && scheduledMinute !== null) {
+    <p class="scheduler-info">
+      {{
+        'CREATE_THREAD.SCHEDULE.INFO'
+          | translate
+            : {
+                date: (scheduledDate | date : 'fullDate'),
+                time:
+                  (scheduledHour < 10 ? '0' : '') +
+                  scheduledHour +
+                  ':' +
+                  (scheduledMinute < 10 ? '0' : '') +
+                  scheduledMinute
+              }
+      }}
+    </p>
+    }
+  </div>
+  }
+
+  <!-- Contenedor de Hilos (Textareas) -->
+  <div
+    class="unified-threads-container"
+    [class.desktop-view]="!isMobileView"
+    [class.mobile-view]="isMobileView"
+    [class.step-1]="isMobileView && currentStep === 1"
+    [class.step-2]="isMobileView && currentStep === 2"
+    [class.step-3]="isMobileView && currentStep === 3"
+  >
+    @for (thread of threads; track $index) {
+
+    <!-- Input del Hilo -->
+    <mat-form-field appearance="fill" class="thread-input thread-input-{{ $index }}">
+      <mat-label>{{ 'CREATE_THREAD.POST_LABEL' | translate : { number: $index + 1 } }}</mat-label>
+
+      <!-- REFERENCIA #threadInput vital para emojis y menciones -->
+      <textarea
+        matInput
+        #threadInput
+        [(ngModel)]="threads[$index]"
+        (input)="onTextareaEvent($event, $index)"
+        (click)="onTextareaEvent($event, $index)"
+        (keyup)="onTextareaEvent($event, $index)"
+        (focus)="onTextareaEvent($event, $index)"
+        [attr.data-index]="$index"
+        [matAutocomplete]="mentionAutocomplete"
+        [maxlength]="
+          $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3
+        "
+        cdkTextareaAutosize
+        [cdkAutosizeMinRows]="$index === 0 ? 3 : 3"
+      ></textarea>
+
+      <!-- Contador de caracteres -->
+      <mat-hint align="end">
+        {{ threads[$index].length }} /
+        {{ $index === 0 ? charLimits.step1 : $index === 1 ? charLimits.step2 : charLimits.step3 }}
+      </mat-hint>
+
+      <!-- BOTONES DE ACCIÓN (Imágenes + Emojis) -->
+      <div class="input-actions" matSuffix>
+        <!-- Botón de Imagen (Solo disponible en el primer post o globalmente) -->
+        @if ($index === 0) {
+        <button
+          mat-icon-button
+          (click)="fileInput.click()"
+          matTooltip="Agregar imagen"
+          type="button"
+        >
+          <mat-icon>image</mat-icon>
+        </button>
+        <!-- Input oculto para selección de archivos -->
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          multiple
+          accept="image/*"
+          style="display: none"
+        />
+        }
+
+        <!-- Botón de Emoji -->
+        <button
+          mat-icon-button
+          class="emoji-btn"
+          [matMenuTriggerFor]="emojiMenu"
+          (click)="$event.stopPropagation()"
+          type="button"
+        >
+          <mat-icon>sentiment_satisfied_alt</mat-icon>
+        </button>
+      </div>
+
+      <!-- Menú de Emojis -->
+      <mat-menu #emojiMenu="matMenu" class="emoji-menu-panel">
+        <div (click)="$event.stopPropagation()">
+          <emoji-mart
+            [showPreview]="false"
+            [darkMode]="false"
+            [set]="'google'"
+            (emojiClick)="addEmoji($event, $index, threadInput)"
+          >
+          </emoji-mart>
+        </div>
+      </mat-menu>
+    </mat-form-field>
+
+    <!-- PREVISUALIZACIÓN DE IMÁGENES (Debajo del primer post) -->
+    @if ($index === 0 && imagePreviews.length > 0) {
+    <div class="image-previews-container">
+      @for (imgSrc of imagePreviews; track $index) {
+      <div class="preview-item">
+        <img [src]="imgSrc" alt="Preview" />
+        <button class="remove-btn" (click)="removeImage($index)" type="button">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      }
+    </div>
+    } }
+    <!-- Fin del bucle @for -->
+  </div>
+
+  <!-- Autocompletado de Usuarios (Compartido) -->
+  <mat-autocomplete
+    #mentionAutocomplete="matAutocomplete"
+    (optionSelected)="onUserMentionSelected($event)"
+    [displayWith]="displayWithFn"
+  >
+    @for (user of mentionResults$ | async; track user.username) {
+    <mat-option [value]="user" [disabled]="true">
+      <div class="user-option">
+        <img [src]="user.avatarUrl" class="user-option__avatar" alt="Avatar" />
+        <div class="user-option__info">
+          <span class="user-option__display-name">{{ user.displayName }}</span>
+          <span class="user-option__username">@{{ user.username }}</span>
+        </div>
+      </div>
+    </mat-option>
+    }
+  </mat-autocomplete>
+</div>
+
+<!-- Footer con Acciones -->
+<footer class="modal-footer" mat-dialog-actions>
+  <mat-form-field appearance="outline" class="category-selector">
+    <mat-label>{{ 'CREATE_THREAD.CATEGORY_LABEL' | translate }}</mat-label>
+    <mat-select [(ngModel)]="selectedCategory" name="category">
+      <mat-option [value]="null">{{ 'CREATE_THREAD.CATEGORY_NONE' | translate }}</mat-option>
+      @for (category of categories; track category.value) {
+      <mat-option [value]="category.value">{{ category.viewValue }}</mat-option> }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="modal-footer__actions">
+    @if(isMobileView && currentStep < 3){
+    <button mat-flat-button color="primary" class="modal-footer__next-btn" (click)="nextStep()">
+      {{ 'CREATE_THREAD.NEXT' | translate }}
+    </button>
+    } @if(!isMobileView || currentStep === 3){
+    <button mat-flat-button color="primary" class="modal-footer__publish-btn" (click)="publish()">
+      {{ 'CREATE_THREAD.PUBLISH' | translate }}
+    </button>
+    }
+  </div>
+</footer>
+
+<!-- Mensaje de Error -->
+@if (errorMessage) {
+<div class="modal-error-message">{{ errorMessage }}</div>
+}

@@ -1,0 +1,294 @@
+/* ========================================================= */
+/* === ESTRUCTURA BASE (MOBILE FIRST)                    === */
+/* ========================================================= */
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  /* Espaciado para Header y Nav fijos */
+  padding-top: 60px;
+  padding-bottom: 80px;
+
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* --- MARCA DE AGUA (Fondo Fijo) --- */
+.watermark-container {
+  position: fixed;
+  bottom: 15%; /* Ubicación vertical */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  opacity: 1; /* La opacidad se maneja en el color del texto */
+}
+
+.watermark {
+  font-size: clamp(3rem, 18vw, 8rem); /* Tipografía responsiva */
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--watermark-color); /* Variable global */
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- HEADER INTERNO --- */
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 20px 0;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+/* --- CONTENIDO --- */
+.content-area {
+  position: relative;
+  width: 100%;
+}
+
+.step-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.step-title {
+  color: var(--text-color);
+  margin-bottom: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* --- TARJETA DE FORMULARIO (Mobile: Transparente) --- */
+.form-card {
+  background-color: var(--card-background);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: none;
+  width: 100%;
+  backdrop-filter: none;
+}
+
+.input-label {
+  color: var(--text-color);
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  margin-left: 4px;
+}
+
+/* Inputs Personalizados */
+.custom-field {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Forzamos estilos de input para que resalten sobre el fondo */
+:host ::ng-deep .custom-field .mat-mdc-text-field-wrapper {
+  background-color: var(--card-background) !important;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+:host ::ng-deep .custom-field .mat-mdc-form-field-subscript-wrapper {
+  padding-left: 0; /* Alinear errores */
+}
+
+/* --- BOTONES --- */
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  width: 100%;
+}
+
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  padding: 12px 0;
+  font-size: 1rem;
+  border-radius: 12px;
+  width: 100%; /* Botón ancho en móvil */
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-delete {
+  background-color: var(--warn-color) !important; /* Rojo */
+}
+
+/* --- TARJETA DE USUARIO ENCONTRADO --- */
+.found-user-section {
+  margin-top: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--card-background); /* Fondo sólido para la tarjeta */
+  border: 1px solid var(--border-color);
+  border-radius: 50px; /* Píldora */
+  padding: 8px 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  max-width: 100%;
+}
+
+.user-card-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0; /* Permite truncar texto */
+  margin-right: 8px;
+}
+
+.user-card-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+}
+
+.user-card-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.user-card-handle {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-card-name {
+  font-size: 0.8rem;
+  color: var(--icon-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.delete-action {
+  width: 100%;
+}
+
+/* Autocomplete items (Heredan estilos globales, ajuste fino aquí) */
+.autocomplete-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mini-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================================= */
+/* === MEDIA QUERIES (TABLET & DESKTOP >= 768px)         === */
+/* ========================================================= */
+
+@media (min-width: 768px) {
+  .page-wrapper {
+    padding-bottom: 40px;
+  }
+
+  .settings-container {
+    max-width: 500px; /* Ancho contenido */
+  }
+
+  .form-card {
+    /* En desktop convertimos el form en una tarjeta visible */
+    background-color: var(--card-background);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px var(--shadow-color);
+    border: 1px solid var(--border-color);
+    max-width: 100%;
+  }
+
+  .step-title {
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+  }
+
+  .btn-primary {
+    width: auto; /* Botón tamaño natural */
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .watermark-container {
+    bottom: 10%;
+  }
+}

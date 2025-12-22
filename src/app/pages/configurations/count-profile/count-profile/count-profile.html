@@ -1,0 +1,69 @@
+<app-header></app-header>
+
+<div class="page-wrapper">
+  <div class="watermark-container">
+    <span class="watermark-text">FOCALIZZE</span>
+  </div>
+
+  <div class="settings-container">
+    <header class="settings-header">
+      <button mat-icon-button class="back-button" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2 class="header-title">Cuenta y Perfil</h2>
+    </header>
+
+    <main class="profile-content">
+      @if (user(); as userData) {
+      <mat-card class="profile-card" #profileCard>
+        <mat-card-content>
+          <div class="top-section">
+            <div class="avatar-wrapper">
+              <div class="avatar-circle">
+                <img
+                  [src]="userData.avatarUrl || 'assets/images/default-avatar.webp'"
+                  class="profile-img"
+                  alt="Avatar"
+                  crossOrigin="anonymous"
+                />
+              </div>
+            </div>
+
+            <div class="username-wrapper">
+              <label class="field-label">Nombre de usuario:</label>
+              <div class="custom-input-box">
+                {{ userData.username }}
+              </div>
+            </div>
+          </div>
+
+          <div class="bio-section">
+            <label class="field-label">Biografía:</label>
+            <div class="bio-box">
+              {{ userData.biography || 'Sin biografía' }}
+            </div>
+          </div>
+
+          <div class="action-section">
+            <button class="btn-export" (click)="downloadProfileAsPDF()">
+              Exportar mis datos personales
+              <mat-icon class="icon-right">download</mat-icon>
+            </button>
+            <p class="disclaimer-text">
+              Descarga un archivo con toda la información asociada a tu cuenta, conforme al
+              reglamento GDPR.
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      } @else if (isLoading()) {
+      <div class="loading-state">
+        <p>Cargando perfil...</p>
+      </div>
+      } @else {
+      <p class="error-state">No se pudieron cargar los datos del perfil.</p>
+      }
+    </main>
+  </div>
+</div>
+<app-botton-nav></app-botton-nav>

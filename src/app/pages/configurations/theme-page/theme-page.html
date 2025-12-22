@@ -1,0 +1,112 @@
+<app-header></app-header>
+
+<div class="page-container">
+  <header class="page-header">
+    <button mat-icon-button (click)="goBack()" aria-label="Volver atrás">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Configuración</h1>
+  </header>
+
+  <main class="content-wrapper">
+    <h2 class="section-title">Modo</h2>
+    <div class="settings-card">
+      <div
+        class="theme-item clickable"
+        [class.active-item]="selectedTheme === 'light'"
+        (click)="setThemeMode('light')"
+        matRipple
+      >
+        <div class="item-left">
+          <mat-icon class="item-icon">light_mode</mat-icon>
+          <span class="item-text">Claro</span>
+        </div>
+        @if (selectedTheme === 'light') {
+        <mat-icon class="check-icon">check_circle</mat-icon>
+        } @else {
+        <mat-icon class="radio-unchecked">radio_button_unchecked</mat-icon>
+        }
+      </div>
+      <div
+        class="theme-item clickable"
+        [class.active-item]="selectedTheme === 'dark'"
+        (click)="setThemeMode('dark')"
+        matRipple
+      >
+        <div class="item-left">
+          <mat-icon class="item-icon">dark_mode</mat-icon>
+          <span class="item-text">Oscuro</span>
+        </div>
+        @if (selectedTheme === 'dark') {
+        <mat-icon class="check-icon">check_circle</mat-icon>
+        } @else {
+        <mat-icon class="radio-unchecked">radio_button_unchecked</mat-icon>
+        }
+      </div>
+    </div>
+
+    <h2 class="section-title margin-top">Personalización del Fondo</h2>
+    <div class="settings-card padding-card">
+      <div
+        class="custom-option"
+        (click)="resetBackground()"
+        [class.selected]="currentBgType === 'default'"
+      >
+        <div class="preview-circle default-circle"></div>
+        <span>Por defecto</span>
+      </div>
+
+      <div class="subsection-header">
+        <h3>Color Sólido</h3>
+      </div>
+      <div class="colors-grid">
+        @for (color of presetColors; track color) {
+        <div
+          class="color-swatch"
+          [style.background-color]="color"
+          [class.selected]="currentBgType === 'color' && currentBgValue === color"
+          (click)="selectColor(color)"
+        >
+          @if (currentBgType === 'color' && currentBgValue === color) {
+          <mat-icon>check</mat-icon>
+          }
+        </div>
+        }
+
+        <div class="color-picker-wrapper">
+          <input
+            type="color"
+            id="colorInput"
+            (input)="onColorPickerChange($event)"
+            [value]="currentBgType === 'color' ? currentBgValue : '#ffffff'"
+          />
+          <label for="colorInput" class="color-swatch picker-swatch">
+            <mat-icon>palette</mat-icon>
+          </label>
+        </div>
+      </div>
+
+      <!-- <div class="subsection-header">
+        <h3>Wallpapers</h3>
+      </div>
+      <div class="wallpapers-grid">
+        @for (img of wallpapers; track img) {
+        <div
+          class="wallpaper-item"
+          [class.selected]="currentBgType === 'image' && currentBgValue === img"
+          (click)="selectWallpaper(img)"
+          [style.background-image]="'url(' + img + ')'"
+        >
+          @if (currentBgType === 'image' && currentBgValue === img) {
+          <div class="overlay-check">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          }
+        </div>
+        }
+      </div> -->
+    </div>
+  </main>
+</div>
+
+<app-botton-nav></app-botton-nav>

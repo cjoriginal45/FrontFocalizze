@@ -1,0 +1,242 @@
+{
+    "COMMON": {
+      "BACK": "Volver",
+      "CONFIRM": "Confirmar cambios",
+      "CANCEL":"Cancelar",
+      "SAVE":"Guardar"
+    },
+    "SETTINGS": {
+      "TITLE": "Configuración",
+      "LANGUAGE_TITLE": "Idioma",
+      "SELECT_LABEL": "Selecciona tu idioma:",
+      "HELPER_TEXT": "El idioma cambiará inmediatamente.",
+      "WATERMARK": "Focalizze",
+      "MENU": {
+      "ACCOUNT": "Cuenta y perfil",
+      "SECURITY": "Seguridad y acceso",
+      "NOTIFICATIONS": "Notificaciones",
+      "FOCUS": "Modo enfoque",
+      "PRIVACY": "Bloqueo y privacidad",
+      "THEME": "Tema",
+      "LANGUAGE": "Idioma",
+      "ADMIN_PANEL": "Panel de administración"
+      }
+    },
+    "MENU": {
+    "HOME": "Inicio",
+    "NOTIFICATIONS": "Notificaciones",
+    "SAVED": "Guardados",
+    "SETTINGS": "Configuración",
+    "LOGOUT": "Cerrar Sesión"
+    },
+    "PROFILE": {
+      "FOLLOWING": "Siguiendo",
+      "FOLLOWERS": "Seguidores",
+      "AVATAR_ALT": "Avatar de {{name}}",
+      "NO_BIO": "Este usuario aún no tiene una biografía.",
+      "THREADS_PUBLISHED": "Hilos Publicados",
+      "THREADS_AVAILABLE": "Hilos Disponibles Hoy",
+      "JOINED": "Se unió en",
+      "NO_THREADS": "Este usuario aún no ha publicado ningún hilo.",
+      "USER_REPORT": "Reportar a @{{username}}"
+    },
+    "WELCOME": {
+      "TITLE": "¡Bienvenido a Focalizze!",
+      "SUBTITLE": "Donde menos es más. Únete a la conversación."
+    },
+      "THREAD": {
+        "AVATAR_ALT": "Avatar de {{name}}",
+        "OPTIONS_LABEL": "Opciones del hilo",
+        "MORE_OPTIONS": "Más opciones",
+        "EDIT": "Editar Hilo",
+        "DELETE": "Eliminar Hilo",
+        "REPORT": "Reportar Hilo",
+        "BLOCK_USER": "Bloquear a @{{username}}",
+        "UNBLOCK_USER": "Desbloquear a @{{username}}",
+        "POST_NUMBER": "{{number}}° post",
+        "LOADING": "Cargando...",
+        "HIDE": "Ocultar -",
+        "EXPAND": "Ampliar +",
+        "USER_REPORT": "Reportar a @{{username}}"
+      },
+      "COMMENTS": {
+        "TITLE": "Comentarios",
+        "CLOSE": "Cerrar",
+        "PLACEHOLDER": "Escribe un comentario...",
+        "BUTTON": "Comentar",
+        "LOADING": "Cargando comentarios...",
+        "DELETE": "Eliminar",
+        "EDIT": "Editar",
+        "EDIT_TITLE": "Editar Comentario",
+        "YOUR_AVATAR": "Tu avatar",
+        "DEFAULT_AVATAR": "Avatar por defecto"
+      },
+      "CREATE_THREAD": {
+        "TITLE": "Crear Hilo",
+        "CLOSE": "Cerrar modal",
+        "SCHEDULE": {
+          "TITLE": "Programar Publicación",
+          "DATE": "Fecha",
+          "HOUR": "Hora",
+          "MINUTE": "Min",
+          "INFO": "Se publicará aproximadamente el {{date}} a las {{time}}"
+        },
+        "POST_LABEL": "Post {{number}}",
+        "CATEGORY_LABEL": "Categoría (Opcional)",
+        "CATEGORY_NONE": "Ninguna",
+        "NEXT": "Avanzar",
+        "PUBLISH": "Publicar"
+      },
+      "EDIT_PROFILE": {
+    "TITLE": "Editar Perfil",
+    "CLOSE_ARIA": "Cerrar",
+    "AVATAR_PREVIEW": "Vista previa del avatar",
+    "NAME_LABEL": "Nombre",
+    "BIO_LABEL": "Biografía",
+    "CANCEL": "Cancelar",
+    "SAVE": "Guardar"
+  },
+  "EDIT_THREAD": {
+    "TITLE": "Editar Hilo",
+    "BACK_ARIA": "Volver al paso anterior",
+    "CLOSE_ARIA": "Cerrar modal",
+    "POST_LABEL": "Post {{number}}",
+    "POST_STEP_LABEL": "Post {{current}} de {{total}}",
+    "CATEGORY_LABEL": "Categoría (Opcional)",
+    "CATEGORY_NONE": "Ninguna",
+    "NEXT": "Avanzar",
+    "SAVE_CHANGES": "Guardar Cambios"
+  },
+  "FOLLOW_MODAL": {
+    "FOLLOWERS_TAB": "Seguidores",
+    "FOLLOWING_TAB": "Seguidos",
+    "NO_FOLLOWERS": "Aún no hay seguidores.",
+    "NO_FOLLOWING": "No sigue a nadie aún."
+  },
+  "FEED_OPTIONS": {
+    "FOLLOWING": "Siguiendo",
+    "DISCOVER": "Descubrir",
+    "INTERACTIONS": "Interacciones disponibles:"
+  },
+  "SUGGESTIONS": {
+    "ARIA_TOGGLE": "Abrir/Cerrar sugerencias",
+    "TITLE": "Tal vez te guste",
+    "SHOW_MORE": "Otras categorías...",
+    "SHOW_LESS": "Mostrar menos..."
+  },
+  "SEARCH": {
+    "PLACEHOLDER": "Buscar...",
+    "ARIA_SUBMIT": "Realizar búsqueda"
+  },
+  "CATEGORY": {
+    "LOADING": "Cargando categoría...",
+    "FOLLOWERS": "Seguidores",
+    "THREADS_COUNT": "Hilos Publicados",
+    "THREADS_TITLE": "Hilos en esta Categoría",
+    "NO_THREADS": "Aún no hay hilos en esta categoría.",
+    "LOADING_MORE": "Cargando más hilos..."
+  },
+  "FOOTER": {
+    "TERMS": "Condiciones de Servicio",
+    "PRIVACY": "Política de Privacidad",
+    "COOKIES": "Política de cookies",
+    "ACCESSIBILITY": "Accesibilidad",
+    "MORE": "Más opciones",
+    "COPYRIGHT": "© 2025 Focalizze."
+  },
+  "DISCOVER": {
+    "RECOMMENDED": "Recomendado para ti",
+    "WHY_THIS": "¿Por qué veo esto?",
+    "SEE_LESS": "Ver menos de este tipo",
+    "LOADING": "Cargando más hilos...",
+    "LOAD_MORE": "Cargar más"
+  },
+  "FEED": {
+    "LOADING": "Cargando más hilos...",
+    "LOAD_MORE": "Cargar más"
+  },
+  "LOGIN": {
+    "TITLE": "Iniciar Sesión",
+    "PLACEHOLDER_ID": "Correo/Nombre de usuario",
+    "PLACEHOLDER_PASS": "Contraseña",
+    "BUTTON": "Ingresar",
+    "REGISTER_LINK": "¿No tienes cuenta? Registrate"
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "Notificaciones",
+    "EMPTY": "No tienes notificaciones.",
+    "LOADING": "Cargando...",
+    "LOAD_MORE": "Cargar más antiguas"
+  },
+  "PASSWORD_RECOVERY": {
+    "TITLE_REQUEST": "Recuperación de contraseña",
+    "SUBTITLE_REQUEST": "Introduce tu correo electrónico y te enviaremos un enlace para restaurar tu contraseña.",
+    "PLACEHOLDER_EMAIL": "Ingrese su Correo Electrónico",
+    "BUTTON_SEND": "Enviar",
+    "BUTTON_SENDING": "Enviando...",
+    "LINK_BACK": "¿Ya recuerdas tu contraseña?",
+    "LINK_CLICK_HERE": "Haz click aquí",
+    "TITLE_RESET": "Crea tu nueva contraseña",
+    "PLACEHOLDER_NEW_PASS": "Ingrese su nueva contraseña",
+    "PLACEHOLDER_CONFIRM_PASS": "Vuelva a ingresar su nueva contraseña",
+    "BUTTON_RESET": "Restablecer contraseña",
+    "BUTTON_RESETTING": "Restableciendo...",
+    "EMAIL_SENT_TITLE": "¡Revisa tu correo!",
+    "EMAIL_SENT_MSG": "Te hemos enviado un enlace a {{email}} para restaurar tu contraseña. Por favor, revisa tu bandeja de entrada y spam.",
+    "INVALID_TITLE": "Enlace inválido",
+    "INVALID_MSG": "El enlace de recuperación es inválido o ha expirado. Por favor, solicita uno nuevo.",
+    "SUCCESS_TITLE": "¡Éxito!",
+    "SUCCESS_MSG": "Tu contraseña ha sido actualizada correctamente. Serás redirigido al login en unos segundos."
+  },
+  "REGISTER": {
+    "TITLE": "Registro",
+    "PLACEHOLDER_USER": "Nombre de usuario",
+    "PLACEHOLDER_EMAIL": "Correo Electrónico",
+    "PLACEHOLDER_PASS": "Contraseña",
+    "PLACEHOLDER_CONFIRM": "Repetir Contraseña",
+    "BUTTON": "Registrarse",
+    "LOGIN_LINK": "Iniciar Sesión"
+  },
+  "SAVED_THREADS": {
+    "TITLE": "Hilos Guardados",
+    "LOADING": "Cargando...",
+    "LOAD_MORE": "Cargar más",
+    "EMPTY": "Aún no has guardado ningún hilo.",
+    "ARIA_BACK": "Volver a la página anterior"
+  },
+  "SEARCH_MOBILE": {
+    "BACK_ARIA": "Volver",
+    "TITLE": "Búsquedas Recientes",
+    "REMOVE_ARIA": "Eliminar del historial",
+    "EMPTY": "No tienes búsquedas recientes."
+  },
+  "SEARCH_RESULTS": {
+    "BACK_ARIA": "Volver a la página anterior",
+    "TITLE": "Resultados de Búsqueda",
+    "SUBTITLE": "para: \"{{query}}\"",
+    "LOADING": "Cargando resultados...",
+    "NO_RESULTS": "No se encontraron hilos para tu búsqueda."
+  },
+  "FOLLOW_BUTTON": {
+    "FOLLOW": "Seguir",
+    "FOLLOWING": "Siguiendo",
+    "UNFOLLOW": "Dejar de Seguir"
+  },
+    "REPORT_MODAL": {
+    "TITLE": "Reportar a @{{username}}",
+    "REASON_LABEL": "Motivo del reporte",
+    "DESC_LABEL": "Detalles adicionales (opcional)",
+    "DESC_PLACEHOLDER": "Describe el problema...",
+    "CANCEL": "Cancelar",
+    "SUBMIT": "Reportar",
+    "SUCCESS": "Reporte enviado. Gracias por ayudarnos.",
+    "REASONS": {
+      "SPAM": "Es spam",
+      "HARASSMENT_OR_HATE": "Acoso o incitación al odio",
+      "INAPPROPRIATE_CONTENT": "Contenido inapropiado",
+      "FAKE_ACCOUNT": "Cuenta falsa",
+      "OTHER": "Otro motivo"
+    }
+  }
+    
+  }

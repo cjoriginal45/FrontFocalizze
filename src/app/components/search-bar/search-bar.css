@@ -1,0 +1,123 @@
+/* ========================================================= */
+/* === Estilo base (Mobile First)                        === */
+/* ========================================================= */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.search-bar__form {
+  position: relative;
+  z-index: 2001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.search-bar__field {
+  width: 100%;
+  margin: 0;
+}
+
+:host ::ng-deep .search-bar__field .mat-mdc-text-field-wrapper {
+  height: 44px;
+  background-color: var(--card-background) !important;
+  border-radius: 50px !important;
+  padding: 0 4px 0 16px !important;
+
+  border: 1px solid var(--border-color);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+:host ::ng-deep .search-bar__field.mat-focused .mat-mdc-text-field-wrapper {
+  box-shadow: 0 0 12px var(--shadow-color);
+  border-color: var(--primary-color);
+}
+
+:host ::ng-deep .search-bar__field .mdc-notched-outline,
+:host ::ng-deep .search-bar__field .mdc-notched-outline__leading,
+:host ::ng-deep .search-bar__field .mdc-notched-outline__notch,
+:host ::ng-deep .search-bar__field .mdc-notched-outline__trailing {
+  border: none !important;
+}
+
+:host ::ng-deep .search-bar__field .mat-mdc-form-field-flex {
+  height: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .search-bar__field input {
+  color: var(--text-color) !important;
+  caret-color: var(--primary-color);
+}
+
+:host ::ng-deep .search-bar__field input::placeholder {
+  color: var(--icon-color) !important;
+  opacity: 0.7;
+}
+
+:host ::ng-deep .search-bar__field mat-icon {
+  color: var(--primary-color) !important;
+}
+
+:host ::ng-deep .search-bar__field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.user-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.user-option__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+  background-color: #fff;
+}
+
+.user-option__info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+.user-option__display-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-color);
+
+  /* Truncar texto largo */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-option__username {
+  font-size: 0.85rem;
+  color: var(--icon-color);
+}
+
+/* ========================================================= */
+/* === MEDIA QUERIES (DESKTOP)                           === */
+/* ========================================================= */
+
+@media (min-width: 768px) {
+  .search-bar__form {
+    width: 480px;
+  }
+
+  :host ::ng-deep .search-bar__field .mat-mdc-text-field-wrapper {
+    box-shadow: 0 0 6px var(--shadow-color);
+  }
+}
