@@ -82,57 +82,42 @@ export class Auth {
    * Carga el usuario desde el token guardado en el almacenamiento local.
    * Se ejecuta al inicializar la aplicación.
    */
-  async loadUserFromToken(): Promise<void> {
+ async loadUserFromToken(): Promise<void> {
     const token = localStorage.getItem('jwt_token');
+    if (token) {
+      try {
+        const decodedToken: { exp: number } = jwtDecode(token);
+        if (Date.now() >= decodedToken.exp * 1000) {
+          //localStorage.removeItem('jwt_token');
+        } else {
+          this.notificationStateService.initialize();
 
-    if (!token) {
-      console.log('[DEBUG-AUTH] No hay nada en localStorage.');
-      this.authReady.set(true);
-      return;
-    }
+          const combinedData$ = forkJoin({
+            user: this.userService.getMe(),
+            interactions: this.userService.getInteractionStatus(),
+          }).pipe(
+            map(({ user, interactions }) => {
+              // AQUÍ SINCRONIZAMOS EL TEMA CUANDO SE RECARGA LA PÁGINA
+              if (user.backgroundType) {
+                this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
+              }
 
-    console.log('[DEBUG-AUTH] Token encontrado. Intentando procesar...');
+              return {
+                ...user,
+                dailyInteractionsRemaining: interactions.remaining,
+              } as unknown as AuthUser;
+            })
+          );
 
-    try {
-      const decodedToken: { exp: number } = jwtDecode(token);
-      const currentTime = Math.floor(Date.now() / 1000);
-      
-      console.log('[DEBUG-AUTH] Expiración token:', decodedToken.exp);
-      console.log('[DEBUG-AUTH] Tiempo actual:', currentTime);
-
-      // NO vamos a borrar el token aquí, solo avisar en consola
-      const isExpired = decodedToken.exp < (currentTime - 60);
-      
-      if (isExpired) {
-        console.error('[DEBUG-AUTH] El código CREE que el token expiró, pero NO lo borraré aún.');
+          const authUser = await firstValueFrom(combinedData$);
+          this.currentUser.set(authUser);
+        }
+      } catch (error) {
+        console.error('Fallo al inicializar auth:', error);
+        //localStorage.removeItem('jwt_token');
       }
-
-      // Procedemos pase lo que pase para probar si el backend lo acepta
-      this.notificationStateService.initialize();
-
-      const combinedData$ = forkJoin({
-        user: this.userService.getMe(),
-        interactions: this.userService.getInteractionStatus(),
-      }).pipe(
-        map(({ user, interactions }) => {
-          if (user.backgroundType) {
-            this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
-          }
-          return { ...user, dailyInteractionsRemaining: interactions.remaining } as unknown as AuthUser;
-        })
-      );
-
-      const authUser = await firstValueFrom(combinedData$);
-      this.currentUser.set(authUser);
-      console.log('[DEBUG-AUTH] Usuario cargado con éxito.');
-
-    } catch (error) {
-      // Si entra aquí, jwt-decode está fallando
-      console.error('[DEBUG-AUTH] Error decodificando el token. El error es:', error);
-      console.log('[DEBUG-AUTH] El token que falló es:', token);
-    } finally {
-      this.authReady.set(true);
     }
+    this.authReady.set(true);
   }
 
   // --- LOGIN ---
