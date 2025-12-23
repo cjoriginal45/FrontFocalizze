@@ -85,67 +85,52 @@ export class Auth {
   async loadUserFromToken(): Promise<void> {
     const token = localStorage.getItem('jwt_token');
 
-    // 1. Si no hay token, no hay nada que procesar.
     if (!token) {
-      console.log('[AuthService] No se encontró token en localStorage.');
+      console.log('[DEBUG-AUTH] No hay nada en localStorage.');
       this.authReady.set(true);
       return;
     }
 
+    console.log('[DEBUG-AUTH] Token encontrado. Intentando procesar...');
+
     try {
-      // 2. Intentamos decodificar el token para verificar expiración
       const decodedToken: { exp: number } = jwtDecode(token);
-      const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+      const currentTime = Math.floor(Date.now() / 1000);
       
-      /**
-       * 3. Verificación de expiración con MARGEN DE MANIOBRA (Buffer).
-       * Restamos 60 segundos al tiempo actual para absorber discrepancias de reloj (Clock Skew)
-       * entre tu PC y el servidor de Render.
-       */
-      const isExpired = decodedToken.exp < (currentTimeInSeconds - 60);
+      console.log('[DEBUG-AUTH] Expiración token:', decodedToken.exp);
+      console.log('[DEBUG-AUTH] Tiempo actual:', currentTime);
 
+      // NO vamos a borrar el token aquí, solo avisar en consola
+      const isExpired = decodedToken.exp < (currentTime - 60);
+      
       if (isExpired) {
-        console.warn('[AuthService] El token ha expirado. Limpiando sesión...');
-        this.logout(); // Logout ya limpia localStorage y navega a /login
-      } else {
-        // 4. EL TOKEN ES VÁLIDO: Inicializamos servicios dependientes
-        this.notificationStateService.initialize();
-
-        // 5. Obtenemos datos extendidos del usuario (Perfil + Interacciones)
-        const combinedData$ = forkJoin({
-          user: this.userService.getMe(),
-          interactions: this.userService.getInteractionStatus(),
-        }).pipe(
-          map(({ user, interactions }) => {
-            // Sincronizamos el tema visual del usuario (Fondo/Colores)
-            if (user.backgroundType) {
-              this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
-            }
-
-            // Mapeamos a nuestra interfaz AuthUser
-            return {
-              ...user,
-              dailyInteractionsRemaining: interactions.remaining,
-            } as unknown as AuthUser;
-          })
-        );
-
-        // Convertimos el observable en promesa para esperar el resultado antes de liberar el Guard
-        const authUser = await firstValueFrom(combinedData$);
-        this.currentUser.set(authUser);
-        console.log('[AuthService] Usuario cargado exitosamente desde el token.');
+        console.error('[DEBUG-AUTH] El código CREE que el token expiró, pero NO lo borraré aún.');
       }
+
+      // Procedemos pase lo que pase para probar si el backend lo acepta
+      this.notificationStateService.initialize();
+
+      const combinedData$ = forkJoin({
+        user: this.userService.getMe(),
+        interactions: this.userService.getInteractionStatus(),
+      }).pipe(
+        map(({ user, interactions }) => {
+          if (user.backgroundType) {
+            this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
+          }
+          return { ...user, dailyInteractionsRemaining: interactions.remaining } as unknown as AuthUser;
+        })
+      );
+
+      const authUser = await firstValueFrom(combinedData$);
+      this.currentUser.set(authUser);
+      console.log('[DEBUG-AUTH] Usuario cargado con éxito.');
+
     } catch (error) {
-      /**
-       * 6. Manejo de errores de decodificación o red.
-       * Si el token es inválido (basura), lo eliminamos para evitar bucles.
-       */
-      console.error('[AuthService] Error durante la inicialización de sesión:', error);
-      localStorage.removeItem('jwt_token');
-      this.currentUser.set(null);
+      // Si entra aquí, jwt-decode está fallando
+      console.error('[DEBUG-AUTH] Error decodificando el token. El error es:', error);
+      console.log('[DEBUG-AUTH] El token que falló es:', token);
     } finally {
-      // 7. BLOQUE VITAL: Pase lo que pase (éxito o error), marcamos la auth como "lista".
-      // Esto permite que el authReadyGuard deje pasar al usuario al Feed o al Login.
       this.authReady.set(true);
     }
   }
