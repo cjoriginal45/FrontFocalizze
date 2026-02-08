@@ -82,44 +82,84 @@ export class Auth {
    * Carga el usuario desde el token guardado en el almacenamiento local.
    * Se ejecuta al inicializar la aplicación.
    */
- async loadUserFromToken(): Promise<void> {
+async loadUserFromToken(): Promise<void> {
     const token = localStorage.getItem('jwt_token');
+
     if (token) {
       try {
-        const decodedToken: { exp: number } = jwtDecode(token);
-        if (Date.now() >= decodedToken.exp * 1000) {
-          //localStorage.removeItem('jwt_token');
-        } else {
-          this.notificationStateService.initialize();
+        const decodedToken: any = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
 
-          const combinedData$ = forkJoin({
-            user: this.userService.getMe(),
-            interactions: this.userService.getInteractionStatus(),
-          }).pipe(
-            map(({ user, interactions }) => {
-              // AQUÍ SINCRONIZAMOS EL TEMA CUANDO SE RECARGA LA PÁGINA
-              if (user.backgroundType) {
-                this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
-              }
-
-              return {
-                ...user,
-                dailyInteractionsRemaining: interactions.remaining,
-              } as unknown as AuthUser;
-            })
-          );
-
-          const authUser = await firstValueFrom(combinedData$);
-          this.currentUser.set(authUser);
+        if (decodedToken.exp < currentTime) {
+          console.warn('Token expirado, cerrando sesión...');
+          this.logout();
+          this.authReady.set(true);
+          return;
         }
+
+        
+        const optimisticUser: AuthUser = {
+          id: decodedToken.id || 0, 
+          username: decodedToken.sub || 'Usuario',
+          displayName: decodedToken.displayName || decodedToken.sub || 'Usuario',
+          avatarUrl: decodedToken.avatarUrl || undefined, 
+          followingCount: 0, 
+          followersCount: 0, 
+          role: decodedToken.role || 'USER',
+          dailyInteractionsRemaining: 0,
+          isTwoFactorEnabled: decodedToken.isTwoFactorEnabled
+        };
+
+        this.currentUser.set(optimisticUser);
+        this.notificationStateService.initialize();
+        
+        // Marcamos auth como lista para que los Guards dejen pasar
+        this.authReady.set(true);
+
+        this.hydrateUserData();
+
       } catch (error) {
-        console.error('Fallo al inicializar auth:', error);
-        //localStorage.removeItem('jwt_token');
+        console.error('Error al decodificar token inicial:', error);
+        this.logout();
+        this.authReady.set(true);
       }
+    } else {
+      this.authReady.set(true);
     }
-    this.authReady.set(true);
   }
 
+  // Método auxiliar para traer datos frescos sin bloquear el inicio
+  private hydrateUserData(): void {
+    forkJoin({
+      user: this.userService.getMe(),
+      interactions: this.userService.getInteractionStatus(),
+    }).pipe(
+      catchError(err => {
+        console.warn('Backend dormido o error de red, usando datos cacheados/token', err);
+        return of(null); 
+      })
+    ).subscribe((response) => {
+      if (response) {
+        const { user, interactions } = response;
+        
+        // Sincronizar tema
+        if (user.backgroundType) {
+          this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
+        }
+
+        // Actualizar el signal con la data real de la BD
+        this.currentUser.update(current => {
+            if (!current) return null; 
+            return {
+                ...current, 
+                ...user,    
+                dailyInteractionsRemaining: interactions.remaining
+            } as unknown as AuthUser;
+        });
+      }
+    });
+  
+  
   // --- LOGIN ---
   login(credentials: { identifier: string; password: string }): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
