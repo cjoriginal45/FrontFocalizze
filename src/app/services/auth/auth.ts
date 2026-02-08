@@ -80,78 +80,94 @@ export class Auth {
    * por "Cold Starts" en Render.
    */
   async loadUserFromToken(): Promise<void> {
+    console.log('--- INICIO loadUserFromToken ---'); // 1. ¿Entra aquí?
     const token = localStorage.getItem('jwt_token');
 
     if (!token) {
+      console.warn('No hay token en localStorage.');
       this.authReady.set(true);
       return;
     }
 
+    console.log('Token encontrado:', token.substring(0, 10) + '...'); // 2. ¿Hay token?
+
     try {
-      // 1. Decodificar y validar expiración
       const decodedToken: any = jwtDecode(token);
+      console.log('Token decodificado:', decodedToken); // 3. ¿Qué tiene adentro?
+
       const currentTime = Date.now() / 1000;
+      console.log('Tiempo actual:', currentTime, 'Expiración token:', decodedToken.exp);
 
       if (decodedToken.exp < currentTime) {
+        console.error('El token ha expirado. Haciendo logout automatico.');
         this.logout();
         this.authReady.set(true);
         return;
       }
 
-      // 2. INICIO DE SESIÓN OPTIMISTA (Instantáneo)
-      // Usamos los datos del token para "pintar" la app inmediatamente
-      // mientras el backend despierta.
+      // IMPORTANTE: Mira si 'sub' existe en el log del paso 3.
+      // Si tu backend no usa 'sub', cambia esto por decodedToken.username o lo que sea.
+      const usernameFromToken = decodedToken.sub || decodedToken.username || 'Usuario';
+      
+      console.log('Usuario extraído del token:', usernameFromToken);
+
       const optimisticUser: AuthUser = {
-        id: decodedToken.id || 0, // Asegúrate que el ID venga en el token si es posible
-        username: decodedToken.sub || '',
-        displayName: decodedToken.displayName || decodedToken.sub || 'Usuario',
+        id: decodedToken.id || 0, 
+        username: usernameFromToken,
+        displayName: decodedToken.displayName || usernameFromToken,
         role: decodedToken.role || 'USER',
-        followingCount: 0, // Se actualizarán al conectar con el backend
+        followingCount: 0,
         followersCount: 0,
         dailyInteractionsRemaining: 0,
         isTwoFactorEnabled: decodedToken.isTwoFactorEnabled || false
       };
 
-      this.currentUser.set(optimisticUser);
-      this.notificationStateService.initialize();
-      this.authReady.set(true); // La app ya es usable aquí
+      console.log('Seteando usuario optimista:', optimisticUser);
+      this.currentUser.set(optimisticUser); // ¡AQUÍ SE DEBERÍA VER EL LOGIN!
+      this.authReady.set(true);
 
-      // 3. HIDRATACIÓN EN SEGUNDO PLANO
-      // Llamamos al backend sin await (background). Si tarda 30s, no importa.
-      forkJoin({
-        user: this.userService.getMe(),
-        interactions: this.userService.getInteractionStatus(),
-      }).pipe(
-        catchError((err) => {
-          console.warn('Backend iniciando o error de red. Manteniendo sesión cacheada.', err);
-          return of(null); // Evita romper la ejecución
-        })
-      ).subscribe((response) => {
-        if (response) {
-          const { user, interactions } = response;
-          
-          // Sincronizar tema
-          if (user.backgroundType) {
-            this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
-          }
-
-          // Actualizar con datos reales de la BD
-          this.currentUser.update(current => {
-             if (!current) return null;
-             return {
-                 ...current,
-                 ...user,
-                 dailyInteractionsRemaining: interactions.remaining
-             } as unknown as AuthUser;
-          });
-        }
-      });
+      // Hidratación
+      console.log('Iniciando hidratación en segundo plano...');
+      this.hydrateUserData();
 
     } catch (error) {
-      console.error('Error procesando token:', error);
+      console.error('CRASH en loadUserFromToken:', error);
       this.logout();
       this.authReady.set(true);
     }
+  }
+
+  // Método auxiliar para traer datos frescos sin bloquear el inicio
+  private hydrateUserData(): void {
+    forkJoin({
+      user: this.userService.getMe(),
+      interactions: this.userService.getInteractionStatus(),
+    }).pipe(
+      // Si falla (ej. timeout o 500 por cold start), no deslogueamos, solo logueamos el error
+      catchError(err => {
+        console.warn('Backend dormido o error de red, usando datos cacheados/token', err);
+        return of(null); 
+      })
+    ).subscribe((response) => {
+      if (response) {
+        const { user, interactions } = response;
+        
+        // Sincronizar tema
+        if (user.backgroundType) {
+          this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
+        }
+
+        // Actualizar el signal con la data real de la BD
+        this.currentUser.update(current => {
+            if (!current) return null; // Por si hizo logout mientras cargaba
+            return {
+                ...current, // Mantenemos lo que ya teníamos
+                ...user,    // Sobreescribimos con lo nuevo de la BD
+                dailyInteractionsRemaining: interactions.remaining
+            } as unknown as AuthUser;
+        });
+      }
+    });
   }
 
   // --- LOGIN ---
