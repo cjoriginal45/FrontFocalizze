@@ -53,9 +53,9 @@ export class EditThreadModal {
 
  // --- Constantes ---
  public readonly charLimits = {
-  step1: 280,
-  step2: 140,
-  step3: 70,
+  step1: 600,
+  step2: 400,
+  step3: 300,
 };
 
   constructor() {
