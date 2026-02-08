@@ -18,8 +18,6 @@ export class App implements OnInit {
   private authService = inject(Auth); // Inyectamos el servicio
 
   ngOnInit() {
-    //eliminar
-    console.log('AppComponent inicializado, llamando a loadUserFromToken...');
     this.authService.loadUserFromToken(); 
   }
 }
