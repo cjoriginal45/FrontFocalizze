@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { firstValueFrom, forkJoin, map, Observable, switchMap, tap } from 'rxjs';
+import { firstValueFrom, forkJoin, map, Observable, tap, catchError, of } from 'rxjs';
 import { LoginResponse } from '../../interfaces/LoginResponse';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
@@ -18,16 +18,12 @@ export interface AuthUser {
   id: number;
   username: string;
   displayName: string;
-  avatarUrl?: string; // Opcional, lo cargaremos después
+  avatarUrl?: string;
   followingCount: number;
   followersCount: number;
   role: string;
-  dailyInteractionsRemaining: number; // Ahora este dato vendrá del endpoint separado
+  dailyInteractionsRemaining: number;
   isTwoFactorEnabled?: boolean;
-}
-
-interface UserTokenData {
-  sub: string;
 }
 
 export interface VerifyOtpRequest {
@@ -54,6 +50,7 @@ export class Auth {
   private interactionCounter = inject(InteractionCounter);
   private themeService = inject(Theme);
 
+  // Signals
   currentUser = signal<AuthUser | null>(null);
   isLoggedIn = computed(() => !!this.currentUser());
   authReady = signal<boolean>(false);
@@ -79,87 +76,84 @@ export class Auth {
   }
 
   /**
-   * Carga el usuario desde el token guardado en el almacenamiento local.
-   * Se ejecuta al inicializar la aplicación.
+   * CORREGIDO: Carga el usuario optimista desde el token para evitar bloqueos
+   * por "Cold Starts" en Render.
    */
-async loadUserFromToken(): Promise<void> {
+  async loadUserFromToken(): Promise<void> {
     const token = localStorage.getItem('jwt_token');
 
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        const currentTime = Date.now() / 1000;
+    if (!token) {
+      this.authReady.set(true);
+      return;
+    }
 
-        if (decodedToken.exp < currentTime) {
-          console.warn('Token expirado, cerrando sesión...');
-          this.logout();
-          this.authReady.set(true);
-          return;
-        }
+    try {
+      // 1. Decodificar y validar expiración
+      const decodedToken: any = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
 
-        
-        const optimisticUser: AuthUser = {
-          id: decodedToken.id || 0, 
-          username: decodedToken.sub || 'Usuario',
-          displayName: decodedToken.displayName || decodedToken.sub || 'Usuario',
-          avatarUrl: decodedToken.avatarUrl || undefined, 
-          followingCount: 0, 
-          followersCount: 0, 
-          role: decodedToken.role || 'USER',
-          dailyInteractionsRemaining: 0,
-          isTwoFactorEnabled: decodedToken.isTwoFactorEnabled
-        };
-
-        this.currentUser.set(optimisticUser);
-        this.notificationStateService.initialize();
-        
-        // Marcamos auth como lista para que los Guards dejen pasar
-        this.authReady.set(true);
-
-        this.hydrateUserData();
-
-      } catch (error) {
-        console.error('Error al decodificar token inicial:', error);
+      if (decodedToken.exp < currentTime) {
         this.logout();
         this.authReady.set(true);
+        return;
       }
-    } else {
+
+      // 2. INICIO DE SESIÓN OPTIMISTA (Instantáneo)
+      // Usamos los datos del token para "pintar" la app inmediatamente
+      // mientras el backend despierta.
+      const optimisticUser: AuthUser = {
+        id: decodedToken.id || 0, // Asegúrate que el ID venga en el token si es posible
+        username: decodedToken.sub || '',
+        displayName: decodedToken.displayName || decodedToken.sub || 'Usuario',
+        role: decodedToken.role || 'USER',
+        followingCount: 0, // Se actualizarán al conectar con el backend
+        followersCount: 0,
+        dailyInteractionsRemaining: 0,
+        isTwoFactorEnabled: decodedToken.isTwoFactorEnabled || false
+      };
+
+      this.currentUser.set(optimisticUser);
+      this.notificationStateService.initialize();
+      this.authReady.set(true); // La app ya es usable aquí
+
+      // 3. HIDRATACIÓN EN SEGUNDO PLANO
+      // Llamamos al backend sin await (background). Si tarda 30s, no importa.
+      forkJoin({
+        user: this.userService.getMe(),
+        interactions: this.userService.getInteractionStatus(),
+      }).pipe(
+        catchError((err) => {
+          console.warn('Backend iniciando o error de red. Manteniendo sesión cacheada.', err);
+          return of(null); // Evita romper la ejecución
+        })
+      ).subscribe((response) => {
+        if (response) {
+          const { user, interactions } = response;
+          
+          // Sincronizar tema
+          if (user.backgroundType) {
+            this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
+          }
+
+          // Actualizar con datos reales de la BD
+          this.currentUser.update(current => {
+             if (!current) return null;
+             return {
+                 ...current,
+                 ...user,
+                 dailyInteractionsRemaining: interactions.remaining
+             } as unknown as AuthUser;
+          });
+        }
+      });
+
+    } catch (error) {
+      console.error('Error procesando token:', error);
+      this.logout();
       this.authReady.set(true);
     }
   }
 
-  // Método auxiliar para traer datos frescos sin bloquear el inicio
-  private hydrateUserData(): void {
-    forkJoin({
-      user: this.userService.getMe(),
-      interactions: this.userService.getInteractionStatus(),
-    }).pipe(
-      catchError(err => {
-        console.warn('Backend dormido o error de red, usando datos cacheados/token', err);
-        return of(null); 
-      })
-    ).subscribe((response) => {
-      if (response) {
-        const { user, interactions } = response;
-        
-        // Sincronizar tema
-        if (user.backgroundType) {
-          this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
-        }
-
-        // Actualizar el signal con la data real de la BD
-        this.currentUser.update(current => {
-            if (!current) return null; 
-            return {
-                ...current, 
-                ...user,    
-                dailyInteractionsRemaining: interactions.remaining
-            } as unknown as AuthUser;
-        });
-      }
-    });
-  
-  
   // --- LOGIN ---
   login(credentials: { identifier: string; password: string }): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
@@ -203,7 +197,6 @@ async loadUserFromToken(): Promise<void> {
   }
 
   private clearAllAppState(): void {
-    console.log('[AuthService] No hay usuario. Limpiando todos los estados...');
     this.threadStateService.clearState();
     this.userStateService.clearState();
     this.categoryState.clearState();
@@ -219,6 +212,8 @@ async loadUserFromToken(): Promise<void> {
     localStorage.setItem('jwt_token', response.token);
 
     const decodedToken: any = jwtDecode(response.token);
+    
+    // Construcción inicial del usuario
     const user: AuthUser = {
       id: response.userId,
       username: decodedToken.sub,
@@ -230,10 +225,11 @@ async loadUserFromToken(): Promise<void> {
       dailyInteractionsRemaining: 0,
       isTwoFactorEnabled: decodedToken.isTwoFactorEnabled,
     };
+    
     this.currentUser.set(user);
     this.notificationStateService.initialize();
 
-    // Sincronizar tema con datos del login si vinieran en el DTO (opcional si loadUserCompleteData lo hace)
+    // Cargar datos completos (interacciones, tema, etc)
     this.loadUserCompleteData();
   }
 
@@ -241,10 +237,14 @@ async loadUserFromToken(): Promise<void> {
     forkJoin({
       user: this.userService.getMe(),
       interactions: this.userService.getInteractionStatus(),
-    }).subscribe(({ user, interactions }) => {
+    }).pipe(
+      catchError(() => of(null)) // Protección extra
+    ).subscribe((response) => {
+      if (!response) return;
+      
+      const { user, interactions } = response;
       const currentValue = this.currentUser()?.isTwoFactorEnabled;
 
-      // SINCRONIZAMOS TEMA TAMBIÉN AQUÍ
       if (user.backgroundType) {
         this.themeService.syncWithUserDto(user.backgroundType, user.backgroundValue || '');
       }
