@@ -80,7 +80,6 @@ export class Auth {
    * por "Cold Starts" en Render.
    */
   async loadUserFromToken(): Promise<void> {
-    console.log('--- INICIO loadUserFromToken ---'); // 1. ¿Entra aquí?
     const token = localStorage.getItem('jwt_token');
 
     if (!token) {
@@ -89,14 +88,10 @@ export class Auth {
       return;
     }
 
-    console.log('Token encontrado:', token.substring(0, 10) + '...'); // 2. ¿Hay token?
-
     try {
       const decodedToken: any = jwtDecode(token);
-      console.log('Token decodificado:', decodedToken); // 3. ¿Qué tiene adentro?
 
       const currentTime = Date.now() / 1000;
-      console.log('Tiempo actual:', currentTime, 'Expiración token:', decodedToken.exp);
 
       if (decodedToken.exp < currentTime) {
         console.error('El token ha expirado. Haciendo logout automatico.');
@@ -105,12 +100,8 @@ export class Auth {
         return;
       }
 
-      // IMPORTANTE: Mira si 'sub' existe en el log del paso 3.
-      // Si tu backend no usa 'sub', cambia esto por decodedToken.username o lo que sea.
       const usernameFromToken = decodedToken.sub || decodedToken.username || 'Usuario';
       
-      console.log('Usuario extraído del token:', usernameFromToken);
-
       const optimisticUser: AuthUser = {
         id: decodedToken.id || 0, 
         username: usernameFromToken,
@@ -123,11 +114,9 @@ export class Auth {
       };
 
       console.log('Seteando usuario optimista:', optimisticUser);
-      this.currentUser.set(optimisticUser); // ¡AQUÍ SE DEBERÍA VER EL LOGIN!
+      this.currentUser.set(optimisticUser);
       this.authReady.set(true);
 
-      // Hidratación
-      console.log('Iniciando hidratación en segundo plano...');
       this.hydrateUserData();
 
     } catch (error) {
